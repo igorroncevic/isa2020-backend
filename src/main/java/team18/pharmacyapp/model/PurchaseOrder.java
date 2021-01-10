@@ -1,5 +1,8 @@
 package team18.pharmacyapp.model;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 import team18.pharmacyapp.model.medicine.PurchaseOrderMedicine;
 import team18.pharmacyapp.model.users.PharmacyAdmin;
@@ -10,6 +13,9 @@ import java.util.List;
 import java.util.UUID;
 
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor
 public class PurchaseOrder {
     @Id
     @GeneratedValue(generator = "UUID")
@@ -17,48 +23,18 @@ public class PurchaseOrder {
             name = "UUID",strategy = "org.hibernate.id.UUIDGenerator"
     )
     private UUID id;
-    @ManyToOne
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(nullable = false)
     private PharmacyAdmin pharmacyAdmin;
+
+    @Column(nullable = false)
     private Date endDate;
 
-    @OneToMany(mappedBy = "purchaseOrder")
+    @OneToMany(mappedBy = "purchaseOrder",cascade = CascadeType.ALL)
     private List<PurchaseOrderMedicine> purchaseOrderMedicines;
 
-    @OneToMany(mappedBy = "purchaseOrder")
+    @OneToMany(mappedBy = "purchaseOrder",cascade = CascadeType.ALL)
     private List<SupplierPurchaseOrder> supplierPurchaseOrders;
 
-    public PurchaseOrder() {
-    }
-
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
-    public PharmacyAdmin getPharmacyAdmin() {
-        return pharmacyAdmin;
-    }
-
-    public void setPharmacyAdmin(PharmacyAdmin pharmacyAdmin) {
-        this.pharmacyAdmin = pharmacyAdmin;
-    }
-
-    public Date getEndDate() {
-        return endDate;
-    }
-
-    public void setEndDate(Date endDate) {
-        this.endDate = endDate;
-    }
-
-    public List<PurchaseOrderMedicine> getPurchaseOrderMedicines() {
-        return purchaseOrderMedicines;
-    }
-
-    public void setPurchaseOrderMedicines(List<PurchaseOrderMedicine> purchaseOrderMedicines) {
-        this.purchaseOrderMedicines = purchaseOrderMedicines;
-    }
 }

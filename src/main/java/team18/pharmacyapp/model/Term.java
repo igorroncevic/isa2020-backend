@@ -1,5 +1,8 @@
 package team18.pharmacyapp.model;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 import team18.pharmacyapp.model.enums.TermType;
 import team18.pharmacyapp.model.users.Doctor;
@@ -10,6 +13,9 @@ import java.util.Date;
 import java.util.UUID;
 
 @Entity(name = "term")
+@Getter
+@Setter
+@NoArgsConstructor
 public class Term {
     @Id
     @GeneratedValue(generator = "UUID")
@@ -18,91 +24,31 @@ public class Term {
     )
     private UUID id;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(nullable = false)
     private Patient patient;
+
     @ManyToOne
+    @JoinColumn(nullable = false)
     private Doctor doctor;
+
+    @Column(nullable = false)
     private Date startTime;
+
+    @Column(nullable = false)
     private Date endTime;
+
+    @Column(nullable = false)
     private double price;
+
+    @Column(nullable = false)
     private TermType type;
+
     @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(nullable = false)
     private Report report;
+
+    @Column(nullable = false)
     private int loyaltyPoints;
 
-
-    public Term() {
-    }
-
-    public int getLoyaltyPoints() {
-        return loyaltyPoints;
-    }
-
-    public void setLoyaltyPoints(int loyaltyPoints) {
-        this.loyaltyPoints = loyaltyPoints;
-    }
-
-    public Report getReport() {
-        return report;
-    }
-
-    public void setReport(Report report) {
-        this.report = report;
-    }
-
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
-    public Patient getPatient() {
-        return patient;
-    }
-
-    public void setPatient(Patient patient) {
-        this.patient = patient;
-    }
-
-    public Doctor getDoctor() {
-        return doctor;
-    }
-
-    public void setDoctor(Doctor doctor) {
-        this.doctor = doctor;
-    }
-
-    public Date getStartTime() {
-        return startTime;
-    }
-
-    public void setStartTime(Date startTime) {
-        this.startTime = startTime;
-    }
-
-    public Date getEndTime() {
-        return endTime;
-    }
-
-    public void setEndTime(Date endTime) {
-        this.endTime = endTime;
-    }
-
-    public double getPrice() {
-        return price;
-    }
-
-    public void setPrice(double price) {
-        this.price = price;
-    }
-
-    public TermType getType() {
-        return type;
-    }
-
-    public void setType(TermType type) {
-        this.type = type;
-    }
 }

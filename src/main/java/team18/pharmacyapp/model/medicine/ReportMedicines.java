@@ -1,5 +1,8 @@
 package team18.pharmacyapp.model.medicine;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import team18.pharmacyapp.model.Report;
 import team18.pharmacyapp.model.keys.ReportMedicineId;
 
@@ -7,6 +10,9 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor
 @IdClass(ReportMedicineId.class)
 public class ReportMedicines {
     @Id
@@ -15,50 +21,15 @@ public class ReportMedicines {
     @Id
     @ManyToOne
     private Medicine medicine;
+
+    @Column(nullable = false)
     private int medicineQuantity;
+
+    @Column(nullable = false)
     private Date startDate;
+
+    @Column(nullable = false)
     private Date endDate;
 
-    public ReportMedicines() {
-    }
 
-    public Date getStartDate() {
-        return startDate;
-    }
-
-    public void setStartDate(Date startDate) {
-        this.startDate = startDate;
-    }
-
-    public Date getEndDate() {
-        return endDate;
-    }
-
-    public void setEndDate(Date endDate) {
-        this.endDate = endDate;
-    }
-
-    public Report getReport() {
-        return report;
-    }
-
-    public void setReport(Report report) {
-        this.report = report;
-    }
-
-    public Medicine getMedicine() {
-        return medicine;
-    }
-
-    public void setMedicine(Medicine medicine) {
-        this.medicine = medicine;
-    }
-
-    public int getMedicineQuantity() {
-        return medicineQuantity;
-    }
-
-    public void setMedicineQuantity(int medicineQuantity) {
-        this.medicineQuantity = medicineQuantity;
-    }
 }

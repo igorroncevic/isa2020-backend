@@ -1,14 +1,17 @@
 package team18.pharmacyapp.model.medicine;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import team18.pharmacyapp.model.PurchaseOrder;
 import team18.pharmacyapp.model.keys.PurchaseOrderMedicineId;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.IdClass;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor
 @IdClass(PurchaseOrderMedicineId.class)
 public class PurchaseOrderMedicine {
     @Id
@@ -17,32 +20,8 @@ public class PurchaseOrderMedicine {
     @Id
     @ManyToOne
     private Medicine medicine;
+
+    @Column(nullable = false)
     private int quantity;
 
-    public PurchaseOrderMedicine() {
-    }
-
-    public PurchaseOrder getPurchaseOrder() {
-        return purchaseOrder;
-    }
-
-    public void setPurchaseOrder(PurchaseOrder purchaseOrder) {
-        this.purchaseOrder = purchaseOrder;
-    }
-
-    public Medicine getMedicine() {
-        return medicine;
-    }
-
-    public void setMedicine(Medicine medicine) {
-        this.medicine = medicine;
-    }
-
-    public int getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
-    }
 }

@@ -1,5 +1,8 @@
 package team18.pharmacyapp.model.medicine;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 import team18.pharmacyapp.model.users.Patient;
 
@@ -9,6 +12,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Entity
+@Getter @Setter @NoArgsConstructor
 public class EPrescription {
     @Id
     @GeneratedValue(generator = "UUID")
@@ -16,45 +20,15 @@ public class EPrescription {
             name = "UUID",strategy = "org.hibernate.id.UUIDGenerator"
     )
     private UUID id;
-    @ManyToOne
+
+    @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    @JoinColumn(nullable = false)
     private Patient patient;
+
+    @Column(nullable = false)
     private Date issueDate;
 
-    @OneToMany(mappedBy = "ePrescription")
+    @OneToMany(mappedBy = "ePrescription",cascade = CascadeType.ALL)
     private List<EPrescriptionMedicines> ePrescriptionMedicines;
 
-    public EPrescription() {
-    }
-
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
-    public Patient getPatient() {
-        return patient;
-    }
-
-    public void setPatient(Patient patient) {
-        this.patient = patient;
-    }
-
-    public Date getIssueDate() {
-        return issueDate;
-    }
-
-    public void setIssueDate(Date issueDate) {
-        this.issueDate = issueDate;
-    }
-
-    public List<EPrescriptionMedicines> getePresciptionMedicines() {
-        return ePrescriptionMedicines;
-    }
-
-    public void setePresciptionMedicines(List<EPrescriptionMedicines> ePrescriptionMedicines) {
-        this.ePrescriptionMedicines = ePrescriptionMedicines;
-    }
 }

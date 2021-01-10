@@ -1,5 +1,8 @@
 package team18.pharmacyapp.model;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 import team18.pharmacyapp.model.medicine.PharmacyMedicines;
 import team18.pharmacyapp.model.users.Patient;
@@ -9,6 +12,9 @@ import javax.persistence.*;
 import java.util.List;
 import java.util.UUID;
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor
 public class Pharmacy {
     @Id
     @GeneratedValue(generator = "UUID")
@@ -17,28 +23,29 @@ public class Pharmacy {
     )
     private UUID id;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(nullable = false)
     private  Address address;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     private List<Promotion> promotions;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     private List<Patient> subscribedPatients;
 
-    @OneToMany(mappedBy = "pharmacy")
+    @OneToMany(mappedBy = "pharmacy",cascade = CascadeType.ALL)
     private List<Complaint> complaints;
 
-    @OneToMany(mappedBy = "pharmacy")
+    @OneToMany(mappedBy = "pharmacy",cascade = CascadeType.ALL)
     private List<PharmacyAdmin> admins;
 
-    @OneToMany(mappedBy = "pharmacy")
+    @OneToMany(mappedBy = "pharmacy",cascade = CascadeType.ALL)
     private List<Mark> marks;
 
-    @OneToMany(mappedBy = "pharmacy")
+    @OneToMany(mappedBy = "pharmacy",cascade = CascadeType.ALL)
     private List<WorkSchedule> workSchedules;
 
-    @OneToMany(mappedBy = "pharmacy")
+    @OneToMany(mappedBy = "pharmacy",cascade = CascadeType.ALL)
     private List<PharmacyMedicines> pharmacyMedicines;
 
 
