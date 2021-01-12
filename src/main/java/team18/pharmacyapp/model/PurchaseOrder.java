@@ -20,7 +20,7 @@ public class PurchaseOrder {
     @Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(
-            name = "UUID",strategy = "org.hibernate.id.UUIDGenerator"
+            name = "UUID", strategy = "org.hibernate.id.UUIDGenerator"
     )
     private UUID id;
 
@@ -31,10 +31,10 @@ public class PurchaseOrder {
     @Column(nullable = false)
     private Date endDate;
 
-    @OneToMany(mappedBy = "purchaseOrder",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "purchaseOrder", cascade = CascadeType.ALL)
     private List<PurchaseOrderMedicine> purchaseOrderMedicines;
 
-    @OneToMany(mappedBy = "purchaseOrder",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "purchaseOrder", cascade = CascadeType.ALL)
     private List<SupplierPurchaseOrder> supplierPurchaseOrders;
 
 }

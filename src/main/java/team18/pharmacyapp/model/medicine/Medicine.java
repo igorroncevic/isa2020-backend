@@ -19,10 +19,9 @@ public class Medicine {
     @Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(
-            name = "UUID",strategy = "org.hibernate.id.UUIDGenerator"
+            name = "UUID", strategy = "org.hibernate.id.UUIDGenerator"
     )
     private UUID id;
-
 
 
     @OneToMany(mappedBy = "medicine")

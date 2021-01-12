@@ -17,7 +17,7 @@ public class Promotion {
     @Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(
-            name = "UUID",strategy = "org.hibernate.id.UUIDGenerator"
+            name = "UUID", strategy = "org.hibernate.id.UUIDGenerator"
     )
     private UUID id;
 

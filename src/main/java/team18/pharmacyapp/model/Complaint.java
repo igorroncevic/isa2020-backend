@@ -1,6 +1,5 @@
 package team18.pharmacyapp.model;
 
-import com.sun.istack.Nullable;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -19,7 +18,7 @@ public class Complaint {
     @Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(
-            name = "UUID",strategy = "org.hibernate.id.UUIDGenerator"
+            name = "UUID", strategy = "org.hibernate.id.UUIDGenerator"
     )
     private UUID id;
 
@@ -36,7 +35,6 @@ public class Complaint {
     @Column(nullable = false)
     private String complaintText;
     private String adminResponse;
-
 
 
 }

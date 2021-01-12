@@ -5,5 +5,5 @@ import team18.pharmacyapp.model.users.User;
 
 import java.util.UUID;
 
-public interface UserRepository extends JpaRepository <User, UUID> {
+public interface UserRepository extends JpaRepository<User, UUID> {
 }

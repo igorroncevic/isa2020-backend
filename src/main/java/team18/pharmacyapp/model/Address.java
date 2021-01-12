@@ -4,10 +4,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
-import team18.pharmacyapp.model.users.User;
 
-import javax.persistence.*;
-import java.util.List;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import java.util.UUID;
 
 @Entity
@@ -18,7 +19,7 @@ public class Address {
     @Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(
-            name = "UUID",strategy = "org.hibernate.id.UUIDGenerator"
+            name = "UUID", strategy = "org.hibernate.id.UUIDGenerator"
     )
     private UUID id;
     @Column(nullable = false)

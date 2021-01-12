@@ -18,11 +18,11 @@ public class Report {
     @Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(
-            name = "UUID",strategy = "org.hibernate.id.UUIDGenerator"
+            name = "UUID", strategy = "org.hibernate.id.UUIDGenerator"
     )
     private UUID id;
 
-    @OneToMany(mappedBy = "report",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "report", cascade = CascadeType.ALL)
     private List<ReportMedicines> reportMedicines;
 
     @Column(nullable = false)

@@ -16,10 +16,12 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public List<User> findAll(){ return userRepository.findAll(); }
+    public List<User> findAll() {
+        return userRepository.findAll();
+    }
 
-    public void addUser(){
-        User u=new User();
+    public void addUser() {
+        User u = new User();
         u.setName("Nikola");
         userRepository.save(u);
     }

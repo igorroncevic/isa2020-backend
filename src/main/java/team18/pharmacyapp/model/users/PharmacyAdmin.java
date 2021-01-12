@@ -15,10 +15,10 @@ import java.util.List;
 @NoArgsConstructor
 public class PharmacyAdmin extends User {
 
-    @OneToMany(mappedBy = "pharmacyAdmin",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "pharmacyAdmin", cascade = CascadeType.ALL)
     private List<PurchaseOrder> purchaseOrders;
 
-    @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(nullable = false)
     private Pharmacy pharmacy;
 }

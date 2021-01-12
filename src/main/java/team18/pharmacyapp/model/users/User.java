@@ -21,7 +21,7 @@ public class User {
     @Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(
-           name = "UUID",strategy = "org.hibernate.id.UUIDGenerator"
+            name = "UUID", strategy = "org.hibernate.id.UUIDGenerator"
     )
     protected UUID id;
 
@@ -31,7 +31,7 @@ public class User {
     @Column(nullable = false)
     protected String surname;
 
-    @Column(nullable = false,unique = true)
+    @Column(nullable = false, unique = true)
     protected String email;
 
     @Column(nullable = false)
@@ -42,7 +42,7 @@ public class User {
 
     @ManyToOne
     @JsonIgnore
-    @JoinColumn(name="fk_address",referencedColumnName ="id")
+    @JoinColumn(name = "fk_address", referencedColumnName = "id")
     protected Address address;
 
 }

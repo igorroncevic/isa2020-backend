@@ -18,14 +18,14 @@ public class Pricings {
     @Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(
-            name = "UUID",strategy = "org.hibernate.id.UUIDGenerator"
+            name = "UUID", strategy = "org.hibernate.id.UUIDGenerator"
     )
     private UUID id;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumns({
-            @JoinColumn(nullable = false,referencedColumnName = "medicine_id"),
-            @JoinColumn(nullable = false,referencedColumnName = "pharmacy_id"),
+            @JoinColumn(nullable = false, referencedColumnName = "medicine_id"),
+            @JoinColumn(nullable = false, referencedColumnName = "pharmacy_id"),
     })
     private PharmacyMedicines pharmacyMedicine;
 
