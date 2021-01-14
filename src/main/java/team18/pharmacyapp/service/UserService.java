@@ -3,7 +3,7 @@ package team18.pharmacyapp.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import team18.pharmacyapp.model.users.User;
-import team18.pharmacyapp.repository.UserRepository;
+import team18.pharmacyapp.repository.interfaces.UserRepository;
 
 import java.util.List;
 
