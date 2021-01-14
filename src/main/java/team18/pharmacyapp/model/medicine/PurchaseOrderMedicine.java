@@ -15,10 +15,10 @@ import javax.persistence.*;
 @IdClass(PurchaseOrderMedicineId.class)
 public class PurchaseOrderMedicine {
     @Id
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private PurchaseOrder purchaseOrder;
     @Id
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Medicine medicine;
 
     @Column(nullable = false)

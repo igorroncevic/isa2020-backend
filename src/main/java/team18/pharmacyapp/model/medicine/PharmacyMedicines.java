@@ -17,10 +17,10 @@ import java.util.List;
 @IdClass(PharmacyMedicinesId.class)
 public class PharmacyMedicines {
     @Id
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Pharmacy pharmacy;
     @Id
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Medicine medicine;
 
     @Column(nullable = false)

@@ -16,10 +16,10 @@ import java.util.Date;
 @IdClass(ReportMedicineId.class)
 public class ReportMedicines {
     @Id
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Report report;
     @Id
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Medicine medicine;
 
     @Column(nullable = false)

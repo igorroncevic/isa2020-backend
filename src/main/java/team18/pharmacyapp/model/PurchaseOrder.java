@@ -24,7 +24,7 @@ public class PurchaseOrder {
     )
     private UUID id;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(nullable = false)
     private PharmacyAdmin pharmacyAdmin;
 
