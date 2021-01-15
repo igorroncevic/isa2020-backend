@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import team18.pharmacyapp.model.Term;
 import team18.pharmacyapp.model.dtos.TermDTO;
-import team18.pharmacyapp.repository.interfaces.TermRepository;
+import team18.pharmacyapp.repository.TermRepository;
 
 import java.util.List;
 import java.util.UUID;
