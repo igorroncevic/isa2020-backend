@@ -19,7 +19,7 @@ public class TermService {
     }
 
     public List<Term>findAll(){
-        return termRepository.findAll();
+        return termRepository.findAllCustom();
     }
 
     public Term save(Term term){
@@ -32,11 +32,7 @@ public class TermService {
 
     public boolean patientScheduleCheckup(TermDTO term){
         int rowsUpdated = termRepository.patientScheduleCheckup(term.getPatient_id(), term.getId());
-        if (rowsUpdated != 1){
-            return false;
-        }
-        return true;
+        return rowsUpdated == 1;
     }
-
 
 }
