@@ -42,6 +42,7 @@ public class Term {
     private double price;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private TermType type;
 
     @OneToOne(cascade = CascadeType.ALL)

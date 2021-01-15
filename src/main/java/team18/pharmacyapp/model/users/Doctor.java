@@ -17,6 +17,7 @@ import java.util.List;
 public class Doctor extends User implements Serializable {
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private DoctorRole doctorRole;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "doctor")
