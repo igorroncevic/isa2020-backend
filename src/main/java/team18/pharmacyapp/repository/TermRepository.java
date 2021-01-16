@@ -13,7 +13,7 @@ import java.util.UUID;
 public interface TermRepository extends JpaRepository<Term, UUID> {
     @Transactional
     @Modifying
-    @Query(nativeQuery = true, value = "UPDATE term SET patient_id = :patientId WHERE id = :termId")
+    @Query(nativeQuery = true, value = "UPDATE term SET patient_id = :patientId WHERE id = :termId AND patient_id IS NULL")
     int patientScheduleCheckup(@Param("patientId") UUID patientId, @Param("termId") UUID termId);
 
     @Transactional(readOnly = true)
