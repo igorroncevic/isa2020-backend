@@ -31,7 +31,7 @@ public class TermService {
     }
 
     public boolean patientScheduleCheckup(ScheduleTermDTO term) {
-        int rowsUpdated = termRepository.patientScheduleCheckup(term.getPatient_id(), term.getId());
+        int rowsUpdated = termRepository.patientScheduleCheckup(term.getPatientId(), term.getTermId());
         return rowsUpdated == 1;
     }
 
