@@ -5,30 +5,30 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import team18.pharmacyapp.model.Term;
-import team18.pharmacyapp.model.dtos.TermDTO;
+import team18.pharmacyapp.model.dtos.ScheduleTermDTO;
 import team18.pharmacyapp.service.TermService;
 
 import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping(value="api/terms")
+@RequestMapping(value = "api/terms")
 public class TermController {
     @Autowired
     private TermService termService;
 
     @GetMapping
-    public ResponseEntity<List<Term>>getAllTerms(){
+    public ResponseEntity<List<Term>> getAllTerms() {
         List<Term> terms = termService.findAll();
 
         return new ResponseEntity<>(terms, HttpStatus.OK);
     }
 
-    @GetMapping(value="/{id}")
-    public ResponseEntity<Term>getTerm(@PathVariable UUID id){
+    @GetMapping(value = "/{id}")
+    public ResponseEntity<Term> getTerm(@PathVariable UUID id) {
         Term term = termService.findOne(id);
 
-        if(term == null){
+        if (term == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
@@ -73,13 +73,13 @@ public class TermController {
         }
     }
 
-    @PutMapping(consumes = "application/json", value="schedule")
-    public ResponseEntity<Void> patientScheduleCheckup(Term term){
-        boolean success = termService.patientScheduleCheckup(new TermDTO(term));
+    @PutMapping(consumes = "application/json", value = "schedule")
+    public ResponseEntity<Void> patientScheduleCheckup(@RequestBody ScheduleTermDTO term) {
+        boolean success = termService.patientScheduleCheckup(term);
 
-        if(success){
+        if (success) {
             return new ResponseEntity<>(HttpStatus.OK);
-        }else{
+        } else {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }

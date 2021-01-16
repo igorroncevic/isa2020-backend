@@ -11,9 +11,10 @@ import java.util.List;
 import java.util.UUID;
 
 public interface TermRepository extends JpaRepository<Term, UUID> {
+    @Transactional
     @Modifying
     @Query(nativeQuery = true, value = "UPDATE term SET patient_id = :patient_id WHERE id = :id")
-    int patientScheduleCheckup(@Param("patient_id")UUID patient_id, @Param("id") UUID term_id);
+    int patientScheduleCheckup(@Param("patient_id") UUID patient_id, @Param("id") UUID term_id);
 
     @Transactional(readOnly = true)
     @Query(value = "SELECT t FROM term t JOIN FETCH t.doctor d")
