@@ -1,5 +1,6 @@
 package team18.pharmacyapp.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -25,7 +26,7 @@ public class Term {
     private UUID id;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(nullable = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private Patient patient;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -46,7 +47,7 @@ public class Term {
     private TermType type;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(nullable = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private Report report;
 
     @Column(nullable = false)
