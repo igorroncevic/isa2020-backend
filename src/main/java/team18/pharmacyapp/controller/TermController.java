@@ -11,6 +11,7 @@ import team18.pharmacyapp.service.TermService;
 import java.util.List;
 import java.util.UUID;
 
+@CrossOrigin(origins = "http://localhost:8080")
 @RestController
 @RequestMapping(value = "api/terms")
 public class TermController {
