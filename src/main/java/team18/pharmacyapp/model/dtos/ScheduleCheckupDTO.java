@@ -10,6 +10,6 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 public class ScheduleCheckupDTO {
-    private UUID termId;
+    private UUID checkupId;
     private UUID patientId;
 }

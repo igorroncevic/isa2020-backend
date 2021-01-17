@@ -14,6 +14,8 @@ public interface CheckupService {
 
     List<Term> findAllAvailableCheckups();
 
+    List<Term> findAllPatientsCheckups(UUID patientId);
+
     Term save(Term term);
 
     void deleteById(UUID id);

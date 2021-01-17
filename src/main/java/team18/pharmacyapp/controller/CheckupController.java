@@ -28,6 +28,13 @@ public class CheckupController {
         return new ResponseEntity<>(checkups, HttpStatus.OK);
     }
 
+    @GetMapping("/patient/{id}")
+    public ResponseEntity<List<Term>> getAllPatientsCheckups(@PathVariable UUID id) {
+        List<Term> checkups = checkupService.findAllPatientsCheckups(id);
+
+        return new ResponseEntity<>(checkups, HttpStatus.OK);
+    }
+
     @GetMapping(value = "/{id}")
     public ResponseEntity<Term> getCheckup(@PathVariable UUID id) {
         Term checkup = checkupService.findOne(id);

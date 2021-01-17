@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 import team18.pharmacyapp.model.Term;
 import team18.pharmacyapp.model.enums.TermType;
+import team18.pharmacyapp.model.users.Patient;
 
 import java.util.Date;
 import java.util.List;
@@ -19,15 +20,19 @@ public interface CheckupRepository extends JpaRepository<Term, UUID> {
 
     @Transactional
     @Modifying
-    @Query(nativeQuery = true, value = "UPDATE term SET patient_id = :patientId WHERE id = :termId AND patient_id IS NULL")
-    int patientScheduleCheckup(@Param("patientId") UUID patientId, @Param("termId") UUID termId);
+    @Query(nativeQuery = true, value = "UPDATE term SET patient_id = :patientId WHERE id = :checkupId AND patient_id IS NULL")
+    int patientScheduleCheckup(@Param("patientId") UUID patientId, @Param("checkupId") UUID checkupId);
 
     @Transactional
     @Modifying
-    @Query(nativeQuery = true, value = "UPDATE term SET patient_id = NULL WHERE id = :termId")
-    int patientCancelCheckup(@Param("termId") UUID termId);
+    @Query(nativeQuery = true, value = "UPDATE term SET patient_id = NULL WHERE id = :checkupId")
+    int patientCancelCheckup(@Param("checkupId") UUID checkupId);
 
     @Transactional(readOnly = true)
     @Query(value = "SELECT t FROM term t JOIN FETCH t.doctor d WHERE t.type = :termType")
     List<Term> findAll(@Param("termType") TermType termType);
+
+    @Transactional(readOnly = true)
+    @Query(value = "SELECT t FROM term t JOIN FETCH t.doctor JOIN FETCH t.patient WHERE t.type = :termType AND t.patient.id = :patientId")
+    List<Term> findAllPatientsCheckups(@Param("patientId") UUID patientId, @Param("termType") TermType termType);
 }

@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import team18.pharmacyapp.model.Term;
 import team18.pharmacyapp.model.dtos.ScheduleCheckupDTO;
 import team18.pharmacyapp.model.enums.TermType;
+import team18.pharmacyapp.model.users.Patient;
 import team18.pharmacyapp.repository.CheckupRepository;
 import team18.pharmacyapp.service.interfaces.CheckupService;
 
@@ -32,6 +33,11 @@ public class CheckupServiceImpl implements CheckupService {
         return checkupRepository.findAllAvailableCheckups(todaysDate, TermType.checkup);
     }
 
+    @Override
+    public List<Term> findAllPatientsCheckups(UUID patientId) {
+        return checkupRepository.findAllPatientsCheckups(patientId, TermType.checkup);
+    }
+
     public Term save(Term term) {
         return checkupRepository.save(term);
     }
@@ -43,7 +49,7 @@ public class CheckupServiceImpl implements CheckupService {
     public boolean patientScheduleCheckup(ScheduleCheckupDTO term) {
         Term checkTerm;
         try {
-            checkTerm = checkupRepository.findById(term.getTermId()).orElseThrow(null);
+            checkTerm = checkupRepository.findById(term.getCheckupId()).orElseThrow(null);
         } catch(Exception e) {
             return false;
         }
@@ -52,14 +58,14 @@ public class CheckupServiceImpl implements CheckupService {
         if(checkTerm.getStartTime().before(today)){
             return false;
         }
-        int rowsUpdated = checkupRepository.patientScheduleCheckup(term.getPatientId(), term.getTermId());
+        int rowsUpdated = checkupRepository.patientScheduleCheckup(term.getPatientId(), term.getCheckupId());
         return rowsUpdated == 1;
     }
 
     public boolean patientCancelCheckup(ScheduleCheckupDTO term) {
         Term checkTerm;
         try {
-            checkTerm = checkupRepository.findById(term.getTermId()).orElseThrow(null);
+            checkTerm = checkupRepository.findById(term.getCheckupId()).orElseThrow(null);
         } catch(Exception e) {
             return false;
         }
@@ -69,7 +75,7 @@ public class CheckupServiceImpl implements CheckupService {
             return false;
         }
 
-        int rowsUpdated = checkupRepository.patientCancelCheckup(term.getTermId());
+        int rowsUpdated = checkupRepository.patientCancelCheckup(term.getCheckupId());
         return rowsUpdated == 1;
     }
 
