@@ -52,8 +52,11 @@ insert into term (id, doctor_id, start_time, end_time, price, "type", loyalty_po
 values ('0988b5b2-1d09-47ad-ace7-45282f11e24b', 'a5ac174a-45b3-487f-91cb-3d3f727d6f1c', '2021-02-28 13:05:00',
         '2021-02-28 13:15:00', 12, 'checkup', 5, null, null);
 insert into term (id, doctor_id, start_time, end_time, price, "type", loyalty_points, report_id, patient_id)
-values ('43501e13-caf6-4d98-a69a-db0178c582e9', '1accde09-0aa2-4ea1-9a38-17f4635198b9', '2021-02-28 13:15:00',
-        '2021-02-28 13:35:00', 19, 'checkup', 8, null, null);
+values ('43501e13-caf6-4d98-a69a-db0178c582e9', '1accde09-0aa2-4ea1-9a38-17f4635198b9', '2021-01-18 13:15:00',
+        '2021-01-18 13:35:00', 19, 'checkup', 8, null, null);
 insert into term (id, doctor_id, start_time, end_time, price, "type", loyalty_points, report_id, patient_id)
 values ('ebec212e-5ff8-45f8-8411-82d6ac3b69a6', '1accde09-0aa2-4ea1-9a38-17f4635198b9', '2021-02-28 13:35:00',
         '2021-02-28 14:00:00', 19, 'counseling', 8, null, null);
+insert into term (id, doctor_id, start_time, end_time, price, "type", loyalty_points, report_id, patient_id)
+values ('bef34914-aaab-4c7d-8ef5-c2844eb33d6d', '1accde09-0aa2-4ea1-9a38-17f4635198b9', '2021-01-15 13:15:00',
+        '2021-01-15 13:35:00', 19, 'checkup', 8, null, null);

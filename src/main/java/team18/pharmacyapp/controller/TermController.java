@@ -96,9 +96,20 @@ public class TermController {
         }
     }
 
-    @PutMapping(consumes = "application/json", value = "schedule")
+    @PutMapping(consumes = "application/json", value = "checkup/schedule")
     public ResponseEntity<Void> patientScheduleCheckup(@RequestBody ScheduleTermDTO term) {
         boolean success = termService.patientScheduleCheckup(term);
+
+        if (success) {
+            return new ResponseEntity<>(HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PutMapping(consumes = "application/json", value = "checkup/cancel")
+    public ResponseEntity<Void> patientCancelCheckup(@RequestBody ScheduleTermDTO term) {
+        boolean success = termService.patientCancelCheckup(term);
 
         if (success) {
             return new ResponseEntity<>(HttpStatus.OK);

@@ -22,4 +22,6 @@ public interface TermService {
 
     boolean patientScheduleCheckup(ScheduleTermDTO term);
 
+    boolean patientCancelCheckup(ScheduleTermDTO term);
+
 }
