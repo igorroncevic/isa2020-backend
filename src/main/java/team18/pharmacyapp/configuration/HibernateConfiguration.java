@@ -1,8 +1,8 @@
 package team18.pharmacyapp.configuration;
 
+import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;
 
 /*
  * Koristi se za razrijesavanje cirkularnih JSON-a. Automatski postavlja sve reference na NULL, ali ih mi mozemo

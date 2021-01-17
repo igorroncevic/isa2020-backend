@@ -6,21 +6,43 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import team18.pharmacyapp.model.Term;
 import team18.pharmacyapp.model.dtos.ScheduleTermDTO;
-import team18.pharmacyapp.service.TermService;
+import team18.pharmacyapp.model.enums.TermType;
+import team18.pharmacyapp.service.interfaces.TermService;
 
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @CrossOrigin(origins = "http://localhost:8080")
 @RestController
 @RequestMapping(value = "api/terms")
 public class TermController {
-    @Autowired
-    private TermService termService;
+    private final TermService termService;
+    private Set possibleTypes;
+    private final String defaultTermType;
 
-    @GetMapping
-    public ResponseEntity<List<Term>> getAllTerms() {
-        List<Term> terms = termService.findAll();
+    @Autowired
+    public TermController(TermService termService) {
+        this.termService = termService;
+
+        this.defaultTermType = "def";
+
+        this.possibleTypes = new HashSet();
+        this.possibleTypes.add(TermType.checkup.toString());
+        this.possibleTypes.add(TermType.counseling.toString());
+        this.possibleTypes.add(defaultTermType);  // ako nije poslat type, ovo je default vrijednost
+    }
+
+    @GetMapping("/schedule")
+    public ResponseEntity<List<Term>> getAllAvailableTerms(@RequestParam(name="type", defaultValue = "def", required = false) String type) {
+        if (!possibleTypes.contains(type.toLowerCase()))
+            return new ResponseEntity<>(new ArrayList<>(), HttpStatus.BAD_REQUEST);
+
+        List<Term> terms;
+
+        if (type.equalsIgnoreCase(defaultTermType))
+            terms = termService.findAllAvailableTerms();
+        else
+            terms = termService.findAllAvailableTermsByType(TermType.valueOf(type.toLowerCase()));
+
 
         return new ResponseEntity<>(terms, HttpStatus.OK);
     }
