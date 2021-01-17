@@ -12,15 +12,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-public interface TermRepository extends JpaRepository<Term, UUID> {
-
+public interface CheckupRepository extends JpaRepository<Term, UUID> {
     @Transactional(readOnly = true)
-    @Query(value = "SELECT t FROM term t JOIN FETCH t.doctor d WHERE t.type = :termType AND t.patient IS NULL AND t.startTime > :todaysDate")
-    List<Term> findAllAvailableTermsByType(@Param("termType") TermType termType, @Param("todaysDate") Date todaysDate);
-
-    @Transactional(readOnly = true)
-    @Query(value = "SELECT t FROM term t JOIN FETCH t.doctor d WHERE t.patient IS NULL AND t.startTime > :todaysDate")
-    List<Term> findAllAvailableTerms(@Param("todaysDate") Date todaysDate);
+    @Query(value = "SELECT t FROM term t JOIN FETCH t.doctor d WHERE t.patient IS NULL AND t.startTime > :todaysDate AND t.type = :termType")
+    List<Term> findAllAvailableCheckups(@Param("todaysDate") Date todaysDate, @Param("termType") TermType termType);
 
     @Transactional
     @Modifying
@@ -33,6 +28,6 @@ public interface TermRepository extends JpaRepository<Term, UUID> {
     int patientCancelCheckup(@Param("termId") UUID termId);
 
     @Transactional(readOnly = true)
-    @Query(value = "SELECT t FROM term t JOIN FETCH t.doctor d")
-    List<Term> findAll();
+    @Query(value = "SELECT t FROM term t JOIN FETCH t.doctor d WHERE t.type = :termType")
+    List<Term> findAll(@Param("termType") TermType termType);
 }
