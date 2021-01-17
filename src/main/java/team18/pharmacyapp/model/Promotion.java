@@ -27,7 +27,7 @@ public class Promotion {
     @Column(nullable = false)
     private Date endDate;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(nullable = false)
     private Pharmacy pharmacy;
 

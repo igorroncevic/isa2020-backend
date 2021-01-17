@@ -16,7 +16,6 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @Inheritance(strategy = InheritanceType.JOINED)
-@Table(name = "users")
 public class User {
     @Id
     @GeneratedValue(generator = "UUID")
@@ -35,9 +34,11 @@ public class User {
     protected String email;
 
     @Column(nullable = false)
+    @JsonIgnore
     protected String password;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     protected UserRole role;
 
     @ManyToOne

@@ -1,5 +1,6 @@
 package team18.pharmacyapp.model.users;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -30,20 +31,22 @@ public class Patient extends User {
     private int penalties;
 
     @OneToMany(cascade = CascadeType.ALL)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<EPrescription> prescriptions;
 
     @ManyToMany(mappedBy = "subscribedPatients", cascade = CascadeType.ALL)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<Pharmacy> subscribedPharmacies;
 
     @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<Complaint> complaints;
 
     @ManyToOne(cascade = CascadeType.ALL)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     @JoinColumn(nullable = false)
     private Loyalty loyalty;
 
     @Column(nullable = false)
     private int loyaltyPoints;
-
-
 }

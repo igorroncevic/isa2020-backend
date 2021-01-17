@@ -29,7 +29,7 @@ public class Vacation {
     @Column(nullable = false)
     private Date endDate;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(nullable = false)
     @JsonIgnore
     private Doctor doctor;
