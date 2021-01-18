@@ -68,7 +68,12 @@ public class MedicineController {
 
     @PostMapping(consumes = "application/json", value = "/reserve")
     public ResponseEntity<Void> reserveMedicine(@RequestBody ReserveMedicineRequestDTO medicine) {
-        boolean success = medicineService.reserveMedicine(medicine);
+        boolean success = false;
+         try{
+            success = medicineService.reserveMedicine(medicine);
+         }catch(RuntimeException e){
+             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+         }
 
         if (success) {
             return new ResponseEntity<>(HttpStatus.OK);

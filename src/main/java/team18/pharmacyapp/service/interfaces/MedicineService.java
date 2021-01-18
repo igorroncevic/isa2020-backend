@@ -15,6 +15,6 @@ public interface MedicineService {
     Medicine findById(UUID id);
     void deleteById(UUID id);
     List<ReservedMedicineDTO> findAllPatientsReservedMedicines(UUID id);
-    boolean reserveMedicine(ReserveMedicineRequestDTO reserveMedicineRequestDTO);
+    boolean reserveMedicine(ReserveMedicineRequestDTO reserveMedicineRequestDTO) throws RuntimeException ;
     boolean cancelMedicine(ReserveMedicineRequestDTO reserveMedicineRequestDTO);
 }

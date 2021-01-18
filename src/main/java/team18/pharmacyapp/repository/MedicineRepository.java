@@ -27,8 +27,9 @@ public interface MedicineRepository extends JpaRepository<Medicine, UUID> {
 
     @Transactional
     @Modifying
-    @Query(nativeQuery = true, value = "INSERT INTO reserved_medicines(patient_id, pharmacy_id, medicine_id, pickup_date) VALUES (:patientId, :pharmacyId, :medicineId, :pickupDate) ")
-    int reserveMedicine(@Param("patientId") UUID patientId, @Param("pharmacyId")  UUID pharmacyId, @Param("medicineId") UUID medicineId, @Param("pickupDate") Date pickupDate);
+    @Query(nativeQuery = true, value = "INSERT INTO reserved_medicines(id, patient_id, pharmacy_id, medicine_id, pickup_date) " +
+            "VALUES (:id, :patientId, :pharmacyId, :medicineId, :pickupDate) ")
+    int reserveMedicine(@Param("id")UUID id, @Param("patientId") UUID patientId, @Param("pharmacyId")  UUID pharmacyId, @Param("medicineId") UUID medicineId, @Param("pickupDate") Date pickupDate);
 
     @Transactional
     @Modifying
