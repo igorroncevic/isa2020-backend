@@ -4,9 +4,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import team18.pharmacyapp.model.Pricings;
 import team18.pharmacyapp.model.dtos.PharmacyMedicinesDTO;
-import team18.pharmacyapp.model.dtos.ReserveMedicineDTO;
+import team18.pharmacyapp.model.dtos.ReservedMedicineDTO;
+import team18.pharmacyapp.model.dtos.ReserveMedicineRequestDTO;
 import team18.pharmacyapp.model.medicine.Medicine;
 import team18.pharmacyapp.model.medicine.PharmacyMedicines;
+import team18.pharmacyapp.model.users.Patient;
 import team18.pharmacyapp.repository.MedicineRepository;
 import team18.pharmacyapp.service.interfaces.MedicineService;
 
@@ -76,17 +78,44 @@ public class MedicineServiceImpl implements MedicineService {
     }
 
     @Override
-    public List<Medicine> findAllPatientsReservedMedicines(UUID id) {
-        return null;
+    public List<ReservedMedicineDTO> findAllPatientsReservedMedicines(UUID id) {
+        Patient patient = new Patient();
+        patient.setId(id);
+        List<ReservedMedicineDTO> reservedMedicines = medicineRepository.findAllPatientsReservedMedicines(patient);
+        List<ReservedMedicineDTO> resultSet = new ArrayList<>();
+
+        for(ReservedMedicineDTO rmDTO : reservedMedicines) {
+            List<Pricings> pricings = rmDTO.getPricings();
+            double finalPrice = -1.0;
+
+            for(Pricings pricing : pricings){
+                if(pricing.getStartDate().before(rmDTO.getPickupDate()) && pricing.getEndDate().after(rmDTO.getPickupDate())){
+                    finalPrice = pricing.getPrice();
+                    break;
+                }
+            }
+
+            if(finalPrice == -1.0) continue;
+
+            ReservedMedicineDTO finalRmDTO = new ReservedMedicineDTO();
+            finalRmDTO.setMedicine(rmDTO.getMedicine());
+            finalRmDTO.setPharmacy(rmDTO.getPharmacy());
+            finalRmDTO.setPrice(finalPrice);
+            finalRmDTO.setPickupDate(rmDTO.getPickupDate());
+
+            resultSet.add(finalRmDTO);
+        }
+
+        return resultSet;
     }
 
     @Override
-    public boolean reserveMedicine(ReserveMedicineDTO reserveMedicineDTO) {
+    public boolean reserveMedicine(ReserveMedicineRequestDTO reserveMedicineRequestDTO) {
         return false;
     }
 
     @Override
-    public boolean cancelMedicine(ReserveMedicineDTO reserveMedicineDTO) {
+    public boolean cancelMedicine(ReserveMedicineRequestDTO reserveMedicineRequestDTO) {
         return false;
     }
 }

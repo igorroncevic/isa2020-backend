@@ -10,8 +10,9 @@ import java.util.UUID;
 @Getter
 @Setter
 @NoArgsConstructor
-public class ReserveMedicineDTO {
+public class ReserveMedicineRequestDTO {
     private UUID patient_id;
     private UUID medicine_id;
+    private UUID pharmacy_id;
     private Date pickupDate;
 }

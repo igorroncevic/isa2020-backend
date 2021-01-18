@@ -9,7 +9,7 @@ import team18.pharmacyapp.model.users.Patient;
 import javax.persistence.*;
 import java.util.Date;
 
-@Entity
+@Entity(name="reserved_medicines")
 @Getter
 @Setter
 @NoArgsConstructor

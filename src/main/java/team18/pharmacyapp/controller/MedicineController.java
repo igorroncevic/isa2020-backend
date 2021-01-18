@@ -5,9 +5,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import team18.pharmacyapp.model.dtos.PharmacyMedicinesDTO;
-import team18.pharmacyapp.model.dtos.ReserveMedicineDTO;
+import team18.pharmacyapp.model.dtos.ReserveMedicineRequestDTO;
+import team18.pharmacyapp.model.dtos.ReservedMedicineDTO;
 import team18.pharmacyapp.model.medicine.Medicine;
-import team18.pharmacyapp.model.medicine.PharmacyMedicines;
 import team18.pharmacyapp.service.interfaces.MedicineService;
 
 import java.util.*;
@@ -31,8 +31,8 @@ public class MedicineController {
     }
 
     @GetMapping("/patient/{id}")
-    public ResponseEntity<List<Medicine>> getAllPatientsMedicines(@PathVariable UUID id) {
-        List<Medicine> medicines = medicineService.findAllPatientsReservedMedicines(id);
+    public ResponseEntity<List<ReservedMedicineDTO>> getAllPatientsMedicines(@PathVariable UUID id) {
+        List<ReservedMedicineDTO> medicines = medicineService.findAllPatientsReservedMedicines(id);
 
         return new ResponseEntity<>(medicines, HttpStatus.OK);
     }
@@ -67,7 +67,7 @@ public class MedicineController {
     }
 
     @PutMapping(consumes = "application/json", value = "/schedule")
-    public ResponseEntity<Void> reserveMedicine(@RequestBody ReserveMedicineDTO medicine) {
+    public ResponseEntity<Void> reserveMedicine(@RequestBody ReserveMedicineRequestDTO medicine) {
         boolean success = medicineService.reserveMedicine(medicine);
 
         if (success) {
@@ -78,7 +78,7 @@ public class MedicineController {
     }
 
     @PutMapping(consumes = "application/json", value = "/cancel")
-    public ResponseEntity<Void> cancelMedicine(@RequestBody ReserveMedicineDTO medicine) {
+    public ResponseEntity<Void> cancelMedicine(@RequestBody ReserveMedicineRequestDTO medicine) {
         boolean success = medicineService.cancelMedicine(medicine);
 
         if (success) {
