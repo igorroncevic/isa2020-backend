@@ -2,16 +2,19 @@ package team18.pharmacyapp.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import team18.pharmacyapp.model.Pricings;
 import team18.pharmacyapp.model.dtos.PharmacyMedicinesDTO;
 import team18.pharmacyapp.model.dtos.ReservedMedicineDTO;
 import team18.pharmacyapp.model.dtos.ReserveMedicineRequestDTO;
 import team18.pharmacyapp.model.medicine.Medicine;
 import team18.pharmacyapp.model.medicine.PharmacyMedicines;
+import team18.pharmacyapp.model.medicine.ReservedMedicines;
 import team18.pharmacyapp.model.users.Patient;
 import team18.pharmacyapp.repository.MedicineRepository;
 import team18.pharmacyapp.service.interfaces.MedicineService;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -109,9 +112,20 @@ public class MedicineServiceImpl implements MedicineService {
         return resultSet;
     }
 
+    @Transactional
     @Override
-    public boolean reserveMedicine(ReserveMedicineRequestDTO reserveMedicineRequestDTO) {
-        return false;
+    public boolean reserveMedicine(ReserveMedicineRequestDTO rmrDTO) {
+        int reserved = medicineRepository.reserveMedicine(rmrDTO.getPatient_id(), rmrDTO.getPharmacy_id(), rmrDTO.getMedicine_id(), rmrDTO.getPickupDate());
+        int updateQuantity = medicineRepository.updateMedicineQuantity(rmrDTO.getMedicine_id(), rmrDTO.getPharmacy_id());
+
+        try{
+            if (reserved != 1) throw new SQLException("Medicine wasn't reserved!");
+            if (updateQuantity != 1) throw new SQLException("Medicine quantity wasn't updated!");
+        }catch(Exception e){
+            return false;
+        }
+
+        return true;
     }
 
     @Override

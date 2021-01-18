@@ -3,6 +3,7 @@ package team18.pharmacyapp.model.medicine;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import team18.pharmacyapp.model.Pharmacy;
 import team18.pharmacyapp.model.keys.ReservedMedicinesId;
 import team18.pharmacyapp.model.users.Patient;
 
@@ -21,6 +22,9 @@ public class ReservedMedicines {
     @Id
     @ManyToOne(fetch = FetchType.LAZY)
     private Medicine medicine;
+    @Id
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Pharmacy pharmacy;
 
     private Date pickupDate; // Datum do kog ce pacijent preuzeti lijek
 }

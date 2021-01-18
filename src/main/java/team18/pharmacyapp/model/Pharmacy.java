@@ -1,11 +1,13 @@
 package team18.pharmacyapp.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 import team18.pharmacyapp.model.medicine.PharmacyMedicines;
+import team18.pharmacyapp.model.medicine.ReservedMedicines;
 import team18.pharmacyapp.model.users.Patient;
 import team18.pharmacyapp.model.users.PharmacyAdmin;
 
@@ -34,6 +36,10 @@ public class Pharmacy {
     @OneToMany(cascade = CascadeType.ALL)
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<Promotion> promotions;
+
+    @OneToMany(mappedBy = "pharmacy")
+    @JsonIgnore
+    private List<ReservedMedicines> reservedMedicines;
 
     @ManyToMany(cascade = CascadeType.ALL)
     @JsonInclude(JsonInclude.Include.NON_NULL)

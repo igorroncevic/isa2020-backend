@@ -66,7 +66,7 @@ public class MedicineController {
         }
     }
 
-    @PutMapping(consumes = "application/json", value = "/schedule")
+    @PostMapping(consumes = "application/json", value = "/reserve")
     public ResponseEntity<Void> reserveMedicine(@RequestBody ReserveMedicineRequestDTO medicine) {
         boolean success = medicineService.reserveMedicine(medicine);
 
