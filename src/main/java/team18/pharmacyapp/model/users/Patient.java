@@ -9,6 +9,7 @@ import team18.pharmacyapp.model.Loyalty;
 import team18.pharmacyapp.model.Pharmacy;
 import team18.pharmacyapp.model.medicine.EPrescription;
 import team18.pharmacyapp.model.medicine.Medicine;
+import team18.pharmacyapp.model.medicine.ReservedMedicines;
 
 import javax.persistence.*;
 import java.util.List;
@@ -23,9 +24,8 @@ public class Patient extends User {
     @JoinTable(name = "alergicto", joinColumns = @JoinColumn(name = "patientId", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "medicineId", referencedColumnName = "id"))
     private List<Medicine> alergicMedicines;
 
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "reservedMedicines")
-    private List<Medicine> reservedMedicines;
+    @OneToMany(mappedBy = "patient")
+    private List<ReservedMedicines> reservedMedicines;
 
     @Column(nullable = false)
     private int penalties;

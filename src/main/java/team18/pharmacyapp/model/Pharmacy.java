@@ -1,5 +1,6 @@
 package team18.pharmacyapp.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -24,30 +25,37 @@ public class Pharmacy {
     )
     private UUID id;
 
+    private String name;
+
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(nullable = false)
     private Address address;
 
     @OneToMany(cascade = CascadeType.ALL)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<Promotion> promotions;
 
     @ManyToMany(cascade = CascadeType.ALL)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<Patient> subscribedPatients;
 
     @OneToMany(mappedBy = "pharmacy", cascade = CascadeType.ALL)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<Complaint> complaints;
 
     @OneToMany(mappedBy = "pharmacy", cascade = CascadeType.ALL)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<PharmacyAdmin> admins;
 
     @OneToMany(mappedBy = "pharmacy", cascade = CascadeType.ALL)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<Mark> marks;
 
     @OneToMany(mappedBy = "pharmacy", cascade = CascadeType.ALL)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<WorkSchedule> workSchedules;
 
     @OneToMany(mappedBy = "pharmacy", cascade = CascadeType.ALL)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<PharmacyMedicines> pharmacyMedicines;
-
-
 }

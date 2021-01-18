@@ -1,6 +1,7 @@
 package team18.pharmacyapp.model.medicine;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -11,7 +12,7 @@ import javax.persistence.*;
 import java.util.List;
 import java.util.UUID;
 
-@Entity
+@Entity(name="medicine")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -23,6 +24,11 @@ public class Medicine {
     )
     private UUID id;
 
+    private String name;
+
+    @OneToMany(mappedBy = "medicine")
+    @JsonIgnore
+    private List<ReservedMedicines> reservedMedicines;
 
     @OneToMany(mappedBy = "medicine")
     @JsonIgnore
@@ -41,9 +47,11 @@ public class Medicine {
     private List<PurchaseOrderMedicine> purchaseOrderMedicines;
 
     @OneToMany(mappedBy = "medicine")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<Mark> marks;
 
     @OneToMany(mappedBy = "medicine")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<PharmacyMedicines> pharmacyMedicines;
 
     @Column(nullable = false)
