@@ -10,6 +10,7 @@ import team18.pharmacyapp.model.dtos.ReservedMedicineDTO;
 import team18.pharmacyapp.model.dtos.ReserveMedicineRequestDTO;
 import team18.pharmacyapp.model.medicine.Medicine;
 import team18.pharmacyapp.model.medicine.PharmacyMedicines;
+import team18.pharmacyapp.model.medicine.ReserveMedicineException;
 import team18.pharmacyapp.model.medicine.ReservedMedicines;
 import team18.pharmacyapp.model.users.Patient;
 import team18.pharmacyapp.repository.MedicineRepository;
@@ -114,14 +115,14 @@ public class MedicineServiceImpl implements MedicineService {
         return resultSet;
     }
 
-    @Transactional(rollbackFor = RuntimeException.class)
+    @Transactional(rollbackFor = {RuntimeException.class, ReserveMedicineException.class})
     @Override
-    public boolean reserveMedicine(ReserveMedicineRequestDTO rmrDTO) throws RuntimeException {
+    public boolean reserveMedicine(ReserveMedicineRequestDTO rmrDTO) throws ReserveMedicineException, RuntimeException {
         int reserved = medicineRepository.reserveMedicine(UUID.randomUUID(), rmrDTO.getPatient_id(), rmrDTO.getPharmacy_id(), rmrDTO.getMedicine_id(), rmrDTO.getPickupDate());
         int updateQuantity = medicineRepository.updateMedicineQuantity(rmrDTO.getMedicine_id(), rmrDTO.getPharmacy_id());
 
-        if (reserved != 1) throw new RuntimeException("Medicine wasn't reserved!"); // rollback-ovace transakciju
-        if (updateQuantity != 1) throw new RuntimeException("Medicine quantity wasn't updated!");
+        if (reserved != 1) throw new ReserveMedicineException("Medicine wasn't reserved!"); // rollback-ovace transakciju
+        if (updateQuantity != 1) throw new ReserveMedicineException("Medicine quantity wasn't updated!");
 
         return true;
     }

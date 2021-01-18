@@ -8,6 +8,7 @@ import team18.pharmacyapp.model.dtos.PharmacyMedicinesDTO;
 import team18.pharmacyapp.model.dtos.ReserveMedicineRequestDTO;
 import team18.pharmacyapp.model.dtos.ReservedMedicineDTO;
 import team18.pharmacyapp.model.medicine.Medicine;
+import team18.pharmacyapp.model.medicine.ReserveMedicineException;
 import team18.pharmacyapp.service.interfaces.MedicineService;
 
 import java.util.*;
@@ -68,10 +69,12 @@ public class MedicineController {
 
     @PostMapping(consumes = "application/json", value = "/reserve")
     public ResponseEntity<Void> reserveMedicine(@RequestBody ReserveMedicineRequestDTO medicine) {
-        boolean success = false;
+        boolean success;
          try{
             success = medicineService.reserveMedicine(medicine);
-         }catch(RuntimeException e){
+         }catch(ReserveMedicineException ex){
+             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+         }catch(RuntimeException ex){
              return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
          }
 
