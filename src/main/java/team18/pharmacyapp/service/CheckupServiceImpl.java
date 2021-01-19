@@ -4,7 +4,6 @@ import org.springframework.stereotype.Service;
 import team18.pharmacyapp.model.Term;
 import team18.pharmacyapp.model.dtos.ScheduleCheckupDTO;
 import team18.pharmacyapp.model.enums.TermType;
-import team18.pharmacyapp.model.users.Patient;
 import team18.pharmacyapp.repository.CheckupRepository;
 import team18.pharmacyapp.service.interfaces.CheckupService;
 
@@ -28,7 +27,7 @@ public class CheckupServiceImpl implements CheckupService {
         return checkupRepository.findAll(termType);
     }
 
-    public List<Term> findAllAvailableCheckups(){
+    public List<Term> findAllAvailableCheckups() {
         Date todaysDate = new Date(System.currentTimeMillis() + 60 * 60 * 1000);
         return checkupRepository.findAllAvailableCheckups(todaysDate, TermType.checkup);
     }
@@ -50,12 +49,12 @@ public class CheckupServiceImpl implements CheckupService {
         Term checkTerm;
         try {
             checkTerm = checkupRepository.findById(term.getCheckupId()).orElseThrow(null);
-        } catch(Exception e) {
+        } catch (Exception e) {
             return false;
         }
 
         Date today = new Date(System.currentTimeMillis() - 60 * 1000);
-        if(checkTerm.getStartTime().before(today)){
+        if (checkTerm.getStartTime().before(today)) {
             return false;
         }
         int rowsUpdated = checkupRepository.patientScheduleCheckup(term.getPatientId(), term.getCheckupId());
@@ -66,12 +65,12 @@ public class CheckupServiceImpl implements CheckupService {
         Term checkTerm;
         try {
             checkTerm = checkupRepository.findById(term.getCheckupId()).orElseThrow(null);
-        } catch(Exception e) {
+        } catch (Exception e) {
             return false;
         }
 
         Date yesterday = new Date(System.currentTimeMillis() - 24 * 60 * 60 * 1000);
-        if(checkTerm.getStartTime().before(yesterday)){     // ponedeljak < (ponedeljak - 1)?
+        if (checkTerm.getStartTime().before(yesterday)) {     // ponedeljak < (ponedeljak - 1)?
             return false;
         }
 

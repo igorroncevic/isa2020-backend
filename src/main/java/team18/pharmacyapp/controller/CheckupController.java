@@ -8,7 +8,8 @@ import team18.pharmacyapp.model.Term;
 import team18.pharmacyapp.model.dtos.ScheduleCheckupDTO;
 import team18.pharmacyapp.service.interfaces.CheckupService;
 
-import java.util.*;
+import java.util.List;
+import java.util.UUID;
 
 @CrossOrigin(origins = "http://localhost:8080")
 @RestController

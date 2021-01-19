@@ -7,7 +7,6 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 import team18.pharmacyapp.model.Term;
 import team18.pharmacyapp.model.enums.TermType;
-import team18.pharmacyapp.model.users.Patient;
 
 import java.util.Date;
 import java.util.List;

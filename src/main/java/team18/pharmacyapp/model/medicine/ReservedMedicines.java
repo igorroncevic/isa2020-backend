@@ -11,7 +11,7 @@ import javax.persistence.*;
 import java.util.Date;
 import java.util.UUID;
 
-@Entity(name="reserved_medicines")
+@Entity(name = "reserved_medicines")
 @Getter
 @Setter
 @NoArgsConstructor
