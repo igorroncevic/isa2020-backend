@@ -17,6 +17,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @NoArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class Term {
     @Id
     @GeneratedValue(generator = "UUID")
@@ -26,7 +27,6 @@ public class Term {
     private UUID id;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     private Patient patient;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -47,10 +47,8 @@ public class Term {
     private TermType type;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     private Report report;
 
     @Column(nullable = false)
     private int loyaltyPoints;
-
 }

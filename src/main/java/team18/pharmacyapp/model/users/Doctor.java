@@ -15,6 +15,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class Doctor extends User implements Serializable {
 
     @Column(nullable = false)
@@ -22,22 +23,17 @@ public class Doctor extends User implements Serializable {
     private DoctorRole doctorRole;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "doctor")
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<Vacation> vacations;
 
     @OneToMany(mappedBy = "doctor", cascade = CascadeType.ALL)
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<Term> terms;
 
     @OneToMany(mappedBy = "doctor", cascade = CascadeType.ALL)
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<Complaint> complaints;
 
     @OneToMany(mappedBy = "doctor", cascade = CascadeType.ALL)
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<Mark> marks;
 
     @OneToMany(mappedBy = "doctor", cascade = CascadeType.ALL)
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<WorkSchedule> workSchedules;
 }
