@@ -36,4 +36,6 @@ public class ReservedMedicines {
     private Pharmacy pharmacy;
 
     private Date pickupDate; // Datum do kog ce pacijent preuzeti lijek
+
+    private boolean handled; // ako je pacijent pokupio lijek ili je dobio penal, bice true
 }

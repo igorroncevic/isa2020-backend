@@ -122,5 +122,5 @@ insert into pricings (id, start_date, end_date, price, pharmacy_medicine_pharmac
 values ('d5397940-cafe-4f4d-865d-678cddadd07f', '2021-01-01 00:00:01', '2022-01-01 00:00:01', 21, 'e93cab4a-f007-412c-b631-7a9a5ee2c6ed', '659d0931-63d9-4ef6-bbc4-abdeb4a99539');
 
 -- Rezervisani lijekovi
-insert into reserved_medicines(id, pickup_date, medicine_id, patient_id, pharmacy_id)
-values ('ff1cc92f-30d2-4cad-b3d7-f4a65eaa2d07', '2021-01-19', '7571786b-2fc5-4756-ab5c-1f4af756e6f2', 'cc6fd408-0084-420b-8078-687d8a72744b', 'e93cab4a-f007-412c-b631-7a9a5ee2c6ed');
+insert into reserved_medicines(id, pickup_date, medicine_id, patient_id, pharmacy_id, handled)
+values ('ff1cc92f-30d2-4cad-b3d7-f4a65eaa2d07', '2021-02-25', '7571786b-2fc5-4756-ab5c-1f4af756e6f2', 'cc6fd408-0084-420b-8078-687d8a72744b', 'e93cab4a-f007-412c-b631-7a9a5ee2c6ed', false);
