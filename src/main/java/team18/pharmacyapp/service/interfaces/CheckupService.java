@@ -24,6 +24,6 @@ public interface CheckupService {
 
     boolean patientScheduleCheckup(ScheduleCheckupDTO term) throws ActionNotAllowedException, ScheduleTermException, RuntimeException;
 
-    boolean patientCancelCheckup(ScheduleCheckupDTO term);
+    boolean patientCancelCheckup(ScheduleCheckupDTO term) throws RuntimeException;
 
 }

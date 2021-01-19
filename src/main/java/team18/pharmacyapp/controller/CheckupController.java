@@ -95,15 +95,26 @@ public class CheckupController {
         } catch (ActionNotAllowedException ex) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         } catch (ScheduleTermException ex) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         } catch (RuntimeException ex) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        if (success) {
+            return new ResponseEntity<>(HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 
     @PutMapping(consumes = "application/json", value = "/cancel")
     public ResponseEntity<Void> patientCancelCheckup(@RequestBody ScheduleCheckupDTO term) {
-        boolean success = checkupService.patientCancelCheckup(term);
+        boolean success;
+        try {
+            success = checkupService.patientCancelCheckup(term);
+        } catch (RuntimeException ex) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
 
         if (success) {
             return new ResponseEntity<>(HttpStatus.OK);

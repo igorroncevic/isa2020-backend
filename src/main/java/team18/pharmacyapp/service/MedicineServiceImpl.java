@@ -116,7 +116,7 @@ public class MedicineServiceImpl implements MedicineService {
         return resultSet;
     }
 
-    @Transactional(rollbackFor = {RuntimeException.class, ReserveMedicineException.class})
+    @Transactional(rollbackFor = {ActionNotAllowedException.class, RuntimeException.class, ReserveMedicineException.class})
     @Override
     public boolean reserveMedicine(ReserveMedicineRequestDTO rmrDTO) throws ActionNotAllowedException, ReserveMedicineException, RuntimeException {
         Patient patient = patientRepository.getOne(rmrDTO.getPatientId());
