@@ -1,7 +1,6 @@
 package team18.pharmacyapp.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.Lock;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import team18.pharmacyapp.model.Pricings;
@@ -11,13 +10,11 @@ import team18.pharmacyapp.model.dtos.ReserveMedicineRequestDTO;
 import team18.pharmacyapp.model.medicine.Medicine;
 import team18.pharmacyapp.model.medicine.PharmacyMedicines;
 import team18.pharmacyapp.model.medicine.ReserveMedicineException;
-import team18.pharmacyapp.model.medicine.ReservedMedicines;
 import team18.pharmacyapp.model.users.Patient;
 import team18.pharmacyapp.repository.MedicineRepository;
+import team18.pharmacyapp.service.interfaces.EmailService;
 import team18.pharmacyapp.service.interfaces.MedicineService;
 
-import javax.persistence.LockModeType;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -25,11 +22,13 @@ import java.util.UUID;
 
 @Service
 public class MedicineServiceImpl implements MedicineService {
-    private MedicineRepository medicineRepository;
+    private final MedicineRepository medicineRepository;
+    private final EmailService emailService;
 
     @Autowired
-    public MedicineServiceImpl(MedicineRepository medicineRepository){
+    public MedicineServiceImpl(MedicineRepository medicineRepository, EmailService emailService){
         this.medicineRepository = medicineRepository;
+        this.emailService = emailService;
     }
 
     @Override
@@ -118,11 +117,18 @@ public class MedicineServiceImpl implements MedicineService {
     @Transactional(rollbackFor = {RuntimeException.class, ReserveMedicineException.class})
     @Override
     public boolean reserveMedicine(ReserveMedicineRequestDTO rmrDTO) throws ReserveMedicineException, RuntimeException {
-        int reserved = medicineRepository.reserveMedicine(UUID.randomUUID(), rmrDTO.getPatient_id(), rmrDTO.getPharmacy_id(), rmrDTO.getMedicine_id(), rmrDTO.getPickupDate());
-        int updateQuantity = medicineRepository.updateMedicineQuantity(rmrDTO.getMedicine_id(), rmrDTO.getPharmacy_id());
+        UUID reservationId = UUID.randomUUID();
+        int reserved = medicineRepository.reserveMedicine(reservationId, rmrDTO.getPatientId(), rmrDTO.getPharmacyId(), rmrDTO.getMedicineId(), rmrDTO.getPickupDate());
+        int updateQuantity = medicineRepository.updateMedicineQuantity(rmrDTO.getMedicineId(), rmrDTO.getPharmacyId());
 
         if (reserved != 1) throw new ReserveMedicineException("Medicine wasn't reserved!"); // rollback-ovace transakciju
         if (updateQuantity != 1) throw new ReserveMedicineException("Medicine quantity wasn't updated!");
+
+        String userMail = "savooroz33@gmail.com";   // zakucano za sada
+        String subject = "[ISA Pharmacy] Confirmation - Medicine reservation";
+        String body = "You have successfuly reserved a medicine on our site.\n" +
+                "Your reservation ID: " + reservationId.toString();
+        new Thread(() -> emailService.sendMail(userMail, subject, body)).start();
 
         return true;
     }

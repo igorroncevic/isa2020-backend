@@ -12,9 +12,9 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 public class ReserveMedicineRequestDTO {
-    private UUID patient_id;
-    private UUID medicine_id;
-    private UUID pharmacy_id;
+    private UUID patientId;
+    private UUID medicineId;
+    private UUID pharmacyId;
     @JsonFormat(pattern = "dd/MM/yyyy")
     private Date pickupDate;
 }
