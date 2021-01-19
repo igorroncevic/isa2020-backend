@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import team18.pharmacyapp.model.Term;
 import team18.pharmacyapp.model.medicine.ReservedMedicines;
 import team18.pharmacyapp.model.users.Patient;
 import team18.pharmacyapp.repository.CheckupRepository;
@@ -33,8 +34,8 @@ public class SchedulingTasks {
     @Transactional
     @Scheduled(cron="@daily")
     // @Scheduled(cron="*/10 * * * * ?") // Test with this one
-    public void checkIfPatientGetsPenalty() {
-        log.info("Starting Cron Task - Checking if Patient's need to get penalties.");
+    public void addPenaltyForNotPickingUpReservedMedicines() {
+        log.info("Starting Cron Task - Checking if Patient's need to get penalties for not picking up reserved medicines.");
         List<ReservedMedicines> reservations = medicineRepository.findAllReservedMedicines();
 
         int addedPenalties = 0;
@@ -44,6 +45,26 @@ public class SchedulingTasks {
         for(ReservedMedicines reservation : reservations){
             if (sdf.format(todaysDate).equals(sdf.format(reservation.getPickupDate()))){
                 int addedPenalty = patientRepository.addPenalty(reservation.getPatient().getId());
+                addedPenalties++;
+            }
+        }
+
+        log.info("Finishing Cron Task - " + addedPenalties + " total patients received penalties.");
+    }
+
+    @Transactional
+    @Scheduled(cron="@hourly")
+    public void addPenaltyForNotComingToTerm() {
+        log.info("Starting Cron Task - Checking if Patient's need to get penalties for not showing up to a term.");
+        List<Term> terms = checkupRepository.findAllWithPatients();
+
+        int addedPenalties = 0;
+
+        Date currentTime = new Date(System.currentTimeMillis() + 5 * 1000);
+
+        for(Term term : terms){
+            if (term.getEndTime().before(currentTime)){
+                int addedPenalty = patientRepository.addPenalty(term.getPatient().getId());
                 addedPenalties++;
             }
         }
