@@ -6,9 +6,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import team18.pharmacyapp.model.Term;
 import team18.pharmacyapp.model.dtos.ScheduleCheckupDTO;
+import team18.pharmacyapp.model.exceptions.ActionNotAllowedException;
+import team18.pharmacyapp.model.exceptions.ScheduleTermException;
 import team18.pharmacyapp.service.interfaces.CheckupService;
 
-import java.util.*;
+import java.util.List;
+import java.util.UUID;
 
 @CrossOrigin(origins = "http://localhost:8080")
 @RestController
@@ -86,7 +89,16 @@ public class CheckupController {
 
     @PutMapping(consumes = "application/json", value = "/schedule")
     public ResponseEntity<Void> patientScheduleCheckup(@RequestBody ScheduleCheckupDTO term) {
-        boolean success = checkupService.patientScheduleCheckup(term);
+        boolean success;
+        try {
+            success = checkupService.patientScheduleCheckup(term);
+        } catch (ActionNotAllowedException ex) {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        } catch (ScheduleTermException ex) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } catch (RuntimeException ex) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
 
         if (success) {
             return new ResponseEntity<>(HttpStatus.OK);
@@ -97,7 +109,12 @@ public class CheckupController {
 
     @PutMapping(consumes = "application/json", value = "/cancel")
     public ResponseEntity<Void> patientCancelCheckup(@RequestBody ScheduleCheckupDTO term) {
-        boolean success = checkupService.patientCancelCheckup(term);
+        boolean success;
+        try {
+            success = checkupService.patientCancelCheckup(term);
+        } catch (RuntimeException ex) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
 
         if (success) {
             return new ResponseEntity<>(HttpStatus.OK);

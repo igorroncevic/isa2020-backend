@@ -4,14 +4,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import team18.pharmacyapp.model.dtos.CancelMedicineRequestDTO;
 import team18.pharmacyapp.model.dtos.PharmacyMedicinesDTO;
 import team18.pharmacyapp.model.dtos.ReserveMedicineRequestDTO;
 import team18.pharmacyapp.model.dtos.ReservedMedicineDTO;
+import team18.pharmacyapp.model.exceptions.ActionNotAllowedException;
 import team18.pharmacyapp.model.medicine.Medicine;
-import team18.pharmacyapp.model.medicine.ReserveMedicineException;
+import team18.pharmacyapp.model.exceptions.ReserveMedicineException;
 import team18.pharmacyapp.service.interfaces.MedicineService;
 
-import java.util.*;
+import java.util.List;
+import java.util.UUID;
 
 @CrossOrigin(origins = "http://localhost:8080")
 @RestController
@@ -70,13 +73,15 @@ public class MedicineController {
     @PostMapping(consumes = "application/json", value = "/reserve")
     public ResponseEntity<Void> reserveMedicine(@RequestBody ReserveMedicineRequestDTO medicine) {
         boolean success;
-         try{
+        try {
             success = medicineService.reserveMedicine(medicine);
-         }catch(ReserveMedicineException ex){
-             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-         }catch(RuntimeException ex){
-             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-         }
+        } catch (ActionNotAllowedException ex) {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        } catch (ReserveMedicineException ex) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (RuntimeException ex) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
 
         if (success) {
             return new ResponseEntity<>(HttpStatus.OK);
@@ -85,9 +90,16 @@ public class MedicineController {
         }
     }
 
-    @PutMapping(consumes = "application/json", value = "/cancel")
-    public ResponseEntity<Void> cancelMedicine(@RequestBody ReserveMedicineRequestDTO medicine) {
-        boolean success = medicineService.cancelMedicine(medicine);
+    @DeleteMapping(consumes = "application/json", value = "/cancel")
+    public ResponseEntity<Void> cancelMedicine(@RequestBody CancelMedicineRequestDTO medicine) {
+        boolean success;
+        try {
+            success = medicineService.cancelMedicine(medicine);
+        } catch (ReserveMedicineException ex) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (RuntimeException ex) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
 
         if (success) {
             return new ResponseEntity<>(HttpStatus.OK);
