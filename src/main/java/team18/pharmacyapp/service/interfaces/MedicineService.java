@@ -6,7 +6,7 @@ import team18.pharmacyapp.model.dtos.ReserveMedicineRequestDTO;
 import team18.pharmacyapp.model.dtos.ReservedMedicineDTO;
 import team18.pharmacyapp.model.exceptions.ActionNotAllowedException;
 import team18.pharmacyapp.model.medicine.Medicine;
-import team18.pharmacyapp.model.medicine.ReserveMedicineException;
+import team18.pharmacyapp.model.exceptions.ReserveMedicineException;
 
 import java.util.List;
 import java.util.UUID;

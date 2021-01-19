@@ -3,6 +3,8 @@ package team18.pharmacyapp.service.interfaces;
 import team18.pharmacyapp.model.Term;
 import team18.pharmacyapp.model.dtos.ScheduleCheckupDTO;
 import team18.pharmacyapp.model.enums.TermType;
+import team18.pharmacyapp.model.exceptions.ActionNotAllowedException;
+import team18.pharmacyapp.model.exceptions.ScheduleTermException;
 
 import java.util.List;
 import java.util.UUID;
@@ -20,7 +22,7 @@ public interface CheckupService {
 
     void deleteById(UUID id);
 
-    boolean patientScheduleCheckup(ScheduleCheckupDTO term);
+    boolean patientScheduleCheckup(ScheduleCheckupDTO term) throws ActionNotAllowedException, ScheduleTermException, RuntimeException;
 
     boolean patientCancelCheckup(ScheduleCheckupDTO term);
 
