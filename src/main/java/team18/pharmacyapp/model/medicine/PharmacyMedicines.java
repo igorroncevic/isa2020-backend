@@ -10,7 +10,7 @@ import team18.pharmacyapp.model.keys.PharmacyMedicinesId;
 import javax.persistence.*;
 import java.util.List;
 
-@Entity(name="pharmacy_medicines")
+@Entity(name = "pharmacy_medicines")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -21,7 +21,7 @@ public class PharmacyMedicines {
     private Pharmacy pharmacy;
     @Id
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="medicine_id")
+    @JoinColumn(name = "medicine_id")
     private Medicine medicine;
 
     @Column(nullable = false)

@@ -7,7 +7,6 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 import team18.pharmacyapp.model.Term;
 import team18.pharmacyapp.model.enums.TermType;
-import team18.pharmacyapp.model.users.Patient;
 
 import java.util.Date;
 import java.util.List;
@@ -31,6 +30,10 @@ public interface CheckupRepository extends JpaRepository<Term, UUID> {
     @Transactional(readOnly = true)
     @Query(value = "SELECT t FROM term t JOIN FETCH t.doctor d WHERE t.type = :termType")
     List<Term> findAll(@Param("termType") TermType termType);
+
+    @Transactional(readOnly = true)
+    @Query(value = "SELECT t FROM term t JOIN FETCH t.patient p")
+    List<Term> findAllWithPatients();
 
     @Transactional(readOnly = true)
     @Query(value = "SELECT t FROM term t JOIN FETCH t.doctor JOIN FETCH t.patient WHERE t.type = :termType AND t.patient.id = :patientId")
