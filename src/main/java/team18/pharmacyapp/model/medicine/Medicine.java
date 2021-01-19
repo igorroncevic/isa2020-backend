@@ -16,6 +16,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @NoArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class Medicine {
     @Id
     @GeneratedValue(generator = "UUID")
@@ -47,11 +48,9 @@ public class Medicine {
     private List<PurchaseOrderMedicine> purchaseOrderMedicines;
 
     @OneToMany(mappedBy = "medicine")
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<Mark> marks;
 
     @OneToMany(mappedBy = "medicine")
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<PharmacyMedicines> pharmacyMedicines;
 
     @Column(nullable = false)

@@ -18,6 +18,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class Patient extends User {
 
     @ManyToMany(cascade = CascadeType.ALL)
@@ -31,19 +32,15 @@ public class Patient extends User {
     private int penalties;
 
     @OneToMany(cascade = CascadeType.ALL)
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<EPrescription> prescriptions;
 
     @ManyToMany(mappedBy = "subscribedPatients", cascade = CascadeType.ALL)
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<Pharmacy> subscribedPharmacies;
 
     @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL)
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<Complaint> complaints;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     @JoinColumn(nullable = false)
     private Loyalty loyalty;
 

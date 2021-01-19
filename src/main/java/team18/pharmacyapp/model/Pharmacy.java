@@ -19,6 +19,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @NoArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class Pharmacy {
     @Id
     @GeneratedValue(generator = "UUID")
@@ -34,7 +35,6 @@ public class Pharmacy {
     private Address address;
 
     @OneToMany(cascade = CascadeType.ALL)
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<Promotion> promotions;
 
     @OneToMany(mappedBy = "pharmacy")
@@ -42,26 +42,20 @@ public class Pharmacy {
     private List<ReservedMedicines> reservedMedicines;
 
     @ManyToMany(cascade = CascadeType.ALL)
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<Patient> subscribedPatients;
 
     @OneToMany(mappedBy = "pharmacy", cascade = CascadeType.ALL)
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<Complaint> complaints;
 
     @OneToMany(mappedBy = "pharmacy", cascade = CascadeType.ALL)
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<PharmacyAdmin> admins;
 
     @OneToMany(mappedBy = "pharmacy", cascade = CascadeType.ALL)
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<Mark> marks;
 
     @OneToMany(mappedBy = "pharmacy", cascade = CascadeType.ALL)
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<WorkSchedule> workSchedules;
 
     @OneToMany(mappedBy = "pharmacy", cascade = CascadeType.ALL)
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<PharmacyMedicines> pharmacyMedicines;
 }
