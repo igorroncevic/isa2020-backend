@@ -8,11 +8,13 @@ import team18.pharmacyapp.model.dtos.CancelMedicineRequestDTO;
 import team18.pharmacyapp.model.dtos.PharmacyMedicinesDTO;
 import team18.pharmacyapp.model.dtos.ReserveMedicineRequestDTO;
 import team18.pharmacyapp.model.dtos.ReservedMedicineDTO;
+import team18.pharmacyapp.model.exceptions.ActionNotAllowedException;
 import team18.pharmacyapp.model.medicine.Medicine;
 import team18.pharmacyapp.model.medicine.PharmacyMedicines;
 import team18.pharmacyapp.model.medicine.ReserveMedicineException;
 import team18.pharmacyapp.model.users.Patient;
 import team18.pharmacyapp.repository.MedicineRepository;
+import team18.pharmacyapp.repository.PatientRepository;
 import team18.pharmacyapp.service.interfaces.MedicineService;
 
 import java.util.ArrayList;
@@ -23,10 +25,12 @@ import java.util.UUID;
 @Service
 public class MedicineServiceImpl implements MedicineService {
     private MedicineRepository medicineRepository;
+    private PatientRepository patientRepository;
 
     @Autowired
-    public MedicineServiceImpl(MedicineRepository medicineRepository) {
+    public MedicineServiceImpl(MedicineRepository medicineRepository, PatientRepository patientRepository) {
         this.medicineRepository = medicineRepository;
+        this.patientRepository = patientRepository;
     }
 
     @Override
@@ -114,7 +118,10 @@ public class MedicineServiceImpl implements MedicineService {
 
     @Transactional(rollbackFor = {RuntimeException.class, ReserveMedicineException.class})
     @Override
-    public boolean reserveMedicine(ReserveMedicineRequestDTO rmrDTO) throws ReserveMedicineException, RuntimeException {
+    public boolean reserveMedicine(ReserveMedicineRequestDTO rmrDTO) throws ActionNotAllowedException, ReserveMedicineException, RuntimeException {
+        Patient patient = patientRepository.getOne(rmrDTO.getPatientId());
+        if (patient.getPenalties() >= 3) throw new ActionNotAllowedException("You are not allowed to reserve medicines");
+
         int reserved = medicineRepository.reserveMedicine(UUID.randomUUID(), rmrDTO.getPatientId(), rmrDTO.getPharmacyId(), rmrDTO.getMedicineId(), rmrDTO.getPickupDate());
         int updateQuantity = medicineRepository.decrementMedicineQuantity(rmrDTO.getMedicineId(), rmrDTO.getPharmacyId());
 
