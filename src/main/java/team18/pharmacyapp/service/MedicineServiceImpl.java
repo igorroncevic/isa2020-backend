@@ -9,11 +9,12 @@ import team18.pharmacyapp.model.dtos.PharmacyMedicinesDTO;
 import team18.pharmacyapp.model.dtos.ReserveMedicineRequestDTO;
 import team18.pharmacyapp.model.dtos.ReservedMedicineDTO;
 import team18.pharmacyapp.model.exceptions.ActionNotAllowedException;
+import team18.pharmacyapp.model.exceptions.ReserveMedicineException;
 import team18.pharmacyapp.model.medicine.Medicine;
 import team18.pharmacyapp.model.medicine.PharmacyMedicines;
-import team18.pharmacyapp.model.exceptions.ReserveMedicineException;
 import team18.pharmacyapp.model.users.Patient;
 import team18.pharmacyapp.repository.MedicineRepository;
+import team18.pharmacyapp.service.interfaces.EmailService;
 import team18.pharmacyapp.repository.PatientRepository;
 import team18.pharmacyapp.service.interfaces.MedicineService;
 
@@ -24,12 +25,14 @@ import java.util.UUID;
 
 @Service
 public class MedicineServiceImpl implements MedicineService {
-    private MedicineRepository medicineRepository;
-    private PatientRepository patientRepository;
+    private final MedicineRepository medicineRepository;
+    private final EmailService emailService;
+    private final PatientRepository patientRepository;
 
     @Autowired
-    public MedicineServiceImpl(MedicineRepository medicineRepository, PatientRepository patientRepository) {
+    public MedicineServiceImpl(MedicineRepository medicineRepository, EmailService emailService, PatientRepository patientRepository){
         this.medicineRepository = medicineRepository;
+        this.emailService = emailService;
         this.patientRepository = patientRepository;
     }
 
@@ -122,11 +125,18 @@ public class MedicineServiceImpl implements MedicineService {
         Patient patient = patientRepository.getOne(rmrDTO.getPatientId());
         if (patient.getPenalties() >= 3) throw new ActionNotAllowedException("You are not allowed to reserve medicines");
 
-        int reserved = medicineRepository.reserveMedicine(UUID.randomUUID(), rmrDTO.getPatientId(), rmrDTO.getPharmacyId(), rmrDTO.getMedicineId(), rmrDTO.getPickupDate());
+        UUID reservationId = UUID.randomUUID();
+        int reserved = medicineRepository.reserveMedicine(reservationId, rmrDTO.getPatientId(), rmrDTO.getPharmacyId(), rmrDTO.getMedicineId(), rmrDTO.getPickupDate());
         int updateQuantity = medicineRepository.decrementMedicineQuantity(rmrDTO.getMedicineId(), rmrDTO.getPharmacyId());
 
         if (reserved != 1) throw new ReserveMedicineException("Medicine wasn't reserved!");
         if (updateQuantity != 1) throw new ReserveMedicineException("Medicine quantity wasn't decremented!");
+
+        String userMail = "savooroz33@gmail.com";   // zakucano za sada
+        String subject = "[ISA Pharmacy] Confirmation - Medicine reservation";
+        String body = "You have successfuly reserved a medicine on our site.\n" +
+                "Your reservation ID: " + reservationId.toString();
+        new Thread(() -> emailService.sendMail(userMail, subject, body)).start();
 
         return true;
     }
