@@ -7,6 +7,8 @@ insert into address(id, city, country, street)
 values ('9241601b-a20a-4f26-9523-d4a670a881dc', 'Belgrade', 'Serbia', 'Hercegovacka 33');
 insert into address(id, city, country, street)
 values ('34c4d86e-8781-4163-b61a-4720c39b7ad6', 'Nis', 'Serbia', 'Vozda Karadjordja 26');
+insert into address(id, city, country, street)
+values ('30cedadd-1379-42fc-9a0c-185b977ed3d9', 'Novi Sad', 'Serbia', 'Doza Djerdja 40');
 
 -- Dermatolozi
 insert into doctor (id, "name", surname, email, "password", "role", doctor_role, fk_address)
@@ -78,6 +80,11 @@ insert into pharmacy (id, address_id, "name")
 values ('25fff0b2-ad45-4310-ac7f-96bcc5e517c1', '34c4d86e-8781-4163-b61a-4720c39b7ad6', 'Apoteka Jankovic');
 insert into pharmacy (id, address_id, "name")
 values ('e93cab4a-f007-412c-b631-7a9a5ee2c6ed', '9241601b-a20a-4f26-9523-d4a670a881dc', 'BENU apoteka');
+
+-- Administratori apoteka
+insert into pharmacy_admin (id, "name", surname, email, "password", "role", fk_address, pharmacy_id)
+values ('40c88a70-d8cd-4d8f-b56f-eb158f7c27fa', 'Mile', 'Ulemek', 'mileulemek@gmail.com', 'ssifra', 'pharmacyAdmin',
+        '30cedadd-1379-42fc-9a0c-185b977ed3d9', 'e93cab4a-f007-412c-b631-7a9a5ee2c6ed');
 
 -- Lijekovi koji posjeduju apoteke
 insert into pharmacy_medicines (pharmacy_id, medicine_id, quantity, version)
