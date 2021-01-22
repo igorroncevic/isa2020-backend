@@ -4,8 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import team18.pharmacyapp.model.Pharmacy;
-import team18.pharmacyapp.model.users.User;
+import team18.pharmacyapp.model.users.RegisteredUser;
 import team18.pharmacyapp.service.UserServiceImpl;
 
 import java.util.List;
@@ -23,13 +22,13 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<User> getById(@PathVariable UUID id) {
-        User user = userService.getById(id);
-        return new ResponseEntity<>(user, HttpStatus.OK);
+    public ResponseEntity<RegisteredUser> getById(@PathVariable UUID id) {
+        RegisteredUser registeredUser = userService.getById(id);
+        return new ResponseEntity<>(registeredUser, HttpStatus.OK);
     }
 
     @GetMapping
-    public List<User> getAll() {
+    public List<RegisteredUser> getAll() {
         return userService.findAll();
     }
 

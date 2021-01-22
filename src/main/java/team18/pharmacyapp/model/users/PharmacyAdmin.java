@@ -13,7 +13,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-public class PharmacyAdmin extends User {
+public class PharmacyAdmin extends RegisteredUser {
 
     @OneToMany(mappedBy = "pharmacyAdmin", cascade = CascadeType.ALL)
     private List<PurchaseOrder> purchaseOrders;

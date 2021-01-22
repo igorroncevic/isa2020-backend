@@ -16,7 +16,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-public class Doctor extends User implements Serializable {
+public class Doctor extends RegisteredUser implements Serializable {
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
