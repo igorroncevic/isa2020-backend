@@ -12,8 +12,4 @@ import java.util.UUID;
 
 public interface UserRepository extends JpaRepository<RegisteredUser, UUID> {
 
-    @Transactional(readOnly = true)
-    @Query(value = "SELECT u FROM registered_user u WHERE u.id = :id")
-    RegisteredUser getById(@Param("id") UUID id);
-
 }

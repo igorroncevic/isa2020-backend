@@ -21,12 +21,6 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<RegisteredUser> getById(@PathVariable UUID id) {
-        RegisteredUser registeredUser = userService.getById(id);
-        return new ResponseEntity<>(registeredUser, HttpStatus.OK);
-    }
-
     @GetMapping
     public List<RegisteredUser> getAll() {
         return userService.findAll();

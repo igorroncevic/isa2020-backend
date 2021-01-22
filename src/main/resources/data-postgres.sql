@@ -11,14 +11,14 @@ insert into address(id, city, country, street)
 values ('30cedadd-1379-42fc-9a0c-185b977ed3d9', 'Novi Sad', 'Serbia', 'Doza Djerdja 40');
 
 -- Dermatolozi
-insert into doctor (id, "name", surname, email, "password", "role", doctor_role, fk_address)
-values ('a5ac174a-45b3-487f-91cb-3d3f727d6f1c', 'Pera', 'Peric', 'peraperic@gmail.com', 'nekipass123', 'doctor',
+insert into doctor (id, "name", surname, email, phone_number, "password", "role", doctor_role, fk_address)
+values ('a5ac174a-45b3-487f-91cb-3d3f727d6f1c', 'Pera', 'Peric', 'peraperic@gmail.com', '065/123-456', 'nekipass123', 'doctor',
         'dermatologist', '3b00204e-1897-4b6e-a175-5d0595833ced');
-insert into doctor (id, "name", surname, email, "password", "role", doctor_role, fk_address)
-values ('1accde09-0aa2-4ea1-9a38-17f4635198b9', 'Jovan', 'Jovanovic', 'jovajovanovic@gmail.com', 'nekipass123',
+insert into doctor (id, "name", surname, email, phone_number, "password", "role", doctor_role, fk_address)
+values ('1accde09-0aa2-4ea1-9a38-17f4635198b9', 'Jovan', 'Jovanovic', 'jovajovanovic@gmail.com', '065/598-127', 'nekipass123',
         'doctor', 'dermatologist', '9241601b-a20a-4f26-9523-d4a670a881dc');
-insert into doctor (id, "name", surname, email, "password", "role", doctor_role, fk_address)
-values ('61e9bf31-afae-4b2f-9197-8e2a328707c5', 'Ivana', 'Ivanovic', 'ivanaivanovic@gmail.com', 'nekipass123', 'doctor',
+insert into doctor (id, "name", surname, email, phone_number, "password", "role", doctor_role, fk_address)
+values ('61e9bf31-afae-4b2f-9197-8e2a328707c5', 'Ivana', 'Ivanovic', 'ivanaivanovic@gmail.com', '065/917-427', 'nekipass123', 'doctor',
         'dermatologist', '34c4d86e-8781-4163-b61a-4720c39b7ad6');
 
 -- Loyalty program
@@ -33,14 +33,14 @@ values ('ab98fe4c-0e70-4087-b53f-637bbac6bfe4', 'Platinum', 14, 150, -1);
 --ako je max -1, to znaci da su svi 150+ u ovoj kategoriji
 
 -- Pacijenti
-insert into patient (id, "name", surname, email, "password", "role", fk_address, loyalty_points, loyalty_id, penalties)
-values ('cc6fd408-0084-420b-8078-687d8a72744b', 'Slobodanka', 'Ilic', 'slobodankailic@gmail.com', 'nekipass123', 'patient',
+insert into patient (id, "name", surname, email, phone_number, "password", "role", fk_address, loyalty_points, loyalty_id, penalties)
+values ('cc6fd408-0084-420b-8078-687d8a72744b', 'Slobodanka', 'Ilic', 'slobodankailic@gmail.com', '063/111-456', 'nekipass123', 'patient',
         '1eb485a6-4afd-4121-ad03-af571841ddbd', 0, 'c976e4d9-0bd0-470d-9a10-bdc1ff1ba91c', 0);
-insert into patient (id, "name", surname, email, "password", "role", fk_address, loyalty_points, loyalty_id, penalties)
-values ('dd4c7e5f-f2c4-42dc-a809-fd7f588b3acb', 'Ilija', 'Stevic', 'ilijastevic@gmail.com', 'nekipass123', 'patient',
+insert into patient (id, "name", surname, email, phone_number, "password", "role", fk_address, loyalty_points, loyalty_id, penalties)
+values ('dd4c7e5f-f2c4-42dc-a809-fd7f588b3acb', 'Ilija', 'Stevic', 'ilijastevic@gmail.com', '063/999-254', 'nekipass123', 'patient',
         '1eb485a6-4afd-4121-ad03-af571841ddbd', 0, 'c976e4d9-0bd0-470d-9a10-bdc1ff1ba91c', 0);
-insert into patient (id, "name", surname, email, "password", "role", fk_address, loyalty_points, loyalty_id, penalties)
-values ('5ffe884f-9cd8-42f5-adc4-2a27cd8d2737', 'Mileta', 'Perovic', 'miletaperovic@gmail.com', 'nekipass123', 'patient',
+insert into patient (id, "name", surname, email, phone_number, "password", "role", fk_address, loyalty_points, loyalty_id, penalties)
+values ('5ffe884f-9cd8-42f5-adc4-2a27cd8d2737', 'Mileta', 'Perovic', 'miletaperovic@gmail.com', '063/948-949', 'nekipass123', 'patient',
         '34c4d86e-8781-4163-b61a-4720c39b7ad6', 0, 'c976e4d9-0bd0-470d-9a10-bdc1ff1ba91c', 0);
 
 -- Termini
@@ -82,8 +82,8 @@ insert into pharmacy (id, address_id, "name")
 values ('e93cab4a-f007-412c-b631-7a9a5ee2c6ed', '9241601b-a20a-4f26-9523-d4a670a881dc', 'BENU apoteka');
 
 -- Administratori apoteka
-insert into pharmacy_admin (id, "name", surname, email, "password", "role", fk_address, pharmacy_id)
-values ('40c88a70-d8cd-4d8f-b56f-eb158f7c27fa', 'Mile', 'Ulemek', 'mileulemek@gmail.com', 'ssifra', 'pharmacyAdmin',
+insert into pharmacy_admin (id, "name", surname, email, phone_number, "password", "role", fk_address, pharmacy_id)
+values ('40c88a70-d8cd-4d8f-b56f-eb158f7c27fa', 'Mile', 'Ulemek', 'mileulemek@gmail.com', '069/885-555', 'ssifra', 'pharmacyAdmin',
         '30cedadd-1379-42fc-9a0c-185b977ed3d9', 'e93cab4a-f007-412c-b631-7a9a5ee2c6ed');
 
 -- Lijekovi koji posjeduju apoteke
