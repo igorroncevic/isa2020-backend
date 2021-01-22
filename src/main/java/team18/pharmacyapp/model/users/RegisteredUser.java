@@ -44,7 +44,7 @@ public class RegisteredUser {
     @Enumerated(EnumType.STRING)
     protected UserRole role;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JsonIgnore
     @JoinColumn(name = "fk_address", referencedColumnName = "id")
     protected Address address;

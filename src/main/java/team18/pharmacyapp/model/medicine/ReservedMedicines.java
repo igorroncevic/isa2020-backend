@@ -11,7 +11,7 @@ import javax.persistence.*;
 import java.util.Date;
 import java.util.UUID;
 
-@Entity(name="reserved_medicines")
+@Entity(name = "reserved_medicines")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -36,4 +36,6 @@ public class ReservedMedicines {
     private Pharmacy pharmacy;
 
     private Date pickupDate; // Datum do kog ce pacijent preuzeti lijek
+
+    private boolean handled; // ako je pacijent pokupio lijek ili je dobio penal, bice true
 }

@@ -1,11 +1,16 @@
 package team18.pharmacyapp.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import team18.pharmacyapp.model.Term;
 import team18.pharmacyapp.model.dtos.ScheduleCheckupDTO;
 import team18.pharmacyapp.model.enums.TermType;
+import team18.pharmacyapp.model.exceptions.ActionNotAllowedException;
+import team18.pharmacyapp.model.exceptions.ReserveMedicineException;
+import team18.pharmacyapp.model.exceptions.ScheduleTermException;
 import team18.pharmacyapp.model.users.Patient;
 import team18.pharmacyapp.repository.CheckupRepository;
+import team18.pharmacyapp.repository.PatientRepository;
 import team18.pharmacyapp.service.interfaces.CheckupService;
 
 import java.util.Date;
@@ -15,9 +20,11 @@ import java.util.UUID;
 @Service
 public class CheckupServiceImpl implements CheckupService {
     private final CheckupRepository checkupRepository;
+    private final PatientRepository patientRepository;
 
-    public CheckupServiceImpl(CheckupRepository checkupRepository) {
+    public CheckupServiceImpl(CheckupRepository checkupRepository, PatientRepository patientRepository) {
         this.checkupRepository = checkupRepository;
+        this.patientRepository = patientRepository;
     }
 
     public Term findOne(UUID id) {
@@ -28,7 +35,7 @@ public class CheckupServiceImpl implements CheckupService {
         return checkupRepository.findAll(termType);
     }
 
-    public List<Term> findAllAvailableCheckups(){
+    public List<Term> findAllAvailableCheckups() {
         Date todaysDate = new Date(System.currentTimeMillis() + 60 * 60 * 1000);
         return checkupRepository.findAllAvailableCheckups(todaysDate, TermType.checkup);
     }
@@ -46,37 +53,37 @@ public class CheckupServiceImpl implements CheckupService {
         checkupRepository.deleteById(id);
     }
 
-    public boolean patientScheduleCheckup(ScheduleCheckupDTO term) {
-        Term checkTerm;
-        try {
-            checkTerm = checkupRepository.findById(term.getCheckupId()).orElseThrow(null);
-        } catch(Exception e) {
-            return false;
-        }
+    @Transactional(rollbackFor = {ActionNotAllowedException.class, RuntimeException.class, ReserveMedicineException.class})
+    public boolean patientScheduleCheckup(ScheduleCheckupDTO term) throws ActionNotAllowedException, ScheduleTermException, RuntimeException {
+        Patient patient = patientRepository.getOne(term.getPatientId());
+        if (patient.getPenalties() >= 3) throw new ActionNotAllowedException("You are not allowed to schedule terms!");
+
+        Term checkTerm = checkupRepository.findById(term.getCheckupId()).orElseGet(null);
+        if(checkTerm == null) return false;
 
         Date today = new Date(System.currentTimeMillis() - 60 * 1000);
-        if(checkTerm.getStartTime().before(today)){
-            return false;
-        }
+        if (checkTerm.getStartTime().before(today)) throw new ScheduleTermException("Can't schedule past terms!");
+
         int rowsUpdated = checkupRepository.patientScheduleCheckup(term.getPatientId(), term.getCheckupId());
-        return rowsUpdated == 1;
+        if(rowsUpdated != 1) throw new RuntimeException("Couldn't schedule this term!");
+
+        return true;
     }
 
-    public boolean patientCancelCheckup(ScheduleCheckupDTO term) {
-        Term checkTerm;
-        try {
-            checkTerm = checkupRepository.findById(term.getCheckupId()).orElseThrow(null);
-        } catch(Exception e) {
-            return false;
-        }
+    @Transactional(rollbackFor = {RuntimeException.class})
+    public boolean patientCancelCheckup(ScheduleCheckupDTO term) throws RuntimeException {
+        Term checkTerm = checkupRepository.findById(term.getCheckupId()).orElseGet(null);
+        if(checkTerm == null) return false;
 
         Date yesterday = new Date(System.currentTimeMillis() - 24 * 60 * 60 * 1000);
-        if(checkTerm.getStartTime().before(yesterday)){     // ponedeljak < (ponedeljak - 1)?
+        if (checkTerm.getStartTime().before(yesterday)) {     // ponedeljak < (ponedeljak - 1)?
             return false;
         }
 
         int rowsUpdated = checkupRepository.patientCancelCheckup(term.getCheckupId());
-        return rowsUpdated == 1;
+        if(rowsUpdated != 1) throw new RuntimeException("Couldn't schedule this term!");
+
+        return true;
     }
 
 }
