@@ -1,5 +1,6 @@
 package team18.pharmacyapp.model.users;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -13,12 +14,13 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-public class PharmacyAdmin extends User {
+public class PharmacyAdmin extends RegisteredUser {
 
+    @JsonIgnore
     @OneToMany(mappedBy = "pharmacyAdmin", cascade = CascadeType.ALL)
     private List<PurchaseOrder> purchaseOrders;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(nullable = false)
     private Pharmacy pharmacy;
 }

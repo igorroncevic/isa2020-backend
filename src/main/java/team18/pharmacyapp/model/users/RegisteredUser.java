@@ -16,7 +16,7 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @Inheritance(strategy = InheritanceType.JOINED)
-public class User {
+public class RegisteredUser {
     @Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(
@@ -36,6 +36,9 @@ public class User {
     @Column(nullable = false)
     @JsonIgnore
     protected String password;
+
+    @Column
+    protected String phoneNumber;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)

@@ -19,7 +19,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-public class Patient extends User {
+public class Patient extends RegisteredUser {
 
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "alergicto", joinColumns = @JoinColumn(name = "patientId", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "medicineId", referencedColumnName = "id"))
