@@ -26,9 +26,4 @@ public class UserController {
         return userService.findAll();
     }
 
-    @PostMapping
-    public void newUser() {
-        userService.addUser();
-    }
-
 }

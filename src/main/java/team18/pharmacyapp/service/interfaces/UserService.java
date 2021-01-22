@@ -7,7 +7,5 @@ import java.util.UUID;
 
 public interface UserService {
 
-    public void addUser();
-
     public List<RegisteredUser> findAll();
 }
