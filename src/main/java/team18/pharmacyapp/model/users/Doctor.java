@@ -10,7 +10,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
 
-@Entity
+@Entity(name = "doctor")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -29,6 +29,6 @@ public class Doctor extends RegisteredUser implements Serializable {
     @OneToMany(mappedBy = "doctor", cascade = CascadeType.ALL)
     private List<Mark> marks;
 
-    @OneToMany(mappedBy = "doctor", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "doctor", cascade = CascadeType.ALL)
     private List<WorkSchedule> workSchedules;
 }

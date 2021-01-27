@@ -48,11 +48,11 @@ insert into term (id, doctor_id, start_time, end_time, price, "type", loyalty_po
 values ('1d96a5d6-f5f6-4a74-9208-109991010f31', 'a5ac174a-45b3-487f-91cb-3d3f727d6f1c', '2021-02-28 12:25:00',
         '2021-02-28 13:00:00', 12, 'checkup', 5, null, null);
 insert into term (id, doctor_id, start_time, end_time, price, "type", loyalty_points, report_id, patient_id)
-values ('f05c035a-ffcc-4810-b34a-bb0c782f59a0', '1accde09-0aa2-4ea1-9a38-17f4635198b9', '2021-02-28 12:25:00',
-        '2021-02-28 13:00:00', 19, 'checkup', 8, null, null);
-insert into term (id, doctor_id, start_time, end_time, price, "type", loyalty_points, report_id, patient_id)
 values ('0988b5b2-1d09-47ad-ace7-45282f11e24b', 'a5ac174a-45b3-487f-91cb-3d3f727d6f1c', '2021-02-28 13:05:00',
         '2021-02-28 13:15:00', 12, 'checkup', 5, null, null);
+insert into term (id, doctor_id, start_time, end_time, price, "type", loyalty_points, report_id, patient_id)
+values ('f05c035a-ffcc-4810-b34a-bb0c782f59a0', '1accde09-0aa2-4ea1-9a38-17f4635198b9', '2021-02-28 12:25:00',
+        '2021-02-28 13:00:00', 19, 'checkup', 8, null, null);
 insert into term (id, doctor_id, start_time, end_time, price, "type", loyalty_points, report_id, patient_id)
 values ('43501e13-caf6-4d98-a69a-db0178c582e9', '1accde09-0aa2-4ea1-9a38-17f4635198b9', '2021-01-18 13:15:00',
         '2021-01-18 13:35:00', 19, 'checkup', 8, null, null);
@@ -62,6 +62,12 @@ values ('ebec212e-5ff8-45f8-8411-82d6ac3b69a6', '1accde09-0aa2-4ea1-9a38-17f4635
 insert into term (id, doctor_id, start_time, end_time, price, "type", loyalty_points, report_id, patient_id)
 values ('bef34914-aaab-4c7d-8ef5-c2844eb33d6d', '1accde09-0aa2-4ea1-9a38-17f4635198b9', '2021-01-15 13:15:00',
         '2021-01-15 13:35:00', 19, 'checkup', 8, null, null);
+insert into term (id, doctor_id, start_time, end_time, price, "type", loyalty_points, report_id, patient_id)
+values ('c3695891-66a8-421f-8759-5602513975f8', 'a5ac174a-45b3-487f-91cb-3d3f727d6f1c', '2021-01-15 12:25:00',
+        '2021-02-28 13:00:00', 12, 'checkup', 5, null, 'cc6fd408-0084-420b-8078-687d8a72744b');
+insert into term (id, doctor_id, start_time, end_time, price, "type", loyalty_points, report_id, patient_id)
+values ('f1694aa0-a662-405e-9eb6-60d6a9ffd87c', 'a5ac174a-45b3-487f-91cb-3d3f727d6f1c', '2021-01-15 13:15:00',
+        '2021-02-28 13:45:00', 12, 'checkup', 5, null, 'dd4c7e5f-f2c4-42dc-a809-fd7f588b3acb');
 
 -- Lijekovi
 insert into medicine (id, loyalty_points, "name")
@@ -85,6 +91,16 @@ values ('e93cab4a-f007-412c-b631-7a9a5ee2c6ed', '9241601b-a20a-4f26-9523-d4a670a
 insert into pharmacy_admin (id, "name", surname, email, phone_number, "password", "role", fk_address, pharmacy_id)
 values ('40c88a70-d8cd-4d8f-b56f-eb158f7c27fa', 'Mile', 'Ulemek', 'mileulemek@gmail.com', '069/885-555', 'ssifra', 'pharmacyAdmin',
         '30cedadd-1379-42fc-9a0c-185b977ed3d9', 'e93cab4a-f007-412c-b631-7a9a5ee2c6ed');
+
+-- Work schedules
+insert into work_schedule (from_hour, to_hour, doctor_id, pharmacy_id)
+values ('2021-01-01 09:00:00', '2021-01-01 17:00:00', 'a5ac174a-45b3-487f-91cb-3d3f727d6f1c', 'e93cab4a-f007-412c-b631-7a9a5ee2c6ed');
+insert into work_schedule (from_hour, to_hour, doctor_id, pharmacy_id)
+values ('2021-01-01 09:00:00', '2021-01-01 11:00:00', '1accde09-0aa2-4ea1-9a38-17f4635198b9', 'e93cab4a-f007-412c-b631-7a9a5ee2c6ed');
+insert into work_schedule (from_hour, to_hour, doctor_id, pharmacy_id)
+values ('2021-01-01 13:00:00', '2021-01-01 17:00:00', '1accde09-0aa2-4ea1-9a38-17f4635198b9', '25fff0b2-ad45-4310-ac7f-96bcc5e517c1');
+insert into work_schedule (from_hour, to_hour, doctor_id, pharmacy_id)
+values ('2021-01-01 09:00:00', '2021-01-01 12:00:00', '61e9bf31-afae-4b2f-9197-8e2a328707c5', '25fff0b2-ad45-4310-ac7f-96bcc5e517c1');
 
 -- Lijekovi koji posjeduju apoteke
 insert into pharmacy_medicines (pharmacy_id, medicine_id, quantity, version)
@@ -131,3 +147,9 @@ values ('d5397940-cafe-4f4d-865d-678cddadd07f', '2021-01-01 00:00:01', '2022-01-
 -- Rezervisani lijekovi
 insert into reserved_medicines(id, pickup_date, medicine_id, patient_id, pharmacy_id, handled)
 values ('ff1cc92f-30d2-4cad-b3d7-f4a65eaa2d07', '2021-02-25', '7571786b-2fc5-4756-ab5c-1f4af756e6f2', 'cc6fd408-0084-420b-8078-687d8a72744b', 'e93cab4a-f007-412c-b631-7a9a5ee2c6ed', false);
+
+-- Mark
+insert into mark(id, mark, doctor_id, medicine_id, patient_id, pharmacy_id)
+values ('3d54f12d-ba27-4ed1-b896-c75c284e2153', 4, 'a5ac174a-45b3-487f-91cb-3d3f727d6f1c', null, 'cc6fd408-0084-420b-8078-687d8a72744b', null);
+insert into mark(id, mark, doctor_id, medicine_id, patient_id, pharmacy_id)
+values ('d3bd5650-dc9c-4355-8e69-3e0e27e60c08', 5, 'a5ac174a-45b3-487f-91cb-3d3f727d6f1c', null, 'dd4c7e5f-f2c4-42dc-a809-fd7f588b3acb', null);
