@@ -5,22 +5,17 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import team18.pharmacyapp.model.*;
-import team18.pharmacyapp.model.enums.DoctorRole;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
 
-@Entity
+@Entity(name = "doctor")
 @Getter
 @Setter
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class Doctor extends RegisteredUser implements Serializable {
-
-    @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
-    private DoctorRole doctorRole;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "doctor")
     private List<Vacation> vacations;
@@ -34,6 +29,6 @@ public class Doctor extends RegisteredUser implements Serializable {
     @OneToMany(mappedBy = "doctor", cascade = CascadeType.ALL)
     private List<Mark> marks;
 
-    @OneToMany(mappedBy = "doctor", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "doctor", cascade = CascadeType.ALL)
     private List<WorkSchedule> workSchedules;
 }
