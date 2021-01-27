@@ -23,7 +23,7 @@ public interface CounselingRepository extends JpaRepository<Term, UUID> {
             "                JOIN p.workSchedules ws " +
             "                JOIN ws.doctor d " +
             "                JOIN d.terms t " +
-            "WHERE t.type = 'counseling' AND d.doctorRole = 'pharmacist' " +
+            "WHERE t.type = 'counseling' AND d.role = 'pharmacist' " +
             "AND ws.fromHour <= :fromTime AND ws.toHour >= :toTime " +
             "GROUP BY p.id, p.name, a.street, a.city, a.country")
     List<PharmacyMarkPriceDTO> getPharmaciesWithAvailableCounselings(@Param("fromTime")Date fromTime, @Param("toTime")Date toTime);

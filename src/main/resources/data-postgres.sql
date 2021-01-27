@@ -26,14 +26,14 @@ values ('61e9bf31-afae-4b2f-9197-8e2a328707c5', 'Ivana', 'Ivanovic', 'ivanaivano
         'dermatologist', '34c4d86e-8781-4163-b61a-4720c39b7ad6');
 
 -- Farmaceuti
-insert into doctor (id, "name", surname, email, phone_number, "password", "role", doctor_role, fk_address)
-values ('b0a591d4-f627-45ba-8aa9-926e85c93e08', 'Jovana', 'Jovic', 'jovanajovic@gmail.com', '065/123-456', 'nekipass123', 'doctor',
+insert into doctor (id, "name", surname, email, phone_number, "password", "role", fk_address)
+values ('b0a591d4-f627-45ba-8aa9-926e85c93e08', 'Jovana', 'Jovic', 'jovanajovic@gmail.com', '065/123-456', 'nekipass123',
         'pharmacist', '3b00204e-1897-4b6e-a175-5d0595833ced');
-insert into doctor (id, "name", surname, email, phone_number, "password", "role", doctor_role, fk_address)
-values ('b7d924b5-c488-47bc-be78-2bdad330f468', 'Milan', 'Milovanovic', 'milanmilovanovic@gmail.com', '065/123-456', 'nekipass123', 'doctor',
+insert into doctor (id, "name", surname, email, phone_number, "password", "role", fk_address)
+values ('b7d924b5-c488-47bc-be78-2bdad330f468', 'Milan', 'Milovanovic', 'milanmilovanovic@gmail.com', '065/123-456', 'nekipass123',
         'pharmacist', '3b00204e-1897-4b6e-a175-5d0595833ced');
-insert into doctor (id, "name", surname, email, phone_number, "password", "role", doctor_role, fk_address)
-values ('236b04cd-2c94-4222-a101-16fb827ce816', 'Jelena', 'Jelicic', 'jelenajelicic@gmail.com', '065/123-456', 'nekipass123', 'doctor',
+insert into doctor (id, "name", surname, email, phone_number, "password", "role", fk_address)
+values ('236b04cd-2c94-4222-a101-16fb827ce816', 'Jelena', 'Jelicic', 'jelenajelicic@gmail.com', '065/123-456', 'nekipass123',
         'pharmacist', '3b00204e-1897-4b6e-a175-5d0595833ced');
 insert into doctor (id, "name", surname, email, phone_number, "password", "role", fk_address)
 values ('cb317110-4d3e-4a52-8ca6-0c73bc62b4d2', 'Milos', 'Markovic', 'milosmarkovic@gmail.com', '069/384-012', 'nekipass123',
