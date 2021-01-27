@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import team18.pharmacyapp.model.Pharmacy;
 import team18.pharmacyapp.model.dtos.DoctorDTO;
+import team18.pharmacyapp.model.enums.UserRole;
 import team18.pharmacyapp.model.users.Doctor;
 import team18.pharmacyapp.repository.DoctorRepository;
 import team18.pharmacyapp.service.interfaces.DoctorService;
@@ -23,11 +24,11 @@ public class DoctorServiceImpl implements DoctorService {
 
 
     @Override
-    public List<DoctorDTO> findAllDermatologist() {
-        List<Doctor> dermatologists = doctorRepository.findAllDermatologist();
+    public List<DoctorDTO> findAllDoctors(UserRole role) {
+        List<Doctor> dermatologists = doctorRepository.findAllDoctors(role);
         List<DoctorDTO> doctorDTOs = new ArrayList<>();
         for(Doctor doctor : dermatologists) {
-            List<Pharmacy> pharmacies = doctorRepository.findAllDermatologistPharmacies(doctor.getId());
+            List<Pharmacy> pharmacies = doctorRepository.findAllDoctorsPharmacies(doctor.getId());
             Float averageMark = doctorRepository.getAverageMarkForDoctor(doctor.getId());
             DoctorDTO doctorDTO = new DoctorDTO();
             doctorDTO.setName(doctor.getName());
@@ -39,13 +40,13 @@ public class DoctorServiceImpl implements DoctorService {
         return doctorDTOs;
     }
 
-    public List<DoctorDTO> findAllDermatologistForPharmacy(UUID pharmacyId) {
-        List<Doctor> dermatologists = doctorRepository.findAllDermatologist();
+    public List<DoctorDTO> findAllDoctorsForPharmacy(UUID pharmacyId, UserRole role) {
+        List<Doctor> dermatologists = doctorRepository.findAllDoctors(role);
         Pharmacy pharmacy = new Pharmacy();
         pharmacy.setId(pharmacyId);
         List<DoctorDTO> dermatologistsForPharmacy = new ArrayList<>();
         for(Doctor doctor : dermatologists) {
-            List<Pharmacy> pharmacies = doctorRepository.findAllDermatologistPharmacies(doctor.getId());
+            List<Pharmacy> pharmacies = doctorRepository.findAllDoctorsPharmacies(doctor.getId());
             if(pharmacies.contains(pharmacy)) {
                 Float averageMark = doctorRepository.getAverageMarkForDoctor(doctor.getId());
                 DoctorDTO doctorDTO = new DoctorDTO();
@@ -57,20 +58,5 @@ public class DoctorServiceImpl implements DoctorService {
             }
         }
         return dermatologistsForPharmacy;
-    }
-
-    private List<DoctorDTO>  getDoctorDTOs(List<Doctor> doctors) {
-        List<DoctorDTO> doctorDTOs = new ArrayList<>();
-        for(Doctor doctor : doctors) {
-            List<Pharmacy> pharmacies = doctorRepository.findAllDermatologistPharmacies(doctor.getId());
-            Float averageMark = doctorRepository.getAverageMarkForDoctor(doctor.getId());
-            DoctorDTO doctorDTO = new DoctorDTO();
-            doctorDTO.setName(doctor.getName());
-            doctorDTO.setSurname(doctor.getSurname());
-            doctorDTO.setAverageMark(averageMark);
-            doctorDTO.setPharmacies(pharmacies);
-            doctorDTOs.add(doctorDTO);
-        }
-        return doctorDTOs;
     }
 }
