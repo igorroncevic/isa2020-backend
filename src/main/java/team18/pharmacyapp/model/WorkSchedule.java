@@ -1,5 +1,6 @@
 package team18.pharmacyapp.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -9,7 +10,7 @@ import team18.pharmacyapp.model.users.Doctor;
 import javax.persistence.*;
 import java.util.Date;
 
-@Entity
+@Entity(name = "work_schedule")
 @Getter
 @Setter
 @NoArgsConstructor

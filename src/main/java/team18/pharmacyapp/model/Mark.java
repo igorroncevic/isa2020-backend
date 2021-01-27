@@ -11,7 +11,7 @@ import team18.pharmacyapp.model.users.Patient;
 import javax.persistence.*;
 import java.util.UUID;
 
-@Entity
+@Entity(name = "mark")
 @Getter
 @Setter
 @NoArgsConstructor
