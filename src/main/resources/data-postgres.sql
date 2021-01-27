@@ -11,14 +11,14 @@ insert into address(id, city, country, street)
 values ('30cedadd-1379-42fc-9a0c-185b977ed3d9', 'Novi Sad', 'Serbia', 'Doza Djerdja 40');
 
 -- Dermatolozi
-insert into doctor (id, "name", surname, email, phone_number, "password", "role", doctor_role, fk_address)
-values ('a5ac174a-45b3-487f-91cb-3d3f727d6f1c', 'Pera', 'Peric', 'peraperic@gmail.com', '065/123-456', 'nekipass123', 'doctor',
+insert into doctor (id, "name", surname, email, phone_number, "password", "role", fk_address)
+values ('a5ac174a-45b3-487f-91cb-3d3f727d6f1c', 'Pera', 'Peric', 'peraperic@gmail.com', '065/123-456', 'nekipass123',
         'dermatologist', '3b00204e-1897-4b6e-a175-5d0595833ced');
-insert into doctor (id, "name", surname, email, phone_number, "password", "role", doctor_role, fk_address)
+insert into doctor (id, "name", surname, email, phone_number, "password", "role", fk_address)
 values ('1accde09-0aa2-4ea1-9a38-17f4635198b9', 'Jovan', 'Jovanovic', 'jovajovanovic@gmail.com', '065/598-127', 'nekipass123',
-        'doctor', 'dermatologist', '9241601b-a20a-4f26-9523-d4a670a881dc');
-insert into doctor (id, "name", surname, email, phone_number, "password", "role", doctor_role, fk_address)
-values ('61e9bf31-afae-4b2f-9197-8e2a328707c5', 'Ivana', 'Ivanovic', 'ivanaivanovic@gmail.com', '065/917-427', 'nekipass123', 'doctor',
+        'dermatologist', '9241601b-a20a-4f26-9523-d4a670a881dc');
+insert into doctor (id, "name", surname, email, phone_number, "password", "role", fk_address)
+values ('61e9bf31-afae-4b2f-9197-8e2a328707c5', 'Ivana', 'Ivanovic', 'ivanaivanovic@gmail.com', '065/917-427', 'nekipass123',
         'dermatologist', '34c4d86e-8781-4163-b61a-4720c39b7ad6');
 
 -- Loyalty program
