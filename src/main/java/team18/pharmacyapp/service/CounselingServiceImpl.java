@@ -2,16 +2,23 @@ package team18.pharmacyapp.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import team18.pharmacyapp.helpers.DateTimeHelpers;
 import team18.pharmacyapp.model.Term;
 import team18.pharmacyapp.model.WorkSchedule;
 import team18.pharmacyapp.model.dtos.DateTimeRangeDTO;
 import team18.pharmacyapp.model.dtos.DoctorDTO;
 import team18.pharmacyapp.model.dtos.PharmacyMarkPriceDTO;
+import team18.pharmacyapp.model.dtos.ScheduleCounselingDTO;
+import team18.pharmacyapp.model.enums.TermType;
+import team18.pharmacyapp.model.exceptions.ActionNotAllowedException;
+import team18.pharmacyapp.model.exceptions.ScheduleTermException;
 import team18.pharmacyapp.model.users.Doctor;
+import team18.pharmacyapp.model.users.Patient;
 import team18.pharmacyapp.repository.CounselingRepository;
 import team18.pharmacyapp.repository.DoctorRepository;
 import team18.pharmacyapp.service.interfaces.CounselingService;
+import team18.pharmacyapp.service.interfaces.EmailService;
 
 import java.time.LocalTime;
 import java.util.*;
@@ -20,11 +27,13 @@ import java.util.*;
 public class CounselingServiceImpl implements CounselingService {
     private final CounselingRepository counselingRepository;
     private final DoctorRepository doctorRepository;
+    private final EmailService emailService;
 
     @Autowired
-    public CounselingServiceImpl(CounselingRepository counselingRepository, DoctorRepository doctorRepository) {
+    public CounselingServiceImpl(CounselingRepository counselingRepository, DoctorRepository doctorRepository, EmailService emailService) {
         this.counselingRepository = counselingRepository;
         this.doctorRepository = doctorRepository;
+        this.emailService = emailService;
     }
 
     @Override
@@ -93,6 +102,24 @@ public class CounselingServiceImpl implements CounselingService {
         }
 
         return freeDoctors;
+    }
+
+    @Override
+    @Transactional(rollbackFor = {ScheduleTermException.class, RuntimeException.class})
+    public boolean patientScheduleCounseling(ScheduleCounselingDTO term) throws ScheduleTermException, RuntimeException {
+        UUID id = UUID.randomUUID();
+        int retVal = counselingRepository.patientScheduleCounseling(id, term.getPatientId(),
+                term.getDoctorId(), term.getFromTime(), term.getToTime());
+
+        if(retVal != 1) throw new ScheduleTermException("Could not save this counseling");
+
+        String userMail = "savooroz33@gmail.com";   // zakucano za sada
+        String subject = "[ISA Pharmacy] Confirmation - Counseling scheduling";
+        String body = "You have successfully scheduled a counseling on our site.\n" +
+                "Your reservation ID: " + id.toString();
+        new Thread(() -> emailService.sendMail(userMail, subject, body)).start();
+
+        return true;
     }
 
 }
