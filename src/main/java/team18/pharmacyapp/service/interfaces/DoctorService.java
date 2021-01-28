@@ -15,4 +15,8 @@ public interface DoctorService {
 
     public List<DoctorDTO> findAllDoctorsForPharmacy(UUID pharmacyId, UserRole role);
 
+    public Doctor getById(UUID id);
+
+    public Doctor update(Doctor doctor);
+
 }

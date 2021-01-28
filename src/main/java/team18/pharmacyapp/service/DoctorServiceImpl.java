@@ -59,4 +59,21 @@ public class DoctorServiceImpl implements DoctorService {
         }
         return dermatologistsForPharmacy;
     }
+
+    public Doctor getById(UUID id) {
+        return doctorRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public Doctor update(Doctor doctor) {
+        Doctor doc=getById(doctor.getId());
+        if(doc!=null) {
+            doc.setName(doctor.getName());
+            doc.setSurname(doctor.getSurname());
+            doc.setEmail(doctor.getEmail());
+            doc.setPhoneNumber(doctor.getPhoneNumber());
+            return doctorRepository.save(doc);
+        }
+        return null;
+    }
 }
