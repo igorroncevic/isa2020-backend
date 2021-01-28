@@ -59,13 +59,13 @@ public class CheckupServiceImpl implements CheckupService {
         if (patient.getPenalties() >= 3) throw new ActionNotAllowedException("You are not allowed to schedule terms!");
 
         Term checkTerm = checkupRepository.findById(term.getCheckupId()).orElseGet(null);
-        if(checkTerm == null) return false;
+        if (checkTerm == null) return false;
 
         Date today = new Date(System.currentTimeMillis() - 60 * 1000);
         if (checkTerm.getStartTime().before(today)) throw new ScheduleTermException("Can't schedule past terms!");
 
         int rowsUpdated = checkupRepository.patientScheduleCheckup(term.getPatientId(), term.getCheckupId());
-        if(rowsUpdated != 1) throw new RuntimeException("Couldn't schedule this term!");
+        if (rowsUpdated != 1) throw new RuntimeException("Couldn't schedule this term!");
 
         return true;
     }
@@ -73,7 +73,7 @@ public class CheckupServiceImpl implements CheckupService {
     @Transactional(rollbackFor = {RuntimeException.class})
     public boolean patientCancelCheckup(ScheduleCheckupDTO term) throws RuntimeException {
         Term checkTerm = checkupRepository.findById(term.getCheckupId()).orElseGet(null);
-        if(checkTerm == null) return false;
+        if (checkTerm == null) return false;
 
         Date yesterday = new Date(System.currentTimeMillis() - 24 * 60 * 60 * 1000);
         if (checkTerm.getStartTime().before(yesterday)) {     // ponedeljak < (ponedeljak - 1)?
@@ -81,7 +81,7 @@ public class CheckupServiceImpl implements CheckupService {
         }
 
         int rowsUpdated = checkupRepository.patientCancelCheckup(term.getCheckupId());
-        if(rowsUpdated != 1) throw new RuntimeException("Couldn't schedule this term!");
+        if (rowsUpdated != 1) throw new RuntimeException("Couldn't schedule this term!");
 
         return true;
     }
