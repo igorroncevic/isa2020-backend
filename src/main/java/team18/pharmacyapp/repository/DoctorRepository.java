@@ -18,7 +18,7 @@ public interface DoctorRepository extends JpaRepository<Doctor, UUID> {
     @Query("SELECT ws.pharmacy FROM work_schedule ws WHERE ws.doctor.id = :doctorId")
     List<Pharmacy> findAllDoctorsPharmacies(@Param("doctorId") UUID doctorId);
 
-    @Query("SELECT AVG(m.mark) FROM mark m WHERE m.doctor.id = :doctorId")
+    @Query("SELECT COALESCE(AVG(m.mark), 0) FROM mark m WHERE m.doctor.id = :doctorId")
     Float getAverageMarkForDoctor(@Param("doctorId") UUID doctorId);
 
     @Query("SELECT d FROM doctor d " +

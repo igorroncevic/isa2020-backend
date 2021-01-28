@@ -6,6 +6,7 @@ import team18.pharmacyapp.helpers.DateTimeHelpers;
 import team18.pharmacyapp.model.Term;
 import team18.pharmacyapp.model.WorkSchedule;
 import team18.pharmacyapp.model.dtos.DateTimeRangeDTO;
+import team18.pharmacyapp.model.dtos.DoctorDTO;
 import team18.pharmacyapp.model.dtos.PharmacyMarkPriceDTO;
 import team18.pharmacyapp.model.users.Doctor;
 import team18.pharmacyapp.repository.CounselingRepository;
@@ -33,7 +34,7 @@ public class CounselingServiceImpl implements CounselingService {
         List<PharmacyMarkPriceDTO> availablePharmacies = new ArrayList<>();
 
         for (PharmacyMarkPriceDTO p : allPharmacies) {
-            List<Doctor> doctors = this.getFreeDoctorsForPharmacy(p.getId(), timeRange);
+            List<DoctorDTO> doctors = this.getFreeDoctorsForPharmacy(p.getId(), timeRange);
             if (doctors.size() >= 1) availablePharmacies.add(p);
         }
 
@@ -41,9 +42,9 @@ public class CounselingServiceImpl implements CounselingService {
     }
 
     @Override
-    public List<Doctor> getFreeDoctorsForPharmacy(UUID pharmacyId, DateTimeRangeDTO timeRange) {
+    public List<DoctorDTO> getFreeDoctorsForPharmacy(UUID pharmacyId, DateTimeRangeDTO timeRange) {
         List<Doctor> doctors = doctorRepository.findAllPharmacistsInPharmacy(pharmacyId);
-        List<Doctor> freeDoctors = new ArrayList<>();
+        List<DoctorDTO> freeDoctors = new ArrayList<>();
 
         for (Doctor d : doctors) {
             LocalTime timeRangeStartTime = DateTimeHelpers.getTimeWithoutDate(timeRange.getFromTime());
@@ -81,7 +82,14 @@ public class CounselingServiceImpl implements CounselingService {
 
             if (continueFlag) continue; // Ako se vrijeme nekog termina poklapa sa ovim terminom
 
-            freeDoctors.add(d); // Ako nista od ovoga nije tacno, doktor je slobodan
+            DoctorDTO doctorDTO = new DoctorDTO();
+            doctorDTO.setId(d.getId());
+            doctorDTO.setName(d.getName());
+            doctorDTO.setSurname(d.getSurname());
+            float averageMark = doctorRepository.getAverageMarkForDoctor(d.getId());
+            doctorDTO.setAverageMark(averageMark);
+
+            freeDoctors.add(doctorDTO); // Ako nista od ovoga nije tacno, doktor je slobodan
         }
 
         return freeDoctors;
