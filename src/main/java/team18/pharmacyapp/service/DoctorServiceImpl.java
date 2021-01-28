@@ -28,7 +28,7 @@ public class DoctorServiceImpl implements DoctorService {
         List<Doctor> dermatologists = doctorRepository.findAllDoctors(role);
         List<DoctorDTO> doctorDTOs = new ArrayList<>();
         for(Doctor doctor : dermatologists) {
-            List<Pharmacy> pharmacies = doctorRepository.findAllDoctorsPharmacies(doctor.getId());
+            List<String> pharmacies = doctorRepository.findAllDoctorsPharmaciesNames(doctor.getId());
             Float averageMark = doctorRepository.getAverageMarkForDoctor(doctor.getId());
             DoctorDTO doctorDTO = new DoctorDTO();
             doctorDTO.setName(doctor.getName());
@@ -48,12 +48,13 @@ public class DoctorServiceImpl implements DoctorService {
         for(Doctor doctor : dermatologists) {
             List<Pharmacy> pharmacies = doctorRepository.findAllDoctorsPharmacies(doctor.getId());
             if(pharmacies.contains(pharmacy)) {
+                List<String> pharmaciesNames = doctorRepository.findAllDoctorsPharmaciesNames(doctor.getId());
                 Float averageMark = doctorRepository.getAverageMarkForDoctor(doctor.getId());
                 DoctorDTO doctorDTO = new DoctorDTO();
                 doctorDTO.setName(doctor.getName());
                 doctorDTO.setSurname(doctor.getSurname());
                 doctorDTO.setAverageMark(averageMark);
-                doctorDTO.setPharmacies(pharmacies);
+                doctorDTO.setPharmacies(pharmaciesNames);
                 dermatologistsForPharmacy.add(doctorDTO);
             }
         }

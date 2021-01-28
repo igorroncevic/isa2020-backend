@@ -15,5 +15,5 @@ public class DoctorDTO {
     private String name;
     private String surname;
     private Float averageMark;
-    private List<Pharmacy> pharmacies;
+    private List<String> pharmacies;
 }
