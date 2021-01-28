@@ -6,12 +6,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import team18.pharmacyapp.model.dtos.DoctorDTO;
 import team18.pharmacyapp.model.enums.UserRole;
+import team18.pharmacyapp.model.users.Doctor;
+import team18.pharmacyapp.model.users.PharmacyAdmin;
 import team18.pharmacyapp.service.interfaces.DoctorService;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
-@CrossOrigin(origins = "http://localhost:8080")
+@CrossOrigin(origins = {"http://localhost:8080","http://localhost:8081"})
 @RestController
 @RequestMapping(value = "api/doctors")
 public class DoctorController {
@@ -22,6 +25,20 @@ public class DoctorController {
         this.doctorService = doctorService;
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<Doctor> getById(@PathVariable UUID id) {
+        Doctor doctor=doctorService.getById(id);
+        return new ResponseEntity<>(doctor, HttpStatus.OK);
+    }
+
+    @PutMapping(consumes = "application/json")
+    public ResponseEntity<Doctor> update(@RequestBody Doctor doctor) {
+        Doctor doc=doctorService.update(doctor);
+        if (doc!=null) {
+            return new ResponseEntity<>(doc, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(doc, HttpStatus.BAD_REQUEST);
+    }
     @GetMapping("/dermatologists")
     public ResponseEntity<List<DoctorDTO>> getAllDermatologists() {
         List<DoctorDTO> doctors = doctorService.findAllDoctors(UserRole.dermatologist);
