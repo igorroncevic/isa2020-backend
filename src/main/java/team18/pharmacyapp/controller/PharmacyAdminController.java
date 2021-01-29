@@ -9,7 +9,7 @@ import team18.pharmacyapp.service.interfaces.PharmacyAdminService;
 
 import java.util.UUID;
 
-@CrossOrigin(origins = "http://localhost:8080")
+@CrossOrigin(origins = {"http://localhost:8080","http://localhost:8081"})
 @RestController
 @RequestMapping(value = "api/phadmin")
 public class PharmacyAdminController {

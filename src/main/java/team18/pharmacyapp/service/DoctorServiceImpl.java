@@ -27,8 +27,8 @@ public class DoctorServiceImpl implements DoctorService {
     public List<DoctorDTO> findAllDoctors(UserRole role) {
         List<Doctor> dermatologists = doctorRepository.findAllDoctors(role);
         List<DoctorDTO> doctorDTOs = new ArrayList<>();
-        for (Doctor doctor : dermatologists) {
-            List<Pharmacy> pharmacies = doctorRepository.findAllDoctorsPharmacies(doctor.getId());
+        for(Doctor doctor : dermatologists) {
+            List<String> pharmacies = doctorRepository.findAllDoctorsPharmaciesNames(doctor.getId());
             Float averageMark = doctorRepository.getAverageMarkForDoctor(doctor.getId());
             DoctorDTO doctorDTO = new DoctorDTO();
             doctorDTO.setId(doctor.getId());
@@ -48,17 +48,35 @@ public class DoctorServiceImpl implements DoctorService {
         List<DoctorDTO> dermatologistsForPharmacy = new ArrayList<>();
         for (Doctor doctor : dermatologists) {
             List<Pharmacy> pharmacies = doctorRepository.findAllDoctorsPharmacies(doctor.getId());
-            if (pharmacies.contains(pharmacy)) {
+            if(pharmacies.contains(pharmacy)) {
+                List<String> pharmaciesNames = doctorRepository.findAllDoctorsPharmaciesNames(doctor.getId());
                 Float averageMark = doctorRepository.getAverageMarkForDoctor(doctor.getId());
                 DoctorDTO doctorDTO = new DoctorDTO();
                 doctorDTO.setId(doctor.getId());
                 doctorDTO.setName(doctor.getName());
                 doctorDTO.setSurname(doctor.getSurname());
                 doctorDTO.setAverageMark(averageMark);
-                doctorDTO.setPharmacies(pharmacies);
+                doctorDTO.setPharmacies(pharmaciesNames);
                 dermatologistsForPharmacy.add(doctorDTO);
             }
         }
         return dermatologistsForPharmacy;
+    }
+
+    public Doctor getById(UUID id) {
+        return doctorRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public Doctor update(Doctor doctor) {
+        Doctor doc=getById(doctor.getId());
+        if(doc!=null) {
+            doc.setName(doctor.getName());
+            doc.setSurname(doctor.getSurname());
+            doc.setEmail(doctor.getEmail());
+            doc.setPhoneNumber(doctor.getPhoneNumber());
+            return doctorRepository.save(doc);
+        }
+        return null;
     }
 }

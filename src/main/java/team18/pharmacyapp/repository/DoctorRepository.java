@@ -15,6 +15,9 @@ public interface DoctorRepository extends JpaRepository<Doctor, UUID> {
     @Query("SELECT d FROM doctor d WHERE d.role = :doctorRole")
     List<Doctor> findAllDoctors(@Param("doctorRole") UserRole doctorRole);
 
+    @Query("SELECT ws.pharmacy.name FROM work_schedule ws WHERE ws.doctor.id = :doctorId")
+    public List<String> findAllDoctorsPharmaciesNames(@Param("doctorId") UUID doctorId);
+
     @Query("SELECT ws.pharmacy FROM work_schedule ws WHERE ws.doctor.id = :doctorId")
     List<Pharmacy> findAllDoctorsPharmacies(@Param("doctorId") UUID doctorId);
 
