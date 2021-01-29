@@ -35,16 +35,29 @@ public class PharmacyServiceImpl implements PharmacyService {
 
     @Override
     public List<PharmacyFilteringDTO> getAllFiltered(String name, Float mark, String city) {
-        return pharmacyRepository.filterAll(name, (double)mark, city);
-        //List<Pharmacy> pharmacies = pharmacyRepository.filterAll(name, (double)mark, city);
-//        List<PharmacyFilteringDTO> pharmacyFilteringDTOs = new ArrayList<>();
-//
-//        for(Pharmacy p : pharmacies){
-//            Float averageMark = pharmacyRepository.getAverageMark(p.getId());
-//            pharmacyFilteringDTOs.add(new PharmacyFilteringDTO(p.getId(), p.getName(), p.getAddress(), averageMark));
-//        }
-//
-//        return pharmacyFilteringDTOs;
+        List<PharmacyFilteringDTO> pharmacies = pharmacyRepository.findAllForFiltering();
+        List<PharmacyFilteringDTO> finalPharmacies = new ArrayList<>();
+
+        for(PharmacyFilteringDTO p : pharmacies){
+            boolean continueFlag = false;
+            if(name != null) {
+                if(!p.getName().toUpperCase().contains(name.toUpperCase())) continueFlag = true;
+            }
+
+            if(city != null){
+                if(!p.getAddress().getCity().toUpperCase().contains(city.toUpperCase())) continueFlag = true;
+            }
+
+            if(mark != null){
+                if(p.getAverageMark() < mark) continueFlag = true;
+            }
+
+            if(continueFlag) continue;
+
+            finalPharmacies.add(p);
+        }
+
+        return finalPharmacies;
     }
 
 }

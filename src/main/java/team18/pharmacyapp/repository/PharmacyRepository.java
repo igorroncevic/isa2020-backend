@@ -17,12 +17,7 @@ public interface PharmacyRepository extends JpaRepository<Pharmacy, UUID> {
     Float getAverageMark(@Param("id") UUID id);
 
     @Transactional(readOnly = true)
-    @Query("SELECT new team18.pharmacyapp.model.dtos.PharmacyFilteringDTO(p.id, p.name, p.address, AVG(m.mark)) FROM pharmacy p " +
-                "JOIN p.address a " +
-                "JOIN p.marks m WHERE " +
-                "(:name IS NULL OR UPPER(p.name) LIKE CONCAT('%', UPPER(COALESCE(:name, 'x')), '%')) AND " +
-                "(:city IS NULL OR UPPER(a.city) LIKE CONCAT('%', UPPER(COALESCE(:city, 'x')), '%')) AND " +
-                "(:mark = 0.0 OR :mark >= (SELECT AVG(m.mark) FROM mark m INNER JOIN pharmacy p2 ON m.pharmacy.id = p2.id WHERE p2.id = p.id)) " +
-                "GROUP BY p.id, p.name, p.address")
-    List<PharmacyFilteringDTO> filterAll(@Param("name") String name, @Param("mark") Double mark, @Param("city") String city);
+    @Query("SELECT new team18.pharmacyapp.model.dtos.PharmacyFilteringDTO(p.id, p.name, p.address, AVG(m.mark)) " +
+            "FROM pharmacy p JOIN p.address a JOIN p.marks m GROUP BY p.id, p.name, p.address")
+    List<PharmacyFilteringDTO> findAllForFiltering();
 }
