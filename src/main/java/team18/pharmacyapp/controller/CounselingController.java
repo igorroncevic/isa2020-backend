@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import team18.pharmacyapp.model.dtos.*;
+import team18.pharmacyapp.model.exceptions.BadTimeRangeException;
 import team18.pharmacyapp.model.exceptions.ScheduleTermException;
 import team18.pharmacyapp.service.interfaces.CounselingService;
 
@@ -22,13 +23,18 @@ public class CounselingController {
         this.counselingService = counselingService;
     }
 
-    @GetMapping("/available")
+    @PostMapping("/available")
     public ResponseEntity<List<PharmacyMarkPriceDTO>> getPharmaciesWithAvailableCounselings(@RequestBody DateTimeRangeDTO timeRange) {
-        List<PharmacyMarkPriceDTO> pharmacies = counselingService.getPharmaciesWithAvailableCounselings(timeRange);
+        List<PharmacyMarkPriceDTO> pharmacies;
+        try{
+            pharmacies = counselingService.getPharmaciesWithAvailableCounselings(timeRange);
+        }catch(BadTimeRangeException ex){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
         return new ResponseEntity<>(pharmacies, HttpStatus.OK);
     }
 
-    @GetMapping("/available/{id}")
+    @PostMapping("/available/{id}")
     public ResponseEntity<List<DoctorDTO>> getFreeDoctorsForPharmacy(@PathVariable UUID id, @RequestBody DateTimeRangeDTO timeRange) {
         List<DoctorDTO> doctors = counselingService.getFreeDoctorsForPharmacy(id, timeRange);
         return new ResponseEntity<>(doctors, HttpStatus.OK);

@@ -10,11 +10,9 @@ import team18.pharmacyapp.model.dtos.DateTimeRangeDTO;
 import team18.pharmacyapp.model.dtos.DoctorDTO;
 import team18.pharmacyapp.model.dtos.PharmacyMarkPriceDTO;
 import team18.pharmacyapp.model.dtos.ScheduleCounselingDTO;
-import team18.pharmacyapp.model.enums.TermType;
-import team18.pharmacyapp.model.exceptions.ActionNotAllowedException;
+import team18.pharmacyapp.model.exceptions.BadTimeRangeException;
 import team18.pharmacyapp.model.exceptions.ScheduleTermException;
 import team18.pharmacyapp.model.users.Doctor;
-import team18.pharmacyapp.model.users.Patient;
 import team18.pharmacyapp.repository.CounselingRepository;
 import team18.pharmacyapp.repository.DoctorRepository;
 import team18.pharmacyapp.service.interfaces.CounselingService;
@@ -37,10 +35,13 @@ public class CounselingServiceImpl implements CounselingService {
     }
 
     @Override
-    public List<PharmacyMarkPriceDTO> getPharmaciesWithAvailableCounselings(DateTimeRangeDTO timeRange) {
+    public List<PharmacyMarkPriceDTO> getPharmaciesWithAvailableCounselings(DateTimeRangeDTO timeRange) throws BadTimeRangeException {
         List<PharmacyMarkPriceDTO> allPharmacies = counselingRepository.getPharmaciesWithAvailableCounselings(timeRange.getFromTime(), timeRange.getToTime());
 
         List<PharmacyMarkPriceDTO> availablePharmacies = new ArrayList<>();
+
+        Date today = new Date(System.currentTimeMillis() + 60 * 1000);
+        if(today.after(timeRange.getFromTime()) || today.after(timeRange.getToTime())) throw new BadTimeRangeException("");
 
         for (PharmacyMarkPriceDTO p : allPharmacies) {
             List<DoctorDTO> doctors = this.getFreeDoctorsForPharmacy(p.getId(), timeRange);
@@ -111,7 +112,7 @@ public class CounselingServiceImpl implements CounselingService {
         int retVal = counselingRepository.patientScheduleCounseling(id, term.getPatientId(),
                 term.getDoctorId(), term.getFromTime(), term.getToTime());
 
-        if(retVal != 1) throw new ScheduleTermException("Could not save this counseling");
+        if (retVal != 1) throw new ScheduleTermException("Could not save this counseling");
 
         String userMail = "savooroz33@gmail.com";   // zakucano za sada
         String subject = "[ISA Pharmacy] Confirmation - Counseling scheduling";
