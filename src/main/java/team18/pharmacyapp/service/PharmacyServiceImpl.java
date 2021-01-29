@@ -1,5 +1,6 @@
 package team18.pharmacyapp.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import team18.pharmacyapp.model.Pharmacy;
 import team18.pharmacyapp.repository.PharmacyRepository;
@@ -13,6 +14,7 @@ public class PharmacyServiceImpl implements PharmacyService {
 
     private final PharmacyRepository pharmacyRepository;
 
+    @Autowired
     public PharmacyServiceImpl(PharmacyRepository pharmacyRepository) {
         this.pharmacyRepository = pharmacyRepository;
     }
