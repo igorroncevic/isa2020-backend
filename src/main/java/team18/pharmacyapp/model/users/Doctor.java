@@ -29,6 +29,6 @@ public class Doctor extends RegisteredUser implements Serializable {
     @OneToMany(mappedBy = "doctor", cascade = CascadeType.ALL)
     private List<Mark> marks;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "doctor", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "doctor", cascade = CascadeType.ALL)
     private List<WorkSchedule> workSchedules;
 }
