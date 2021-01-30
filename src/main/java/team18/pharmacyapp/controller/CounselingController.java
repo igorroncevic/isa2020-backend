@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import team18.pharmacyapp.model.Term;
 import team18.pharmacyapp.model.dtos.*;
 import team18.pharmacyapp.model.exceptions.*;
 import team18.pharmacyapp.service.interfaces.CounselingService;
@@ -20,6 +21,13 @@ public class CounselingController {
     @Autowired
     public CounselingController(CounselingService counselingService) {
         this.counselingService = counselingService;
+    }
+
+    @GetMapping("/patient/{id}")
+    public ResponseEntity<List<Term>> getAllPatientsCounselings(@PathVariable UUID id) {
+        List<Term> counselings = counselingService.findAllPatientsCounselings(id);
+
+        return new ResponseEntity<>(counselings, HttpStatus.OK);
     }
 
     @PostMapping("/available")

@@ -7,6 +7,7 @@ import team18.pharmacyapp.helpers.DateTimeHelpers;
 import team18.pharmacyapp.model.Term;
 import team18.pharmacyapp.model.WorkSchedule;
 import team18.pharmacyapp.model.dtos.*;
+import team18.pharmacyapp.model.enums.TermType;
 import team18.pharmacyapp.model.exceptions.*;
 import team18.pharmacyapp.model.users.Doctor;
 import team18.pharmacyapp.repository.CounselingRepository;
@@ -138,6 +139,11 @@ public class CounselingServiceImpl implements CounselingService {
         if (rowsUpdated != 1) throw new RuntimeException("Couldn't cancel this term!");
 
         return true;
+    }
+
+    @Override
+    public List<Term> findAllPatientsCounselings(UUID id) {
+        return counselingRepository.findAllPatientsCounselings(id, TermType.counseling);
     }
 
 }

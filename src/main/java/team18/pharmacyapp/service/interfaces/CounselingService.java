@@ -1,5 +1,6 @@
 package team18.pharmacyapp.service.interfaces;
 
+import team18.pharmacyapp.model.Term;
 import team18.pharmacyapp.model.dtos.*;
 import team18.pharmacyapp.model.exceptions.*;
 
@@ -14,4 +15,6 @@ public interface CounselingService {
     boolean patientScheduleCounseling(ScheduleCounselingDTO term) throws AlreadyScheduledException, ScheduleTermException, RuntimeException;
 
     boolean patientCancelCounseling(CancelCounselingDTO term) throws EntityNotFoundException, ActionNotAllowedException, RuntimeException;
+
+    List<Term> findAllPatientsCounselings(UUID id);
 }
