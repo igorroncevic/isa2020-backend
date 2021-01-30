@@ -1,11 +1,7 @@
 package team18.pharmacyapp.service.interfaces;
 
-import team18.pharmacyapp.model.dtos.DateTimeRangeDTO;
-import team18.pharmacyapp.model.dtos.DoctorDTO;
-import team18.pharmacyapp.model.dtos.PharmacyMarkPriceDTO;
-import team18.pharmacyapp.model.dtos.ScheduleCounselingDTO;
-import team18.pharmacyapp.model.exceptions.BadTimeRangeException;
-import team18.pharmacyapp.model.exceptions.ScheduleTermException;
+import team18.pharmacyapp.model.dtos.*;
+import team18.pharmacyapp.model.exceptions.*;
 
 import java.util.List;
 import java.util.UUID;
@@ -15,5 +11,7 @@ public interface CounselingService {
 
     List<DoctorDTO> getFreeDoctorsForPharmacy(UUID pharmacyId, DateTimeRangeDTO timeRange);
 
-    boolean patientScheduleCounseling(ScheduleCounselingDTO term) throws ScheduleTermException, RuntimeException;
+    boolean patientScheduleCounseling(ScheduleCounselingDTO term) throws AlreadyScheduledException, ScheduleTermException, RuntimeException;
+
+    boolean patientCancelCounseling(CancelCounselingDTO term) throws EntityNotFoundException, ActionNotAllowedException, RuntimeException;
 }

@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import team18.pharmacyapp.model.Term;
 import team18.pharmacyapp.model.dtos.ScheduleCheckupDTO;
 import team18.pharmacyapp.model.exceptions.ActionNotAllowedException;
+import team18.pharmacyapp.model.exceptions.EntityNotFoundException;
 import team18.pharmacyapp.model.exceptions.ScheduleTermException;
 import team18.pharmacyapp.service.interfaces.CheckupService;
 
@@ -112,6 +113,10 @@ public class CheckupController {
         boolean success;
         try {
             success = checkupService.patientCancelCheckup(term);
+        }catch (EntityNotFoundException ex) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }catch (ActionNotAllowedException ex) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         } catch (RuntimeException ex) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }

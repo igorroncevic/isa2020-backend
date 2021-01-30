@@ -4,6 +4,7 @@ import team18.pharmacyapp.model.Term;
 import team18.pharmacyapp.model.dtos.ScheduleCheckupDTO;
 import team18.pharmacyapp.model.enums.TermType;
 import team18.pharmacyapp.model.exceptions.ActionNotAllowedException;
+import team18.pharmacyapp.model.exceptions.EntityNotFoundException;
 import team18.pharmacyapp.model.exceptions.ScheduleTermException;
 
 import java.util.List;
@@ -24,6 +25,6 @@ public interface CheckupService {
 
     boolean patientScheduleCheckup(ScheduleCheckupDTO term) throws ActionNotAllowedException, ScheduleTermException, RuntimeException;
 
-    boolean patientCancelCheckup(ScheduleCheckupDTO term) throws RuntimeException;
+    boolean patientCancelCheckup(ScheduleCheckupDTO term) throws EntityNotFoundException, ActionNotAllowedException,RuntimeException;
 
 }
