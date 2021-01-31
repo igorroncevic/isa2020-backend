@@ -4,14 +4,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import team18.pharmacyapp.model.dtos.CancelMedicineRequestDTO;
-import team18.pharmacyapp.model.dtos.PharmacyMedicinesDTO;
-import team18.pharmacyapp.model.dtos.ReserveMedicineRequestDTO;
-import team18.pharmacyapp.model.dtos.ReservedMedicineDTO;
+import team18.pharmacyapp.model.dtos.*;
 import team18.pharmacyapp.model.exceptions.ActionNotAllowedException;
 import team18.pharmacyapp.model.medicine.Medicine;
 import team18.pharmacyapp.model.exceptions.ReserveMedicineException;
 import team18.pharmacyapp.service.interfaces.MedicineService;
+import team18.pharmacyapp.service.interfaces.ReservedMedicinesService;
 
 import java.util.List;
 import java.util.UUID;
@@ -21,10 +19,12 @@ import java.util.UUID;
 @RequestMapping(value = "api/medicines")
 public class MedicineController {
     private final MedicineService medicineService;
+    private final ReservedMedicinesService reservedMedicinesService;
 
     @Autowired
-    public MedicineController(MedicineService medicineService) {
+    public MedicineController(MedicineService medicineService, ReservedMedicinesService reservedMedicinesService) {
         this.medicineService = medicineService;
+        this.reservedMedicinesService = reservedMedicinesService;
     }
 
     @GetMapping
@@ -106,6 +106,21 @@ public class MedicineController {
         } else {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
+    }
+
+    @GetMapping("reserved/{id}/{pharmacy}")
+    public ResponseEntity<ReservedMedicineResponseDTO> getReservedMedicineById(@PathVariable UUID id, @PathVariable UUID pharmacy) {
+        ReservedMedicineResponseDTO medicines= reservedMedicinesService.checkReservation(id,pharmacy);
+        if(medicines != null) {
+            return new ResponseEntity<>(medicines, HttpStatus.OK);
+        }
+        return  new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+
+    @PutMapping(value = "handleReservation",consumes = "application/json")
+    public boolean handleReservation(@RequestBody HandleReservationDTO dto){
+        return reservedMedicinesService.handleMedicine(dto);
     }
 
 }
