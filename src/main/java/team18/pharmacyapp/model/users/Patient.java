@@ -40,10 +40,13 @@ public class Patient extends RegisteredUser {
     @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL)
     private List<Complaint> complaints;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false)
     private Loyalty loyalty;
 
     @Column(nullable = false)
     private int loyaltyPoints;
+
+    @Column(nullable = false)
+    private boolean activated=false;
 }
