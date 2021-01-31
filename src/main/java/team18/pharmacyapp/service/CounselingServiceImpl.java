@@ -6,12 +6,9 @@ import org.springframework.transaction.annotation.Transactional;
 import team18.pharmacyapp.helpers.DateTimeHelpers;
 import team18.pharmacyapp.model.Term;
 import team18.pharmacyapp.model.WorkSchedule;
-import team18.pharmacyapp.model.dtos.DateTimeRangeDTO;
-import team18.pharmacyapp.model.dtos.DoctorDTO;
-import team18.pharmacyapp.model.dtos.PharmacyMarkPriceDTO;
-import team18.pharmacyapp.model.dtos.ScheduleCounselingDTO;
-import team18.pharmacyapp.model.exceptions.BadTimeRangeException;
-import team18.pharmacyapp.model.exceptions.ScheduleTermException;
+import team18.pharmacyapp.model.dtos.*;
+import team18.pharmacyapp.model.enums.TermType;
+import team18.pharmacyapp.model.exceptions.*;
 import team18.pharmacyapp.model.users.Doctor;
 import team18.pharmacyapp.repository.CounselingRepository;
 import team18.pharmacyapp.repository.DoctorRepository;
@@ -106,8 +103,12 @@ public class CounselingServiceImpl implements CounselingService {
     }
 
     @Override
-    @Transactional(rollbackFor = {ScheduleTermException.class, RuntimeException.class})
-    public boolean patientScheduleCounseling(ScheduleCounselingDTO term) throws ScheduleTermException, RuntimeException {
+    @Transactional(rollbackFor = {AlreadyScheduledException.class, ScheduleTermException.class, RuntimeException.class})
+    public boolean patientScheduleCounseling(ScheduleCounselingDTO term) throws AlreadyScheduledException, ScheduleTermException, RuntimeException {
+        Term checkTerm = counselingRepository.checkIfPatientHasCounselingWithDoctor(term.getPatientId(), term.getDoctorId(), new Date());
+
+        if(checkTerm != null) throw new AlreadyScheduledException("You already have a counseling with this pharmacist.");
+
         UUID id = UUID.randomUUID();
         int retVal = counselingRepository.patientScheduleCounseling(id, term.getPatientId(),
                 term.getDoctorId(), term.getFromTime(), term.getToTime());
@@ -121,6 +122,28 @@ public class CounselingServiceImpl implements CounselingService {
         new Thread(() -> emailService.sendMail(userMail, subject, body)).start();
 
         return true;
+    }
+
+    @Override
+    @Transactional(rollbackFor = {EntityNotFoundException.class, ActionNotAllowedException.class, RuntimeException.class})
+    public boolean patientCancelCounseling(CancelCounselingDTO term) throws EntityNotFoundException, ActionNotAllowedException, RuntimeException {
+        Term checkTerm = counselingRepository.findByIdCustom(term.getCounselingId());
+
+        if (checkTerm == null) throw new EntityNotFoundException("There is no such counseling");
+        if(!checkTerm.getPatient().getId().equals(term.getPatientId())) throw new ActionNotAllowedException("You can only cancel your own counselings");
+
+        Date yesterday = new Date(System.currentTimeMillis() - 24 * 60 * 60 * 1000);
+        if (checkTerm.getStartTime().before(yesterday)) throw new ActionNotAllowedException("Cannot cancel 24hrs before the counseling or any past counselings");
+
+        int rowsUpdated = counselingRepository.patientCancelCounseling(term.getCounselingId());
+        if (rowsUpdated != 1) throw new RuntimeException("Couldn't cancel this term!");
+
+        return true;
+    }
+
+    @Override
+    public List<Term> findAllPatientsCounselings(UUID id) {
+        return counselingRepository.findAllPatientsCounselings(id, TermType.counseling);
     }
 
 }

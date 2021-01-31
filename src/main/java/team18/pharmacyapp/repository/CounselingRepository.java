@@ -39,4 +39,21 @@ public interface CounselingRepository extends JpaRepository<Term, UUID> {
         // Cijeni i poeni zakucani, u specifikaciji ne pise kako se definisu
     int patientScheduleCounseling(@Param("id") UUID id, @Param("patientId") UUID patientId, @Param("doctorId") UUID doctorId,
                                   @Param("startTime") Date startTime, @Param("endTime") Date endTime);
+
+    @Transactional
+    @Modifying
+    @Query(nativeQuery = true, value = "UPDATE term SET patient_id = NULL WHERE id = :counselingId")
+    int patientCancelCounseling(@Param("counselingId") UUID counselingId);
+
+    @Transactional(readOnly = true)
+    @Query("SELECT t FROM term t WHERE t.startTime >= :todaysDate AND t.patient.id = :patientId AND t.doctor.id = :doctorId")
+    Term checkIfPatientHasCounselingWithDoctor(@Param("patientId") UUID patientId, @Param("doctorId")UUID doctorId, @Param("todaysDate") Date todaysDate);
+
+    @Transactional(readOnly = true)
+    @Query("SELECT t FROM term t JOIN FETCH t.patient WHERE t.id = :counselingId")
+    Term findByIdCustom(@Param("counselingId") UUID id);
+
+    @Transactional(readOnly = true)
+    @Query(value = "SELECT t FROM term t JOIN FETCH t.doctor JOIN FETCH t.patient WHERE t.type = :termType AND t.patient.id = :patientId")
+    List<Term> findAllPatientsCounselings(@Param("patientId") UUID id, @Param("termType") TermType counseling);
 }
