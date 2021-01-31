@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import team18.pharmacyapp.model.Pharmacy;
 import team18.pharmacyapp.model.dtos.PharmacyFilteringDTO;
+import team18.pharmacyapp.repository.MarkRepository;
 import team18.pharmacyapp.repository.PharmacyRepository;
 import team18.pharmacyapp.service.interfaces.PharmacyService;
 
@@ -15,10 +16,12 @@ import java.util.UUID;
 public class PharmacyServiceImpl implements PharmacyService {
 
     private final PharmacyRepository pharmacyRepository;
+    private final MarkRepository markRepository;
 
     @Autowired
-    public PharmacyServiceImpl(PharmacyRepository pharmacyRepository) {
+    public PharmacyServiceImpl(PharmacyRepository pharmacyRepository, MarkRepository markRepository) {
         this.pharmacyRepository = pharmacyRepository;
+        this.markRepository = markRepository;
     }
 
     @Override
@@ -32,7 +35,7 @@ public class PharmacyServiceImpl implements PharmacyService {
     }
 
     public Float getAverageMark(UUID id){
-        return pharmacyRepository.getAverageMark(id);
+        return markRepository.getAverageMarkForPharmacy(id);
     }
 
     @Override

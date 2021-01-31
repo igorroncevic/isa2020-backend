@@ -11,13 +11,26 @@ import java.util.List;
 import java.util.UUID;
 
 public interface PharmacyRepository extends JpaRepository<Pharmacy, UUID> {
-
-    @Transactional(readOnly = true)
-    @Query("SELECT COALESCE(AVG(m.mark), 0.0) FROM mark m WHERE m.pharmacy.id = :id")
-    Float getAverageMark(@Param("id") UUID id);
-
     @Transactional(readOnly = true)
     @Query("SELECT new team18.pharmacyapp.model.dtos.PharmacyFilteringDTO(p.id, p.name, p.address, AVG(m.mark)) " +
             "FROM pharmacy p JOIN p.address a JOIN p.marks m GROUP BY p.id, p.name, p.address")
     List<PharmacyFilteringDTO> findAllForFiltering();
+
+    @Transactional(readOnly = true)
+    @Query("SELECT p FROM pharmacy p " +
+            "JOIN p.pharmacyMedicines pm " +
+            "JOIN p.reservedMedicines rm " +
+            "JOIN rm.medicine m " +
+            "JOIN pm.ePrescriptionMedicines epm " +
+            "WHERE (rm.medicine.id = :medicineId AND rm.patient.id = :patientId AND rm.pharmacy.id = :pharmacyId) " +
+            "OR (epm.pharmacyMedicines.medicine.id = :medicineId AND epm.ePrescription.patient.id = :patientId AND epm.pharmacyMedicines.pharmacy.id = :pharmacyId)")
+    Pharmacy checkIfPatientTakenMedicineFromPharmacy(@Param("pharmacyId")UUID pharmacyId, @Param("patientId") UUID patientId, @Param("medicineId")UUID medicineId);
+
+    @Transactional(readOnly = true)
+    @Query("SELECT p FROM pharmacy p " +
+            "JOIN p.workSchedules ws " +
+            "JOIN ws.doctor d " +
+            "JOIN d.terms t " +
+            "WHERE (ws.pharmacy.id = :pharmacyId AND ws.doctor.id = :doctorId) AND (t.patient.id = :patientId AND t.doctor.id = :doctorId)")
+    Pharmacy checkIfPatientHadAppointmentInPharmacy(@Param("pharmacyId") UUID pharmacyId, @Param("patientId")UUID patientId, @Param("doctorId") UUID doctorId);
 }

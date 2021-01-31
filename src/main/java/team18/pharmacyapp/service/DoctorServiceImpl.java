@@ -7,6 +7,7 @@ import team18.pharmacyapp.model.dtos.DoctorDTO;
 import team18.pharmacyapp.model.enums.UserRole;
 import team18.pharmacyapp.model.users.Doctor;
 import team18.pharmacyapp.repository.DoctorRepository;
+import team18.pharmacyapp.repository.MarkRepository;
 import team18.pharmacyapp.service.interfaces.DoctorService;
 
 import java.util.ArrayList;
@@ -16,10 +17,12 @@ import java.util.UUID;
 @Service
 public class DoctorServiceImpl implements DoctorService {
     private final DoctorRepository doctorRepository;
+    private final MarkRepository markRepository;
 
     @Autowired
-    public DoctorServiceImpl(DoctorRepository doctorRepository) {
+    public DoctorServiceImpl(DoctorRepository doctorRepository, MarkRepository markRepository) {
         this.doctorRepository = doctorRepository;
+        this.markRepository = markRepository;
     }
 
 
@@ -29,7 +32,7 @@ public class DoctorServiceImpl implements DoctorService {
         List<DoctorDTO> doctorDTOs = new ArrayList<>();
         for(Doctor doctor : dermatologists) {
             List<String> pharmacies = doctorRepository.findAllDoctorsPharmaciesNames(doctor.getId());
-            Float averageMark = doctorRepository.getAverageMarkForDoctor(doctor.getId());
+            Float averageMark = markRepository.getAverageMarkForDoctor(doctor.getId());
             DoctorDTO doctorDTO = new DoctorDTO();
             doctorDTO.setId(doctor.getId());
             doctorDTO.setName(doctor.getName());
@@ -50,7 +53,7 @@ public class DoctorServiceImpl implements DoctorService {
             List<Pharmacy> pharmacies = doctorRepository.findAllDoctorsPharmacies(doctor.getId());
             if(pharmacies.contains(pharmacy)) {
                 List<String> pharmaciesNames = doctorRepository.findAllDoctorsPharmaciesNames(doctor.getId());
-                Float averageMark = doctorRepository.getAverageMarkForDoctor(doctor.getId());
+                Float averageMark = markRepository.getAverageMarkForDoctor(doctor.getId());
                 DoctorDTO doctorDTO = new DoctorDTO();
                 doctorDTO.setId(doctor.getId());
                 doctorDTO.setName(doctor.getName());

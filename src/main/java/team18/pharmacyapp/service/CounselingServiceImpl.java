@@ -12,6 +12,7 @@ import team18.pharmacyapp.model.exceptions.*;
 import team18.pharmacyapp.model.users.Doctor;
 import team18.pharmacyapp.repository.CounselingRepository;
 import team18.pharmacyapp.repository.DoctorRepository;
+import team18.pharmacyapp.repository.MarkRepository;
 import team18.pharmacyapp.service.interfaces.CounselingService;
 import team18.pharmacyapp.service.interfaces.EmailService;
 
@@ -23,12 +24,14 @@ public class CounselingServiceImpl implements CounselingService {
     private final CounselingRepository counselingRepository;
     private final DoctorRepository doctorRepository;
     private final EmailService emailService;
+    private final MarkRepository markRepository;
 
     @Autowired
-    public CounselingServiceImpl(CounselingRepository counselingRepository, DoctorRepository doctorRepository, EmailService emailService) {
+    public CounselingServiceImpl(CounselingRepository counselingRepository, DoctorRepository doctorRepository, EmailService emailService, MarkRepository markRepository) {
         this.counselingRepository = counselingRepository;
         this.doctorRepository = doctorRepository;
         this.emailService = emailService;
+        this.markRepository = markRepository;
     }
 
     @Override
@@ -93,7 +96,7 @@ public class CounselingServiceImpl implements CounselingService {
             doctorDTO.setId(d.getId());
             doctorDTO.setName(d.getName());
             doctorDTO.setSurname(d.getSurname());
-            float averageMark = doctorRepository.getAverageMarkForDoctor(d.getId());
+            float averageMark = markRepository.getAverageMarkForDoctor(d.getId());
             doctorDTO.setAverageMark(averageMark);
 
             freeDoctors.add(doctorDTO); // Ako nista od ovoga nije tacno, doktor je slobodan
