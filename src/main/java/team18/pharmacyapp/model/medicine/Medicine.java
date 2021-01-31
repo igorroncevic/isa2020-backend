@@ -37,10 +37,6 @@ public class Medicine {
 
     @OneToMany(mappedBy = "medicine")
     @JsonIgnore
-    private List<EPrescriptionMedicines> ePrescriptionMedicines;
-
-    @OneToMany(mappedBy = "medicine")
-    @JsonIgnore
     private List<SupplierMedicine> supplierMedicines;
 
     @OneToMany(mappedBy = "medicine")
