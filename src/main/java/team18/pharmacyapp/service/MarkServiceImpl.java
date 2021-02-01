@@ -4,15 +4,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import team18.pharmacyapp.model.Mark;
 import team18.pharmacyapp.model.Pharmacy;
+import team18.pharmacyapp.model.Term;
 import team18.pharmacyapp.model.dtos.MarkDTO;
 import team18.pharmacyapp.model.exceptions.ActionNotAllowedException;
 import team18.pharmacyapp.model.exceptions.AlreadyGivenMarkException;
 import team18.pharmacyapp.model.medicine.Medicine;
 import team18.pharmacyapp.model.users.Doctor;
-import team18.pharmacyapp.repository.DoctorRepository;
-import team18.pharmacyapp.repository.MarkRepository;
-import team18.pharmacyapp.repository.MedicineRepository;
-import team18.pharmacyapp.repository.PharmacyRepository;
+import team18.pharmacyapp.repository.*;
 import team18.pharmacyapp.service.interfaces.MarkService;
 
 import java.util.Date;
@@ -25,13 +23,15 @@ public class MarkServiceImpl implements MarkService {
     private final DoctorRepository doctorRepository;
     private final PharmacyRepository pharmacyRepository;
     private final MedicineRepository medicineRepository;
+    private final TermRepository termRepository;
 
     @Autowired
-    public MarkServiceImpl(MarkRepository markRepository, DoctorRepository doctorRepository, PharmacyRepository pharmacyRepository, MedicineRepository medicineRepository) {
+    public MarkServiceImpl(MarkRepository markRepository, DoctorRepository doctorRepository, PharmacyRepository pharmacyRepository, MedicineRepository medicineRepository, TermRepository termRepository) {
         this.markRepository = markRepository;
         this.doctorRepository = doctorRepository;
         this.pharmacyRepository = pharmacyRepository;
         this.medicineRepository = medicineRepository;
+        this.termRepository = termRepository;
     }
 
 
@@ -67,27 +67,19 @@ public class MarkServiceImpl implements MarkService {
 
     @Override
     public boolean giveMarkToPharmacy(MarkDTO markDTO) throws ActionNotAllowedException, AlreadyGivenMarkException {
-        List<Medicine> pharmacyMedicines = medicineRepository.getAllMedicinesFromPharmacy(markDTO.getPharmacyId());
-        boolean takenMedicineFlag = false;
-        for(Medicine m : pharmacyMedicines){
-            Pharmacy pharmacy = pharmacyRepository.checkIfPatientTakenMedicineFromPharmacy(markDTO.getPharmacyId(), markDTO.getPatientId(), m.getId());
-            if(pharmacy != null){
-                takenMedicineFlag = true;
-                break;
-            }
-        }
-        if(!takenMedicineFlag) throw new ActionNotAllowedException("You have not taken any medicines from this pharmacy");
+        List<Medicine> reservedMedicines = medicineRepository.getPatientsReservedMedicinesFromPharmacy(markDTO.getPharmacyId(), markDTO.getPatientId());
+        List<Medicine> ePrescriptionMedicines = medicineRepository.getPatientsEPrescriptionMedicinesFromPharmacy(markDTO.getPharmacyId(), markDTO.getPatientId());
+        boolean takenMedicines = true;
+        if(reservedMedicines.size() == 0 && ePrescriptionMedicines.size() == 0)
+            takenMedicines = false;
 
-        List<Doctor> pharmacyDoctors = doctorRepository.findAllDoctorsInPharmacy(markDTO.getPharmacyId());
-        boolean hadAppointmentFlag = false;
-        for(Doctor d : pharmacyDoctors){
-            Pharmacy pharmacy = pharmacyRepository.checkIfPatientHadAppointmentInPharmacy(markDTO.getPharmacyId(), markDTO.getPatientId(), d.getId());
-            if(pharmacy != null){
-                hadAppointmentFlag = true;
-                break;
-            }
-        }
-        if(!hadAppointmentFlag) throw new ActionNotAllowedException("You have not had any appointments in this pharmacy");
+        List<Term> terms = termRepository.getPatientsTermsFromPharmacy(markDTO.getPharmacyId(), markDTO.getPatientId());
+        boolean hadTerms = true;
+        if(terms.size() == 0 && !takenMedicines)
+            hadTerms = false;
+
+        if(!hadTerms && !takenMedicines)
+            throw new ActionNotAllowedException("You cannot give mark to this pharmacy");
 
         Mark mark = markRepository.checkIfPatientHasGivenMarkToPharmacy(markDTO.getPharmacyId(), markDTO.getPatientId());
         if(mark != null) throw new AlreadyGivenMarkException("You already gave mark to this pharmacy");
@@ -103,7 +95,6 @@ public class MarkServiceImpl implements MarkService {
     @Override
     public boolean giveMarkToMedicine(MarkDTO markDTO) throws ActionNotAllowedException, AlreadyGivenMarkException {
         Medicine medicine = medicineRepository.checkIfPatientReservedMedicine(markDTO.getMedicineId(), markDTO.getPatientId());
-
         if(medicine == null) throw new ActionNotAllowedException("You have not taken any medicines from this pharmacy");
 
         Mark mark = markRepository.checkIfPatientHasGivenMarkToMedicine(markDTO.getMedicineId(), markDTO.getPatientId());

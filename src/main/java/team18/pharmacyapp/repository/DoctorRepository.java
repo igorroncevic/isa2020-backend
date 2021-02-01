@@ -6,6 +6,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 import team18.pharmacyapp.model.Pharmacy;
 import team18.pharmacyapp.model.enums.UserRole;
+import team18.pharmacyapp.model.medicine.Medicine;
 import team18.pharmacyapp.model.users.Doctor;
 
 import java.util.Date;

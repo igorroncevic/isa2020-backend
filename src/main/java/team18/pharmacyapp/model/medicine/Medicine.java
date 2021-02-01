@@ -28,7 +28,6 @@ public class Medicine {
     private String name;
 
     @OneToMany(mappedBy = "medicine")
-    @JsonIgnore
     private List<ReservedMedicines> reservedMedicines;
 
     @OneToMany(mappedBy = "medicine")

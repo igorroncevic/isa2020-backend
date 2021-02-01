@@ -68,6 +68,16 @@ public interface MedicineRepository extends JpaRepository<Medicine, UUID> {
     Medicine checkIfPatientReservedMedicine(@Param("medicineId")UUID medicineId, @Param("patientId") UUID patientId);
 
     @Transactional(readOnly = true)
-    @Query("SELECT m FROM medicine m JOIN m.pharmacyMedicines pm WHERE pm.pharmacy.id = :pharmacyId")
-    List<Medicine> getAllMedicinesFromPharmacy(@Param("pharmacyId") UUID pharmacyId);
+    @Query("SELECT m FROM medicine m " +
+            "JOIN FETCH m.pharmacyMedicines pm " +
+            "JOIN pm.ePrescriptionMedicines epm " +
+            "JOIN epm.ePrescription e " +
+            "WHERE pm.pharmacy.id = :pharmacyId AND e.patient.id = :patientId")
+    List<Medicine> getPatientsEPrescriptionMedicinesFromPharmacy(@Param("pharmacyId")UUID pharmacyId, @Param("patientId") UUID patientId);
+
+    @Transactional(readOnly = true)
+    @Query("SELECT m FROM medicine m " +
+            "JOIN m.reservedMedicines rm " +
+            "WHERE rm.patient.id = :patientId AND rm.pharmacy.id = :pharmacyId AND rm.handled = true")
+    List<Medicine> getPatientsReservedMedicinesFromPharmacy(@Param("pharmacyId")UUID pharmacyId, @Param("patientId") UUID patientId);
 }

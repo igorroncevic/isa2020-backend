@@ -198,15 +198,11 @@ values ('3d54f12d-ba27-4ed1-b896-c75c284e2153', 4, 'a5ac174a-45b3-487f-91cb-3d3f
 insert into mark(id, mark, doctor_id, medicine_id, patient_id, pharmacy_id)
 values ('d3bd5650-dc9c-4355-8e69-3e0e27e60c08', 5, 'a5ac174a-45b3-487f-91cb-3d3f727d6f1c', null, 'dd4c7e5f-f2c4-42dc-a809-fd7f588b3acb', null);
 insert into mark (id, mark, pharmacy_id, medicine_id, doctor_id, patient_id)
-values ('27c81755-5fff-4bf4-b3e9-a0c49e53a031', 5, '25fff0b2-ad45-4310-ac7f-96bcc5e517c1', null, null, 'cc6fd408-0084-420b-8078-687d8a72744b');
-insert into mark (id, mark, pharmacy_id, medicine_id, doctor_id, patient_id)
 values ('f6d9f69e-9ec0-4c0e-b9dc-d4cba7fb3c8c', 4, '25fff0b2-ad45-4310-ac7f-96bcc5e517c1', null, null, 'dd4c7e5f-f2c4-42dc-a809-fd7f588b3acb');
 
 insert into mark(id, mark, doctor_id, medicine_id, patient_id, pharmacy_id)
 values ('d1c19003-6489-41ad-a4c2-dec900222afe', 5, null, null, 'cc6fd408-0084-420b-8078-687d8a72744b', '25fff0b2-ad45-4310-ac7f-96bcc5e517c1');
 insert into mark(id, mark, doctor_id, medicine_id, patient_id, pharmacy_id)
-values ('e15abd59-dca9-4691-a224-38ce345c7d6f', 5, null, null, 'dd4c7e5f-f2c4-42dc-a809-fd7f588b3acb', 'e93cab4a-f007-412c-b631-7a9a5ee2c6ed');
-insert into mark(id, mark, doctor_id, medicine_id, patient_id, pharmacy_id)
-values ('c0cb93be-e25a-4b0a-84f7-d815b16b0e46', 4, null, null, 'cc6fd408-0084-420b-8078-687d8a72744b', '25fff0b2-ad45-4310-ac7f-96bcc5e517c1');
+values ('e15abd59-dca9-4691-a224-38ce345c7d6f', 5, null, null, 'dd4c7e5f-f2c4-42dc-a809-fd7f588b3acb', '25fff0b2-ad45-4310-ac7f-96bcc5e517c1');
 insert into mark(id, mark, doctor_id, medicine_id, patient_id, pharmacy_id)
 values ('3071dbd0-0034-4b81-84d5-cf96fbf42c4c', 4, null, null, 'dd4c7e5f-f2c4-42dc-a809-fd7f588b3acb', 'e93cab4a-f007-412c-b631-7a9a5ee2c6ed');

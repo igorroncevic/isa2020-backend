@@ -45,7 +45,7 @@ public interface MarkRepository extends JpaRepository<Mark, UUID> {
     Mark checkIfPatientHasGivenMarkToDoctor(@Param("doctorId")UUID doctorId, @Param("patientId")UUID patientId);
 
     @Transactional(readOnly = true)
-    @Query("SELECT m FROM mark m WHERE m.pharmacy.id = :pharmacyId AND m.patient.id = :patientId")
+    @Query(nativeQuery = true, value = "SELECT * FROM mark m WHERE m.pharmacy_id = :pharmacyId AND m.patient_id = :patientId")
     Mark checkIfPatientHasGivenMarkToPharmacy(@Param("pharmacyId")UUID pharmacyId, @Param("patientId")UUID patientId);
 
     @Transactional(readOnly = true)
