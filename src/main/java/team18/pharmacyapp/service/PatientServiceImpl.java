@@ -37,6 +37,11 @@ public class PatientServiceImpl implements PatientService {
         return patientRepository.findAll();
     }
 
+    @Override
+    public int addPenalty(UUID patientId) {
+        return patientRepository.addPenalty(patientId);
+    }
+
     public Patient findRegisteredPatient(LoginPatientDTO patient){
         return patientRepository.findByEmailAndPassword(patient.getEmail(),patient.getPassword());
     }

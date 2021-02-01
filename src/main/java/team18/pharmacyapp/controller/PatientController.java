@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.UUID;
 
 
-@CrossOrigin(origins = "http://localhost:8080")
+@CrossOrigin(origins = {"http://localhost:8080","http://localhost:8081"})
 @RestController
 @RequestMapping(value = "api/patients")
 public class PatientController {
@@ -48,5 +48,12 @@ public class PatientController {
     public ResponseEntity<Boolean> activateAccount(@PathVariable String id){
         UUID uuid=UUID.fromString(id);
         return new ResponseEntity<>(patientService.activateAccount(uuid),HttpStatus.OK);
+    }
+    @PutMapping("/addPenalty/{id}")
+    public ResponseEntity<Integer> addPenalty(@PathVariable UUID id){
+        int res=patientService.addPenalty(id);
+        if(res==1)
+            return new ResponseEntity<>(res,HttpStatus.OK);
+        return new ResponseEntity<>(res,HttpStatus.BAD_REQUEST);
     }
 }
