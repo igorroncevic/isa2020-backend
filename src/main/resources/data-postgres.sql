@@ -210,3 +210,7 @@ insert into mark(id, mark, doctor_id, medicine_id, patient_id, pharmacy_id)
 values ('c0cb93be-e25a-4b0a-84f7-d815b16b0e46', 4, null, null, 'cc6fd408-0084-420b-8078-687d8a72744b', '25fff0b2-ad45-4310-ac7f-96bcc5e517c1');
 insert into mark(id, mark, doctor_id, medicine_id, patient_id, pharmacy_id)
 values ('3071dbd0-0034-4b81-84d5-cf96fbf42c4c', 4, null, null, 'dd4c7e5f-f2c4-42dc-a809-fd7f588b3acb', 'e93cab4a-f007-412c-b631-7a9a5ee2c6ed');
+
+-- Vacation
+insert into vacation(id, status, start_date, end_date, rejection_reason, doctor_id)
+values ('425a7925-786e-4f4b-80d6-3044e2de8fb3', 'pending', '2021-08-01', '2021-08-15', null, 'a5ac174a-45b3-487f-91cb-3d3f727d6f1c');
