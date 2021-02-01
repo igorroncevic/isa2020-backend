@@ -11,11 +11,11 @@ import team18.pharmacyapp.model.enums.UserRole;
 import javax.persistence.*;
 import java.util.UUID;
 
-@Entity
+@MappedSuperclass
 @Getter
 @Setter
 @NoArgsConstructor
-@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+@Inheritance(strategy = InheritanceType.JOINED)
 public class RegisteredUser {
     @Id
     @GeneratedValue(generator = "UUID")
