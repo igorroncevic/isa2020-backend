@@ -94,14 +94,16 @@ public class MarkServiceImpl implements MarkService {
 
     @Override
     public boolean giveMarkToMedicine(MarkDTO markDTO) throws ActionNotAllowedException, AlreadyGivenMarkException {
-        Medicine medicine = medicineRepository.checkIfPatientReservedMedicine(markDTO.getMedicineId(), markDTO.getPatientId());
-        if(medicine == null) throw new ActionNotAllowedException("You have not taken any medicines from this pharmacy");
+        Medicine medicineReserved = medicineRepository.checkIfPatientReservedMedicine(markDTO.getMedicineId(), markDTO.getPatientId());
+        Medicine medicinePrescribed = medicineRepository.checkIfPatientGotPrescribedMedicine(markDTO.getMedicineId(), markDTO.getPatientId());
+        if(medicineReserved == null && medicinePrescribed == null)
+            throw new ActionNotAllowedException("You have not taken any medicines from this pharmacy");
 
         Mark mark = markRepository.checkIfPatientHasGivenMarkToMedicine(markDTO.getMedicineId(), markDTO.getPatientId());
         if(mark != null) throw new AlreadyGivenMarkException("You already gave mark to this pharmacy");
 
         UUID markId = UUID.randomUUID();
-        int markGiven = markRepository.giveMarkToMedicine(markId, markDTO.getMarkValue(), markDTO.getPharmacyId(), markDTO.getPatientId());
+        int markGiven = markRepository.giveMarkToMedicine(markId, markDTO.getMarkValue(), markDTO.getMedicineId(), markDTO.getPatientId());
 
         if(markGiven != 1) throw new RuntimeException("Unable to give mark.");
 

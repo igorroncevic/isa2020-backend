@@ -191,18 +191,23 @@ values ('d5397940-cafe-4f4d-865d-678cddadd07f', '2021-01-01 00:00:01', '2022-01-
 -- Rezervisani lijekovi
 insert into reserved_medicines(id, pickup_date, medicine_id, patient_id, pharmacy_id, handled)
 values ('ff1cc92f-30d2-4cad-b3d7-f4a65eaa2d07', '2021-02-25', '7571786b-2fc5-4756-ab5c-1f4af756e6f2', 'cc6fd408-0084-420b-8078-687d8a72744b', 'e93cab4a-f007-412c-b631-7a9a5ee2c6ed', true);
+insert into reserved_medicines(id, pickup_date, medicine_id, patient_id, pharmacy_id, handled)
+values ('3a67b4a6-d043-46ad-a4c3-8629cadca585', '2021-02-25', '7571786b-2fc5-4756-ab5c-1f4af756e6f2', 'dd4c7e5f-f2c4-42dc-a809-fd7f588b3acb', 'e93cab4a-f007-412c-b631-7a9a5ee2c6ed', true);
 
 -- Mark
 insert into mark(id, mark, doctor_id, medicine_id, patient_id, pharmacy_id)
 values ('3d54f12d-ba27-4ed1-b896-c75c284e2153', 4, 'a5ac174a-45b3-487f-91cb-3d3f727d6f1c', null, 'cc6fd408-0084-420b-8078-687d8a72744b', null);
 insert into mark(id, mark, doctor_id, medicine_id, patient_id, pharmacy_id)
 values ('d3bd5650-dc9c-4355-8e69-3e0e27e60c08', 5, 'a5ac174a-45b3-487f-91cb-3d3f727d6f1c', null, 'dd4c7e5f-f2c4-42dc-a809-fd7f588b3acb', null);
+
 insert into mark (id, mark, pharmacy_id, medicine_id, doctor_id, patient_id)
 values ('f6d9f69e-9ec0-4c0e-b9dc-d4cba7fb3c8c', 4, '25fff0b2-ad45-4310-ac7f-96bcc5e517c1', null, null, 'dd4c7e5f-f2c4-42dc-a809-fd7f588b3acb');
-
 insert into mark(id, mark, doctor_id, medicine_id, patient_id, pharmacy_id)
 values ('d1c19003-6489-41ad-a4c2-dec900222afe', 5, null, null, 'cc6fd408-0084-420b-8078-687d8a72744b', '25fff0b2-ad45-4310-ac7f-96bcc5e517c1');
 insert into mark(id, mark, doctor_id, medicine_id, patient_id, pharmacy_id)
 values ('e15abd59-dca9-4691-a224-38ce345c7d6f', 5, null, null, 'dd4c7e5f-f2c4-42dc-a809-fd7f588b3acb', '25fff0b2-ad45-4310-ac7f-96bcc5e517c1');
 insert into mark(id, mark, doctor_id, medicine_id, patient_id, pharmacy_id)
 values ('3071dbd0-0034-4b81-84d5-cf96fbf42c4c', 4, null, null, 'dd4c7e5f-f2c4-42dc-a809-fd7f588b3acb', 'e93cab4a-f007-412c-b631-7a9a5ee2c6ed');
+
+insert into mark(id, mark, doctor_id, medicine_id, patient_id, pharmacy_id)
+values ('4f89d077-d550-4435-8636-aa528eb9f7da', 4, null, '7571786b-2fc5-4756-ab5c-1f4af756e6f2', 'cc6fd408-0084-420b-8078-687d8a72744b', null);

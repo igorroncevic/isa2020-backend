@@ -59,13 +59,17 @@ public interface MedicineRepository extends JpaRepository<Medicine, UUID> {
 
     @Transactional(readOnly = true)
     @Query("SELECT m FROM medicine m " +
-            "JOIN reserved_medicines rm " +
-            "JOIN pharmacy_medicines pm " +
-            "JOIN EPrescriptionMedicines epm " +
-            "JOIN EPrescription e " +
-            "WHERE (rm.patient.id = :patientId AND rm.medicine.id = :medicineId AND rm.handled = true) OR " +
-            "(epm.pharmacyMedicines.medicine.id = :medicineId AND epm.ePrescription.patient.id = :patientId)")
+            "JOIN m.reservedMedicines rm " +
+            "WHERE rm.patient.id = :patientId AND rm.medicine.id = :medicineId AND rm.handled = true")
     Medicine checkIfPatientReservedMedicine(@Param("medicineId")UUID medicineId, @Param("patientId") UUID patientId);
+
+    @Transactional(readOnly = true)
+    @Query("SELECT m FROM medicine m " +
+            "JOIN FETCH m.pharmacyMedicines pm " +
+            "JOIN pm.ePrescriptionMedicines epm " +
+            "JOIN epm.ePrescription e " +
+            "WHERE e.patient.id = :patientId AND pm.medicine.id = :medicineId")
+    Medicine checkIfPatientGotPrescribedMedicine(@Param("medicineId")UUID medicineId, @Param("patientId") UUID patientId);
 
     @Transactional(readOnly = true)
     @Query("SELECT m FROM medicine m " +
