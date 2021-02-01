@@ -15,7 +15,7 @@ import javax.persistence.*;
 import java.util.List;
 import java.util.UUID;
 
-@Entity
+@Entity(name = "pharmacy")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -58,4 +58,10 @@ public class Pharmacy {
 
     @OneToMany(mappedBy = "pharmacy", cascade = CascadeType.ALL)
     private List<PharmacyMedicines> pharmacyMedicines;
+
+    @Override
+    public boolean equals(Object obj) {
+        Pharmacy pharmacy = (Pharmacy) obj;
+        return this.id.equals(pharmacy.id);
+    }
 }

@@ -32,7 +32,7 @@ public class SchedulingTasks {
 
     // U ponoc svakog dana
     @Transactional
-    @Scheduled(cron="@daily")
+    @Scheduled(cron = "@daily")
     // @Scheduled(cron="*/10 * * * * ?") // Test with this one
     public void addPenaltyForNotPickingUpReservedMedicines() {
         log.info("Starting Cron Task - Checking if Patient's need to get penalties for not picking up reserved medicines.");
@@ -42,8 +42,8 @@ public class SchedulingTasks {
 
         Date todaysDate = new Date();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-        for(ReservedMedicines reservation : reservations){
-            if (sdf.format(todaysDate).equals(sdf.format(reservation.getPickupDate()))){
+        for (ReservedMedicines reservation : reservations) {
+            if (sdf.format(todaysDate).equals(sdf.format(reservation.getPickupDate()))) {
                 int addedPenalty = patientRepository.addPenalty(reservation.getPatient().getId());
                 addedPenalties++;
             }
@@ -53,7 +53,7 @@ public class SchedulingTasks {
     }
 
     @Transactional
-    @Scheduled(cron="@hourly")
+    @Scheduled(cron = "@hourly")
     public void addPenaltyForNotComingToTerm() {
         log.info("Starting Cron Task - Checking if Patient's need to get penalties for not showing up to a term.");
         List<Term> terms = checkupRepository.findAllWithPatients();
@@ -62,8 +62,8 @@ public class SchedulingTasks {
 
         Date currentTime = new Date(System.currentTimeMillis() + 5 * 1000);
 
-        for(Term term : terms){
-            if (term.getEndTime().before(currentTime)){
+        for (Term term : terms) {
+            if (term.getEndTime().before(currentTime)) {
                 int addedPenalty = patientRepository.addPenalty(term.getPatient().getId());
                 addedPenalties++;
             }
@@ -73,12 +73,12 @@ public class SchedulingTasks {
     }
 
     // U ponoc svakog prvog u mjesecu
-    @Scheduled(cron="@monthly")
+    @Scheduled(cron = "@monthly")
     public void resetPatientPenalties() {
         log.info("Starting Cron Task - Checking if Patient's need to get penalties.");
         List<Patient> patients = patientRepository.findAll();
 
-        for(Patient patient : patients){
+        for (Patient patient : patients) {
             int clearedPenalty = patientRepository.resetPenalties(patient.getId());
         }
 

@@ -6,6 +6,7 @@ import team18.pharmacyapp.model.Term;
 import team18.pharmacyapp.model.dtos.ScheduleCheckupDTO;
 import team18.pharmacyapp.model.enums.TermType;
 import team18.pharmacyapp.model.exceptions.ActionNotAllowedException;
+import team18.pharmacyapp.model.exceptions.EntityNotFoundException;
 import team18.pharmacyapp.model.exceptions.ReserveMedicineException;
 import team18.pharmacyapp.model.exceptions.ScheduleTermException;
 import team18.pharmacyapp.model.users.Patient;
@@ -59,29 +60,29 @@ public class CheckupServiceImpl implements CheckupService {
         if (patient.getPenalties() >= 3) throw new ActionNotAllowedException("You are not allowed to schedule terms!");
 
         Term checkTerm = checkupRepository.findById(term.getCheckupId()).orElseGet(null);
-        if(checkTerm == null) return false;
+        if (checkTerm == null) return false;
 
         Date today = new Date(System.currentTimeMillis() - 60 * 1000);
         if (checkTerm.getStartTime().before(today)) throw new ScheduleTermException("Can't schedule past terms!");
 
         int rowsUpdated = checkupRepository.patientScheduleCheckup(term.getPatientId(), term.getCheckupId());
-        if(rowsUpdated != 1) throw new RuntimeException("Couldn't schedule this term!");
+        if (rowsUpdated != 1) throw new RuntimeException("Couldn't schedule this term!");
 
         return true;
     }
 
-    @Transactional(rollbackFor = {RuntimeException.class})
-    public boolean patientCancelCheckup(ScheduleCheckupDTO term) throws RuntimeException {
-        Term checkTerm = checkupRepository.findById(term.getCheckupId()).orElseGet(null);
-        if(checkTerm == null) return false;
+    @Transactional(rollbackFor = {EntityNotFoundException.class, ActionNotAllowedException.class, RuntimeException.class})
+    public boolean patientCancelCheckup(ScheduleCheckupDTO term) throws EntityNotFoundException, ActionNotAllowedException, RuntimeException {
+        Term checkTerm = checkupRepository.findByIdCustom(term.getCheckupId());
+
+        if (checkTerm == null) throw new EntityNotFoundException("There is no such checkup");
+        if(!checkTerm.getPatient().getId().equals(term.getPatientId())) throw new ActionNotAllowedException("You can only cancel your own checkups");
 
         Date yesterday = new Date(System.currentTimeMillis() - 24 * 60 * 60 * 1000);
-        if (checkTerm.getStartTime().before(yesterday)) {     // ponedeljak < (ponedeljak - 1)?
-            return false;
-        }
+        if (checkTerm.getStartTime().before(yesterday)) throw new ActionNotAllowedException("Cannot cancel 24hrs before the checkup or any past checkups");
 
         int rowsUpdated = checkupRepository.patientCancelCheckup(term.getCheckupId());
-        if(rowsUpdated != 1) throw new RuntimeException("Couldn't schedule this term!");
+        if (rowsUpdated != 1) throw new RuntimeException("Couldn't cancel this term!");
 
         return true;
     }

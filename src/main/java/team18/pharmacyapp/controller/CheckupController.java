@@ -7,13 +7,14 @@ import org.springframework.web.bind.annotation.*;
 import team18.pharmacyapp.model.Term;
 import team18.pharmacyapp.model.dtos.ScheduleCheckupDTO;
 import team18.pharmacyapp.model.exceptions.ActionNotAllowedException;
+import team18.pharmacyapp.model.exceptions.EntityNotFoundException;
 import team18.pharmacyapp.model.exceptions.ScheduleTermException;
 import team18.pharmacyapp.service.interfaces.CheckupService;
 
 import java.util.List;
 import java.util.UUID;
 
-@CrossOrigin(origins = "http://localhost:8080")
+@CrossOrigin(origins = {"http://localhost:8080","http://localhost:8081"})
 @RestController
 @RequestMapping(value = "api/checkups")
 public class CheckupController {
@@ -112,6 +113,10 @@ public class CheckupController {
         boolean success;
         try {
             success = checkupService.patientCancelCheckup(term);
+        }catch (EntityNotFoundException ex) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }catch (ActionNotAllowedException ex) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         } catch (RuntimeException ex) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }

@@ -30,7 +30,7 @@ public class MedicineServiceImpl implements MedicineService {
     private final PatientRepository patientRepository;
 
     @Autowired
-    public MedicineServiceImpl(MedicineRepository medicineRepository, EmailService emailService, PatientRepository patientRepository){
+    public MedicineServiceImpl(MedicineRepository medicineRepository, EmailService emailService, PatientRepository patientRepository) {
         this.medicineRepository = medicineRepository;
         this.emailService = emailService;
         this.patientRepository = patientRepository;
@@ -123,7 +123,8 @@ public class MedicineServiceImpl implements MedicineService {
     @Override
     public boolean reserveMedicine(ReserveMedicineRequestDTO rmrDTO) throws ActionNotAllowedException, ReserveMedicineException, RuntimeException {
         Patient patient = patientRepository.getOne(rmrDTO.getPatientId());
-        if (patient.getPenalties() >= 3) throw new ActionNotAllowedException("You are not allowed to reserve medicines");
+        if (patient.getPenalties() >= 3)
+            throw new ActionNotAllowedException("You are not allowed to reserve medicines");
 
         UUID reservationId = UUID.randomUUID();
         int reserved = medicineRepository.reserveMedicine(reservationId, rmrDTO.getPatientId(), rmrDTO.getPharmacyId(), rmrDTO.getMedicineId(), rmrDTO.getPickupDate());
