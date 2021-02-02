@@ -30,13 +30,32 @@ public class MarkController {
         }catch(ActionNotAllowedException e){
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }catch(AlreadyGivenMarkException e){
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.ALREADY_REPORTED);
         }catch(RuntimeException e){
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
         if(success){
             return new ResponseEntity<>(HttpStatus.CREATED);
+        }else{
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PutMapping(consumes = "application/json")
+    public ResponseEntity<Void> updateMark(@RequestBody MarkDTO markDTO) {
+        boolean success;
+
+        try{
+            success = markService.updateMark(markDTO);
+        }catch(ActionNotAllowedException e){
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }catch(RuntimeException e){
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        if(success){
+            return new ResponseEntity<>(HttpStatus.OK);
         }else{
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }

@@ -22,6 +22,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class MedicineServiceImpl implements MedicineService {
@@ -157,5 +159,15 @@ public class MedicineServiceImpl implements MedicineService {
         if (updateQuantity != 1) throw new ReserveMedicineException("Medicine quantity wasn't incremented!");
 
         return true;
+    }
+
+    @Override
+    public List<Medicine> getAllMedicinesForMarking(UUID patientId) {
+        List<Medicine> reservedMedicines = medicineRepository.getAllPatientsReservedMedicines(patientId);
+        List<Medicine> prescribedMedicines = medicineRepository.getAllPatientsPrescribedMedicines(patientId);
+        List<Medicine> allMedicines = Stream.concat(reservedMedicines.stream(), prescribedMedicines.stream())
+                .collect(Collectors.toList());
+
+        return allMedicines;
     }
 }

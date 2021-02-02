@@ -27,4 +27,6 @@ public interface MedicineService {
     boolean reserveMedicine(ReserveMedicineRequestDTO reserveMedicineRequestDTO) throws ReserveMedicineException, RuntimeException, ActionNotAllowedException;
 
     boolean cancelMedicine(CancelMedicineRequestDTO cmrDTO) throws ReserveMedicineException, RuntimeException;
+
+    List<Medicine> getAllMedicinesForMarking(UUID patientId);
 }
