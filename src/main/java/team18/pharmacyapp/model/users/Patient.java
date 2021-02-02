@@ -1,5 +1,6 @@
 package team18.pharmacyapp.model.users;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,8 +22,9 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class Patient extends RegisteredUser {
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     @JoinTable(name = "alergicto", joinColumns = @JoinColumn(name = "patientId", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "medicineId", referencedColumnName = "id"))
+    @JsonIgnore
     private List<Medicine> alergicMedicines;
 
     @OneToMany(mappedBy = "patient")
@@ -40,10 +42,13 @@ public class Patient extends RegisteredUser {
     @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL)
     private List<Complaint> complaints;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false)
     private Loyalty loyalty;
 
     @Column(nullable = false)
     private int loyaltyPoints;
+
+    @Column(nullable = false)
+    private boolean activated=false;
 }

@@ -5,8 +5,10 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
+import team18.pharmacyapp.model.medicine.Medicine;
 import team18.pharmacyapp.model.users.Patient;
 
+import java.util.List;
 import java.util.UUID;
 
 public interface PatientRepository extends JpaRepository<Patient, UUID> {
@@ -19,6 +21,14 @@ public interface PatientRepository extends JpaRepository<Patient, UUID> {
 
     @Transactional
     @Modifying
+    @Query(value = "select p.alergicMedicines from Patient p where p.id=:patientId")
+    List<Medicine> getAlergicMedicines(@Param("patientId") UUID patientId);
+
+    @Transactional
+    @Modifying
     @Query(nativeQuery = true, value = "UPDATE patient SET penalties = 0 WHERE id = :patientId")
     int resetPenalties(@Param("patientId") UUID patientId);
+
+    Patient findByEmailAndPassword(String email,String password);
+    Patient findByEmail(String email);
 }

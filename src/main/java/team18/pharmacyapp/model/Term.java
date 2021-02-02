@@ -26,7 +26,7 @@ public class Term {
     )
     private UUID id;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Patient patient;
 
     @ManyToOne(fetch = FetchType.LAZY)
