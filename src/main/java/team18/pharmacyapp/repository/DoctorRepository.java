@@ -6,7 +6,6 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 import team18.pharmacyapp.model.Pharmacy;
 import team18.pharmacyapp.model.enums.UserRole;
-import team18.pharmacyapp.model.medicine.Medicine;
 import team18.pharmacyapp.model.users.Doctor;
 
 import java.util.Date;
@@ -31,6 +30,10 @@ public interface DoctorRepository extends JpaRepository<Doctor, UUID> {
     List<Pharmacy> findAllDoctorsPharmacies(@Param("doctorId") UUID doctorId);
 
     @Transactional(readOnly = true)
+    @Query("SELECT d FROM doctor d JOIN d.terms t WHERE t.patient.id = :patientId AND d.role = :doctorRole AND t.endTime < :todaysTime")
+    List<Doctor> getPatientsDoctors(@Param("patientId") UUID patientId, @Param("doctorRole")UserRole doctorRole, @Param("todaysTime") Date todaysTime);
+
+    @Transactional(readOnly = true)
     @Query("SELECT d FROM doctor d " +
             "JOIN FETCH d.workSchedules ws " +
             "JOIN ws.pharmacy p " +
@@ -38,6 +41,6 @@ public interface DoctorRepository extends JpaRepository<Doctor, UUID> {
     List<Doctor> findAllPharmacistsInPharmacy(@Param("pharmacyId") UUID pharmacyId);
 
     @Transactional(readOnly = true)
-    @Query("SELECT d FROM doctor d JOIN FETCH d.terms t WHERE t.patient.id = :patientId AND t.doctor.id = :doctorId AND t.endTime < :todayTime")
+    @Query("SELECT d FROM doctor d JOIN d.terms t WHERE t.patient.id = :patientId AND t.doctor.id = :doctorId AND t.endTime < :todayTime")
     Doctor checkIfPatientHadAppointmentWithDoctor(@Param("doctorId") UUID doctorId, @Param("patientId") UUID patientId, @Param("todayTime") Date todayTime);
 }
