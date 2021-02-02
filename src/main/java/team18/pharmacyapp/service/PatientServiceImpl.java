@@ -6,6 +6,7 @@ import team18.pharmacyapp.model.Address;
 import team18.pharmacyapp.model.dtos.LoginPatientDTO;
 import team18.pharmacyapp.model.dtos.RegisterPatientDTO;
 import team18.pharmacyapp.model.enums.UserRole;
+import team18.pharmacyapp.model.medicine.Medicine;
 import team18.pharmacyapp.model.users.Patient;
 import team18.pharmacyapp.repository.AddressRepository;
 import team18.pharmacyapp.repository.LoyaltyRepository;
@@ -35,6 +36,16 @@ public class PatientServiceImpl implements PatientService {
     @Override
     public List<Patient> findAll() {
         return patientRepository.findAll();
+    }
+
+    @Override
+    public int addPenalty(UUID patientId) {
+        return patientRepository.addPenalty(patientId);
+    }
+
+    @Override
+    public List<Medicine> getAlergicTo(UUID patientId) {
+        return  patientRepository.getAlergicMedicines(patientId);
     }
 
     public Patient findRegisteredPatient(LoginPatientDTO patient){

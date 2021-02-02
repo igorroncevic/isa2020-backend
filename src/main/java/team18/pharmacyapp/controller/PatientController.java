@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import team18.pharmacyapp.model.dtos.LoginPatientDTO;
 import team18.pharmacyapp.model.dtos.RegisterPatientDTO;
+import team18.pharmacyapp.model.medicine.Medicine;
 import team18.pharmacyapp.model.users.Patient;
 import team18.pharmacyapp.service.PatientServiceImpl;
 
@@ -13,7 +14,7 @@ import java.util.List;
 import java.util.UUID;
 
 
-@CrossOrigin(origins = "http://localhost:8080")
+@CrossOrigin(origins = {"http://localhost:8080","http://localhost:8081"})
 @RestController
 @RequestMapping(value = "api/patients")
 public class PatientController {
@@ -48,5 +49,17 @@ public class PatientController {
     public ResponseEntity<Boolean> activateAccount(@PathVariable String id){
         UUID uuid=UUID.fromString(id);
         return new ResponseEntity<>(patientService.activateAccount(uuid),HttpStatus.OK);
+    }
+    @PutMapping("/addPenalty/{id}")
+    public ResponseEntity<Integer> addPenalty(@PathVariable UUID id){
+        int res=patientService.addPenalty(id);
+        if(res==1)
+            return new ResponseEntity<>(res,HttpStatus.OK);
+        return new ResponseEntity<>(res,HttpStatus.BAD_REQUEST);
+    }
+
+    @GetMapping("alergicMedicines/{id}")
+    public ResponseEntity<List<Medicine>> getAlergicMedicines(@PathVariable UUID id){
+        return new ResponseEntity<>(patientService.getAlergicTo(id),HttpStatus.OK);
     }
 }
