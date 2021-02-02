@@ -1,13 +1,14 @@
 package team18.pharmacyapp.service.interfaces;
 
 import team18.pharmacyapp.model.Vacation;
+import team18.pharmacyapp.model.enums.VacationStatus;
 
 import java.util.List;
 import java.util.UUID;
 
 public interface VacationService {
 
-    List<Vacation> getAllPending();
+    List<Vacation> getAll(VacationStatus vacationStatus);
 
     Vacation getById(UUID vacationId);
 

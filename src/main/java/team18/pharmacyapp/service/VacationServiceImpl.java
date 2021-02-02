@@ -3,6 +3,7 @@ package team18.pharmacyapp.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import team18.pharmacyapp.model.Vacation;
+import team18.pharmacyapp.model.enums.VacationStatus;
 import team18.pharmacyapp.repository.VacationRepository;
 import team18.pharmacyapp.service.interfaces.VacationService;
 
@@ -20,8 +21,8 @@ public class VacationServiceImpl implements VacationService {
     }
 
     @Override
-    public List<Vacation> getAllPending() {
-        return vacationRepository.getAllPending();
+    public List<Vacation> getAll(VacationStatus vacationStatus) {
+        return vacationRepository.getAll(vacationStatus);
     }
 
     @Override

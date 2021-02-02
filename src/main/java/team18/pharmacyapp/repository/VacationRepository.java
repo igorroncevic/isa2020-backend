@@ -6,14 +6,15 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 import team18.pharmacyapp.model.Vacation;
+import team18.pharmacyapp.model.enums.VacationStatus;
 
 import java.util.List;
 import java.util.UUID;
 
 public interface VacationRepository extends JpaRepository<Vacation, UUID> {
 
-    @Query("SELECT v FROM vacation v JOIN FETCH v.doctor d WHERE v.status = 'pending'")
-    public List<Vacation> getAllPending();
+    @Query("SELECT v FROM vacation v JOIN FETCH v.doctor d WHERE v.status = :vacationStatus")
+    public List<Vacation> getAll(@Param("vacationStatus") VacationStatus vacationStatus);
 
     @Transactional
     @Modifying

@@ -213,4 +213,12 @@ values ('3071dbd0-0034-4b81-84d5-cf96fbf42c4c', 4, null, null, 'dd4c7e5f-f2c4-42
 
 -- Vacation
 insert into vacation(id, status, start_date, end_date, rejection_reason, doctor_id)
-values ('425a7925-786e-4f4b-80d6-3044e2de8fb3', 'pending', '2021-08-01', '2021-08-15', null, 'a5ac174a-45b3-487f-91cb-3d3f727d6f1c');
+values ('425a7925-786e-4f4b-80d6-3044e2de8fb3', 'pending', '2021-08-01', '2021-08-15', null, 'b0a591d4-f627-45ba-8aa9-926e85c93e08');
+insert into vacation(id, status, start_date, end_date, rejection_reason, doctor_id)
+values ('20140d7c-ba8b-4225-82b3-a22e330b9ed8', 'pending', '2021-07-01', '2021-07-15', null, 'b7d924b5-c488-47bc-be78-2bdad330f468');
+insert into vacation(id, status, start_date, end_date, rejection_reason, doctor_id)
+values ('4eaae612-212a-4d1f-992b-bab47a5bdeff', 'pending', '2021-07-01', '2021-08-15', null, '236b04cd-2c94-4222-a101-16fb827ce816');
+insert into vacation(id, status, start_date, end_date, rejection_reason, doctor_id)
+values ('d430072f-57e3-4434-aa5f-516ac45e5715', 'pending', '2021-05-01', '2021-05-25', null, 'cb317110-4d3e-4a52-8ca6-0c73bc62b4d2');
+insert into vacation(id, status, start_date, end_date, rejection_reason, doctor_id)
+values ('18be1095-8158-4a8f-b9c7-9cf91f4fab4e', 'pending', '2021-08-01', '2021-08-20', null, '02fb4f65-923c-49fe-b32a-c40ffee74b47');

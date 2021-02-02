@@ -26,7 +26,19 @@ public class VacationController {
 
     @GetMapping("/pending")
     public ResponseEntity<List<Vacation>> getAllPending() {
-        List<Vacation> pendingVacations = vacationService.getAllPending();
+        List<Vacation> pendingVacations = vacationService.getAll(VacationStatus.pending);
+        return new ResponseEntity<>(pendingVacations, HttpStatus.OK);
+    }
+
+    @GetMapping("/approved")
+    public ResponseEntity<List<Vacation>> getAllApproved() {
+        List<Vacation> pendingVacations = vacationService.getAll(VacationStatus.approved);
+        return new ResponseEntity<>(pendingVacations, HttpStatus.OK);
+    }
+
+    @GetMapping("/refused")
+    public ResponseEntity<List<Vacation>> getAllRefused() {
+        List<Vacation> pendingVacations = vacationService.getAll(VacationStatus.refused);
         return new ResponseEntity<>(pendingVacations, HttpStatus.OK);
     }
 
