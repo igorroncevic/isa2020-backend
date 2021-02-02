@@ -1,9 +1,6 @@
 package team18.pharmacyapp.service.interfaces;
 
-import team18.pharmacyapp.model.dtos.CancelMedicineRequestDTO;
-import team18.pharmacyapp.model.dtos.PharmacyMedicinesDTO;
-import team18.pharmacyapp.model.dtos.ReserveMedicineRequestDTO;
-import team18.pharmacyapp.model.dtos.ReservedMedicineDTO;
+import team18.pharmacyapp.model.dtos.*;
 import team18.pharmacyapp.model.exceptions.ActionNotAllowedException;
 import team18.pharmacyapp.model.medicine.Medicine;
 import team18.pharmacyapp.model.exceptions.ReserveMedicineException;
@@ -28,5 +25,5 @@ public interface MedicineService {
 
     boolean cancelMedicine(CancelMedicineRequestDTO cmrDTO) throws ReserveMedicineException, RuntimeException;
 
-    List<Medicine> getAllMedicinesForMarking(UUID patientId);
+    List<MedicineMarkDTO> getAllMedicinesForMarking(UUID patientId);
 }

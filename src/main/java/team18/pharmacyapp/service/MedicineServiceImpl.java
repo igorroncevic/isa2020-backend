@@ -4,15 +4,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import team18.pharmacyapp.model.Pricings;
-import team18.pharmacyapp.model.dtos.CancelMedicineRequestDTO;
-import team18.pharmacyapp.model.dtos.PharmacyMedicinesDTO;
-import team18.pharmacyapp.model.dtos.ReserveMedicineRequestDTO;
-import team18.pharmacyapp.model.dtos.ReservedMedicineDTO;
+import team18.pharmacyapp.model.dtos.*;
 import team18.pharmacyapp.model.exceptions.ActionNotAllowedException;
 import team18.pharmacyapp.model.exceptions.ReserveMedicineException;
 import team18.pharmacyapp.model.medicine.Medicine;
 import team18.pharmacyapp.model.medicine.PharmacyMedicines;
 import team18.pharmacyapp.model.users.Patient;
+import team18.pharmacyapp.repository.MarkRepository;
 import team18.pharmacyapp.repository.MedicineRepository;
 import team18.pharmacyapp.service.interfaces.EmailService;
 import team18.pharmacyapp.repository.PatientRepository;
@@ -30,12 +28,14 @@ public class MedicineServiceImpl implements MedicineService {
     private final MedicineRepository medicineRepository;
     private final EmailService emailService;
     private final PatientRepository patientRepository;
+    private final MarkRepository markRepository;
 
     @Autowired
-    public MedicineServiceImpl(MedicineRepository medicineRepository, EmailService emailService, PatientRepository patientRepository) {
+    public MedicineServiceImpl(MedicineRepository medicineRepository, EmailService emailService, PatientRepository patientRepository, MarkRepository markRepository) {
         this.medicineRepository = medicineRepository;
         this.emailService = emailService;
         this.patientRepository = patientRepository;
+        this.markRepository = markRepository;
     }
 
     @Override
@@ -162,12 +162,35 @@ public class MedicineServiceImpl implements MedicineService {
     }
 
     @Override
-    public List<Medicine> getAllMedicinesForMarking(UUID patientId) {
+    public List<MedicineMarkDTO> getAllMedicinesForMarking(UUID patientId) {
         List<Medicine> reservedMedicines = medicineRepository.getAllPatientsReservedMedicines(patientId);
         List<Medicine> prescribedMedicines = medicineRepository.getAllPatientsPrescribedMedicines(patientId);
         List<Medicine> allMedicines = Stream.concat(reservedMedicines.stream(), prescribedMedicines.stream())
                 .collect(Collectors.toList());
 
-        return allMedicines;
+        List<Medicine>noDuplicates = new ArrayList<>();
+        for(int i = 0; i < allMedicines.size(); i++){
+            boolean contained = false;
+            for(int j = 0; j < noDuplicates.size(); j++){
+                if(noDuplicates.get(j).equals(allMedicines.get(i))){
+                    contained = true;
+                    break;
+                }
+            }
+            if(!contained) noDuplicates.add(allMedicines.get(i));
+        }
+
+        List<MedicineMarkDTO>mFinal = new ArrayList<>();
+        for(Medicine m : noDuplicates){
+            MedicineMarkDTO mmDTO = new MedicineMarkDTO();
+            mmDTO.setId(m.getId());
+            mmDTO.setName(m.getName());
+            Float averageMark = markRepository.getAverageMarkForMedicine(m.getId());
+            mmDTO.setMark(averageMark);
+            mmDTO.setLoyaltyPoints(m.getLoyaltyPoints());
+            mFinal.add(mmDTO);
+        }
+
+        return mFinal;
     }
 }

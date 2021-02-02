@@ -14,6 +14,9 @@ public interface MarkRepository extends JpaRepository<Mark, UUID> {
     @Query("SELECT COALESCE(AVG(m.mark), 0) FROM mark m WHERE m.doctor.id = :doctorId")
     Float getAverageMarkForDoctor(@Param("doctorId") UUID doctorId);
 
+    @Transactional(readOnly = true)
+    @Query("SELECT COALESCE(AVG(m.mark), 0) FROM mark m WHERE m.medicine.id = :medicineId")
+    Float getAverageMarkForMedicine(@Param("medicineId") UUID medicineId);
 
     @Transactional(readOnly = true)
     @Query("SELECT COALESCE(AVG(m.mark), 0.0) FROM mark m WHERE m.pharmacy.id = :id")

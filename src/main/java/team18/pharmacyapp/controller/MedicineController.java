@@ -4,10 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import team18.pharmacyapp.model.dtos.CancelMedicineRequestDTO;
-import team18.pharmacyapp.model.dtos.PharmacyMedicinesDTO;
-import team18.pharmacyapp.model.dtos.ReserveMedicineRequestDTO;
-import team18.pharmacyapp.model.dtos.ReservedMedicineDTO;
+import team18.pharmacyapp.model.dtos.*;
 import team18.pharmacyapp.model.exceptions.ActionNotAllowedException;
 import team18.pharmacyapp.model.medicine.Medicine;
 import team18.pharmacyapp.model.exceptions.ReserveMedicineException;
@@ -42,8 +39,8 @@ public class MedicineController {
     }
 
     @GetMapping("/patient/{id}")
-    public ResponseEntity<List<Medicine>> getAllPatientsMedicines(@PathVariable UUID id) {
-        List<Medicine> medicines = medicineService.getAllMedicinesForMarking(id);
+    public ResponseEntity<List<MedicineMarkDTO>> getAllPatientsMedicines(@PathVariable UUID id) {
+        List<MedicineMarkDTO> medicines = medicineService.getAllMedicinesForMarking(id);
 
         if(medicines.size() != 0) {
             return new ResponseEntity<>(medicines, HttpStatus.OK);
