@@ -11,11 +11,11 @@ import team18.pharmacyapp.model.enums.UserRole;
 import javax.persistence.*;
 import java.util.UUID;
 
-@MappedSuperclass
+@Entity
 @Getter
 @Setter
 @NoArgsConstructor
-@Inheritance(strategy = InheritanceType.JOINED)
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class RegisteredUser {
     @Id
     @GeneratedValue(generator = "UUID")
@@ -44,7 +44,7 @@ public class RegisteredUser {
     @Enumerated(EnumType.STRING)
     protected UserRole role;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnore
     @JoinColumn(name = "fk_address", referencedColumnName = "id")
     protected Address address;

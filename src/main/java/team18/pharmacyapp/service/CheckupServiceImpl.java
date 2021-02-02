@@ -32,6 +32,11 @@ public class CheckupServiceImpl implements CheckupService {
         return checkupRepository.findById(id).orElse(null);
     }
 
+    @Override
+    public Term findByIdFetchDoctor(UUID id) {
+        return checkupRepository.findByIdCustom(id);
+    }
+
     public List<Term> findAll(TermType termType) {
         return checkupRepository.findAll(termType);
     }
