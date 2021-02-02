@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import team18.pharmacyapp.model.dtos.LoginPatientDTO;
 import team18.pharmacyapp.model.dtos.RegisterPatientDTO;
+import team18.pharmacyapp.model.medicine.Medicine;
 import team18.pharmacyapp.model.users.Patient;
 import team18.pharmacyapp.service.PatientServiceImpl;
 
@@ -55,5 +56,10 @@ public class PatientController {
         if(res==1)
             return new ResponseEntity<>(res,HttpStatus.OK);
         return new ResponseEntity<>(res,HttpStatus.BAD_REQUEST);
+    }
+
+    @GetMapping("alergicMedicines/{id}")
+    public ResponseEntity<List<Medicine>> getAlergicMedicines(@PathVariable UUID id){
+        return new ResponseEntity<>(patientService.getAlergicTo(id),HttpStatus.OK);
     }
 }
