@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.*;
 import team18.pharmacyapp.model.Vacation;
 import team18.pharmacyapp.model.dtos.RefuseVacationDTO;
 import team18.pharmacyapp.model.enums.VacationStatus;
+import team18.pharmacyapp.model.exceptions.ActionNotAllowedException;
+import team18.pharmacyapp.model.exceptions.EntityNotFoundException;
 import team18.pharmacyapp.service.interfaces.VacationService;
 
 import java.util.List;
@@ -44,27 +46,31 @@ public class VacationController {
 
     @PatchMapping(value = "/{id}/approve")
     public ResponseEntity approveVacation(@PathVariable UUID id) {
-        Vacation vacation = vacationService.getById(id);
-        if(vacation == null) {
+        try {
+            vacationService.approve(id);
+        }catch (EntityNotFoundException ex) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } else if(vacation.getStatus() != VacationStatus.pending) {
+        }catch (ActionNotAllowedException ex) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } catch (RuntimeException ex) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        vacationService.approve(id);
         return new ResponseEntity(HttpStatus.OK);
     }
 
     @PatchMapping(value = "/{id}/refuse")
     public ResponseEntity refuseVacation(@PathVariable UUID id, @RequestBody RefuseVacationDTO refuseVacationDTO) {
-        Vacation vacation = vacationService.getById(id);
-        if(vacation == null) {
+        try {
+            vacationService.refuse(id, refuseVacationDTO.getRejectionReason());
+        }catch (EntityNotFoundException ex) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } else if(vacation.getStatus() != VacationStatus.pending) {
+        }catch (ActionNotAllowedException ex) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } catch (RuntimeException ex) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        vacationService.refuse(id, refuseVacationDTO.getRejectionReason());
         return new ResponseEntity(HttpStatus.OK);
     }
 

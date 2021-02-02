@@ -9,21 +9,25 @@ import team18.pharmacyapp.model.Vacation;
 import team18.pharmacyapp.model.enums.VacationStatus;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface VacationRepository extends JpaRepository<Vacation, UUID> {
 
     @Query("SELECT v FROM vacation v JOIN FETCH v.doctor d WHERE v.status = :vacationStatus")
-    public List<Vacation> getAll(@Param("vacationStatus") VacationStatus vacationStatus);
+    List<Vacation> getAll(@Param("vacationStatus") VacationStatus vacationStatus);
+
+    @Query("SELECT v FROM vacation v JOIN FETCH v.doctor d WHERE v.id = :vacationId")
+    Optional<Vacation> getById(@Param("vacationId") UUID vacationId);
 
     @Transactional
     @Modifying
     @Query(nativeQuery = true, value = "UPDATE vacation SET status = 'approved' WHERE id = :vacationId")
-    public void approve(@Param("vacationId") UUID vacationId);
+    int approve(@Param("vacationId") UUID vacationId);
 
     @Transactional
     @Modifying
     @Query(nativeQuery = true, value = "UPDATE vacation SET status = 'refused', rejection_reason = :reason WHERE id = :vacationId")
-    public void refuse(@Param("vacationId") UUID vacationId, @Param("reason") String reason);
+    int refuse(@Param("vacationId") UUID vacationId, @Param("reason") String reason);
 
 }
