@@ -18,4 +18,8 @@ public interface PharmacyMedicinesRepository extends JpaRepository<PharmacyMedic
     @Transactional(readOnly = true)
     @Query(value = "select quantity from pharmacy_medicines where pharmacy_id=:pharmacyId and medicine_id=:medicineId",nativeQuery = true)
     int findQyantity(UUID pharmacyId,UUID medicineId);
+
+    @Transactional(readOnly = true)
+    @Query(value = "select m from pharmacy_medicines p inner join medicine m on p.medicine.id=m.id where p.pharmacy.id=:pharmacyId")
+    List<Medicine> getMedicineByPharmacy (UUID pharmacyId);
 }

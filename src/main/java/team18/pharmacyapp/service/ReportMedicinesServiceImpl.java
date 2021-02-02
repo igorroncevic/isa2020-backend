@@ -18,6 +18,6 @@ public class ReportMedicinesServiceImpl implements ReportMedicinesService {
 
     @Override
     public ReportMedicines save(ReportMedicines reportMedicines) {
-        return null;
+        return repository.save(reportMedicines);
     }
 }

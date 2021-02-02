@@ -5,5 +5,4 @@ import team18.pharmacyapp.model.keys.ReportMedicineId;
 import team18.pharmacyapp.model.medicine.ReportMedicines;
 
 public interface ReportMedicinesRepository extends JpaRepository<ReportMedicines, ReportMedicineId> {
-
 }
