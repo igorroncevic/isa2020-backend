@@ -13,6 +13,8 @@ import java.util.UUID;
 public interface CheckupService {
     Term findOne(UUID id);
 
+    Term findByIdFetchDoctor(UUID id);
+
     List<Term> findAll(TermType termType);
 
     List<Term> findAllAvailableCheckups();

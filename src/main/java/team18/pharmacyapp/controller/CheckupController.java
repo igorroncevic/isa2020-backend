@@ -49,6 +49,16 @@ public class CheckupController {
 
         return new ResponseEntity<>(checkup, HttpStatus.OK);
     }
+    @GetMapping(value = "/patientCheckup/{id}")
+    public ResponseEntity<Term> getCheckupFetchPatient(@PathVariable UUID id) {
+        Term checkup = checkupService.findByIdFetchDoctor(id);
+
+        if (checkup == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        return new ResponseEntity<>(checkup, HttpStatus.OK);
+    }
 
     @PostMapping(consumes = "application/json")
     public ResponseEntity<Term> saveCheckup(@RequestBody Term checkup) {
