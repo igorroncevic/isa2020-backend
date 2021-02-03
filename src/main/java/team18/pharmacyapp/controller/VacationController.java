@@ -67,6 +67,8 @@ public class VacationController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }catch (ActionNotAllowedException ex) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } catch (IllegalArgumentException ex) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         } catch (RuntimeException ex) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }

@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import team18.pharmacyapp.model.Vacation;
 import team18.pharmacyapp.model.enums.VacationStatus;
 import team18.pharmacyapp.model.exceptions.ActionNotAllowedException;
@@ -53,12 +54,14 @@ public class VacationServiceImpl implements VacationService {
     }
 
     @Override
-    public void refuse(UUID vacationId, String reason) throws EntityNotFoundException, ActionNotAllowedException, RuntimeException {
+    public void refuse(UUID vacationId, String reason) throws EntityNotFoundException, ActionNotAllowedException, RuntimeException, IllegalArgumentException {
         Vacation vacation = vacationRepository.getById(vacationId).orElse(null);
         if(vacation == null)
             throw new EntityNotFoundException("There is no such vacation request");
         else if(vacation.getStatus() != VacationStatus.pending)
             throw new ActionNotAllowedException("You can only refuse pending vacation requests");
+        else if(reason.length() < 10 || reason.length() > 255)
+            throw new IllegalArgumentException("Reason must be between 10 and 255 characters");
 
         int rowsUpdated = vacationRepository.refuse(vacationId, reason);
         if (rowsUpdated != 1)
