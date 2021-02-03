@@ -82,13 +82,16 @@ values ('ebec212e-5ff8-45f8-8411-82d6ac3b69a6', '1accde09-0aa2-4ea1-9a38-17f4635
         '2021-02-28 14:00:00', 19, 'counseling', 8, null, null);
 insert into term (id, doctor_id, start_time, end_time, price, "type", loyalty_points, report_id, patient_id)
 values ('bef34914-aaab-4c7d-8ef5-c2844eb33d6d', '1accde09-0aa2-4ea1-9a38-17f4635198b9', '2021-01-15 13:15:00',
-        '2021-01-15 13:35:00', 19, 'checkup', 8, null, null);
+        '2021-01-15 13:35:00', 19, 'checkup', 8, null, 'cc6fd408-0084-420b-8078-687d8a72744b');
 insert into term (id, doctor_id, start_time, end_time, price, "type", loyalty_points, report_id, patient_id)
 values ('c3695891-66a8-421f-8759-5602513975f8', 'a5ac174a-45b3-487f-91cb-3d3f727d6f1c', '2021-01-15 12:25:00',
         '2021-02-28 13:00:00', 12, 'checkup', 5, null, 'cc6fd408-0084-420b-8078-687d8a72744b');
 insert into term (id, doctor_id, start_time, end_time, price, "type", loyalty_points, report_id, patient_id)
-values ('f1694aa0-a662-405e-9eb6-60d6a9ffd87c', 'a5ac174a-45b3-487f-91cb-3d3f727d6f1c', '2021-01-15 13:15:00',
+values ('f1694aa0-a662-405e-9eb6-60d6a9ffd87c', 'a5ac174a-45b3-487f-91cb-3d3f727d6f1c', '2021-02-28 13:15:00',
         '2021-02-28 13:45:00', 12, 'checkup', 5, null, 'dd4c7e5f-f2c4-42dc-a809-fd7f588b3acb');
+insert into term (id, doctor_id, start_time, end_time, price, "type", loyalty_points, report_id, patient_id)
+values ('ddf04525-26f4-4d13-a267-00a30ec2412a', 'a5ac174a-45b3-487f-91cb-3d3f727d6f1c', '2021-01-15 13:15:00',
+        '2021-01-15 13:45:00', 12, 'checkup', 5, null, 'dd4c7e5f-f2c4-42dc-a809-fd7f588b3acb');
 
 -- Savjetovanja
 insert into term (id, doctor_id, start_time, end_time, price, "type", loyalty_points, report_id, patient_id)
@@ -118,12 +121,8 @@ insert into pharmacy (id, address_id, "name")
 values ('25fff0b2-ad45-4310-ac7f-96bcc5e517c1', '34c4d86e-8781-4163-b61a-4720c39b7ad6', 'Apoteka Jankovic');
 insert into pharmacy (id, address_id, "name")
 values ('e93cab4a-f007-412c-b631-7a9a5ee2c6ed', '9241601b-a20a-4f26-9523-d4a670a881dc', 'BENU apoteka');
-
--- Ocjene
-insert into mark (id, mark, pharmacy_id, medicine_id, doctor_id, patient_id)
-values ('27c81755-5fff-4bf4-b3e9-a0c49e53a031', 5, '25fff0b2-ad45-4310-ac7f-96bcc5e517c1', null, null, 'cc6fd408-0084-420b-8078-687d8a72744b');
-insert into mark (id, mark, pharmacy_id, medicine_id, doctor_id, patient_id)
-values ('f6d9f69e-9ec0-4c0e-b9dc-d4cba7fb3c8c', 4, '25fff0b2-ad45-4310-ac7f-96bcc5e517c1', null, null, 'dd4c7e5f-f2c4-42dc-a809-fd7f588b3acb');
+insert into pharmacy (id, address_id, "name")
+values ('1272bfbd-08bb-4f2d-a9f5-cd06ad5cdf6d', '9241601b-a20a-4f26-9523-d4a670a881dc', 'Neka apoteka');
 
 -- Administratori apoteka
 insert into pharmacy_admin (id, "name", surname, email, phone_number, "password", "role", fk_address, pharmacy_id)
@@ -194,7 +193,9 @@ values ('d5397940-cafe-4f4d-865d-678cddadd07f', '2021-01-01 00:00:01', '2022-01-
 
 -- Rezervisani lijekovi
 insert into reserved_medicines(id, pickup_date, medicine_id, patient_id, pharmacy_id, handled)
-values ('ff1cc92f-30d2-4cad-b3d7-f4a65eaa2d07', '2021-02-25', '7571786b-2fc5-4756-ab5c-1f4af756e6f2', 'cc6fd408-0084-420b-8078-687d8a72744b', 'e93cab4a-f007-412c-b631-7a9a5ee2c6ed', false);
+values ('ff1cc92f-30d2-4cad-b3d7-f4a65eaa2d07', '2021-02-25', '7571786b-2fc5-4756-ab5c-1f4af756e6f2', 'cc6fd408-0084-420b-8078-687d8a72744b', 'e93cab4a-f007-412c-b631-7a9a5ee2c6ed', true);
+insert into reserved_medicines(id, pickup_date, medicine_id, patient_id, pharmacy_id, handled)
+values ('3a67b4a6-d043-46ad-a4c3-8629cadca585', '2021-02-25', '7571786b-2fc5-4756-ab5c-1f4af756e6f2', 'dd4c7e5f-f2c4-42dc-a809-fd7f588b3acb', 'e93cab4a-f007-412c-b631-7a9a5ee2c6ed', true);
 
 -- Mark
 insert into mark(id, mark, doctor_id, medicine_id, patient_id, pharmacy_id)
@@ -202,14 +203,19 @@ values ('3d54f12d-ba27-4ed1-b896-c75c284e2153', 4, 'a5ac174a-45b3-487f-91cb-3d3f
 insert into mark(id, mark, doctor_id, medicine_id, patient_id, pharmacy_id)
 values ('d3bd5650-dc9c-4355-8e69-3e0e27e60c08', 5, 'a5ac174a-45b3-487f-91cb-3d3f727d6f1c', null, 'dd4c7e5f-f2c4-42dc-a809-fd7f588b3acb', null);
 
+insert into mark (id, mark, pharmacy_id, medicine_id, doctor_id, patient_id)
+values ('f6d9f69e-9ec0-4c0e-b9dc-d4cba7fb3c8c', 4, '25fff0b2-ad45-4310-ac7f-96bcc5e517c1', null, null, 'dd4c7e5f-f2c4-42dc-a809-fd7f588b3acb');
 insert into mark(id, mark, doctor_id, medicine_id, patient_id, pharmacy_id)
 values ('d1c19003-6489-41ad-a4c2-dec900222afe', 5, null, null, 'cc6fd408-0084-420b-8078-687d8a72744b', '25fff0b2-ad45-4310-ac7f-96bcc5e517c1');
 insert into mark(id, mark, doctor_id, medicine_id, patient_id, pharmacy_id)
-values ('e15abd59-dca9-4691-a224-38ce345c7d6f', 5, null, null, 'dd4c7e5f-f2c4-42dc-a809-fd7f588b3acb', 'e93cab4a-f007-412c-b631-7a9a5ee2c6ed');
-insert into mark(id, mark, doctor_id, medicine_id, patient_id, pharmacy_id)
-values ('c0cb93be-e25a-4b0a-84f7-d815b16b0e46', 4, null, null, 'cc6fd408-0084-420b-8078-687d8a72744b', '25fff0b2-ad45-4310-ac7f-96bcc5e517c1');
+values ('e15abd59-dca9-4691-a224-38ce345c7d6f', 5, null, null, 'dd4c7e5f-f2c4-42dc-a809-fd7f588b3acb', '25fff0b2-ad45-4310-ac7f-96bcc5e517c1');
 insert into mark(id, mark, doctor_id, medicine_id, patient_id, pharmacy_id)
 values ('3071dbd0-0034-4b81-84d5-cf96fbf42c4c', 4, null, null, 'dd4c7e5f-f2c4-42dc-a809-fd7f588b3acb', 'e93cab4a-f007-412c-b631-7a9a5ee2c6ed');
+
+insert into mark(id, mark, doctor_id, medicine_id, patient_id, pharmacy_id)
+values ('3071dbd0-0034-4b81-84d5-cf96fbf42c4c', 4, null, null, 'dd4c7e5f-f2c4-42dc-a809-fd7f588b3acb', 'e93cab4a-f007-412c-b631-7a9a5ee2c6ed');
+insert into mark(id, mark, doctor_id, medicine_id, patient_id, pharmacy_id)
+values ('4f89d077-d550-4435-8636-aa528eb9f7da', 4, null, '7571786b-2fc5-4756-ab5c-1f4af756e6f2', 'cc6fd408-0084-420b-8078-687d8a72744b', null);
 
 -- Vacation
 insert into vacation(id, status, start_date, end_date, rejection_reason, doctor_id)
@@ -222,3 +228,6 @@ insert into vacation(id, status, start_date, end_date, rejection_reason, doctor_
 values ('d430072f-57e3-4434-aa5f-516ac45e5715', 'pending', '2021-05-01', '2021-05-25', null, 'cb317110-4d3e-4a52-8ca6-0c73bc62b4d2');
 insert into vacation(id, status, start_date, end_date, rejection_reason, doctor_id)
 values ('18be1095-8158-4a8f-b9c7-9cf91f4fab4e', 'pending', '2021-08-01', '2021-08-20', null, '02fb4f65-923c-49fe-b32a-c40ffee74b47');
+
+
+

@@ -38,7 +38,6 @@ public class Pharmacy {
     private List<Promotion> promotions;
 
     @OneToMany(mappedBy = "pharmacy")
-    @JsonIgnore
     private List<ReservedMedicines> reservedMedicines;
 
     @ManyToMany(cascade = CascadeType.ALL)

@@ -34,11 +34,22 @@ public class MedicineController {
         return new ResponseEntity<>(medicines, HttpStatus.OK);
     }
 
-    @GetMapping("/patient/{id}")
-    public ResponseEntity<List<ReservedMedicineDTO>> getAllPatientsMedicines(@PathVariable UUID id) {
+    @GetMapping("/reserved/{id}")
+    public ResponseEntity<List<ReservedMedicineDTO>> getAllPatientsReservedMedicines(@PathVariable UUID id) {
         List<ReservedMedicineDTO> medicines = medicineService.findAllPatientsReservedMedicines(id);
 
         return new ResponseEntity<>(medicines, HttpStatus.OK);
+    }
+
+    @GetMapping("/patient/{id}")
+    public ResponseEntity<List<MedicineMarkDTO>> getAllPatientsMedicines(@PathVariable UUID id) {
+        List<MedicineMarkDTO> medicines = medicineService.getAllMedicinesForMarking(id);
+
+        if(medicines.size() != 0) {
+            return new ResponseEntity<>(medicines, HttpStatus.OK);
+        }else{
+            return new ResponseEntity<>(medicines, HttpStatus.NOT_FOUND);
+        }
     }
 
     @GetMapping(value = "/{id}")
