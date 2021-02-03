@@ -10,4 +10,5 @@ public interface PricingsService {
 
     List<PricingsDTO> getAllCurrentPricingsForPhramcy(UUID id);
 
+    List<PricingsDTO> getAllPricingsForMedicine(UUID phId, UUID mId);
 }

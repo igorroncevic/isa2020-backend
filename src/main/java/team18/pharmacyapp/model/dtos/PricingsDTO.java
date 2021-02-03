@@ -14,6 +14,7 @@ public class PricingsDTO {
 
     UUID id;
     String medicine;
+    UUID medicineId;
     Date startDate;
     Date endDate;
     double price;

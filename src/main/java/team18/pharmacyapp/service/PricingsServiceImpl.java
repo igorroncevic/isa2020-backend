@@ -30,6 +30,24 @@ public class PricingsServiceImpl implements PricingsService {
             PricingsDTO pricingsDTO = new PricingsDTO();
             pricingsDTO.setId(pricing.getId());
             pricingsDTO.setMedicine(pricing.getPharmacyMedicine().getMedicine().getName());
+            pricingsDTO.setMedicineId(pricing.getPharmacyMedicine().getMedicine().getId());
+            pricingsDTO.setStartDate(pricing.getStartDate());
+            pricingsDTO.setEndDate(pricing.getEndDate());
+            pricingsDTO.setPrice(pricing.getPrice());
+            pricingsDTOs.add(pricingsDTO);
+        }
+        return pricingsDTOs;
+    }
+
+    @Override
+    public List<PricingsDTO> getAllPricingsForMedicine(UUID phId, UUID mId) {
+        List<Pricings> pricings = pricingsRepository.getAllPricingsForMedicine(phId, mId);
+        List<PricingsDTO> pricingsDTOs = new ArrayList<>();
+        for(Pricings pricing : pricings) {
+            PricingsDTO pricingsDTO = new PricingsDTO();
+            pricingsDTO.setId(pricing.getId());
+            pricingsDTO.setMedicine(pricing.getPharmacyMedicine().getMedicine().getName());
+            pricingsDTO.setMedicineId(pricing.getPharmacyMedicine().getMedicine().getId());
             pricingsDTO.setStartDate(pricing.getStartDate());
             pricingsDTO.setEndDate(pricing.getEndDate());
             pricingsDTO.setPrice(pricing.getPrice());

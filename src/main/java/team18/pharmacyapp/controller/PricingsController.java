@@ -31,5 +31,11 @@ public class PricingsController {
         return new ResponseEntity<>(pricings, HttpStatus.OK);
     }
 
+    @GetMapping("/pharmacy/{phId}/medicine/{mId}")
+    public ResponseEntity<List<PricingsDTO>> getAllPricingsForMedicine(@PathVariable UUID phId, @PathVariable UUID mId) {
+        List<PricingsDTO> pricings = pricingsService.getAllPricingsForMedicine(phId, mId);
+        return new ResponseEntity<>(pricings, HttpStatus.OK);
+    }
+
 
 }

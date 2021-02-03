@@ -180,7 +180,11 @@ values ('0b8a5f82-089c-42c2-8e5b-0dbdff7f3a50', '2021-01-01 00:00:01', '2022-01-
 insert into pricings (id, start_date, end_date, price, pharmacy_medicine_pharmacy_id, pharmacy_medicine_medicine_id)
 values ('843fa24b-ec5d-47d4-9ed4-4cd6d0f05107', '2021-01-01 00:00:01', '2022-01-01 00:00:01', 14, '25fff0b2-ad45-4310-ac7f-96bcc5e517c1', '32636111-4bc6-424c-a200-067e7f8a9386');
 insert into pricings (id, start_date, end_date, price, pharmacy_medicine_pharmacy_id, pharmacy_medicine_medicine_id)
-values ('7d980093-7952-46d6-b1e8-c44451ae571d', '2021-01-01 00:00:01', '2022-01-01 00:00:01', 25, '25fff0b2-ad45-4310-ac7f-96bcc5e517c1', '659d0931-63d9-4ef6-bbc4-abdeb4a99539');
+values ('7d980093-7952-46d6-b1e8-c44451ae571d', '2019-01-01 00:00:01', '2020-01-01 00:00:00', 25, '25fff0b2-ad45-4310-ac7f-96bcc5e517c1', '659d0931-63d9-4ef6-bbc4-abdeb4a99539');
+insert into pricings (id, start_date, end_date, price, pharmacy_medicine_pharmacy_id, pharmacy_medicine_medicine_id)
+values ('2a5ea26d-8e0b-4a57-8afe-9e06d9b879b2', '2020-01-01 00:00:01', '2021-01-01 00:00:00', 25, '25fff0b2-ad45-4310-ac7f-96bcc5e517c1', '659d0931-63d9-4ef6-bbc4-abdeb4a99539');
+insert into pricings (id, start_date, end_date, price, pharmacy_medicine_pharmacy_id, pharmacy_medicine_medicine_id)
+values ('6b65c7c3-f23f-48c5-9960-9d63153e195f', '2021-01-01 00:00:01', '2022-01-01 00:00:00', 25, '25fff0b2-ad45-4310-ac7f-96bcc5e517c1', '659d0931-63d9-4ef6-bbc4-abdeb4a99539');
 
 insert into pricings (id, start_date, end_date, price, pharmacy_medicine_pharmacy_id, pharmacy_medicine_medicine_id)
 values ('9524e1dd-a31d-4365-abd6-cf7b8b6dcdb3', '2021-01-01 00:00:01', '2022-01-01 00:00:01', 19, 'e93cab4a-f007-412c-b631-7a9a5ee2c6ed', '7571786b-2fc5-4756-ab5c-1f4af756e6f2');
