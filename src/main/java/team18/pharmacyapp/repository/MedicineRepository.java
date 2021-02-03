@@ -40,6 +40,16 @@ public interface MedicineRepository extends JpaRepository<Medicine, UUID> {
             "WHERE ep.patient.id = :patientId ")
     List<Medicine>getAllPatientsPrescribedMedicines(@Param("patientId") UUID patientId);
 
+
+    @Transactional(readOnly = true)
+    @Query("SELECT m FROM medicine m " +
+            "WHERE m.id IN " +
+            "(SELECT m.id FROM medicine m JOIN m.reservedMedicines rm WHERE rm.patient.id = :patientId AND rm.handled = true) " +
+            "OR m.id IN " +
+            "(SELECT m.id FROM medicine m JOIN m.pharmacyMedicines pm JOIN pm.ePrescriptionMedicines epm JOIN epm.ePrescription ep " +
+            "WHERE ep.patient.id = :patientId)")
+    List<Medicine> getPatientsMedicines(@Param("patientId") UUID patientId);
+
     @Transactional(readOnly = true)
     @Query(nativeQuery = true, value = "SELECT pickup_date FROM reserved_medicines WHERE id = :id")
     Date findPickupDateByReservationId(@Param("id") UUID id);

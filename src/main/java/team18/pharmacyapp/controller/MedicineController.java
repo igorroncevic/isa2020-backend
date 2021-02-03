@@ -52,6 +52,17 @@ public class MedicineController {
         }
     }
 
+    @GetMapping("/patient/optimized/{id}")
+    public ResponseEntity<List<MedicineMarkDTO>> getAllPatientsMedicinesOptimized(@PathVariable UUID id) {
+        List<MedicineMarkDTO> medicines = medicineService.getAllMedicinesForMarkingOptimized(id);
+
+        if(medicines.size() != 0) {
+            return new ResponseEntity<>(medicines, HttpStatus.OK);
+        }else{
+            return new ResponseEntity<>(medicines, HttpStatus.NOT_FOUND);
+        }
+    }
+
     @GetMapping(value = "/{id}")
     public ResponseEntity<Medicine> getMedicine(@PathVariable UUID id) {
         Medicine medicine = medicineService.findById(id);

@@ -193,4 +193,22 @@ public class MedicineServiceImpl implements MedicineService {
 
         return mFinal;
     }
+
+    @Override
+    public List<MedicineMarkDTO> getAllMedicinesForMarkingOptimized(UUID patientId) {
+        List<Medicine> allMedicines = medicineRepository.getPatientsMedicines(patientId);
+
+        List<MedicineMarkDTO>mFinal = new ArrayList<>();
+        for(Medicine m : allMedicines){
+            MedicineMarkDTO mmDTO = new MedicineMarkDTO();
+            mmDTO.setId(m.getId());
+            mmDTO.setName(m.getName());
+            Float averageMark = markRepository.getAverageMarkForMedicine(m.getId());
+            mmDTO.setMark(averageMark);
+            mmDTO.setLoyaltyPoints(m.getLoyaltyPoints());
+            mFinal.add(mmDTO);
+        }
+
+        return mFinal;
+    }
 }
