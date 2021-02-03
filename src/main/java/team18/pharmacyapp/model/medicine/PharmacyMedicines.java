@@ -33,6 +33,9 @@ public class PharmacyMedicines {
     @OneToMany(mappedBy = "pharmacyMedicine")
     private List<Pricings> pricings;
 
+    @OneToMany(mappedBy = "pharmacyMedicines")
+    private List<EPrescriptionMedicines> ePrescriptionMedicines;
+
     // Verzija torke, koristi se u svrhu optimistickog zakljucavanja
     @Version
     private Long version;

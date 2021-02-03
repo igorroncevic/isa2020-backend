@@ -31,6 +31,15 @@ public interface MedicineRepository extends JpaRepository<Medicine, UUID> {
     List<ReservedMedicineDTO> findAllPatientsReservedMedicines(@Param("patient") Patient patient);
 
     @Transactional(readOnly = true)
+    @Query("SELECT m FROM medicine m " +
+            "WHERE m.id IN " +
+            "(SELECT m.id FROM medicine m JOIN m.reservedMedicines rm WHERE rm.patient.id = :patientId AND rm.handled = true) " +
+            "OR m.id IN " +
+            "(SELECT m.id FROM medicine m JOIN m.pharmacyMedicines pm JOIN pm.ePrescriptionMedicines epm JOIN epm.ePrescription ep " +
+            "WHERE ep.patient.id = :patientId)")
+    List<Medicine> getPatientsMedicines(@Param("patientId") UUID patientId);
+
+    @Transactional(readOnly = true)
     @Query(nativeQuery = true, value = "SELECT pickup_date FROM reserved_medicines WHERE id = :id")
     Date findPickupDateByReservationId(@Param("id") UUID id);
 
@@ -57,4 +66,31 @@ public interface MedicineRepository extends JpaRepository<Medicine, UUID> {
             "WHERE pharmacy_id = :pharmacyId AND medicine_id = :medicineId")
     int incrementMedicineQuantity(@Param("medicineId") UUID medicineId, @Param("pharmacyId") UUID pharmacyId);
 
+    @Transactional(readOnly = true)
+    @Query("SELECT m FROM medicine m " +
+            "JOIN m.reservedMedicines rm " +
+            "WHERE rm.patient.id = :patientId AND rm.medicine.id = :medicineId AND rm.handled = true")
+    Medicine checkIfPatientReservedMedicine(@Param("medicineId")UUID medicineId, @Param("patientId") UUID patientId);
+
+    @Transactional(readOnly = true)
+    @Query("SELECT m FROM medicine m " +
+            "JOIN FETCH m.pharmacyMedicines pm " +
+            "JOIN pm.ePrescriptionMedicines epm " +
+            "JOIN epm.ePrescription e " +
+            "WHERE e.patient.id = :patientId AND pm.medicine.id = :medicineId")
+    Medicine checkIfPatientGotPrescribedMedicine(@Param("medicineId")UUID medicineId, @Param("patientId") UUID patientId);
+
+    @Transactional(readOnly = true)
+    @Query("SELECT m FROM medicine m " +
+            "JOIN FETCH m.pharmacyMedicines pm " +
+            "JOIN pm.ePrescriptionMedicines epm " +
+            "JOIN epm.ePrescription e " +
+            "WHERE pm.pharmacy.id = :pharmacyId AND e.patient.id = :patientId")
+    List<Medicine> getPatientsEPrescriptionMedicinesFromPharmacy(@Param("pharmacyId")UUID pharmacyId, @Param("patientId") UUID patientId);
+
+    @Transactional(readOnly = true)
+    @Query("SELECT m FROM medicine m " +
+            "JOIN m.reservedMedicines rm " +
+            "WHERE rm.patient.id = :patientId AND rm.pharmacy.id = :pharmacyId AND rm.handled = true")
+    List<Medicine> getPatientsReservedMedicinesFromPharmacy(@Param("pharmacyId")UUID pharmacyId, @Param("patientId") UUID patientId);
 }
