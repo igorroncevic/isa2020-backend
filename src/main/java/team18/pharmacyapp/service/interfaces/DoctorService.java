@@ -4,6 +4,7 @@ import team18.pharmacyapp.model.Pharmacy;
 import team18.pharmacyapp.model.WorkSchedule;
 import team18.pharmacyapp.model.dtos.DoctorDTO;
 import team18.pharmacyapp.model.dtos.DoctorsPatientDTO;
+import team18.pharmacyapp.model.dtos.PatientDoctorRoleDTO;
 import team18.pharmacyapp.model.enums.UserRole;
 import team18.pharmacyapp.model.users.Doctor;
 
@@ -21,5 +22,7 @@ public interface DoctorService {
     public Doctor update(Doctor doctor);
 
     List<DoctorsPatientDTO> findDoctorsPatients(UUID doctorId);
+
+    List<DoctorDTO> getPatientsDoctors(PatientDoctorRoleDTO id);
 
 }
