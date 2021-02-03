@@ -4,22 +4,27 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import team18.pharmacyapp.model.Pharmacy;
 import team18.pharmacyapp.model.dtos.DoctorDTO;
+import team18.pharmacyapp.model.dtos.PatientDoctorRoleDTO;
 import team18.pharmacyapp.model.enums.UserRole;
 import team18.pharmacyapp.model.users.Doctor;
 import team18.pharmacyapp.repository.DoctorRepository;
+import team18.pharmacyapp.repository.MarkRepository;
 import team18.pharmacyapp.service.interfaces.DoctorService;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
 @Service
 public class DoctorServiceImpl implements DoctorService {
     private final DoctorRepository doctorRepository;
+    private final MarkRepository markRepository;
 
     @Autowired
-    public DoctorServiceImpl(DoctorRepository doctorRepository) {
+    public DoctorServiceImpl(DoctorRepository doctorRepository, MarkRepository markRepository) {
         this.doctorRepository = doctorRepository;
+        this.markRepository = markRepository;
     }
 
 
@@ -29,7 +34,7 @@ public class DoctorServiceImpl implements DoctorService {
         List<DoctorDTO> doctorDTOs = new ArrayList<>();
         for(Doctor doctor : dermatologists) {
             List<String> pharmacies = doctorRepository.findAllDoctorsPharmaciesNames(doctor.getId());
-            Float averageMark = doctorRepository.getAverageMarkForDoctor(doctor.getId());
+            Float averageMark = markRepository.getAverageMarkForDoctor(doctor.getId());
             DoctorDTO doctorDTO = new DoctorDTO();
             doctorDTO.setId(doctor.getId());
             doctorDTO.setName(doctor.getName());
@@ -50,7 +55,7 @@ public class DoctorServiceImpl implements DoctorService {
             List<Pharmacy> pharmacies = doctorRepository.findAllDoctorsPharmacies(doctor.getId());
             if(pharmacies.contains(pharmacy)) {
                 List<String> pharmaciesNames = doctorRepository.findAllDoctorsPharmaciesNames(doctor.getId());
-                Float averageMark = doctorRepository.getAverageMarkForDoctor(doctor.getId());
+                Float averageMark = markRepository.getAverageMarkForDoctor(doctor.getId());
                 DoctorDTO doctorDTO = new DoctorDTO();
                 doctorDTO.setId(doctor.getId());
                 doctorDTO.setName(doctor.getName());
@@ -78,5 +83,23 @@ public class DoctorServiceImpl implements DoctorService {
             return doctorRepository.save(doc);
         }
         return null;
+    }
+
+    @Override
+    public List<DoctorDTO> getPatientsDoctors(PatientDoctorRoleDTO patientDoctorRoleDTO) {
+        List<Doctor> doctors = doctorRepository.getPatientsDoctors(patientDoctorRoleDTO.getPatientId(),
+                patientDoctorRoleDTO.getDoctorRole(), new Date(System.currentTimeMillis()));
+        List<DoctorDTO>doctorMarkDTOS = new ArrayList<>();
+        for(Doctor d : doctors) {
+            DoctorDTO doctorDTO = new DoctorDTO();
+            doctorDTO.setId(d.getId());
+            doctorDTO.setName(d.getName());
+            doctorDTO.setSurname(d.getSurname());
+            Float averageMark = markRepository.getAverageMarkForDoctor(d.getId());
+            doctorDTO.setAverageMark(averageMark);
+            doctorMarkDTOS.add(doctorDTO);
+        }
+
+        return doctorMarkDTOS;
     }
 }
