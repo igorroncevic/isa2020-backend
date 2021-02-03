@@ -34,34 +34,12 @@ public class PharmacyServiceImpl implements PharmacyService {
         return pharmacyRepository.findById(id).get();
     }
 
-    public Float getAverageMark(UUID id){
-        return markRepository.getAverageMarkForPharmacy(id);
-    }
-
     @Override
-    public List<PharmacyMarkPriceDTO> getAllPatientsPharmacies(UUID id) {
-        List<Pharmacy> pTerms = pharmacyRepository.getAllPharmaciesWherePatientHadTerm(id);
-        List<Pharmacy> pReservedMedicines = pharmacyRepository.getAllPharmaciesWherePatientReservedMedicine(id);
-        List<Pharmacy> pPrescribedMedicines = pharmacyRepository.getAllPharmaciesWherePatientGotPrescribedMedicine(id);
-        List<Pharmacy> allPharmacies = Stream.concat(
-                Stream.concat(pTerms.stream(), pReservedMedicines.stream()).distinct().collect(Collectors.toList()).stream(),
-                pPrescribedMedicines.stream())
-                .distinct().collect(Collectors.toList());
-
-        List<Pharmacy>noDuplicates = new ArrayList<>();
-        for(int i = 0; i < allPharmacies.size(); i++){
-            boolean contained = false;
-            for(int j = 0; j < noDuplicates.size(); j++){
-                if(noDuplicates.get(j).equals(allPharmacies.get(i))){
-                    contained = true;
-                    break;
-                }
-            }
-            if(!contained) noDuplicates.add(allPharmacies.get(i));
-        }
+    public List<PharmacyMarkPriceDTO> getAllPatientsPharmaciesOptimized(UUID id) {
+        List<Pharmacy> pTerms = pharmacyRepository.getPatientsPharmacies(id);
 
         List<PharmacyMarkPriceDTO>pFinal = new ArrayList<>();
-        for(Pharmacy ph : noDuplicates){
+        for(Pharmacy ph : pTerms){
             PharmacyMarkPriceDTO phDTO = new PharmacyMarkPriceDTO();
             phDTO.setId(ph.getId());
             phDTO.setName(ph.getName());

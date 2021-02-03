@@ -15,7 +15,5 @@ public interface PharmacyService {
 
     List<PharmacyFilteringDTO> getAllFiltered(String name, Float mark, String city);
 
-    Float getAverageMark(UUID id);
-
-    List<PharmacyMarkPriceDTO> getAllPatientsPharmacies(UUID id);
+    List<PharmacyMarkPriceDTO> getAllPatientsPharmaciesOptimized(UUID id);
 }

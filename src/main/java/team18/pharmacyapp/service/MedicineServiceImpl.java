@@ -162,39 +162,6 @@ public class MedicineServiceImpl implements MedicineService {
     }
 
     @Override
-    public List<MedicineMarkDTO> getAllMedicinesForMarking(UUID patientId) {
-        List<Medicine> reservedMedicines = medicineRepository.getAllPatientsReservedMedicines(patientId);
-        List<Medicine> prescribedMedicines = medicineRepository.getAllPatientsPrescribedMedicines(patientId);
-        List<Medicine> allMedicines = Stream.concat(reservedMedicines.stream(), prescribedMedicines.stream())
-                .collect(Collectors.toList());
-
-        List<Medicine>noDuplicates = new ArrayList<>();
-        for(int i = 0; i < allMedicines.size(); i++){
-            boolean contained = false;
-            for(int j = 0; j < noDuplicates.size(); j++){
-                if(noDuplicates.get(j).equals(allMedicines.get(i))){
-                    contained = true;
-                    break;
-                }
-            }
-            if(!contained) noDuplicates.add(allMedicines.get(i));
-        }
-
-        List<MedicineMarkDTO>mFinal = new ArrayList<>();
-        for(Medicine m : noDuplicates){
-            MedicineMarkDTO mmDTO = new MedicineMarkDTO();
-            mmDTO.setId(m.getId());
-            mmDTO.setName(m.getName());
-            Float averageMark = markRepository.getAverageMarkForMedicine(m.getId());
-            mmDTO.setMark(averageMark);
-            mmDTO.setLoyaltyPoints(m.getLoyaltyPoints());
-            mFinal.add(mmDTO);
-        }
-
-        return mFinal;
-    }
-
-    @Override
     public List<MedicineMarkDTO> getAllMedicinesForMarkingOptimized(UUID patientId) {
         List<Medicine> allMedicines = medicineRepository.getPatientsMedicines(patientId);
 
