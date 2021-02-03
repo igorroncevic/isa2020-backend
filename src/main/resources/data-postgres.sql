@@ -116,6 +116,10 @@ values ('32636111-4bc6-424c-a200-067e7f8a9386', 8, 'Strepsils');
 insert into medicine (id, loyalty_points, "name")
 values ('659d0931-63d9-4ef6-bbc4-abdeb4a99539', 11, 'Fluimucil');
 
+-- Alergije
+insert into alergicto(patient_id, medicine_id)
+values('cc6fd408-0084-420b-8078-687d8a72744b', '659d0931-63d9-4ef6-bbc4-abdeb4a99539');
+
 -- Apoteke
 insert into pharmacy (id, address_id, "name")
 values ('25fff0b2-ad45-4310-ac7f-96bcc5e517c1', '34c4d86e-8781-4163-b61a-4720c39b7ad6', 'Apoteka Jankovic');

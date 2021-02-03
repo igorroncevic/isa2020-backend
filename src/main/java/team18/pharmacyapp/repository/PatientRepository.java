@@ -19,9 +19,8 @@ public interface PatientRepository extends JpaRepository<Patient, UUID> {
             "WHERE id = :patientId AND penalties < 3")
     int addPenalty(@Param("patientId") UUID patientId);
 
-    @Transactional
-    @Modifying
-    @Query(value = "select p.alergicMedicines from Patient p where p.id=:patientId")
+    @Transactional(readOnly = true)
+    @Query(value = "select p.alergicMedicines from patient p where p.id=:patientId")
     List<Medicine> getAlergicMedicines(@Param("patientId") UUID patientId);
 
     @Transactional
@@ -31,4 +30,8 @@ public interface PatientRepository extends JpaRepository<Patient, UUID> {
 
     Patient findByEmailAndPassword(String email,String password);
     Patient findByEmail(String email);
+
+    @Transactional(readOnly = true)
+    @Query("SELECT p FROM patient p JOIN FETCH p.address JOIN FETCH p.loyalty WHERE p.id = :patientId")
+    Patient getPatientForProfile(@Param("patientId")UUID patientId);
 }

@@ -9,4 +9,6 @@ public interface PatientService {
     List<Patient> findAll();
     int addPenalty(UUID patientId);
     List<Medicine> getAlergicTo(UUID patientId);
+
+    Patient getPatientProfileInfo(UUID id);
 }

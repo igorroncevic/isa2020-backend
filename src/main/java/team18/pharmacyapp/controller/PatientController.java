@@ -39,6 +39,13 @@ public class PatientController {
         return new ResponseEntity<>(HttpStatus.FORBIDDEN);
     }
 
+    @GetMapping("/profile/{id}")
+    public ResponseEntity<Patient> getPatientProfileInfo(@PathVariable UUID id){
+        Patient pat = patientService.getPatientProfileInfo(id);
+
+        return new ResponseEntity<>(pat, HttpStatus.OK);
+    }
+
     @PostMapping(consumes = "application/json", value = "/register")
     public ResponseEntity<Patient> saveNewPatient(@RequestBody RegisterPatientDTO newPatient){
         Patient patient = patientService.register(newPatient);
