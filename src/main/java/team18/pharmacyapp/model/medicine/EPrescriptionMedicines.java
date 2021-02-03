@@ -18,8 +18,12 @@ public class EPrescriptionMedicines {
     private EPrescription ePrescription;
     @Id
     @ManyToOne
-    private Medicine medicine;
+    @JoinColumns({
+            @JoinColumn(name = "eprescription_medicine_id", referencedColumnName = "medicine_id"),
+            @JoinColumn(name = "eprescription_pharmacy_id", referencedColumnName = "pharmacy_id")
+    })
+    private PharmacyMedicines pharmacyMedicines;
+
     @Column(nullable = false)
     private int quantity;
-
 }

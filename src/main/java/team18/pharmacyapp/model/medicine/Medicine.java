@@ -28,16 +28,11 @@ public class Medicine {
     private String name;
 
     @OneToMany(mappedBy = "medicine")
-    @JsonIgnore
     private List<ReservedMedicines> reservedMedicines;
 
     @OneToMany(mappedBy = "medicine")
     @JsonIgnore
     private List<ReportMedicines> reportMedicines;
-
-    @OneToMany(mappedBy = "medicine")
-    @JsonIgnore
-    private List<EPrescriptionMedicines> ePrescriptionMedicines;
 
     @OneToMany(mappedBy = "medicine")
     @JsonIgnore
