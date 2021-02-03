@@ -17,19 +17,6 @@ public interface PharmacyRepository extends JpaRepository<Pharmacy, UUID> {
     List<PharmacyFilteringDTO> findAllForFiltering();
 
     @Transactional(readOnly = true)
-    @Query("SELECT distinct p FROM pharmacy p JOIN p.workSchedules ws JOIN ws.doctor d JOIN d.terms t WHERE t.patient.id = :patientId")
-    List<Pharmacy> getAllPharmaciesWherePatientHadTerm(@Param("patientId") UUID patientId);
-
-    @Transactional(readOnly = true)
-    @Query("SELECT distinct p FROM pharmacy p JOIN p.reservedMedicines rm WHERE rm.patient.id = :patientId")
-    List<Pharmacy> getAllPharmaciesWherePatientReservedMedicine(@Param("patientId") UUID patientId);
-
-    @Transactional(readOnly = true)
-    @Query("SELECT distinct p FROM pharmacy p JOIN FETCH p.address JOIN p.pharmacyMedicines pm JOIN pm.ePrescriptionMedicines epm " +
-            "JOIN epm.ePrescription ep WHERE ep.patient.id = :patientId")
-    List<Pharmacy> getAllPharmaciesWherePatientGotPrescribedMedicine(@Param("patientId") UUID patientId);
-
-    @Transactional(readOnly = true)
     @Query("SELECT p FROM pharmacy p JOIN FETCH p.address WHERE " +
             "p.id IN (SELECT distinct p.id FROM pharmacy p JOIN p.workSchedules ws JOIN ws.doctor d JOIN d.terms t WHERE t.patient.id = :patientId) OR " +
             "p.id IN (SELECT distinct p.id FROM pharmacy p JOIN p.reservedMedicines rm WHERE rm.patient.id = :patientId) OR " +
