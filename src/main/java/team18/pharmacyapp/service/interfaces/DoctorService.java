@@ -3,6 +3,7 @@ package team18.pharmacyapp.service.interfaces;
 import team18.pharmacyapp.model.Pharmacy;
 import team18.pharmacyapp.model.WorkSchedule;
 import team18.pharmacyapp.model.dtos.DoctorDTO;
+import team18.pharmacyapp.model.dtos.DoctorsPatientDTO;
 import team18.pharmacyapp.model.enums.UserRole;
 import team18.pharmacyapp.model.users.Doctor;
 
@@ -18,5 +19,7 @@ public interface DoctorService {
     public Doctor getById(UUID id);
 
     public Doctor update(Doctor doctor);
+
+    List<DoctorsPatientDTO> findDoctorsPatients(UUID doctorId);
 
 }

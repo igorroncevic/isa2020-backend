@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import team18.pharmacyapp.model.Pharmacy;
 import team18.pharmacyapp.model.dtos.DoctorDTO;
+import team18.pharmacyapp.model.dtos.DoctorsPatientDTO;
 import team18.pharmacyapp.model.enums.UserRole;
 import team18.pharmacyapp.model.users.Doctor;
 import team18.pharmacyapp.repository.DoctorRepository;
@@ -78,5 +79,10 @@ public class DoctorServiceImpl implements DoctorService {
             return doctorRepository.save(doc);
         }
         return null;
+    }
+
+    @Override
+    public List<DoctorsPatientDTO> findDoctorsPatients(UUID doctorId) {
+        return doctorRepository.findDoctorPatients(doctorId);
     }
 }
