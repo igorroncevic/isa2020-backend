@@ -10,7 +10,7 @@ import javax.persistence.*;
 import java.util.Date;
 import java.util.UUID;
 
-@Entity
+@Entity(name = "pricings")
 @Getter
 @Setter
 @NoArgsConstructor
