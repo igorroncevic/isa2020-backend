@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import team18.pharmacyapp.model.Pharmacy;
 import team18.pharmacyapp.model.dtos.DoctorDTO;
+import team18.pharmacyapp.model.dtos.DoctorsPatientDTO;
 import team18.pharmacyapp.model.dtos.PatientDoctorRoleDTO;
 import team18.pharmacyapp.model.enums.UserRole;
 import team18.pharmacyapp.model.users.Doctor;
@@ -86,11 +87,16 @@ public class DoctorServiceImpl implements DoctorService {
     }
 
     @Override
-    public List<DoctorDTO> getPatientsDoctors(PatientDoctorRoleDTO patientDoctorRoleDTO) {
+    public List<DoctorsPatientDTO> findDoctorsPatients(UUID doctorId) {
+        return doctorRepository.findDoctorPatients(doctorId);
+
+    }
+    @Override
+    public List<DoctorDTO> getPatientsDoctors( PatientDoctorRoleDTO patientDoctorRoleDTO) {
         List<Doctor> doctors = doctorRepository.getPatientsDoctors(patientDoctorRoleDTO.getPatientId(),
                 patientDoctorRoleDTO.getDoctorRole(), new Date(System.currentTimeMillis()));
-        List<DoctorDTO>doctorMarkDTOS = new ArrayList<>();
-        for(Doctor d : doctors) {
+        List<DoctorDTO> doctorMarkDTOS = new ArrayList<>();
+        for (Doctor d : doctors) {
             DoctorDTO doctorDTO = new DoctorDTO();
             doctorDTO.setId(d.getId());
             doctorDTO.setName(d.getName());
