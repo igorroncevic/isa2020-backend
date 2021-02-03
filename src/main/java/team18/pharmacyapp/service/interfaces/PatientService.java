@@ -1,5 +1,8 @@
 package team18.pharmacyapp.service.interfaces;
 
+import team18.pharmacyapp.model.dtos.UpdateProfileDataDTO;
+import team18.pharmacyapp.model.exceptions.ActionNotAllowedException;
+import team18.pharmacyapp.model.exceptions.EntityNotFoundException;
 import team18.pharmacyapp.model.medicine.Medicine;
 import team18.pharmacyapp.model.users.Patient;
 import java.util.List;
@@ -11,4 +14,6 @@ public interface PatientService {
     List<Medicine> getAlergicTo(UUID patientId);
 
     Patient getPatientProfileInfo(UUID id);
+
+    boolean updatePatientProfileInfo(UpdateProfileDataDTO patient) throws ActionNotAllowedException, EntityNotFoundException, RuntimeException;
 }
