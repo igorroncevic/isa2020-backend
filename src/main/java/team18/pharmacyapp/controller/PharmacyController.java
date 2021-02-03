@@ -35,7 +35,7 @@ public class PharmacyController {
 
     @GetMapping("/patient/{id}")
     public ResponseEntity<List<PharmacyMarkPriceDTO>> getAllPatientsPharmacies(@PathVariable UUID id) {
-        List<PharmacyMarkPriceDTO> pharmacies = pharmacyService.getAllPatientsPharmacies(id);
+        List<PharmacyMarkPriceDTO> pharmacies = pharmacyService.getAllPatientsPharmaciesOptimized(id);
         if(pharmacies.size() != 0) {
             return new ResponseEntity<>(pharmacies, HttpStatus.OK);
         }else{
