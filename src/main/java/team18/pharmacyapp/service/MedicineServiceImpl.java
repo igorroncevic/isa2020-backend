@@ -12,6 +12,7 @@ import team18.pharmacyapp.model.medicine.Medicine;
 import team18.pharmacyapp.model.medicine.MedicineSpecification;
 import team18.pharmacyapp.model.medicine.PharmacyMedicines;
 import team18.pharmacyapp.model.users.Patient;
+import team18.pharmacyapp.repository.MarkRepository;
 import team18.pharmacyapp.repository.MedicineRepository;
 import team18.pharmacyapp.repository.MedicineSpecificationRepository;
 import team18.pharmacyapp.service.interfaces.EmailService;
@@ -29,13 +30,16 @@ public class MedicineServiceImpl implements MedicineService {
     private final EmailService emailService;
     private final PatientRepository patientRepository;
     private final MedicineSpecificationRepository medicineSpecificationRepository;
+    private final MarkRepository markRepository;
+
 
     @Autowired
-    public MedicineServiceImpl(MedicineRepository medicineRepository, EmailService emailService, PatientRepository patientRepository, MedicineSpecificationRepository medicineSpecificationRepository) {
+    public MedicineServiceImpl(MedicineRepository medicineRepository, EmailService emailService, PatientRepository patientRepository, MedicineSpecificationRepository medicineSpecificationRepository, MarkRepository markRepository) {
         this.medicineRepository = medicineRepository;
         this.emailService = emailService;
         this.patientRepository = patientRepository;
         this.medicineSpecificationRepository = medicineSpecificationRepository;
+        this.markRepository = markRepository;
     }
 
     @Override
@@ -186,5 +190,37 @@ public class MedicineServiceImpl implements MedicineService {
 
         medSpec = medicineSpecificationRepository.save(medSpec);
         return med;
+
+    }
+
+    public List<MedicineMarkDTO> getAllMedicinesForMarkingOptimized(UUID patientId) {
+        List<Medicine> allMedicines = medicineRepository.getPatientsMedicines(patientId);
+
+        List<MedicineMarkDTO>mFinal = new ArrayList<>();
+        for(Medicine m : allMedicines){
+            MedicineMarkDTO mmDTO = new MedicineMarkDTO();
+            mmDTO.setId(m.getId());
+            mmDTO.setName(m.getName());
+            Float averageMark = markRepository.getAverageMarkForMedicine(m.getId());
+            mmDTO.setMark(averageMark);
+            mmDTO.setLoyaltyPoints(m.getLoyaltyPoints());
+            mFinal.add(mmDTO);
+        }
+
+        return mFinal;
+    }
+
+    @Override
+    public List<Medicine> getAllMedicinesPatientsNotAlergicTo(UUID id) {
+        return medicineRepository.getAllMedicinesPatientsNotAlergicTo(id);
+    }
+
+    @Override
+    @Transactional(rollbackFor = {ActionNotAllowedException.class, RuntimeException.class})
+    public boolean addPatientsAllergy(MedicineAllergyDTO allergy) throws RuntimeException {
+        int added = medicineRepository.addNewAllergy(allergy.getPatientId(), allergy.getMedicineId());
+        if(added != 1) throw new RuntimeException("Couldnt add allergy");
+
+        return true;
     }
 }

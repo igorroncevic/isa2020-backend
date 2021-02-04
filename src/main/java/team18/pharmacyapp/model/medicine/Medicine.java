@@ -53,16 +53,11 @@ public class Medicine implements Serializable {
     private MedicineIssuingRegime issuingRegime;
 
     @OneToMany(mappedBy = "medicine")
-    @JsonIgnore
     private List<ReservedMedicines> reservedMedicines;
 
     @OneToMany(mappedBy = "medicine")
     @JsonIgnore
     private List<ReportMedicines> reportMedicines;
-
-    @OneToMany(mappedBy = "medicine")
-    @JsonIgnore
-    private List<EPrescriptionMedicines> ePrescriptionMedicines;
 
     @OneToMany(mappedBy = "medicine")
     @JsonIgnore

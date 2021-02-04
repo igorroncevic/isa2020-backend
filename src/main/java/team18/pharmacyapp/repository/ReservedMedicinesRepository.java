@@ -19,6 +19,6 @@ public interface ReservedMedicinesRepository extends JpaRepository<ReservedMedic
     @Transactional(readOnly = true)
     @Query(value = "SELECT new team18.pharmacyapp.model.dtos.ReservedMedicineResponseDTO( r.id  ,r.patient.id , r.medicine.id" +
             " ,r.pharmacy.id ,r.pickupDate,p.email,m.name,p.name,p.surname,r.handled)" +
-            " FROM reserved_medicines r  INNER join Patient p on r.patient.id=p.id inner join medicine m on r.medicine.id=m.id where r.id=:id and r.pharmacy.id=:pharmacy")
+            " FROM reserved_medicines r  INNER join patient p on r.patient.id=p.id inner join medicine m on r.medicine.id=m.id where r.id=:id and r.pharmacy.id=:pharmacy")
     ReservedMedicineResponseDTO findByReservationId(UUID id,UUID pharmacy);
 }

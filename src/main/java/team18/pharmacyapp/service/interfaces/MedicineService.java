@@ -26,4 +26,11 @@ public interface MedicineService {
     boolean cancelMedicine(CancelMedicineRequestDTO cmrDTO) throws ReserveMedicineException, RuntimeException;
 
     Medicine registerNewMedicine(MedicineDTO medicine);
+
+    List<MedicineMarkDTO> getAllMedicinesForMarkingOptimized(UUID patientId);
+
+    List<Medicine> getAllMedicinesPatientsNotAlergicTo(UUID id);
+
+    boolean addPatientsAllergy(MedicineAllergyDTO allergy) throws RuntimeException;
+
 }

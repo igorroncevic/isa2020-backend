@@ -1,5 +1,6 @@
 package team18.pharmacyapp.model.users;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,14 +15,13 @@ import team18.pharmacyapp.model.medicine.ReservedMedicines;
 import javax.persistence.*;
 import java.util.List;
 
-@Entity
+@Entity(name="patient")
 @Getter
 @Setter
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class Patient extends RegisteredUser {
-
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     @JoinTable(name = "alergicto", joinColumns = @JoinColumn(name = "patientId", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "medicineId", referencedColumnName = "id"))
     private List<Medicine> alergicMedicines;
 
@@ -48,5 +48,6 @@ public class Patient extends RegisteredUser {
     private int loyaltyPoints;
 
     @Column(nullable = false)
+    @JsonIgnore
     private boolean activated=false;
 }

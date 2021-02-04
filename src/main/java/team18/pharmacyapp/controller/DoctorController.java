@@ -6,6 +6,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import team18.pharmacyapp.model.dtos.DoctorDTO;
 import team18.pharmacyapp.model.dtos.RegisterUserDTO;
+import team18.pharmacyapp.model.dtos.DoctorsPatientDTO;
+import team18.pharmacyapp.model.dtos.PatientDoctorRoleDTO;
 import team18.pharmacyapp.model.enums.UserRole;
 import team18.pharmacyapp.model.users.Doctor;
 import team18.pharmacyapp.service.interfaces.DoctorService;
@@ -38,6 +40,17 @@ public class DoctorController {
         }
         return new ResponseEntity<>(doc, HttpStatus.BAD_REQUEST);
     }
+
+    @PostMapping("/patient")
+    public ResponseEntity<List<DoctorDTO>> getPatientsDoctorsByRole(@RequestBody PatientDoctorRoleDTO patientDoctorRoleDTO) {
+        List<DoctorDTO> doctors = doctorService.getPatientsDoctors(patientDoctorRoleDTO);
+        if(doctors.size() != 0) {
+            return new ResponseEntity<>(doctors, HttpStatus.OK);
+        }else{
+            return new ResponseEntity<>(doctors, HttpStatus.NOT_FOUND);
+        }
+    }
+
     @GetMapping("/dermatologists")
     public ResponseEntity<List<DoctorDTO>> getAllDermatologists() {
         List<DoctorDTO> doctors = doctorService.findAllDoctors(UserRole.dermatologist);
@@ -63,9 +76,13 @@ public class DoctorController {
     }
 
     @PostMapping(consumes = "application/json", value = "/register")
-    public ResponseEntity<Doctor> registerNewDermatologist(@RequestBody RegisterUserDTO newDermatologist){
+    public ResponseEntity<Doctor> registerNewDermatologist(@RequestBody RegisterUserDTO newDermatologist) {
         Doctor doc = doctorService.registerDermatologist(newDermatologist);
         return new ResponseEntity<>(doc, HttpStatus.CREATED);
+    }
 
+    @GetMapping("/patients/{id}")
+    public ResponseEntity<List<DoctorsPatientDTO>> getAllPharmacists(@PathVariable UUID id) {
+        return new ResponseEntity<>(doctorService.findDoctorsPatients(id), HttpStatus.OK);
     }
 }

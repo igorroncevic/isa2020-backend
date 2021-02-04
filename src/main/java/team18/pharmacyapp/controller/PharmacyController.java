@@ -8,6 +8,7 @@ import team18.pharmacyapp.helpers.FilteringHelpers;
 import team18.pharmacyapp.model.Pharmacy;
 import team18.pharmacyapp.model.dtos.PharmacyDTO;
 import team18.pharmacyapp.model.dtos.PharmacyFilteringDTO;
+import team18.pharmacyapp.model.dtos.PharmacyMarkPriceDTO;
 import team18.pharmacyapp.service.interfaces.PharmacyService;
 
 import java.util.List;
@@ -31,6 +32,16 @@ public class PharmacyController {
 
         List<PharmacyFilteringDTO> pharmacies = pharmacyService.getAllFiltered(name, mark, city);
         return new ResponseEntity<>(pharmacies, HttpStatus.OK);
+    }
+
+    @GetMapping("/patient/{id}")
+    public ResponseEntity<List<PharmacyMarkPriceDTO>> getAllPatientsPharmacies(@PathVariable UUID id) {
+        List<PharmacyMarkPriceDTO> pharmacies = pharmacyService.getAllPatientsPharmaciesOptimized(id);
+        if(pharmacies.size() != 0) {
+            return new ResponseEntity<>(pharmacies, HttpStatus.OK);
+        }else{
+            return new ResponseEntity<>(pharmacies, HttpStatus.NOT_FOUND);
+        }
     }
 
     @GetMapping("/{id}")
