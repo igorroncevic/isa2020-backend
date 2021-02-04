@@ -30,13 +30,19 @@ public class DateTimeHelpers {
     }
 
     public static boolean checkIfTimesIntersect(Date date1Start, Date date1End, Date date2Start, Date date2End) {
+        /*
+        Explanation:
+            1)    1 __________           2) 1   _____________   3)  1 _____________    4) 1    _____
+                  2    ___________          2 ____________          2    _______          2 ____________
+         */
+
         // Partial intersection
-        if (date1Start.after(date2Start) && date1End.after(date2End)) return true;
-        if (date1Start.before(date2Start) && date1End.before(date2End)) return true;
+        if (date1Start.before(date2Start) && date1End.before(date2End) && date2Start.before(date1End)) return true; // 1
+        if (date2Start.before(date1Start) && date2End.before(date1End) && date1Start.before(date2End)) return true; // 2
 
         // Complete intersection
-        if (date1Start.before(date2Start) && date1End.after(date2End)) return true;
-        if (date2Start.before(date1Start) && date2End.after(date1End)) return true;
+        if (date1Start.before(date2Start) && date1End.after(date2End)) return true; // 3
+        if (date2Start.before(date1Start) && date2End.after(date1End)) return true; // 4
 
         return false;
     }
