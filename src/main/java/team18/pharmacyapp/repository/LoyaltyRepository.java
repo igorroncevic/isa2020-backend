@@ -6,5 +6,5 @@ import team18.pharmacyapp.model.Loyalty;
 import java.util.UUID;
 
 public interface LoyaltyRepository extends JpaRepository<Loyalty, UUID> {
-    public Loyalty findByCategory(String category);
+    Loyalty findByCategory(String category);
 }

@@ -45,8 +45,6 @@ public class RegisteredUser {
     protected UserRole role;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JsonIgnore
     @JoinColumn(name = "fk_address", referencedColumnName = "id")
     protected Address address;
-
 }

@@ -1,5 +1,6 @@
 package team18.pharmacyapp.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -32,6 +33,7 @@ public class Loyalty {
     private double discount;
 
     @OneToMany(mappedBy = "loyalty", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Patient> patients;
 
 

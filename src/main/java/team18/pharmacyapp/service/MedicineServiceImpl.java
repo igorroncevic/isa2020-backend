@@ -178,4 +178,18 @@ public class MedicineServiceImpl implements MedicineService {
 
         return mFinal;
     }
+
+    @Override
+    public List<Medicine> getAllMedicinesPatientsNotAlergicTo(UUID id) {
+        return medicineRepository.getAllMedicinesPatientsNotAlergicTo(id);
+    }
+
+    @Override
+    @Transactional(rollbackFor = {ActionNotAllowedException.class, RuntimeException.class})
+    public boolean addPatientsAllergy(MedicineAllergyDTO allergy) throws RuntimeException {
+        int added = medicineRepository.addNewAllergy(allergy.getPatientId(), allergy.getMedicineId());
+        if(added != 1) throw new RuntimeException("Couldnt add allergy");
+
+        return true;
+    }
 }

@@ -6,6 +6,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import team18.pharmacyapp.model.dtos.LoginPatientDTO;
 import team18.pharmacyapp.model.dtos.RegisterPatientDTO;
+import team18.pharmacyapp.model.dtos.UpdateProfileDataDTO;
+import team18.pharmacyapp.model.exceptions.ActionNotAllowedException;
+import team18.pharmacyapp.model.exceptions.EntityNotFoundException;
 import team18.pharmacyapp.model.medicine.Medicine;
 import team18.pharmacyapp.model.users.Patient;
 import team18.pharmacyapp.service.PatientServiceImpl;
@@ -37,6 +40,32 @@ public class PatientController {
         if (pat != null && pat.isActivated()) return new ResponseEntity<>(pat, HttpStatus.OK);
 
         return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+    }
+
+    @GetMapping("/profile/{id}")
+    public ResponseEntity<Patient> getPatientProfileInfo(@PathVariable UUID id){
+        Patient pat = patientService.getPatientProfileInfo(id);
+
+        return new ResponseEntity<>(pat, HttpStatus.OK);
+    }
+
+    @PutMapping("/profile")
+    public ResponseEntity<Void> updatePatientProfileInfo(@RequestBody UpdateProfileDataDTO patient){
+        boolean success;
+        try {
+            success = patientService.updatePatientProfileInfo(patient);
+        }catch(EntityNotFoundException e){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }catch(ActionNotAllowedException e){
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }catch(RuntimeException ex){
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        if(success){
+            return new ResponseEntity<>(HttpStatus.OK);
+        }else{
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 
     @PostMapping(consumes = "application/json", value = "/register")
