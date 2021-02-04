@@ -30,4 +30,6 @@ public interface MedicineService {
     List<Medicine> getAllMedicinesPatientsNotAlergicTo(UUID id);
 
     boolean addPatientsAllergy(MedicineAllergyDTO allergy) throws RuntimeException;
+
+    List<MedicineFilterDTO> filterMedicines(MedicineFilterRequestDTO mfr);
 }

@@ -12,16 +12,12 @@ import team18.pharmacyapp.model.medicine.PharmacyMedicines;
 import team18.pharmacyapp.model.users.Patient;
 import team18.pharmacyapp.repository.MarkRepository;
 import team18.pharmacyapp.repository.MedicineRepository;
+import team18.pharmacyapp.repository.PharmacyRepository;
 import team18.pharmacyapp.service.interfaces.EmailService;
 import team18.pharmacyapp.repository.PatientRepository;
 import team18.pharmacyapp.service.interfaces.MedicineService;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.*;
 
 @Service
 public class MedicineServiceImpl implements MedicineService {
@@ -29,13 +25,15 @@ public class MedicineServiceImpl implements MedicineService {
     private final EmailService emailService;
     private final PatientRepository patientRepository;
     private final MarkRepository markRepository;
+    private final PharmacyRepository pharmacyRepository;
 
     @Autowired
-    public MedicineServiceImpl(MedicineRepository medicineRepository, EmailService emailService, PatientRepository patientRepository, MarkRepository markRepository) {
+    public MedicineServiceImpl(MedicineRepository medicineRepository, EmailService emailService, PatientRepository patientRepository, MarkRepository markRepository, PharmacyRepository pharmacyRepository) {
         this.medicineRepository = medicineRepository;
         this.emailService = emailService;
         this.patientRepository = patientRepository;
         this.markRepository = markRepository;
+        this.pharmacyRepository = pharmacyRepository;
     }
 
     @Override
@@ -191,5 +189,25 @@ public class MedicineServiceImpl implements MedicineService {
         if(added != 1) throw new RuntimeException("Couldnt add allergy");
 
         return true;
+    }
+
+    @Override
+    public List<MedicineFilterDTO> filterMedicines(MedicineFilterRequestDTO mfr) {
+        List<Medicine>medicines = medicineRepository.getAllMedicinesPatientsNotAlergicTo(mfr.getPatientId());
+        List<MedicineFilterDTO>finalMedicines = new ArrayList<>();
+
+        for(Medicine m : medicines){
+            if(!m.getName().toLowerCase().contains(mfr.getName().toLowerCase())) continue;
+
+            List<PharmacyFilteringDTO>pharmacies = pharmacyRepository.getAllPharmaciesForMedicine(m.getId());
+            if(pharmacies.size() == 0) continue;
+
+            MedicineFilterDTO med = new MedicineFilterDTO();
+            med.setMedicine(m);
+            med.setPharmacies(pharmacies);
+            finalMedicines.add(med);
+        }
+
+        return finalMedicines;
     }
 }
