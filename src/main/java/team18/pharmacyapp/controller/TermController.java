@@ -27,6 +27,6 @@ public class TermController {
         if(term!=null){
             return new ResponseEntity<>(term,HttpStatus.CREATED);
         }
-        return new ResponseEntity<>(null,HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(null,HttpStatus.BAD_REQUEST);
     }
 }

@@ -88,7 +88,7 @@ public class TermServiceImpl implements TermService {
     @Override
     public Term scheduleTerm(DoctorScheduleTermDTO termDTO) {
         if(isDoctorWorking(termDTO.getDoctorId(),termDTO.getPharmacyId(),termDTO.getStartTime(),termDTO.getEndTime()) && isDoctorFree(termDTO.getDoctorId(),termDTO.getStartTime(),termDTO.getEndTime())
-            && isPacientFree(termDTO.getPatientId(),termDTO.getStartTime(),termDTO.getEndTime())){
+            && isPacientFree(termDTO.getPatientId(),termDTO.getStartTime(),termDTO.getEndTime()) && checkDates(termDTO.getStartTime(),termDTO.getEndTime())){
             Term term=new Term();
             term.setDoctor(doctorService.getById(termDTO.getDoctorId()));
             term.setPatient(patientService.getById(termDTO.getPatientId()));
@@ -100,6 +100,14 @@ public class TermServiceImpl implements TermService {
             return termRepository.save(term);
         }
         return null;
+    }
+
+    public boolean checkDates(Date startTime,Date endTime){
+        if(!startTime.before(endTime)){
+            System.out.println("Kraj termina pre pocetka");
+            return false;
+        }
+        return true;
     }
 
 }
