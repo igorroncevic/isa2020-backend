@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import team18.pharmacyapp.model.Address;
 import team18.pharmacyapp.model.dtos.LoginPatientDTO;
-import team18.pharmacyapp.model.dtos.RegisterPatientDTO;
+import team18.pharmacyapp.model.dtos.RegisterUserDTO;
 import team18.pharmacyapp.model.enums.UserRole;
 import team18.pharmacyapp.model.users.Patient;
 import team18.pharmacyapp.repository.AddressRepository;
@@ -51,7 +51,7 @@ public class PatientServiceImpl implements PatientService {
         return false;
     }
 
-    public Patient register(RegisterPatientDTO patient){
+    public Patient register(RegisterUserDTO patient){
         Patient pat = new Patient();
         Address address=addressRepository.findByCountryAndCityAndStreet(patient.getCountry(), patient.getCity(), patient.getStreet());
         if(address == null){

@@ -56,5 +56,4 @@ public interface MedicineRepository extends JpaRepository<Medicine, UUID> {
     @Query(nativeQuery = true, value = "UPDATE pharmacy_medicines SET quantity = quantity + 1 " +
             "WHERE pharmacy_id = :pharmacyId AND medicine_id = :medicineId")
     int incrementMedicineQuantity(@Param("medicineId") UUID medicineId, @Param("pharmacyId") UUID pharmacyId);
-
 }

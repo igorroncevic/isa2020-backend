@@ -20,7 +20,7 @@ public class PharmacyAdmin extends RegisteredUser {
     @OneToMany(mappedBy = "pharmacyAdmin", cascade = CascadeType.ALL)
     private List<PurchaseOrder> purchaseOrders;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(nullable = false)
     private Pharmacy pharmacy;
 }

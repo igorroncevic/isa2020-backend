@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import team18.pharmacyapp.model.dtos.LoginPatientDTO;
-import team18.pharmacyapp.model.dtos.RegisterPatientDTO;
+import team18.pharmacyapp.model.dtos.RegisterUserDTO;
 import team18.pharmacyapp.model.users.Patient;
 import team18.pharmacyapp.service.PatientServiceImpl;
 
@@ -39,7 +39,7 @@ public class PatientController {
     }
 
     @PostMapping(consumes = "application/json", value = "/register")
-    public ResponseEntity<Patient> saveNewPatient(@RequestBody RegisterPatientDTO newPatient){
+    public ResponseEntity<Patient> saveNewPatient(@RequestBody RegisterUserDTO newPatient){
         Patient patient = patientService.register(newPatient);
         return new ResponseEntity<>(patient, HttpStatus.CREATED);
     }

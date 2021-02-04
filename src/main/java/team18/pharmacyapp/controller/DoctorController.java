@@ -5,13 +5,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import team18.pharmacyapp.model.dtos.DoctorDTO;
+import team18.pharmacyapp.model.dtos.RegisterUserDTO;
 import team18.pharmacyapp.model.enums.UserRole;
 import team18.pharmacyapp.model.users.Doctor;
-import team18.pharmacyapp.model.users.PharmacyAdmin;
 import team18.pharmacyapp.service.interfaces.DoctorService;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @CrossOrigin(origins = {"http://localhost:8080","http://localhost:8081"})
@@ -61,5 +60,12 @@ public class DoctorController {
     public ResponseEntity<List<DoctorDTO>> getAllPharmacistsForPharmacy(@PathVariable UUID pharmacyId) {
         List<DoctorDTO> doctors = doctorService.findAllDoctorsForPharmacy(pharmacyId, UserRole.pharmacist);
         return new ResponseEntity<>(doctors, HttpStatus.OK);
+    }
+
+    @PostMapping(consumes = "application/json", value = "/register")
+    public ResponseEntity<Doctor> registerNewDermatologist(@RequestBody RegisterUserDTO newDermatologist){
+        Doctor doc = doctorService.registerDermatologist(newDermatologist);
+        return new ResponseEntity<>(doc, HttpStatus.CREATED);
+
     }
 }

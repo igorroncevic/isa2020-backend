@@ -20,4 +20,7 @@ public interface PharmacyRepository extends JpaRepository<Pharmacy, UUID> {
     @Query("SELECT new team18.pharmacyapp.model.dtos.PharmacyFilteringDTO(p.id, p.name, p.address, AVG(m.mark)) " +
             "FROM pharmacy p JOIN p.address a JOIN p.marks m GROUP BY p.id, p.name, p.address")
     List<PharmacyFilteringDTO> findAllForFiltering();
+
+    Pharmacy findByName(String name);
+
 }

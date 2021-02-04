@@ -2,10 +2,13 @@ package team18.pharmacyapp.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import team18.pharmacyapp.model.Address;
 import team18.pharmacyapp.model.Pharmacy;
 import team18.pharmacyapp.model.dtos.DoctorDTO;
+import team18.pharmacyapp.model.dtos.RegisterUserDTO;
 import team18.pharmacyapp.model.enums.UserRole;
 import team18.pharmacyapp.model.users.Doctor;
+import team18.pharmacyapp.repository.AddressRepository;
 import team18.pharmacyapp.repository.DoctorRepository;
 import team18.pharmacyapp.service.interfaces.DoctorService;
 
@@ -16,10 +19,12 @@ import java.util.UUID;
 @Service
 public class DoctorServiceImpl implements DoctorService {
     private final DoctorRepository doctorRepository;
+    private final AddressRepository addressRepository;
 
     @Autowired
-    public DoctorServiceImpl(DoctorRepository doctorRepository) {
+    public DoctorServiceImpl(DoctorRepository doctorRepository, AddressRepository addressRepository) {
         this.doctorRepository = doctorRepository;
+        this.addressRepository = addressRepository;
     }
 
 
@@ -78,5 +83,27 @@ public class DoctorServiceImpl implements DoctorService {
             return doctorRepository.save(doc);
         }
         return null;
+    }
+
+    @Override
+    public Doctor registerDermatologist(RegisterUserDTO dermatologist) {
+        Doctor derm = new Doctor();
+        Address address=addressRepository.findByCountryAndCityAndStreet(dermatologist.getCountry(), dermatologist.getCity(), dermatologist.getStreet());
+        if(address == null){
+            address = new Address();
+            address.setStreet(dermatologist.getStreet());
+            address.setCity(dermatologist.getCity());
+            address.setCountry(dermatologist.getCountry());
+            address = addressRepository.save(address);
+        }
+        derm.setRole(UserRole.dermatologist);
+        derm.setName(dermatologist.getName());
+        derm.setSurname(dermatologist.getSurname());
+        derm.setPhoneNumber(dermatologist.getPhoneNumber());
+        derm.setEmail(dermatologist.getEmail());
+        derm.setPassword(dermatologist.getPassword());
+        derm.setAddress(address);
+        derm = doctorRepository.save(derm);
+        return derm;
     }
 }

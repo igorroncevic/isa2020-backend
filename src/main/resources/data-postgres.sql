@@ -42,6 +42,22 @@ insert into doctor (id, "name", surname, email, phone_number, "password", "role"
 values ('02fb4f65-923c-49fe-b32a-c40ffee74b47', 'Milija', 'Raicevic', 'milijaraicevic@gmail.com', '069/222-111', 'nekipass123',
         'pharmacist', 'eb797275-30de-460e-8f9b-f5034ccefc7d');
 
+-- Dobavljaci
+insert into supplier (id, "name", surname, email, phone_number, "password", "role", fk_address)
+values ('b861fa5d-e543-4c61-adac-0c3f27bc32a0', 'Jagoš', 'Marić', 'jagosmaric@gmail.com', '064/123-456', 'nekipass123',
+        'supplier', '3b00204e-1897-4b6e-a175-5d0595833ced');
+insert into supplier (id, "name", surname, email, phone_number, "password", "role", fk_address)
+values ('6dbd78ec-c0c7-403a-b1d0-bea63b5a1981', 'Janko', 'Jovanovic', 'jankojovanovic@gmail.com', '064/598-127', 'nekipass123',
+        'supplier', '9241601b-a20a-4f26-9523-d4a670a881dc');
+insert into supplier (id, "name", surname, email, phone_number, "password", "role", fk_address)
+values ('84f5d15e-8b52-4e00-ac4f-6b35e030c732', 'Marina', 'Marković', 'marinamarkovic@gmail.com', '065/917-427', 'nekipass123',
+        'supplier', '34c4d86e-8781-4163-b61a-4720c39b7ad6');
+
+-- Sistem administrator
+insert into system_admin (id, "name", surname, email, phone_number, "password", "role", fk_address)
+values ('5baee785-9b8b-4287-a0bb-cfbee680b88d', 'Olivera', 'Petrović', 'opetrovic@gmail.com', '064/987-456', 'nekipass123',
+        'sysAdmin', '3b00204e-1897-4b6e-a175-5d0595833ced');
+
 -- Loyalty program
 insert into loyalty(id, category, discount, min_points, max_points)
 values ('c976e4d9-0bd0-470d-9a10-bdc1ff1ba91c', 'Regular', 0, 0, 49);
@@ -102,16 +118,28 @@ values ('3c16d087-fcc9-4c31-9431-71a92bc781fd', 'b0a591d4-f627-45ba-8aa9-926e85c
         '2021-01-15 14:00:00', 19, 'counseling', 10, null, null);
 
 -- Lijekovi
-insert into medicine (id, loyalty_points, "name")
-values ('7571786b-2fc5-4756-ab5c-1f4af756e6f2', 10, 'Aspirin');
-insert into medicine (id, loyalty_points, "name")
-values ('592e558c-b3f9-4088-b468-28764908bd92', 13, 'Brufen');
-insert into medicine (id, loyalty_points, "name")
-values ('3163f62a-5b88-4295-854c-c9400e19089f', 12, 'Kafetin');
-insert into medicine (id, loyalty_points, "name")
-values ('32636111-4bc6-424c-a200-067e7f8a9386', 8, 'Strepsils');
-insert into medicine (id, loyalty_points, "name")
-values ('659d0931-63d9-4ef6-bbc4-abdeb4a99539', 11, 'Fluimucil');
+insert into medicine (id, loyalty_points, "name", medicine_code, medicine_type, medicine_form, manufacturer, issuing_regime)
+values ('7571786b-2fc5-4756-ab5c-1f4af756e6f2', 10, 'Aspirin', 'AS01', 'human_medicine', 'tablet', 'Bayer', 'without_prescription');
+insert into medicine (id, loyalty_points, "name", medicine_code, medicine_type, medicine_form, manufacturer, issuing_regime)
+values ('592e558c-b3f9-4088-b468-28764908bd92', 13, 'Brufen', 'BR01', 'human_medicine', 'tablet', 'Hemofarm', 'without_prescription');
+insert into medicine (id, loyalty_points, "name", medicine_code, medicine_type, medicine_form, manufacturer, issuing_regime)
+values ('3163f62a-5b88-4295-854c-c9400e19089f', 12, 'Kafetin', 'CAF01', 'human_medicine', 'tablet', 'Alkaloid', 'without_prescription');
+insert into medicine (id, loyalty_points, "name", medicine_code, medicine_type, medicine_form, manufacturer, issuing_regime, fk_medicine_specification)
+values ('32636111-4bc6-424c-a200-067e7f8a9386', 8, 'Strepsils', 'S01', 'human_medicine', 'buccal_medicines', 'Bayer', 'without_prescription');
+insert into medicine (id, loyalty_points, "name", medicine_code, medicine_type, medicine_form, manufacturer, issuing_regime)
+values ('659d0931-63d9-4ef6-bbc4-abdeb4a99539', 11, 'Fluimucil', 'FL01', 'human_medicine', 'tablet', 'Zambon', 'with_prescription');
+
+-- Specifikacija leka
+insert into medicine_specification (id, medicine_id, replacement_medicine_code, recommended_dose, contraindications, drug_composition, additional_notes)
+values ('004bf154-bd94-4bbb-ae8a-9e18f7103653', '7571786b-2fc5-4756-ab5c-1f4af756e6f2', 'BR01', 3, 'glavobolja, mucnina', 'acetilsalicilna kiselina', 'ne preporucije se deci mladjoj od 6 godina');
+insert into medicine_specification (id, medicine_id, replacement_medicine_code, recommended_dose, contraindications, drug_composition, additional_notes)
+values ('83c48dad-439d-4f59-82ef-c3315ba8e2e3','592e558c-b3f9-4088-b468-28764908bd92', 'CAF01', 4, 'mucnina, malaksalost', 'ibuprofen', null);
+-- insert into medicine_specification (id, replacement_medicine_code, recommended_dose, contraindications, drug_composition, additional_notes)
+-- values ('7d3fe4e7-6336-48cc-ac98-1b9d0de36f61', 'BR01', 3, null, null, 'ne preporucije se deci mladjoj od 6 godina');
+-- insert into medicine_specification (id, replacement_medicine_code, recommended_dose, contraindications, drug_composition, additional_notes)
+-- values ('8f338b9b-c4e9-4514-9c1b-9488f8ac84e3', null, 4, null, 'flurbiprofen', 'ne preporucije se deci mladjoj od 4 godine');
+-- insert into medicine_specification (id, replacement_medicine_code, recommended_dose, contraindications, drug_composition, additional_notes)
+-- values ('7e31746d-da76-424c-823c-55b8306ac9a1', null, 4, null, 'acetilcistein', 'pre koriscenja posavetovati se sa lekarom');
 
 -- Apoteke
 insert into pharmacy (id, address_id, "name")

@@ -7,8 +7,13 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 import team18.pharmacyapp.model.Mark;
+import team18.pharmacyapp.model.enums.MedicineForm;
+import team18.pharmacyapp.model.enums.MedicineIssuingRegime;
+import team18.pharmacyapp.model.enums.MedicineManufacturer;
+import team18.pharmacyapp.model.enums.MedicineType;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.List;
 import java.util.UUID;
 
@@ -17,7 +22,7 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-public class Medicine {
+public class Medicine implements Serializable {
     @Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(
@@ -25,7 +30,27 @@ public class Medicine {
     )
     private UUID id;
 
+    @Column(nullable = false)
     private String name;
+
+    @Column(nullable = false)
+    private String medicineCode;
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private MedicineType medicineType;
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private MedicineForm medicineForm;
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private MedicineManufacturer manufacturer;
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private MedicineIssuingRegime issuingRegime;
 
     @OneToMany(mappedBy = "medicine")
     @JsonIgnore
@@ -55,5 +80,6 @@ public class Medicine {
 
     @Column(nullable = false)
     private int loyaltyPoints;
+
 
 }

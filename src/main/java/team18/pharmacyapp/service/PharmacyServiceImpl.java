@@ -2,8 +2,11 @@ package team18.pharmacyapp.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import team18.pharmacyapp.model.Address;
 import team18.pharmacyapp.model.Pharmacy;
+import team18.pharmacyapp.model.dtos.PharmacyDTO;
 import team18.pharmacyapp.model.dtos.PharmacyFilteringDTO;
+import team18.pharmacyapp.repository.AddressRepository;
 import team18.pharmacyapp.repository.PharmacyRepository;
 import team18.pharmacyapp.service.interfaces.PharmacyService;
 
@@ -15,10 +18,12 @@ import java.util.UUID;
 public class PharmacyServiceImpl implements PharmacyService {
 
     private final PharmacyRepository pharmacyRepository;
+    private final AddressRepository addressRepository;
 
     @Autowired
-    public PharmacyServiceImpl(PharmacyRepository pharmacyRepository) {
+    public PharmacyServiceImpl(PharmacyRepository pharmacyRepository, AddressRepository addressRepository) {
         this.pharmacyRepository = pharmacyRepository;
+        this.addressRepository = addressRepository;
     }
 
     @Override
@@ -62,4 +67,20 @@ public class PharmacyServiceImpl implements PharmacyService {
         return finalPharmacies;
     }
 
+    @Override
+    public Pharmacy registerNewPharmacy(PharmacyDTO pharmacy){
+        Pharmacy newPharmacy = new Pharmacy();
+        Address address = addressRepository.findByCountryAndCityAndStreet(pharmacy.getCountry(), pharmacy.getCity(), pharmacy.getStreet());
+        if(address == null){
+            address = new Address();
+            address.setStreet(pharmacy.getStreet());
+            address.setCity(pharmacy.getCity());
+            address.setCountry(pharmacy.getCountry());
+            address = addressRepository.save(address);
+        }
+        newPharmacy.setName(pharmacy.getName());
+        newPharmacy.setAddress(address);
+        newPharmacy = pharmacyRepository.save(newPharmacy);
+        return newPharmacy;
+    }
 }
