@@ -16,4 +16,6 @@ public interface PatientService {
     Patient getPatientProfileInfo(UUID id);
 
     boolean updatePatientProfileInfo(UpdateProfileDataDTO patient) throws ActionNotAllowedException, EntityNotFoundException, RuntimeException;
+
+    Patient getById(UUID id);
 }

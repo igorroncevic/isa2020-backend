@@ -2,7 +2,10 @@ package team18.pharmacyapp.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import team18.pharmacyapp.helpers.DateTimeHelpers;
 import team18.pharmacyapp.model.Pharmacy;
+import team18.pharmacyapp.model.Term;
+import team18.pharmacyapp.model.WorkSchedule;
 import team18.pharmacyapp.model.dtos.DoctorDTO;
 import team18.pharmacyapp.model.dtos.DoctorsPatientDTO;
 import team18.pharmacyapp.model.dtos.PatientDoctorRoleDTO;
@@ -10,6 +13,7 @@ import team18.pharmacyapp.model.enums.UserRole;
 import team18.pharmacyapp.model.users.Doctor;
 import team18.pharmacyapp.repository.DoctorRepository;
 import team18.pharmacyapp.repository.MarkRepository;
+import team18.pharmacyapp.repository.WorkScheduleRepository;
 import team18.pharmacyapp.service.interfaces.DoctorService;
 
 import java.util.ArrayList;
@@ -23,7 +27,7 @@ public class DoctorServiceImpl implements DoctorService {
     private final MarkRepository markRepository;
 
     @Autowired
-    public DoctorServiceImpl(DoctorRepository doctorRepository, MarkRepository markRepository) {
+    public DoctorServiceImpl(DoctorRepository doctorRepository, MarkRepository markRepository, WorkScheduleRepository workScheduleRepository) {
         this.doctorRepository = doctorRepository;
         this.markRepository = markRepository;
     }
@@ -108,4 +112,8 @@ public class DoctorServiceImpl implements DoctorService {
 
         return doctorMarkDTOS;
     }
+
+
+
+
 }
