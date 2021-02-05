@@ -2,11 +2,14 @@ package team18.pharmacyapp.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import team18.pharmacyapp.model.dtos.MedicineQuantityDTO;
 import team18.pharmacyapp.model.dtos.ReportMedicineDTO;
 import team18.pharmacyapp.model.medicine.Medicine;
+import team18.pharmacyapp.model.medicine.PharmacyMedicines;
 import team18.pharmacyapp.repository.PharmacyMedicinesRepository;
 import team18.pharmacyapp.service.interfaces.PharmacyMedicinesService;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -34,7 +37,17 @@ public class PharmacyMedicinesServiceImpl implements PharmacyMedicinesService {
     }
 
     @Override
-    public List<Medicine> getMedicnesByPharmacy(UUID pharmacy) {
-        return repository.getMedicineByPharmacy(pharmacy);
+    public List<MedicineQuantityDTO> getMedicnesByPharmacy(UUID pharmacy) {
+        List<PharmacyMedicines> pharmacyMedicines = repository.getMedicineByPharmacy(pharmacy);
+        List<MedicineQuantityDTO> medicineQuantityDTOs = new ArrayList<>();
+        for(PharmacyMedicines pharmacyMedicine : pharmacyMedicines) {
+            MedicineQuantityDTO medicineQuantityDTO = new MedicineQuantityDTO();
+            medicineQuantityDTO.setId(pharmacyMedicine.getMedicine().getId());
+            medicineQuantityDTO.setName(pharmacyMedicine.getMedicine().getName());
+            medicineQuantityDTO.setLoyaltyPoints(pharmacyMedicine.getMedicine().getLoyaltyPoints());
+            medicineQuantityDTO.setQuantity(pharmacyMedicine.getQuantity());
+            medicineQuantityDTOs.add(medicineQuantityDTO);
+        }
+        return medicineQuantityDTOs;
     }
 }
