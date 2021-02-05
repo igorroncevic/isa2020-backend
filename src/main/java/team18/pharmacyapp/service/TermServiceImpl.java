@@ -93,7 +93,6 @@ public class TermServiceImpl implements TermService {
             term.setPatient(patientService.getById(termDTO.getPatientId()));
             term.setStartTime(termDTO.getStartTime());
             term.setEndTime(termDTO.getEndTime());
-            term.setLoyaltyPoints(5); //const
             term.setPrice(50);//const
             term.setType(termDTO.getType());
             return termRepository.save(term);

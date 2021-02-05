@@ -81,7 +81,6 @@ public class CheckupController {
         checkupForUpdate.setPatient(checkup.getPatient());
         checkupForUpdate.setPrice(checkup.getPrice());
         checkupForUpdate.setReport(checkup.getReport());
-        checkupForUpdate.setLoyaltyPoints(checkup.getLoyaltyPoints());
 
         checkupForUpdate = checkupService.save(checkupForUpdate);
         return new ResponseEntity<>(checkupForUpdate, HttpStatus.OK);
