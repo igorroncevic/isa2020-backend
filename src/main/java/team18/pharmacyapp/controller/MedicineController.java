@@ -34,6 +34,13 @@ public class MedicineController {
         return new ResponseEntity<>(medicines, HttpStatus.OK);
     }
 
+    @PostMapping("/filter")
+    public ResponseEntity<List<MedicineFilterDTO>> filterMedicines(@RequestBody MedicineFilterRequestDTO mfr) {
+        List<MedicineFilterDTO> medicines = medicineService.filterMedicines(mfr);
+
+        return new ResponseEntity<>(medicines, HttpStatus.OK);
+    }
+
     @GetMapping("/reserved/{id}")
     public ResponseEntity<List<ReservedMedicineDTO>> getAllPatientsReservedMedicines(@PathVariable UUID id) {
         List<ReservedMedicineDTO> medicines = medicineService.findAllPatientsReservedMedicines(id);

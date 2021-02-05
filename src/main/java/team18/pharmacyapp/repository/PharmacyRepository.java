@@ -24,4 +24,12 @@ public interface PharmacyRepository extends JpaRepository<Pharmacy, UUID> {
             "p.id IN (SELECT distinct p.id FROM pharmacy p JOIN p.reservedMedicines rm WHERE rm.patient.id = :patientId) OR " +
             "p.id IN (SELECT distinct p.id FROM pharmacy p JOIN p.pharmacyMedicines pm JOIN pm.ePrescriptionMedicines epm JOIN epm.ePrescription ep WHERE ep.patient.id = :patientId)")
     List<Pharmacy> getPatientsPharmacies(@Param("patientId") UUID patientId);
+
+    @Transactional(readOnly = true)
+    @Query("SELECT new team18.pharmacyapp.model.dtos.PharmacyFilteringDTO(p.id, p.name, p.address, AVG(m.mark)) " +
+            "FROM pharmacy p JOIN p.address a JOIN p.marks m JOIN p.pharmacyMedicines pm " +
+            "WHERE pm.medicine.id = :medicineId " +
+            "GROUP BY p.id, p.name, p.address, pm.quantity " +
+            "HAVING pm.quantity > 0")
+    List<PharmacyFilteringDTO>getAllPharmaciesForMedicine(@Param("medicineId")UUID medicineId);
 }

@@ -14,11 +14,13 @@ import team18.pharmacyapp.model.medicine.PharmacyMedicines;
 import team18.pharmacyapp.model.users.Patient;
 import team18.pharmacyapp.repository.MarkRepository;
 import team18.pharmacyapp.repository.MedicineRepository;
+import team18.pharmacyapp.repository.PharmacyRepository;
 import team18.pharmacyapp.repository.MedicineSpecificationRepository;
 import team18.pharmacyapp.service.interfaces.EmailService;
 import team18.pharmacyapp.repository.PatientRepository;
 import team18.pharmacyapp.service.interfaces.MedicineService;
 
+import java.util.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -31,15 +33,17 @@ public class MedicineServiceImpl implements MedicineService {
     private final PatientRepository patientRepository;
     private final MedicineSpecificationRepository medicineSpecificationRepository;
     private final MarkRepository markRepository;
+    private final PharmacyRepository pharmacyRepository;
 
 
     @Autowired
-    public MedicineServiceImpl(MedicineRepository medicineRepository, EmailService emailService, PatientRepository patientRepository, MedicineSpecificationRepository medicineSpecificationRepository, MarkRepository markRepository) {
+    public MedicineServiceImpl(MedicineRepository medicineRepository, EmailService emailService, PatientRepository patientRepository, PharmacyRepository pharmacyRepository, MedicineSpecificationRepository medicineSpecificationRepository, MarkRepository markRepository) {
         this.medicineRepository = medicineRepository;
         this.emailService = emailService;
         this.patientRepository = patientRepository;
         this.medicineSpecificationRepository = medicineSpecificationRepository;
         this.markRepository = markRepository;
+        this.pharmacyRepository = pharmacyRepository;
     }
 
     @Override
@@ -128,9 +132,12 @@ public class MedicineServiceImpl implements MedicineService {
     @Transactional(rollbackFor = {ActionNotAllowedException.class, RuntimeException.class, ReserveMedicineException.class})
     @Override
     public boolean reserveMedicine(ReserveMedicineRequestDTO rmrDTO) throws ActionNotAllowedException, ReserveMedicineException, RuntimeException {
-        Patient patient = patientRepository.getOne(rmrDTO.getPatientId());
+        Patient patient = patientRepository.findById(rmrDTO.getPatientId()).orElse(null);
+        if(patient == null) throw new ActionNotAllowedException("You are not allowed to reserve medicines");
         if (patient.getPenalties() >= 3)
             throw new ActionNotAllowedException("You are not allowed to reserve medicines");
+
+        if(rmrDTO.getPickupDate().before(new Date())) throw new ActionNotAllowedException("You are not allowed to reserve medicines");
 
         UUID reservationId = UUID.randomUUID();
         int reserved = medicineRepository.reserveMedicine(reservationId, rmrDTO.getPatientId(), rmrDTO.getPharmacyId(), rmrDTO.getMedicineId(), rmrDTO.getPickupDate());
@@ -222,5 +229,25 @@ public class MedicineServiceImpl implements MedicineService {
         if(added != 1) throw new RuntimeException("Couldnt add allergy");
 
         return true;
+    }
+
+    @Override
+    public List<MedicineFilterDTO> filterMedicines(MedicineFilterRequestDTO mfr) {
+        List<Medicine>medicines = medicineRepository.getAllMedicinesPatientsNotAlergicTo(mfr.getPatientId());
+        List<MedicineFilterDTO>finalMedicines = new ArrayList<>();
+
+        for(Medicine m : medicines){
+            if(!m.getName().toLowerCase().contains(mfr.getName().toLowerCase())) continue;
+
+            List<PharmacyFilteringDTO>pharmacies = pharmacyRepository.getAllPharmaciesForMedicine(m.getId());
+            if(pharmacies.size() == 0) continue;
+
+            MedicineFilterDTO med = new MedicineFilterDTO();
+            med.setMedicine(m);
+            med.setPharmacies(pharmacies);
+            finalMedicines.add(med);
+        }
+
+        return finalMedicines;
     }
 }
