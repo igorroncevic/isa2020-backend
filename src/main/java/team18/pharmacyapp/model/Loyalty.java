@@ -30,6 +30,10 @@ public class Loyalty {
     @Column(nullable = false, unique = true)
     private int maxPoints;
     @Column(nullable = false, unique = true)
+    private int checkupPoints;
+    @Column(nullable = false, unique = true)
+    private int cunselingPoints;
+    @Column(nullable = false, unique = true)
     private double discount;
 
     @OneToMany(mappedBy = "loyalty", cascade = CascadeType.ALL)

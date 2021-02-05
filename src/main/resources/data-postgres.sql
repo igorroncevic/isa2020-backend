@@ -59,14 +59,14 @@ values ('5baee785-9b8b-4287-a0bb-cfbee680b88d', 'Olivera', 'Petrović', 'opetrov
         'sysAdmin', '3b00204e-1897-4b6e-a175-5d0595833ced');
 
 -- Loyalty program
-insert into loyalty(id, category, discount, min_points, max_points)
-values ('c976e4d9-0bd0-470d-9a10-bdc1ff1ba91c', 'Regular', 0, 0, 49);
-insert into loyalty(id, category, discount, min_points, max_points)
-values ('a0f298f1-ccb1-4366-9ca8-77338e017726', 'Silver', 5, 50, 99);
-insert into loyalty(id, category, discount, min_points, max_points)
-values ('4b0dec94-b362-49a7-acda-b125a02c2692', 'Gold', 10, 100, 149);
-insert into loyalty(id, category, discount, min_points, max_points)
-values ('ab98fe4c-0e70-4087-b53f-637bbac6bfe4', 'Platinum', 14, 150, -1);
+insert into loyalty(id, category, discount, min_points, max_points, checkup_points, counseling_points)
+values ('c976e4d9-0bd0-470d-9a10-bdc1ff1ba91c', 'Regular', 0, 0, 49, 3, 2);
+insert into loyalty(id, category, discount, min_points, max_points, checkup_points, counseling_points)
+values ('a0f298f1-ccb1-4366-9ca8-77338e017726', 'Silver', 5, 50, 99, 5, 4);
+insert into loyalty(id, category, discount, min_points, max_points, checkup_points, counseling_points)
+values ('4b0dec94-b362-49a7-acda-b125a02c2692', 'Gold', 10, 100, 149, 7, 6);
+insert into loyalty(id, category, discount, min_points, max_points, checkup_points, counseling_points)
+values ('ab98fe4c-0e70-4087-b53f-637bbac6bfe4', 'Platinum', 14, 150, -1, 10, 9);
 --ako je max -1, to znaci da su svi 150+ u ovoj kategoriji
 
 -- Pacijenti
