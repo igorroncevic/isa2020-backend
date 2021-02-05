@@ -127,8 +127,8 @@ insert into medicine (id, loyalty_points, "name", medicine_code, medicine_type, 
 values ('592e558c-b3f9-4088-b468-28764908bd92', 13, 'Brufen', 'BR01', 'human_medicine', 'tablet', 'Hemofarm', 'without_prescription');
 insert into medicine (id, loyalty_points, "name", medicine_code, medicine_type, medicine_form, manufacturer, issuing_regime)
 values ('3163f62a-5b88-4295-854c-c9400e19089f', 12, 'Kafetin', 'CAF01', 'human_medicine', 'tablet', 'Alkaloid', 'without_prescription');
-insert into medicine (id, loyalty_points, "name", medicine_code, medicine_type, medicine_form, manufacturer, issuing_regime, fk_medicine_specification)
-values ('32636111-4bc6-424c-a200-067e7f8a9386', 8, 'Strepsils', 'S01', 'human_medicine', 'buccal_medicines', 'Bayer', 'without_prescription');
+insert into medicine (id, loyalty_points, "name", medicine_code, medicine_type, medicine_form, manufacturer, issuing_regime)
+values ('32636111-4bc6-424c-a200-067e7f8a9386', 8, 'Strepsils', 'S01', 'human_medicine', 'buccalMedicines', 'Bayer', 'without_prescription');
 insert into medicine (id, loyalty_points, "name", medicine_code, medicine_type, medicine_form, manufacturer, issuing_regime)
 values ('659d0931-63d9-4ef6-bbc4-abdeb4a99539', 11, 'Fluimucil', 'FL01', 'human_medicine', 'tablet', 'Zambon', 'with_prescription');
 
@@ -225,9 +225,9 @@ values ('d5397940-cafe-4f4d-865d-678cddadd07f', '2021-01-01 00:00:01', '2022-01-
 
 -- Rezervisani lijekovi
 insert into reserved_medicines(id, pickup_date, medicine_id, patient_id, pharmacy_id, handled)
-values ('ff1cc92f-30d2-4cad-b3d7-f4a65eaa2d07', '2021-02-25', '7571786b-2fc5-4756-ab5c-1f4af756e6f2', 'cc6fd408-0084-420b-8078-687d8a72744b', 'e93cab4a-f007-412c-b631-7a9a5ee2c6ed', true);
+values ('ff1cc92f-30d2-4cad-b3d7-f4a65eaa2d07', '2021-02-25', '7571786b-2fc5-4756-ab5c-1f4af756e6f2', 'cc6fd408-0084-420b-8078-687d8a72744b', 'e93cab4a-f007-412c-b631-7a9a5ee2c6ed', false);
 insert into reserved_medicines(id, pickup_date, medicine_id, patient_id, pharmacy_id, handled)
-values ('3a67b4a6-d043-46ad-a4c3-8629cadca585', '2021-02-25', '7571786b-2fc5-4756-ab5c-1f4af756e6f2', 'dd4c7e5f-f2c4-42dc-a809-fd7f588b3acb', 'e93cab4a-f007-412c-b631-7a9a5ee2c6ed', true);
+values ('3a67b4a6-d043-46ad-a4c3-8629cadca585', '2021-01-25', '7571786b-2fc5-4756-ab5c-1f4af756e6f2', 'dd4c7e5f-f2c4-42dc-a809-fd7f588b3acb', 'e93cab4a-f007-412c-b631-7a9a5ee2c6ed', true);
 
 -- Mark
 insert into mark(id, mark, doctor_id, medicine_id, patient_id, pharmacy_id)
@@ -241,9 +241,6 @@ insert into mark(id, mark, doctor_id, medicine_id, patient_id, pharmacy_id)
 values ('d1c19003-6489-41ad-a4c2-dec900222afe', 5, null, null, 'cc6fd408-0084-420b-8078-687d8a72744b', '25fff0b2-ad45-4310-ac7f-96bcc5e517c1');
 insert into mark(id, mark, doctor_id, medicine_id, patient_id, pharmacy_id)
 values ('e15abd59-dca9-4691-a224-38ce345c7d6f', 5, null, null, 'dd4c7e5f-f2c4-42dc-a809-fd7f588b3acb', '25fff0b2-ad45-4310-ac7f-96bcc5e517c1');
-insert into mark(id, mark, doctor_id, medicine_id, patient_id, pharmacy_id)
-values ('3071dbd0-0034-4b81-84d5-cf96fbf42c4c', 4, null, null, 'dd4c7e5f-f2c4-42dc-a809-fd7f588b3acb', 'e93cab4a-f007-412c-b631-7a9a5ee2c6ed');
-
 insert into mark(id, mark, doctor_id, medicine_id, patient_id, pharmacy_id)
 values ('3071dbd0-0034-4b81-84d5-cf96fbf42c4c', 4, null, null, 'dd4c7e5f-f2c4-42dc-a809-fd7f588b3acb', 'e93cab4a-f007-412c-b631-7a9a5ee2c6ed');
 insert into mark(id, mark, doctor_id, medicine_id, patient_id, pharmacy_id)

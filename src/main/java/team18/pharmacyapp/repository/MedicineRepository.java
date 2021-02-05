@@ -27,9 +27,10 @@ public interface MedicineRepository extends JpaRepository<Medicine, UUID> {
     List<ReservedMedicines> findAllReservedMedicines();
 
     @Transactional(readOnly = true)
-    @Query(value = "SELECT r, p FROM reserved_medicines r INNER JOIN pharmacy_medicines p ON p.medicine = r.medicine " +
-            "JOIN FETCH r.medicine JOIN FETCH p.pricings JOIN FETCH p.pharmacy WHERE r.patient = :patient")
-    List<ReservedMedicineDTO> findAllPatientsReservedMedicines(@Param("patient") Patient patient);
+    @Query("SELECT rm FROM reserved_medicines rm " +
+            "JOIN FETCH rm.medicine JOIN FETCH rm.pharmacy " +
+            "WHERE rm.patient.id = :patientId AND rm.handled = false")
+    List<ReservedMedicines> findAllPatientsReservedMedicinesNotPickedUp(@Param("patientId") UUID patientId);
 
     @Transactional(readOnly = true)
     @Query("SELECT m FROM medicine m " +
