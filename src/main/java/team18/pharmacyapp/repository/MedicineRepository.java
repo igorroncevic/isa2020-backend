@@ -112,4 +112,5 @@ public interface MedicineRepository extends JpaRepository<Medicine, UUID> {
     @Modifying
     @Query(nativeQuery = true, value = "INSERT INTO alergicto(patient_id, medicine_id) VALUES (:patientId, :medicineId)")
     int addNewAllergy(@Param("patientId") UUID patientId, @Param("medicineId") UUID medicineId);
+
 }

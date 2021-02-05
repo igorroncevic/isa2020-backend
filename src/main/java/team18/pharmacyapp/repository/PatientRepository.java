@@ -28,7 +28,7 @@ public interface PatientRepository extends JpaRepository<Patient, UUID> {
     @Query(nativeQuery = true, value = "UPDATE patient SET penalties = 0 WHERE id = :patientId")
     int resetPenalties(@Param("patientId") UUID patientId);
 
-    Patient findByEmailAndPassword(String email,String password);
+    Patient findByEmailAndPassword(String email, String password);
     Patient findByEmail(String email);
 
     @Transactional(readOnly = true)

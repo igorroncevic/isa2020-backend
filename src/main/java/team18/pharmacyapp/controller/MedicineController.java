@@ -164,4 +164,9 @@ public class MedicineController {
         return reservedMedicinesService.handleMedicine(dto);
     }
 
+    @PostMapping(consumes = "application/json", value = "/save")
+    public ResponseEntity<Medicine> saveNewMedicine(@RequestBody MedicineDTO newMedicine){
+        Medicine medicine = medicineService.registerNewMedicine(newMedicine);
+        return new ResponseEntity<>(medicine, HttpStatus.CREATED);
+    }
 }

@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import team18.pharmacyapp.helpers.FilteringHelpers;
 import team18.pharmacyapp.model.Pharmacy;
+import team18.pharmacyapp.model.dtos.PharmacyDTO;
 import team18.pharmacyapp.model.dtos.PharmacyFilteringDTO;
 import team18.pharmacyapp.model.dtos.PharmacyMarkPriceDTO;
 import team18.pharmacyapp.service.interfaces.PharmacyService;
@@ -48,5 +49,17 @@ public class PharmacyController {
         Pharmacy pharmacy = pharmacyService.getById(id);
         pharmacy.getPharmacyMedicines();
         return new ResponseEntity<>(pharmacy, HttpStatus.OK);
+    }
+
+    @GetMapping("/allpharms")
+    public ResponseEntity<List<Pharmacy>> allPharmacies(){
+        List<Pharmacy> all = pharmacyService.getAll();
+        return new ResponseEntity<>(all, HttpStatus.OK);
+    }
+
+    @PostMapping(consumes = "application/json", value = "/register")
+    public ResponseEntity<Pharmacy> saveNewPharmacy(@RequestBody PharmacyDTO newPharmacy){
+        Pharmacy pharmacy = pharmacyService.registerNewPharmacy(newPharmacy);
+        return new ResponseEntity<>(pharmacy, HttpStatus.CREATED);
     }
 }

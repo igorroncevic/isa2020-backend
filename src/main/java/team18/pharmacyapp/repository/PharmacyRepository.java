@@ -16,6 +16,8 @@ public interface PharmacyRepository extends JpaRepository<Pharmacy, UUID> {
             "FROM pharmacy p JOIN p.address a JOIN p.marks m GROUP BY p.id, p.name, p.address")
     List<PharmacyFilteringDTO> findAllForFiltering();
 
+    Pharmacy findByName(String name);
+
     @Transactional(readOnly = true)
     @Query("SELECT p FROM pharmacy p JOIN FETCH p.address WHERE " +
             "p.id IN (SELECT distinct p.id FROM pharmacy p JOIN p.workSchedules ws JOIN ws.doctor d JOIN d.terms t WHERE t.patient.id = :patientId) OR " +

@@ -6,8 +6,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import team18.pharmacyapp.model.Term;
 import team18.pharmacyapp.model.dtos.DoctorScheduleTermDTO;
-import team18.pharmacyapp.model.dtos.RegisterPatientDTO;
-import team18.pharmacyapp.model.users.Patient;
 import team18.pharmacyapp.service.interfaces.TermService;
 
 @CrossOrigin(origins = {"http://localhost:8080","http://localhost:8081"})
