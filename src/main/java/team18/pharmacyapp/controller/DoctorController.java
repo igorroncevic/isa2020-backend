@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import team18.pharmacyapp.model.Term;
 import team18.pharmacyapp.model.dtos.DoctorDTO;
+import team18.pharmacyapp.model.dtos.RegisterUserDTO;
 import team18.pharmacyapp.model.dtos.DoctorScheduleTermDTO;
 import team18.pharmacyapp.model.dtos.DoctorsPatientDTO;
 import team18.pharmacyapp.model.dtos.PatientDoctorRoleDTO;
@@ -75,6 +76,12 @@ public class DoctorController {
     public ResponseEntity<List<DoctorDTO>> getAllPharmacistsForPharmacy(@PathVariable UUID pharmacyId) {
         List<DoctorDTO> doctors = doctorService.findAllDoctorsForPharmacy(pharmacyId, UserRole.pharmacist);
         return new ResponseEntity<>(doctors, HttpStatus.OK);
+    }
+
+    @PostMapping(consumes = "application/json", value = "/register")
+    public ResponseEntity<Doctor> registerNewDermatologist(@RequestBody RegisterUserDTO newDermatologist) {
+        Doctor doc = doctorService.registerDermatologist(newDermatologist);
+        return new ResponseEntity<>(doc, HttpStatus.CREATED);
     }
 
     @GetMapping("/patients/{id}")

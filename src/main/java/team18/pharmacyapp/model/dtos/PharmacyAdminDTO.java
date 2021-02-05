@@ -4,11 +4,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-
 @Getter
 @Setter
 @NoArgsConstructor
-public class RegisterPatientDTO {
+public class PharmacyAdminDTO {
     private String name;
     private String surname;
     private String email;
@@ -17,4 +16,5 @@ public class RegisterPatientDTO {
     private String country;
     private String city;
     private String street;
+    private String pharmacyName;
 }

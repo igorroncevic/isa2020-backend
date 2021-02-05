@@ -5,13 +5,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import team18.pharmacyapp.model.Pricings;
 import team18.pharmacyapp.model.dtos.*;
+import team18.pharmacyapp.model.enums.*;
 import team18.pharmacyapp.model.exceptions.ActionNotAllowedException;
 import team18.pharmacyapp.model.exceptions.ReserveMedicineException;
 import team18.pharmacyapp.model.medicine.Medicine;
+import team18.pharmacyapp.model.medicine.MedicineSpecification;
 import team18.pharmacyapp.model.medicine.PharmacyMedicines;
 import team18.pharmacyapp.model.users.Patient;
 import team18.pharmacyapp.repository.MarkRepository;
 import team18.pharmacyapp.repository.MedicineRepository;
+import team18.pharmacyapp.repository.MedicineSpecificationRepository;
 import team18.pharmacyapp.service.interfaces.EmailService;
 import team18.pharmacyapp.repository.PatientRepository;
 import team18.pharmacyapp.service.interfaces.MedicineService;
@@ -20,21 +23,22 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 public class MedicineServiceImpl implements MedicineService {
     private final MedicineRepository medicineRepository;
     private final EmailService emailService;
     private final PatientRepository patientRepository;
+    private final MedicineSpecificationRepository medicineSpecificationRepository;
     private final MarkRepository markRepository;
 
+
     @Autowired
-    public MedicineServiceImpl(MedicineRepository medicineRepository, EmailService emailService, PatientRepository patientRepository, MarkRepository markRepository) {
+    public MedicineServiceImpl(MedicineRepository medicineRepository, EmailService emailService, PatientRepository patientRepository, MedicineSpecificationRepository medicineSpecificationRepository, MarkRepository markRepository) {
         this.medicineRepository = medicineRepository;
         this.emailService = emailService;
         this.patientRepository = patientRepository;
+        this.medicineSpecificationRepository = medicineSpecificationRepository;
         this.markRepository = markRepository;
     }
 
@@ -162,6 +166,33 @@ public class MedicineServiceImpl implements MedicineService {
     }
 
     @Override
+    public Medicine registerNewMedicine(MedicineDTO medicine) {
+        Medicine med = new Medicine();
+        MedicineSpecification medSpec = new MedicineSpecification();
+
+        med.setName(medicine.getMedicineName());
+        med.setMedicineCode(medicine.getMedicineCode());
+        med.setMedicineType(MedicineType.valueOf(medicine.getMedicineType()));
+        med.setMedicineForm(MedicineForm.valueOf(medicine.getMedicineForm()));
+        med.setManufacturer(MedicineManufacturer.valueOf(medicine.getMedicineManufacturer()));
+        med.setIssuingRegime(MedicineIssuingRegime.valueOf(medicine.getIssuingRegime()));
+        med.setLoyaltyPoints(medicine.getLoyaltyPoints());
+
+        medSpec.setReplacementMedicineCode(medicine.getReplacementMedicine());
+        medSpec.setRecommendedDose(medicine.getRecommendedDose());
+        medSpec.setContraindications(medicine.getContraindications());
+        medSpec.setDrugComposition(medicine.getDrugComposition());
+        medSpec.setAdditionalNotes(medicine.getAdditionalNotes());
+
+
+        med = medicineRepository.save(med);
+        medSpec.setMedicine(med);
+
+        medSpec = medicineSpecificationRepository.save(medSpec);
+        return med;
+
+    }
+
     public List<MedicineMarkDTO> getAllMedicinesForMarkingOptimized(UUID patientId) {
         List<Medicine> allMedicines = medicineRepository.getPatientsMedicines(patientId);
 

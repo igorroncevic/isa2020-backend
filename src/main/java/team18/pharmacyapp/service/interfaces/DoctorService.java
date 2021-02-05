@@ -1,6 +1,7 @@
 package team18.pharmacyapp.service.interfaces;
 
 import team18.pharmacyapp.model.dtos.DoctorDTO;
+import team18.pharmacyapp.model.dtos.RegisterUserDTO;
 import team18.pharmacyapp.model.dtos.DoctorsPatientDTO;
 import team18.pharmacyapp.model.dtos.PatientDoctorRoleDTO;
 import team18.pharmacyapp.model.enums.UserRole;
@@ -24,5 +25,5 @@ public interface DoctorService {
  
    List<DoctorDTO> getPatientsDoctors(PatientDoctorRoleDTO id);
 
-
+    Doctor registerDermatologist(RegisterUserDTO dermatologist);
 }
