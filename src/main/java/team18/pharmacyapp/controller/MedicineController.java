@@ -132,7 +132,7 @@ public class MedicineController {
         }
     }
 
-    @DeleteMapping(consumes = "application/json", value = "/cancel")
+    @PostMapping(consumes = "application/json", value = "/cancel")
     public ResponseEntity<Void> cancelMedicine(@RequestBody CancelMedicineRequestDTO medicine) {
         boolean success;
         try {

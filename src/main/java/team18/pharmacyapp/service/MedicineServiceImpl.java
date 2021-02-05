@@ -3,6 +3,7 @@ package team18.pharmacyapp.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import team18.pharmacyapp.helpers.DateTimeHelpers;
 import team18.pharmacyapp.model.Pricings;
 import team18.pharmacyapp.model.dtos.*;
 import team18.pharmacyapp.model.enums.*;
@@ -136,9 +137,12 @@ public class MedicineServiceImpl implements MedicineService {
     @Override
     public boolean cancelMedicine(CancelMedicineRequestDTO cmrDTO) throws ReserveMedicineException, RuntimeException {
         Date reservationDate = medicineRepository.findPickupDateByReservationId(cmrDTO.getReservationId());
-        Date yesterday = new Date(System.currentTimeMillis() - 24 * 60 * 60 * 1000);
+        Date tomorrow = new Date(System.currentTimeMillis() + 24 * 60 * 60 * 1000);
 
-        if (yesterday.before(reservationDate)) return false;
+        tomorrow = DateTimeHelpers.getDateWithoutTime(tomorrow);
+        reservationDate = DateTimeHelpers.getDateWithoutTime(reservationDate);
+
+        if (tomorrow.after(reservationDate)) return false;
 
         int cancelled = medicineRepository.cancelMedicine(cmrDTO.getReservationId());
         int updateQuantity = medicineRepository.incrementMedicineQuantity(cmrDTO.getMedicineId(), cmrDTO.getPharmacyId());
