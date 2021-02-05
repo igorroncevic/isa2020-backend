@@ -3,6 +3,7 @@ package team18.pharmacyapp.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import team18.pharmacyapp.helpers.DateTimeHelpers;
 import team18.pharmacyapp.model.Pricings;
 import team18.pharmacyapp.model.dtos.*;
 import team18.pharmacyapp.model.enums.*;
@@ -11,6 +12,7 @@ import team18.pharmacyapp.model.exceptions.ReserveMedicineException;
 import team18.pharmacyapp.model.medicine.Medicine;
 import team18.pharmacyapp.model.medicine.MedicineSpecification;
 import team18.pharmacyapp.model.medicine.PharmacyMedicines;
+import team18.pharmacyapp.model.medicine.ReservedMedicines;
 import team18.pharmacyapp.model.users.Patient;
 import team18.pharmacyapp.repository.MarkRepository;
 import team18.pharmacyapp.repository.MedicineRepository;
@@ -18,9 +20,9 @@ import team18.pharmacyapp.repository.PharmacyRepository;
 import team18.pharmacyapp.repository.MedicineSpecificationRepository;
 import team18.pharmacyapp.service.interfaces.EmailService;
 import team18.pharmacyapp.repository.PatientRepository;
+import team18.pharmacyapp.service.interfaces.LoyaltyService;
 import team18.pharmacyapp.service.interfaces.MedicineService;
 
-import java.util.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -34,16 +36,18 @@ public class MedicineServiceImpl implements MedicineService {
     private final MedicineSpecificationRepository medicineSpecificationRepository;
     private final MarkRepository markRepository;
     private final PharmacyRepository pharmacyRepository;
+    private final LoyaltyService loyaltyService;
 
 
     @Autowired
-    public MedicineServiceImpl(MedicineRepository medicineRepository, EmailService emailService, PatientRepository patientRepository, PharmacyRepository pharmacyRepository, MedicineSpecificationRepository medicineSpecificationRepository, MarkRepository markRepository) {
+    public MedicineServiceImpl(MedicineRepository medicineRepository, EmailService emailService, PatientRepository patientRepository, PharmacyRepository pharmacyRepository, MedicineSpecificationRepository medicineSpecificationRepository, MarkRepository markRepository, LoyaltyService loyaltyService) {
         this.medicineRepository = medicineRepository;
         this.emailService = emailService;
         this.patientRepository = patientRepository;
         this.medicineSpecificationRepository = medicineSpecificationRepository;
         this.markRepository = markRepository;
         this.pharmacyRepository = pharmacyRepository;
+        this.loyaltyService = loyaltyService;
     }
 
     @Override
@@ -98,35 +102,11 @@ public class MedicineServiceImpl implements MedicineService {
     }
 
     @Override
-    public List<ReservedMedicineDTO> findAllPatientsReservedMedicines(UUID id) {
-        Patient patient = new Patient();
-        patient.setId(id);
-        List<ReservedMedicineDTO> reservedMedicines = medicineRepository.findAllPatientsReservedMedicines(patient);
-        List<ReservedMedicineDTO> resultSet = new ArrayList<>();
+    public List<ReservedMedicines> findAllPatientsReservedMedicines(UUID id) {
+        Patient pat = patientRepository.getOne(id);
+        if(pat == null) throw new RuntimeException("Invalid patient id");
 
-        for (ReservedMedicineDTO rmDTO : reservedMedicines) {
-            List<Pricings> pricings = rmDTO.getPricings();
-            double finalPrice = -1.0;
-
-            for (Pricings pricing : pricings) {
-                if (pricing.getStartDate().before(rmDTO.getPickupDate()) && pricing.getEndDate().after(rmDTO.getPickupDate())) {
-                    finalPrice = pricing.getPrice();
-                    break;
-                }
-            }
-
-            if (finalPrice == -1.0) continue;
-
-            ReservedMedicineDTO finalRmDTO = new ReservedMedicineDTO();
-            finalRmDTO.setMedicine(rmDTO.getMedicine());
-            finalRmDTO.setPharmacy(rmDTO.getPharmacy());
-            finalRmDTO.setPrice(finalPrice);
-            finalRmDTO.setPickupDate(rmDTO.getPickupDate());
-
-            resultSet.add(finalRmDTO);
-        }
-
-        return resultSet;
+        return medicineRepository.findAllPatientsReservedMedicinesNotPickedUp(id);
     }
 
     @Transactional(rollbackFor = {ActionNotAllowedException.class, RuntimeException.class, ReserveMedicineException.class})
@@ -146,6 +126,11 @@ public class MedicineServiceImpl implements MedicineService {
         if (reserved != 1) throw new ReserveMedicineException("Medicine wasn't reserved!");
         if (updateQuantity != 1) throw new ReserveMedicineException("Medicine quantity wasn't decremented!");
 
+        Medicine med = medicineRepository.getOne(rmrDTO.getMedicineId());
+        if(med == null) throw new RuntimeException("");
+        loyaltyService.addLoyaltyPoints(rmrDTO.getPatientId(), med.getLoyaltyPoints());
+        loyaltyService.updatePatientsLoyalty(rmrDTO.getPatientId());
+
         String userMail = "savooroz33@gmail.com";   // zakucano za sada
         String subject = "[ISA Pharmacy] Confirmation - Medicine reservation";
         String body = "You have successfuly reserved a medicine on our site.\n" +
@@ -159,15 +144,24 @@ public class MedicineServiceImpl implements MedicineService {
     @Override
     public boolean cancelMedicine(CancelMedicineRequestDTO cmrDTO) throws ReserveMedicineException, RuntimeException {
         Date reservationDate = medicineRepository.findPickupDateByReservationId(cmrDTO.getReservationId());
-        Date yesterday = new Date(System.currentTimeMillis() - 24 * 60 * 60 * 1000);
+        Date tomorrow = new Date(System.currentTimeMillis() + 24 * 60 * 60 * 1000);
 
-        if (yesterday.before(reservationDate)) return false;
+        tomorrow = DateTimeHelpers.getDateWithoutTime(tomorrow);
+        reservationDate = DateTimeHelpers.getDateWithoutTime(reservationDate);
+
+        if (tomorrow.after(reservationDate)) return false;
 
         int cancelled = medicineRepository.cancelMedicine(cmrDTO.getReservationId());
         int updateQuantity = medicineRepository.incrementMedicineQuantity(cmrDTO.getMedicineId(), cmrDTO.getPharmacyId());
 
         if (cancelled != 1) throw new ReserveMedicineException("Medicine wasn't cancelled!");
         if (updateQuantity != 1) throw new ReserveMedicineException("Medicine quantity wasn't incremented!");
+
+        Medicine med = medicineRepository.getOne(cmrDTO.getMedicineId());
+        if(med == null) throw new RuntimeException("");
+
+        loyaltyService.subtractLoyaltyPoints(cmrDTO.getPatientId(), med.getLoyaltyPoints());
+        loyaltyService.updatePatientsLoyalty(cmrDTO.getPatientId());
 
         return true;
     }

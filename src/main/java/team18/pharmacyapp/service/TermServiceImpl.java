@@ -6,7 +6,6 @@ import team18.pharmacyapp.helpers.DateTimeHelpers;
 import team18.pharmacyapp.model.Term;
 import team18.pharmacyapp.model.WorkSchedule;
 import team18.pharmacyapp.model.dtos.DoctorScheduleTermDTO;
-import team18.pharmacyapp.model.enums.TermType;
 import team18.pharmacyapp.repository.TermRepository;
 import team18.pharmacyapp.repository.WorkScheduleRepository;
 import team18.pharmacyapp.service.interfaces.DoctorService;
@@ -75,7 +74,7 @@ public class TermServiceImpl implements TermService {
     }
 
     @Override
-    public boolean isPacientFree(UUID patientId,Date startTime,Date endTime){
+    public boolean isPatientFree(UUID patientId, Date startTime, Date endTime){
         for(Term term:getAllPatientTerms(patientId)){
             if(DateTimeHelpers.checkIfTimesIntersect(startTime,endTime,term.getStartTime(),term.getEndTime())){
                 System.out.println("Pacijent zauzet");
@@ -88,13 +87,12 @@ public class TermServiceImpl implements TermService {
     @Override
     public Term scheduleTerm(DoctorScheduleTermDTO termDTO) {
         if(isDoctorWorking(termDTO.getDoctorId(),termDTO.getPharmacyId(),termDTO.getStartTime(),termDTO.getEndTime()) && isDoctorFree(termDTO.getDoctorId(),termDTO.getStartTime(),termDTO.getEndTime())
-            && isPacientFree(termDTO.getPatientId(),termDTO.getStartTime(),termDTO.getEndTime()) && checkDates(termDTO.getStartTime(),termDTO.getEndTime())){
+            && isPatientFree(termDTO.getPatientId(),termDTO.getStartTime(),termDTO.getEndTime()) && checkDates(termDTO.getStartTime(),termDTO.getEndTime())){
             Term term=new Term();
             term.setDoctor(doctorService.getById(termDTO.getDoctorId()));
             term.setPatient(patientService.getById(termDTO.getPatientId()));
             term.setStartTime(termDTO.getStartTime());
             term.setEndTime(termDTO.getEndTime());
-            term.setLoyaltyPoints(5); //const
             term.setPrice(50);//const
             term.setType(termDTO.getType());
             return termRepository.save(term);

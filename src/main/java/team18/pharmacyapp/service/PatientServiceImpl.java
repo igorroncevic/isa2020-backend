@@ -36,7 +36,7 @@ public class PatientServiceImpl implements PatientService {
         this.patientRepository = patientRepository;
         this.medicineRepository = medicineRepository;
         this.addressRepository = addressRepository;
-        this.loyaltyService = new LoyaltyServiceImpl(loyaltyRepository);
+        this.loyaltyService = new LoyaltyServiceImpl(loyaltyRepository, patientRepository);
         this.emailService = emailService;
     }
 

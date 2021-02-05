@@ -9,7 +9,7 @@ import java.util.UUID;
 
 public interface TermService {
     boolean isDoctorFree(UUID doctorId, Date startTime, Date endTime);
-    boolean isPacientFree(UUID patientId,Date startTime,Date endTime);
+    boolean isPatientFree(UUID patientId, Date startTime, Date endTime);
     Term scheduleTerm(DoctorScheduleTermDTO termDTO);
 
 }

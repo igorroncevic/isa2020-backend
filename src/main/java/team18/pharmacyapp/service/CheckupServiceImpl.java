@@ -5,14 +5,12 @@ import org.springframework.transaction.annotation.Transactional;
 import team18.pharmacyapp.model.Term;
 import team18.pharmacyapp.model.dtos.ScheduleCheckupDTO;
 import team18.pharmacyapp.model.enums.TermType;
-import team18.pharmacyapp.model.exceptions.ActionNotAllowedException;
-import team18.pharmacyapp.model.exceptions.EntityNotFoundException;
-import team18.pharmacyapp.model.exceptions.ReserveMedicineException;
-import team18.pharmacyapp.model.exceptions.ScheduleTermException;
+import team18.pharmacyapp.model.exceptions.*;
 import team18.pharmacyapp.model.users.Patient;
 import team18.pharmacyapp.repository.CheckupRepository;
 import team18.pharmacyapp.repository.PatientRepository;
 import team18.pharmacyapp.service.interfaces.CheckupService;
+import team18.pharmacyapp.service.interfaces.TermService;
 
 import java.util.Date;
 import java.util.List;
@@ -22,10 +20,12 @@ import java.util.UUID;
 public class CheckupServiceImpl implements CheckupService {
     private final CheckupRepository checkupRepository;
     private final PatientRepository patientRepository;
+    private final TermService termService;
 
-    public CheckupServiceImpl(CheckupRepository checkupRepository, PatientRepository patientRepository) {
+    public CheckupServiceImpl(CheckupRepository checkupRepository, PatientRepository patientRepository, TermService termService) {
         this.checkupRepository = checkupRepository;
         this.patientRepository = patientRepository;
+        this.termService = termService;
     }
 
     public Term findOne(UUID id) {
@@ -59,13 +59,15 @@ public class CheckupServiceImpl implements CheckupService {
         checkupRepository.deleteById(id);
     }
 
-    @Transactional(rollbackFor = {ActionNotAllowedException.class, RuntimeException.class, ReserveMedicineException.class})
-    public boolean patientScheduleCheckup(ScheduleCheckupDTO term) throws ActionNotAllowedException, ScheduleTermException, RuntimeException {
+    @Transactional(rollbackFor = {ActionNotAllowedException.class, AlreadyScheduledException.class, RuntimeException.class, ScheduleTermException.class})
+    public boolean patientScheduleCheckup(ScheduleCheckupDTO term) throws ActionNotAllowedException, ScheduleTermException, RuntimeException, AlreadyScheduledException {
         Patient patient = patientRepository.getOne(term.getPatientId());
         if (patient.getPenalties() >= 3) throw new ActionNotAllowedException("You are not allowed to schedule terms!");
 
         Term checkTerm = checkupRepository.findById(term.getCheckupId()).orElseGet(null);
         if (checkTerm == null) return false;
+
+        if(!termService.isPatientFree(term.getPatientId(), checkTerm.getStartTime(), checkTerm.getEndTime())) throw new AlreadyScheduledException("You are busy at this time");
 
         Date today = new Date(System.currentTimeMillis() - 60 * 1000);
         if (checkTerm.getStartTime().before(today)) throw new ScheduleTermException("Can't schedule past terms!");

@@ -1,9 +1,13 @@
 package team18.pharmacyapp.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import team18.pharmacyapp.model.Loyalty;
 import team18.pharmacyapp.model.dtos.LoyaltyDTO;
+import team18.pharmacyapp.model.users.Patient;
 import team18.pharmacyapp.repository.LoyaltyRepository;
+import team18.pharmacyapp.repository.PatientRepository;
 import team18.pharmacyapp.service.interfaces.LoyaltyService;
 
 import java.util.List;
@@ -12,9 +16,12 @@ import java.util.UUID;
 @Service
 public class LoyaltyServiceImpl implements LoyaltyService {
     private final LoyaltyRepository loyaltyRepository;
+    private final PatientRepository patientRepository;
 
-    public LoyaltyServiceImpl(LoyaltyRepository loyaltyRepository) {
+    @Autowired
+    public LoyaltyServiceImpl(LoyaltyRepository loyaltyRepository, PatientRepository patientRepository) {
         this.loyaltyRepository = loyaltyRepository;
+        this.patientRepository = patientRepository;
     }
 
     @Override
@@ -59,6 +66,50 @@ public class LoyaltyServiceImpl implements LoyaltyService {
         }
         return null;
     }
+
+    @Override
+    @Transactional
+    public void subtractLoyaltyPoints(UUID patientId, int amount) {
+        Patient pat = patientRepository.getOne(patientId);
+        if(pat == null) return;
+
+        if(pat.getLoyaltyPoints() - amount >= 0){
+            pat.setLoyaltyPoints(pat.getLoyaltyPoints() - amount);
+        }else{
+            pat.setLoyaltyPoints(0);
+        }
+
+        patientRepository.save(pat);
+    }
+
+    @Override
+    @Transactional
+    public void addLoyaltyPoints(UUID patientId, int amount) {
+        Patient pat = patientRepository.getOne(patientId);
+        if(pat == null) return;
+
+        pat.setLoyaltyPoints(pat.getLoyaltyPoints() + amount);
+
+        patientRepository.save(pat);
+    }
+
+    @Override
+    @Transactional
+    public void updatePatientsLoyalty(UUID patientId) {
+        Patient pat = patientRepository.getOne(patientId);
+        if(pat == null) return;
+
+        List<Loyalty> loyalties = loyaltyRepository.findAll();
+        for(Loyalty l : loyalties){
+            if(pat.getLoyaltyPoints() >= l.getMinPoints() && pat.getLoyaltyPoints() <= l.getMaxPoints()){
+                pat.setLoyalty(l);
+                break;
+            }
+        }
+
+        patientRepository.save(pat);
+    }
+
 
     @Override
     public void deleteById(UUID id) {
