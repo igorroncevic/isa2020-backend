@@ -10,7 +10,7 @@ import team18.pharmacyapp.model.exceptions.ActionNotAllowedException;
 import team18.pharmacyapp.model.exceptions.AlreadyGivenMarkException;
 import team18.pharmacyapp.service.interfaces.MarkService;
 
-@CrossOrigin(origins = "http://localhost:8080")
+@CrossOrigin(origins = {"http://localhost:8080","http://localhost:8081"})
 @RestController
 @RequestMapping(value = "api/marks")
 public class MarkController {
