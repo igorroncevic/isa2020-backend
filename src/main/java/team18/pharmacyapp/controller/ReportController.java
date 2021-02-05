@@ -31,6 +31,10 @@ public class ReportController {
 
     @PostMapping("reportMedicine")
     public ResponseEntity<ReportMedicines> saveReportMedicine(@RequestBody ReportMedicines reportMedicines){
-        return  new ResponseEntity<>(reportMedicinesService.save(reportMedicines), HttpStatus.CREATED);
+        ReportMedicines rm=reportMedicinesService.save(reportMedicines);
+        if(rm!=null){
+            return new ResponseEntity<>(rm,HttpStatus.CREATED);
+        }
+        return new ResponseEntity<>(null,HttpStatus.BAD_REQUEST);
     }
 }

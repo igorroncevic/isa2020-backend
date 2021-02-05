@@ -12,7 +12,7 @@ import team18.pharmacyapp.service.interfaces.CounselingService;
 import java.util.List;
 import java.util.UUID;
 
-@CrossOrigin(origins = "http://localhost:8080")
+@CrossOrigin(origins = {"http://localhost:8080","http://localhost:8081"})
 @RestController
 @RequestMapping(value = "api/counseling")
 public class CounselingController {
