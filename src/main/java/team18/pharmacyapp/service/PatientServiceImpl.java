@@ -82,6 +82,11 @@ public class PatientServiceImpl implements PatientService {
         return true;
     }
 
+    @Override
+    public Patient getById(UUID id) {
+        return patientRepository.findById(id).orElse(null);
+    }
+
     public Patient findRegisteredPatient(LoginPatientDTO patient){
         return patientRepository.findByEmailAndPassword(patient.getEmail(),patient.getPassword());
     }

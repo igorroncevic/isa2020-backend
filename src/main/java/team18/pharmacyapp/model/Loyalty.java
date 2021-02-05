@@ -32,7 +32,7 @@ public class Loyalty {
     @Column(nullable = false, unique = true)
     private int checkupPoints;
     @Column(nullable = false, unique = true)
-    private int cunselingPoints;
+    private int counselingPoints;
     @Column(nullable = false, unique = true)
     private double discount;
 

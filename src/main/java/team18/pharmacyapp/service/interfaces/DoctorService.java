@@ -7,6 +7,7 @@ import team18.pharmacyapp.model.dtos.PatientDoctorRoleDTO;
 import team18.pharmacyapp.model.enums.UserRole;
 import team18.pharmacyapp.model.users.Doctor;
 
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
