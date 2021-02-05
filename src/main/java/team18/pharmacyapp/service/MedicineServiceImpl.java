@@ -20,9 +20,9 @@ import team18.pharmacyapp.repository.PharmacyRepository;
 import team18.pharmacyapp.repository.MedicineSpecificationRepository;
 import team18.pharmacyapp.service.interfaces.EmailService;
 import team18.pharmacyapp.repository.PatientRepository;
+import team18.pharmacyapp.service.interfaces.LoyaltyService;
 import team18.pharmacyapp.service.interfaces.MedicineService;
 
-import java.util.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -36,16 +36,18 @@ public class MedicineServiceImpl implements MedicineService {
     private final MedicineSpecificationRepository medicineSpecificationRepository;
     private final MarkRepository markRepository;
     private final PharmacyRepository pharmacyRepository;
+    private final LoyaltyService loyaltyService;
 
 
     @Autowired
-    public MedicineServiceImpl(MedicineRepository medicineRepository, EmailService emailService, PatientRepository patientRepository, PharmacyRepository pharmacyRepository, MedicineSpecificationRepository medicineSpecificationRepository, MarkRepository markRepository) {
+    public MedicineServiceImpl(MedicineRepository medicineRepository, EmailService emailService, PatientRepository patientRepository, PharmacyRepository pharmacyRepository, MedicineSpecificationRepository medicineSpecificationRepository, MarkRepository markRepository, LoyaltyService loyaltyService) {
         this.medicineRepository = medicineRepository;
         this.emailService = emailService;
         this.patientRepository = patientRepository;
         this.medicineSpecificationRepository = medicineSpecificationRepository;
         this.markRepository = markRepository;
         this.pharmacyRepository = pharmacyRepository;
+        this.loyaltyService = loyaltyService;
     }
 
     @Override
@@ -124,6 +126,11 @@ public class MedicineServiceImpl implements MedicineService {
         if (reserved != 1) throw new ReserveMedicineException("Medicine wasn't reserved!");
         if (updateQuantity != 1) throw new ReserveMedicineException("Medicine quantity wasn't decremented!");
 
+        Medicine med = medicineRepository.getOne(rmrDTO.getMedicineId());
+        if(med == null) throw new RuntimeException("");
+        loyaltyService.addLoyaltyPoints(rmrDTO.getPatientId(), med.getLoyaltyPoints());
+        loyaltyService.updatePatientsLoyalty(rmrDTO.getPatientId());
+
         String userMail = "savooroz33@gmail.com";   // zakucano za sada
         String subject = "[ISA Pharmacy] Confirmation - Medicine reservation";
         String body = "You have successfuly reserved a medicine on our site.\n" +
@@ -149,6 +156,12 @@ public class MedicineServiceImpl implements MedicineService {
 
         if (cancelled != 1) throw new ReserveMedicineException("Medicine wasn't cancelled!");
         if (updateQuantity != 1) throw new ReserveMedicineException("Medicine quantity wasn't incremented!");
+
+        Medicine med = medicineRepository.getOne(cmrDTO.getMedicineId());
+        if(med == null) throw new RuntimeException("");
+
+        loyaltyService.subtractLoyaltyPoints(cmrDTO.getPatientId(), med.getLoyaltyPoints());
+        loyaltyService.updatePatientsLoyalty(cmrDTO.getPatientId());
 
         return true;
     }
