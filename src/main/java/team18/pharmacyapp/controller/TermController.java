@@ -8,6 +8,9 @@ import team18.pharmacyapp.model.Term;
 import team18.pharmacyapp.model.dtos.DoctorScheduleTermDTO;
 import team18.pharmacyapp.service.interfaces.TermService;
 
+import java.util.List;
+import java.util.UUID;
+
 @CrossOrigin(origins = {"http://localhost:8080","http://localhost:8081"})
 @RestController
 @RequestMapping(value = "api/terms")
@@ -26,5 +29,9 @@ public class TermController {
             return new ResponseEntity<>(term,HttpStatus.CREATED);
         }
         return new ResponseEntity<>(null,HttpStatus.BAD_REQUEST);
+    }
+    @GetMapping("doctor/{id}")
+    public List<Term> getAllDoctorTerms(@PathVariable UUID id){
+        return termService.getAllDoctorTerms(id);
     }
 }

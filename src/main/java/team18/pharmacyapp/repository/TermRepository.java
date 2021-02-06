@@ -21,8 +21,20 @@ public interface TermRepository extends JpaRepository<Term, UUID> {
     List<Term> getPatientsTermsFromPharmacy(@Param("pharmacyId")UUID pharmacyId, @Param("patientId") UUID patientId);
 
 
-    @Query("SELECT t FROM term t WHERE t.doctor.id = :doctorId ")
+    @Query("SELECT t FROM term t join fetch t.patient p WHERE t.doctor.id = :doctorId ")
     List<Term> findAllTermsForDoctor(@Param("doctorId") UUID doctorId);
+
+    @Query("SELECT t FROM term t WHERE t.doctor.id = :doctorId and t.patient is null ")
+    List<Term> findAllFreeTermsForDoctor(@Param("doctorId") UUID doctorId);
+
+    //----- Not finished yet
+    @Query("SELECT t FROM term t join fetch t.patient p WHERE t.doctor.id = :doctorId")
+    List<Term> findAllTermsForDoctorInPharmacy(@Param("doctorId") UUID doctorId);
+
+    @Query("SELECT t FROM term t WHERE t.doctor.id = :doctorId and t.patient is null ")
+    List<Term> findAllFreeTermsForDoctorInPharmacy(@Param("doctorId") UUID doctorId);
+    //------------------
+
 
     @Query("SELECT t FROM term t WHERE t.patient.id = :patientId ")
     List<Term> findAllTermsForPatient(@Param("patientId") UUID patientId);
