@@ -27,6 +27,13 @@ public class MedicineController {
         this.reservedMedicinesService = reservedMedicinesService;
     }
 
+    @GetMapping("/all")
+    public ResponseEntity<List<Medicine>> getAllMedicines() {
+        List<Medicine> medicines = medicineService.findAll();
+
+        return new ResponseEntity<>(medicines, HttpStatus.OK);
+    }
+
     @GetMapping
     public ResponseEntity<List<PharmacyMedicinesDTO>> getAllAvailableMedicines() {
         List<PharmacyMedicinesDTO> medicines = medicineService.findAllAvailableMedicines();

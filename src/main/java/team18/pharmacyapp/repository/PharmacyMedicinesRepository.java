@@ -1,6 +1,7 @@
 package team18.pharmacyapp.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,4 +23,9 @@ public interface PharmacyMedicinesRepository extends JpaRepository<PharmacyMedic
     @Transactional(readOnly = true)
     @Query(value = "select p, m from pharmacy_medicines p inner join medicine m on p.medicine.id=m.id where p.pharmacy.id=:pharmacyId")
     List<PharmacyMedicines> getMedicineByPharmacy (UUID pharmacyId);
+
+    @Transactional
+    @Modifying
+    @Query(nativeQuery = true, value = "INSERT INTO pharmacy_medicines (pharmacy_id, medicine_id, quantity, version) VALUES (:pharmacyId, :medicineId, 0, 1)")
+    void insert(UUID pharmacyId, UUID medicineId);
 }

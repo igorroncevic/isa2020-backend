@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import team18.pharmacyapp.model.dtos.MedicineQuantityDTO;
 import team18.pharmacyapp.model.dtos.ReportMedicineDTO;
-import team18.pharmacyapp.model.medicine.Medicine;
+import team18.pharmacyapp.model.exceptions.ActionNotAllowedException;
 import team18.pharmacyapp.model.medicine.PharmacyMedicines;
 import team18.pharmacyapp.repository.PharmacyMedicinesRepository;
 import team18.pharmacyapp.service.interfaces.PharmacyMedicinesService;
@@ -50,4 +50,10 @@ public class PharmacyMedicinesServiceImpl implements PharmacyMedicinesService {
         }
         return medicineQuantityDTOs;
     }
+
+    @Override
+    public void insert(UUID pharmacyId, UUID medicineId) {
+        repository.insert(pharmacyId, medicineId);
+    }
+
 }
