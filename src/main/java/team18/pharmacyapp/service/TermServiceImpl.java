@@ -13,6 +13,7 @@ import team18.pharmacyapp.service.interfaces.PatientService;
 import team18.pharmacyapp.service.interfaces.TermService;
 
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -32,10 +33,20 @@ public class TermServiceImpl implements TermService {
         this.patientService = patientService;
     }
 
+    @Override
     public List<Term> getAllDoctorTerms(UUID doctorId){
-        return termRepository.findAllTermsForDoctor(doctorId);
+        List<Term> list=new ArrayList<>();
+        list.addAll(termRepository.findAllFreeTermsForDoctor(doctorId));
+        list.addAll(termRepository.findAllTermsForDoctor(doctorId));
+        return list;
     }
 
+    @Override
+    public List<Term> getAllDoctorTermsInPharmacy(UUID doctorId) {
+        return null;
+    }
+
+    @Override
     public List<Term> getAllPatientTerms(UUID patientId){
         return termRepository.findAllTermsForPatient(patientId);
     }
