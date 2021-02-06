@@ -14,6 +14,6 @@ public interface TermService {
     Term scheduleTerm(DoctorScheduleTermDTO termDTO);
     List<Term> getAllPatientTerms(UUID patientId);
     List<Term> getAllDoctorTerms(UUID doctorId);
-    List<Term> getAllDoctorTermsInPharmacy(UUID doctorId);
+    List<Term> getAllDoctorTermsInPharmacy(UUID doctorId,UUID pharmacyId);
 
 }

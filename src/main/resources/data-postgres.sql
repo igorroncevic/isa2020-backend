@@ -169,7 +169,9 @@ values('25fff0b2-ad45-4310-ac7f-96bcc5e517c1', 'b7d924b5-c488-47bc-be78-2bdad330
 insert into work_schedule(pharmacy_id, doctor_id, from_hour, to_hour)
 values('25fff0b2-ad45-4310-ac7f-96bcc5e517c1', '236b04cd-2c94-4222-a101-16fb827ce816', '2021-01-01 8:00:00', '2022-01-01 16:00:00');
 insert into work_schedule (from_hour, to_hour, doctor_id, pharmacy_id)
-values ('2021-01-01 09:00:00', '2021-01-01 17:00:00', 'a5ac174a-45b3-487f-91cb-3d3f727d6f1c', 'e93cab4a-f007-412c-b631-7a9a5ee2c6ed');
+values ('2021-01-01 09:00:00', '2021-01-31 17:00:00', 'a5ac174a-45b3-487f-91cb-3d3f727d6f1c', 'e93cab4a-f007-412c-b631-7a9a5ee2c6ed');
+insert into work_schedule (from_hour, to_hour, doctor_id, pharmacy_id)
+values ('2021-02-01 09:00:00', '2021-03-30 17:00:00', 'a5ac174a-45b3-487f-91cb-3d3f727d6f1c', '25fff0b2-ad45-4310-ac7f-96bcc5e517c1');
 insert into work_schedule (from_hour, to_hour, doctor_id, pharmacy_id)
 values ('2021-01-01 09:00:00', '2021-01-01 11:00:00', '1accde09-0aa2-4ea1-9a38-17f4635198b9', 'e93cab4a-f007-412c-b631-7a9a5ee2c6ed');
 insert into work_schedule (from_hour, to_hour, doctor_id, pharmacy_id)

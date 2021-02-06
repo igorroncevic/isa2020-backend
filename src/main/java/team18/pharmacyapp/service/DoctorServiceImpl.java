@@ -118,6 +118,11 @@ public class DoctorServiceImpl implements DoctorService {
         return derm;
     }
 
+    @Override
+    public List<Pharmacy> getDoctorPharmacyList(UUID doctorId) {
+        return doctorRepository.getDoctorPharmacyList(doctorId);
+    }
+
     public List<DoctorsPatientDTO> findDoctorsPatients(UUID doctorId) {
         return doctorRepository.findDoctorPatients(doctorId);
 
