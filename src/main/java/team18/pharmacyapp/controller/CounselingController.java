@@ -8,6 +8,7 @@ import team18.pharmacyapp.model.Term;
 import team18.pharmacyapp.model.dtos.*;
 import team18.pharmacyapp.model.exceptions.*;
 import team18.pharmacyapp.service.interfaces.CounselingService;
+import team18.pharmacyapp.service.interfaces.TermService;
 
 import java.util.List;
 import java.util.UUID;
@@ -17,10 +18,12 @@ import java.util.UUID;
 @RequestMapping(value = "api/counseling")
 public class CounselingController {
     private final CounselingService counselingService;
+    private final TermService termService;
 
     @Autowired
-    public CounselingController(CounselingService counselingService) {
+    public CounselingController(CounselingService counselingService, TermService termService) {
         this.counselingService = counselingService;
+        this.termService = termService;
     }
 
     @GetMapping("/patient/{id}")
@@ -31,8 +34,8 @@ public class CounselingController {
     }
 
     @PostMapping("/past")
-    public ResponseEntity<TermPaginationDTO> getAllPatientsPastCounselingsPaginated(@RequestBody PaginationSortingDTO psDTO) {
-        TermPaginationDTO counselings = counselingService.findAllPatientsPastCounselingsPaginated(psDTO.getId(), psDTO.getSort(), psDTO.getPage());
+    public ResponseEntity<TermPaginationDTO> getAllPatientsPastCounselingsPaginated(@RequestBody TermPaginationSortingDTO psDTO) {
+        TermPaginationDTO counselings = termService.findAllPatientsPastTermsPaginated(psDTO.getId(), psDTO.getSort(), psDTO.getTermType(), psDTO.getPage());
 
         return new ResponseEntity<>(counselings, HttpStatus.OK);
     }

@@ -30,6 +30,4 @@ public interface CheckupService {
     boolean patientScheduleCheckup(ScheduleCheckupDTO term) throws ActionNotAllowedException, ScheduleTermException, RuntimeException, AlreadyScheduledException;
 
     boolean patientCancelCheckup(ScheduleCheckupDTO term) throws EntityNotFoundException, ActionNotAllowedException,RuntimeException;
-
-    TermPaginationDTO findAllPatientsPastCheckupsPaginated(UUID id, String sort, int page);
 }

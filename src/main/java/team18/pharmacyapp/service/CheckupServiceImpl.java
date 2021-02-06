@@ -99,35 +99,4 @@ public class CheckupServiceImpl implements CheckupService {
 
         return true;
     }
-
-    @Override
-    public TermPaginationDTO findAllPatientsPastCheckupsPaginated(UUID id, String sort, int page) {
-        String[] sortParts = sort.split(" ");
-        int startPage = page - 1; // Jer krecu od 1, a ako hocemo prvi da prikazemo, Pageable krece od 0
-
-        Pageable pageable;
-        if(sortParts[1].equalsIgnoreCase("asc.")){
-            pageable = PageRequest.of(startPage, 3, Sort.by(sortParts[0]).ascending());  // Zakucano 3 po stranici
-        }else {
-            pageable = PageRequest.of(startPage, 3, Sort.by(sortParts[0]).descending());
-        }
-        Page<Term> allCheckups = checkupRepository.findAllByPatient_IdAndType(id, TermType.checkup, pageable);
-
-        TermPaginationDTO response = new TermPaginationDTO();
-        if(!allCheckups.hasContent()) return response;
-
-        List<Term> pastCheckups = new ArrayList<>();
-        Date today = new Date(System.currentTimeMillis());
-        for(Term t : allCheckups){
-            if(t.getStartTime().before(today)){
-                pastCheckups.add(t);
-            }
-        }
-
-        response.setTerms(pastCheckups);
-        response.setTotalPages(allCheckups.getTotalPages());
-
-        return response;
-    }
-
 }

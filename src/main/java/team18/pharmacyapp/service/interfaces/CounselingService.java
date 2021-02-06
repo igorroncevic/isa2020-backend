@@ -17,6 +17,4 @@ public interface CounselingService {
     boolean patientCancelCounseling(CancelCounselingDTO term) throws EntityNotFoundException, ActionNotAllowedException, RuntimeException;
 
     List<Term> findAllPatientsCounselings(UUID id);
-
-    TermPaginationDTO findAllPatientsPastCounselingsPaginated(UUID id, String sort, int page);
 }

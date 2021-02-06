@@ -50,4 +50,8 @@ public interface DoctorRepository extends JpaRepository<Doctor, UUID> {
 
     @Query("SELECT d FROM doctor d JOIN d.terms t WHERE t.patient.id = :patientId AND t.doctor.id = :doctorId AND t.endTime < :todayTime")
     Doctor checkIfPatientHadAppointmentWithDoctor(@Param("doctorId") UUID doctorId, @Param("patientId") UUID patientId, @Param("todayTime") Date todayTime);
+
+    @Transactional(readOnly = true)
+    @Query("SELECT d from doctor d JOIN d.terms t WHERE t.id = :termId")
+    Doctor findDoctorByTermId(@Param("termId")UUID termId);
 }

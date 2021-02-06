@@ -9,8 +9,9 @@ import java.util.UUID;
 @Getter
 @Setter
 @NoArgsConstructor
-public class PaginationSortingDTO {
+public class TermPaginationSortingDTO {
     UUID id;
     String sort;
+    String termType;
     int page;
 }

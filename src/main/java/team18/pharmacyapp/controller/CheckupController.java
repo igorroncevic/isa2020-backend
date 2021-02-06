@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import team18.pharmacyapp.model.Term;
-import team18.pharmacyapp.model.dtos.PaginationSortingDTO;
+import team18.pharmacyapp.model.dtos.TermPaginationSortingDTO;
 import team18.pharmacyapp.model.dtos.ScheduleCheckupDTO;
 import team18.pharmacyapp.model.dtos.TermPaginationDTO;
 import team18.pharmacyapp.model.exceptions.ActionNotAllowedException;
@@ -13,6 +13,7 @@ import team18.pharmacyapp.model.exceptions.AlreadyScheduledException;
 import team18.pharmacyapp.model.exceptions.EntityNotFoundException;
 import team18.pharmacyapp.model.exceptions.ScheduleTermException;
 import team18.pharmacyapp.service.interfaces.CheckupService;
+import team18.pharmacyapp.service.interfaces.TermService;
 
 import java.util.List;
 import java.util.UUID;
@@ -22,10 +23,12 @@ import java.util.UUID;
 @RequestMapping(value = "api/checkups")
 public class CheckupController {
     private final CheckupService checkupService;
+    private final TermService termService;
 
     @Autowired
-    public CheckupController(CheckupService checkupService) {
+    public CheckupController(CheckupService checkupService, TermService termService) {
         this.checkupService = checkupService;
+        this.termService = termService;
     }
 
     @GetMapping
@@ -43,8 +46,8 @@ public class CheckupController {
     }
 
     @PostMapping("/past")
-    public ResponseEntity<TermPaginationDTO> getAllPatientsPastCheckupsPaginated(@RequestBody PaginationSortingDTO psDTO) {
-        TermPaginationDTO checkups = checkupService.findAllPatientsPastCheckupsPaginated(psDTO.getId(), psDTO.getSort(), psDTO.getPage());
+    public ResponseEntity<TermPaginationDTO> getAllPatientsPastCheckupsPaginated(@RequestBody TermPaginationSortingDTO psDTO) {
+        TermPaginationDTO checkups = termService.findAllPatientsPastTermsPaginated(psDTO.getId(), psDTO.getSort(), psDTO.getTermType(), psDTO.getPage());
 
         return new ResponseEntity<>(checkups, HttpStatus.OK);
     }
