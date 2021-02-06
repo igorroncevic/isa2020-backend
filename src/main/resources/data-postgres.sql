@@ -115,7 +115,7 @@ values ('fa417459-da91-4812-9d74-3a8ebaa25288', 'b0a591d4-f627-45ba-8aa9-926e85c
         '2021-01-15 13:35:00', 14, 'counseling', null, null);
 insert into term (id, doctor_id, start_time, end_time, price, "type", report_id, patient_id)
 values ('d3e0f32b-f933-445a-b743-1930da41aa00', 'b7d924b5-c488-47bc-be78-2bdad330f468', '2021-01-15 13:15:00',
-        '2021-01-15 13:35:00', 15, 'counseling', null, null);
+        '2021-01-15 13:35:00', 15, 'counseling', null, 'cc6fd408-0084-420b-8078-687d8a72744b');
 insert into term (id, doctor_id, start_time, end_time, price, "type", report_id, patient_id)
 values ('3c16d087-fcc9-4c31-9431-71a92bc781fd', 'b0a591d4-f627-45ba-8aa9-926e85c93e08', '2021-01-15 13:45:00',
         '2021-01-15 14:00:00', 19, 'counseling', null, null);

@@ -5,7 +5,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import team18.pharmacyapp.model.Term;
+import team18.pharmacyapp.model.dtos.PaginationSortingDTO;
 import team18.pharmacyapp.model.dtos.ScheduleCheckupDTO;
+import team18.pharmacyapp.model.dtos.TermPaginationDTO;
 import team18.pharmacyapp.model.exceptions.ActionNotAllowedException;
 import team18.pharmacyapp.model.exceptions.AlreadyScheduledException;
 import team18.pharmacyapp.model.exceptions.EntityNotFoundException;
@@ -36,6 +38,13 @@ public class CheckupController {
     @GetMapping("/patient/{id}")
     public ResponseEntity<List<Term>> getAllPatientsCheckups(@PathVariable UUID id) {
         List<Term> checkups = checkupService.findAllPatientsCheckups(id);
+
+        return new ResponseEntity<>(checkups, HttpStatus.OK);
+    }
+
+    @PostMapping("/past")
+    public ResponseEntity<TermPaginationDTO> getAllPatientsPastCheckupsPaginated(@RequestBody PaginationSortingDTO psDTO) {
+        TermPaginationDTO checkups = checkupService.findAllPatientsPastCheckupsPaginated(psDTO.getId(), psDTO.getSort(), psDTO.getPage());
 
         return new ResponseEntity<>(checkups, HttpStatus.OK);
     }

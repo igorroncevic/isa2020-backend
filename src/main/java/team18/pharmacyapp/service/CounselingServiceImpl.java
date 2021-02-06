@@ -1,6 +1,10 @@
 package team18.pharmacyapp.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import team18.pharmacyapp.helpers.DateTimeHelpers;
@@ -156,6 +160,36 @@ public class CounselingServiceImpl implements CounselingService {
     @Override
     public List<Term> findAllPatientsCounselings(UUID id) {
         return counselingRepository.findAllPatientsCounselings(id, TermType.counseling);
+    }
+
+    @Override
+    public TermPaginationDTO findAllPatientsPastCounselingsPaginated(UUID id, String sort, int page) {
+        String[] sortParts = sort.split(" ");
+        int startPage = page - 1; // Jer krecu od 1, a ako hocemo prvi da prikazemo, Pageable krece od 0
+
+        Pageable pageable;
+        if(sortParts[1].equalsIgnoreCase("asc.")){
+            pageable = PageRequest.of(startPage, 3, Sort.by(sortParts[0]).ascending());  // Zakucano 3 po stranici
+        }else {
+            pageable = PageRequest.of(startPage, 3, Sort.by(sortParts[0]).descending());
+        }
+        Page<Term> allCounselings = counselingRepository.findAllByPatient_IdAndType(id, TermType.counseling, pageable);
+
+        TermPaginationDTO response = new TermPaginationDTO();
+        if(!allCounselings.hasContent()) return response;
+
+        List<Term> pastCounselings = new ArrayList<>();
+        Date today = new Date(System.currentTimeMillis());
+        for(Term t : allCounselings.getContent()){
+            if(t.getStartTime().before(today)){
+                pastCounselings.add(t);
+            }
+        }
+
+        response.setTerms(pastCounselings);
+        response.setTotalPages(allCounselings.getTotalPages());
+
+        return response;
     }
 
 }

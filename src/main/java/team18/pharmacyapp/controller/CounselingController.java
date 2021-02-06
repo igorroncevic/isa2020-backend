@@ -30,6 +30,13 @@ public class CounselingController {
         return new ResponseEntity<>(counselings, HttpStatus.OK);
     }
 
+    @PostMapping("/past")
+    public ResponseEntity<TermPaginationDTO> getAllPatientsPastCounselingsPaginated(@RequestBody PaginationSortingDTO psDTO) {
+        TermPaginationDTO counselings = counselingService.findAllPatientsPastCounselingsPaginated(psDTO.getId(), psDTO.getSort(), psDTO.getPage());
+
+        return new ResponseEntity<>(counselings, HttpStatus.OK);
+    }
+
     @PostMapping("/available")
     public ResponseEntity<List<PharmacyMarkPriceDTO>> getPharmaciesWithAvailableCounselings(@RequestBody DateTimeRangeDTO timeRange) {
         List<PharmacyMarkPriceDTO> pharmacies;

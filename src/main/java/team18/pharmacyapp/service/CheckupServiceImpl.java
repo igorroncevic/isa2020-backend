@@ -1,9 +1,14 @@
 package team18.pharmacyapp.service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import team18.pharmacyapp.model.Term;
 import team18.pharmacyapp.model.dtos.ScheduleCheckupDTO;
+import team18.pharmacyapp.model.dtos.TermPaginationDTO;
 import team18.pharmacyapp.model.enums.TermType;
 import team18.pharmacyapp.model.exceptions.*;
 import team18.pharmacyapp.model.users.Patient;
@@ -12,6 +17,7 @@ import team18.pharmacyapp.repository.PatientRepository;
 import team18.pharmacyapp.service.interfaces.CheckupService;
 import team18.pharmacyapp.service.interfaces.TermService;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -92,6 +98,36 @@ public class CheckupServiceImpl implements CheckupService {
         if (rowsUpdated != 1) throw new RuntimeException("Couldn't cancel this term!");
 
         return true;
+    }
+
+    @Override
+    public TermPaginationDTO findAllPatientsPastCheckupsPaginated(UUID id, String sort, int page) {
+        String[] sortParts = sort.split(" ");
+        int startPage = page - 1; // Jer krecu od 1, a ako hocemo prvi da prikazemo, Pageable krece od 0
+
+        Pageable pageable;
+        if(sortParts[1].equalsIgnoreCase("asc.")){
+            pageable = PageRequest.of(startPage, 3, Sort.by(sortParts[0]).ascending());  // Zakucano 3 po stranici
+        }else {
+            pageable = PageRequest.of(startPage, 3, Sort.by(sortParts[0]).descending());
+        }
+        Page<Term> allCheckups = checkupRepository.findAllByPatient_IdAndType(id, TermType.checkup, pageable);
+
+        TermPaginationDTO response = new TermPaginationDTO();
+        if(!allCheckups.hasContent()) return response;
+
+        List<Term> pastCheckups = new ArrayList<>();
+        Date today = new Date(System.currentTimeMillis());
+        for(Term t : allCheckups){
+            if(t.getStartTime().before(today)){
+                pastCheckups.add(t);
+            }
+        }
+
+        response.setTerms(pastCheckups);
+        response.setTotalPages(allCheckups.getTotalPages());
+
+        return response;
     }
 
 }

@@ -1,5 +1,7 @@
 package team18.pharmacyapp.repository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -10,7 +12,6 @@ import team18.pharmacyapp.model.enums.TermType;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 public interface CheckupRepository extends JpaRepository<Term, UUID> {
@@ -48,4 +49,6 @@ public interface CheckupRepository extends JpaRepository<Term, UUID> {
     @Query("SELECT t FROM term t JOIN FETCH t.patient WHERE t.doctor.id = :doctorId")
     List<Term> findTermByDoctorId(UUID doctorId);
 
+    @Transactional(readOnly = true)
+    Page<Term> findAllByPatient_IdAndType(@Param("patientId") UUID id, @Param("termType") TermType checkup, Pageable pageable);
 }
