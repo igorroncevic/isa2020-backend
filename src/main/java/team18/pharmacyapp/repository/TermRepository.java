@@ -27,13 +27,14 @@ public interface TermRepository extends JpaRepository<Term, UUID> {
     @Query("SELECT t FROM term t WHERE t.doctor.id = :doctorId and t.patient is null ")
     List<Term> findAllFreeTermsForDoctor(@Param("doctorId") UUID doctorId);
 
-    //----- Not finished yet
-    @Query("SELECT t FROM term t join fetch t.patient p WHERE t.doctor.id = :doctorId")
-    List<Term> findAllTermsForDoctorInPharmacy(@Param("doctorId") UUID doctorId);
 
-    @Query("SELECT t FROM term t WHERE t.doctor.id = :doctorId and t.patient is null ")
-    List<Term> findAllFreeTermsForDoctorInPharmacy(@Param("doctorId") UUID doctorId);
-    //------------------
+    @Query("SELECT t FROM term t inner join work_schedule w on t.doctor.id=w.doctor.id join fetch t.patient p WHERE t.doctor.id = :doctorId and w.pharmacy.id=:pharmacyId " +
+            "and t.startTime>=w.fromHour and t.endTime<=w.toHour")
+    List<Term> findAllTermsForDoctorInPharmacy(@Param("doctorId") UUID doctorId,@Param("pharmacyId")UUID pharmacyId);
+
+    @Query("SELECT t FROM term t inner join work_schedule w on t.doctor.id=w.doctor.id WHERE t.doctor.id = :doctorId and t.patient is null and w.pharmacy.id=:pharmacyId " +
+            "and t.startTime>=w.fromHour and t.endTime<=w.toHour")
+    List<Term> findAllFreeTermsForDoctorInPharmacy(@Param("doctorId") UUID doctorId,@Param("pharmacyId")UUID pharmacyId);
 
 
     @Query("SELECT t FROM term t WHERE t.patient.id = :patientId ")

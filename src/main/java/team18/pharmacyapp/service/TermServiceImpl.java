@@ -42,8 +42,11 @@ public class TermServiceImpl implements TermService {
     }
 
     @Override
-    public List<Term> getAllDoctorTermsInPharmacy(UUID doctorId) {
-        return null;
+    public List<Term> getAllDoctorTermsInPharmacy(UUID doctorId,UUID pharmacyId) {
+        List<Term> list=new ArrayList<>();
+        list.addAll(termRepository.findAllFreeTermsForDoctorInPharmacy(doctorId,pharmacyId));
+        list.addAll(termRepository.findAllTermsForDoctorInPharmacy(doctorId,pharmacyId));
+        return list;
     }
 
     @Override
