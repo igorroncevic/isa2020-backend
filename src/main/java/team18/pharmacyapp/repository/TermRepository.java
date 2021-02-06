@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import team18.pharmacyapp.model.Term;
 import team18.pharmacyapp.model.enums.TermType;
 
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -42,5 +43,8 @@ public interface TermRepository extends JpaRepository<Term, UUID> {
     List<Term> findAllTermsForPatient(@Param("patientId") UUID patientId);
 
     @Transactional(readOnly = true)
-    Page<Term> findAllByPatient_IdAndType(@Param("patientId") UUID id, @Param("termType") TermType checkup, Pageable pageable);
+    Page<Term> findAllByPatient_IdAndTypeAndStartTimeBefore(@Param("patientId") UUID id, @Param("termType") TermType checkup, @Param("today") Date today, Pageable pageable);
+
+    @Transactional(readOnly = true)
+    Page<Term> findAllByPatient_IdAndTypeAndStartTimeAfter(@Param("patientId") UUID id, @Param("termType") TermType checkup, @Param("today") Date today, Pageable pageable);
 }

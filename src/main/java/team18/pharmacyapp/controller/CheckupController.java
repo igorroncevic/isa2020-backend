@@ -52,6 +52,13 @@ public class CheckupController {
         return new ResponseEntity<>(checkups, HttpStatus.OK);
     }
 
+    @PostMapping("/upcoming")
+    public ResponseEntity<TermPaginationDTO> getAllPatientsUpcomingCheckupsPaginated(@RequestBody TermPaginationSortingDTO psDTO) {
+        TermPaginationDTO checkups = termService.findAllPatientsUpcomingTermsPaginated(psDTO.getId(), psDTO.getSort(), psDTO.getTermType(), psDTO.getPage());
+
+        return new ResponseEntity<>(checkups, HttpStatus.OK);
+    }
+
     @GetMapping(value = "/{id}")
     public ResponseEntity<Term> getCheckup(@PathVariable UUID id) {
         Term checkup = checkupService.findOne(id);

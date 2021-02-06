@@ -40,6 +40,13 @@ public class CounselingController {
         return new ResponseEntity<>(counselings, HttpStatus.OK);
     }
 
+    @PostMapping("/upcoming")
+    public ResponseEntity<TermPaginationDTO> getAllPatientsUpcomingCheckupsPaginated(@RequestBody TermPaginationSortingDTO psDTO) {
+        TermPaginationDTO counselings = termService.findAllPatientsUpcomingTermsPaginated(psDTO.getId(), psDTO.getSort(), psDTO.getTermType(), psDTO.getPage());
+
+        return new ResponseEntity<>(counselings, HttpStatus.OK);
+    }
+
     @PostMapping("/available")
     public ResponseEntity<List<PharmacyMarkPriceDTO>> getPharmaciesWithAvailableCounselings(@RequestBody DateTimeRangeDTO timeRange) {
         List<PharmacyMarkPriceDTO> pharmacies;

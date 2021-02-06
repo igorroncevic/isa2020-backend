@@ -109,6 +109,13 @@ insert into term (id, doctor_id, start_time, end_time, price, "type", report_id,
 values ('ddf04525-26f4-4d13-a267-00a30ec2412a', 'a5ac174a-45b3-487f-91cb-3d3f727d6f1c', '2021-01-15 14:15:00',
         '2021-01-15 14:45:00', 12, 'checkup', null, 'dd4c7e5f-f2c4-42dc-a809-fd7f588b3acb');
 
+insert into term (id, doctor_id, start_time, end_time, price, "type", report_id, patient_id)
+values ('a045baba-1d99-44e9-a6c9-693c6717a336', 'a5ac174a-45b3-487f-91cb-3d3f727d6f1c', '2021-02-21 12:25:00',
+        '2021-02-21 13:00:00', 12, 'checkup', null, 'cc6fd408-0084-420b-8078-687d8a72744b');
+insert into term (id, doctor_id, start_time, end_time, price, "type", report_id, patient_id)
+values ('a6d049b5-8fe0-471d-8b33-d83bdb0c4602', 'a5ac174a-45b3-487f-91cb-3d3f727d6f1c', '2021-02-23 10:00:00',
+        '2021-02-23 10:15:00', 9, 'checkup', null, 'cc6fd408-0084-420b-8078-687d8a72744b');
+
 -- Savjetovanja
 insert into term (id, doctor_id, start_time, end_time, price, "type", report_id, patient_id)
 values ('fa417459-da91-4812-9d74-3a8ebaa25288', 'b0a591d4-f627-45ba-8aa9-926e85c93e08', '2021-01-15 13:15:00',
@@ -116,6 +123,9 @@ values ('fa417459-da91-4812-9d74-3a8ebaa25288', 'b0a591d4-f627-45ba-8aa9-926e85c
 insert into term (id, doctor_id, start_time, end_time, price, "type", report_id, patient_id)
 values ('d3e0f32b-f933-445a-b743-1930da41aa00', 'b7d924b5-c488-47bc-be78-2bdad330f468', '2021-01-15 13:15:00',
         '2021-01-15 13:35:00', 15, 'counseling', null, 'cc6fd408-0084-420b-8078-687d8a72744b');
+insert into term (id, doctor_id, start_time, end_time, price, "type", report_id, patient_id)
+values ('8f31bed6-1816-48dc-93f4-f7c5fc3cffe2', 'b7d924b5-c488-47bc-be78-2bdad330f468', '2021-03-01 13:15:00',
+        '2021-03-01 13:35:00', 15, 'counseling', null, 'cc6fd408-0084-420b-8078-687d8a72744b');
 insert into term (id, doctor_id, start_time, end_time, price, "type", report_id, patient_id)
 values ('3c16d087-fcc9-4c31-9431-71a92bc781fd', 'b0a591d4-f627-45ba-8aa9-926e85c93e08', '2021-01-15 13:45:00',
         '2021-01-15 14:00:00', 19, 'counseling', null, null);

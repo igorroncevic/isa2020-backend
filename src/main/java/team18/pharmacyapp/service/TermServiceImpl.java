@@ -140,22 +140,48 @@ public class TermServiceImpl implements TermService {
         }else {
             pageable = PageRequest.of(startPage, 3, Sort.by(sortParts[0]).descending());
         }
-        Page<Term> allTerms = termRepository.findAllByPatient_IdAndType(id, TermType.valueOf(termType), pageable);
+        Page<Term> allTerms = termRepository.findAllByPatient_IdAndTypeAndStartTimeBefore(id, TermType.valueOf(termType), new Date(System.currentTimeMillis()), pageable);
 
         TermPaginationDTO response = new TermPaginationDTO();
         if(!allTerms.hasContent()) return response;
 
         List<Term> pastTerms = new ArrayList<>();
-        Date today = new Date(System.currentTimeMillis());
         for(Term t : allTerms){
-            if(t.getStartTime().before(today)){
-                Doctor doctor = doctorRepository.findDoctorByTermId(t.getId());
-                t.setDoctor(doctor);
-                pastTerms.add(t);
-            }
+            Doctor doctor = doctorRepository.findDoctorByTermId(t.getId());
+            t.setDoctor(doctor);
+            pastTerms.add(t);
         }
 
-        response.setTerms(pastTerms);
+        response.setTerms(new ArrayList<>(allTerms.getContent()));
+        response.setTotalPages(allTerms.getTotalPages());
+
+        return response;
+    }
+
+    @Override
+    public TermPaginationDTO findAllPatientsUpcomingTermsPaginated(UUID id, String sort, String termType, int page) {
+        String[] sortParts = sort.split(" ");
+        int startPage = page - 1; // Jer krecu od 1, a ako hocemo prvi da prikazemo, Pageable krece od 0
+
+        Pageable pageable;
+        if(sortParts[1].equalsIgnoreCase("asc.")){
+            pageable = PageRequest.of(startPage, 3, Sort.by(sortParts[0]).ascending());  // Zakucano 3 po stranici
+        }else {
+            pageable = PageRequest.of(startPage, 3, Sort.by(sortParts[0]).descending());
+        }
+        Page<Term> allTerms = termRepository.findAllByPatient_IdAndTypeAndStartTimeAfter(id, TermType.valueOf(termType), new Date(System.currentTimeMillis()), pageable);
+
+        TermPaginationDTO response = new TermPaginationDTO();
+        if(!allTerms.hasContent()) return response;
+
+        List<Term> upcomingTerms = new ArrayList<>();
+        for(Term t : allTerms) {
+            Doctor doctor = doctorRepository.findDoctorByTermId(t.getId());
+            t.setDoctor(doctor);
+            upcomingTerms.add(t);
+        }
+
+        response.setTerms(upcomingTerms);
         response.setTotalPages(allTerms.getTotalPages());
 
         return response;
