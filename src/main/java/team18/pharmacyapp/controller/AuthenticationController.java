@@ -62,6 +62,8 @@ public class AuthenticationController {
         if(user.getRole()==UserRole.patient){
             if(!patientService.isActivated(user.getId()))
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }else if(user.isFirstLogin()) {
+            return new ResponseEntity<>(HttpStatus.LOCKED);
         }
         String jwt = tokenUtils.generateToken(user.getUsername());
         int expiresIn = tokenUtils.getExpiredIn();
