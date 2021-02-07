@@ -1,8 +1,10 @@
 package team18.pharmacyapp.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 import team18.pharmacyapp.model.Pricings;
 
 import java.util.Date;
@@ -24,5 +26,10 @@ public interface PricingsRepository extends JpaRepository<Pricings, UUID> {
             "JOIN FETCH pm.pharmacy ph " +
             "WHERE ph.id = :pharmacyId AND m.id = :medicineId")
     List<Pricings> getAllPricingsForMedicine(@Param("pharmacyId") UUID pharmacyId, @Param("medicineId") UUID medicineId);
+
+    @Transactional
+    @Modifying
+    @Query(nativeQuery = true, value = "DELETE FROM pricings WHERE id = :id")
+    void deleteById(UUID id);
 
 }

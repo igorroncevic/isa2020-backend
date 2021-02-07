@@ -1,9 +1,11 @@
 package team18.pharmacyapp.service;
 
+import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import team18.pharmacyapp.model.Pricings;
 import team18.pharmacyapp.model.dtos.PricingsDTO;
+import team18.pharmacyapp.model.exceptions.ActionNotAllowedException;
 import team18.pharmacyapp.repository.PricingsRepository;
 import team18.pharmacyapp.service.interfaces.PricingsService;
 
@@ -54,5 +56,20 @@ public class PricingsServiceImpl implements PricingsService {
             pricingsDTOs.add(pricingsDTO);
         }
         return pricingsDTOs;
+    }
+
+    @Override
+    public void deletePricing(UUID id) throws NotFoundException, ActionNotAllowedException {
+        Pricings pricings = pricingsRepository.findById(id).orElse(null);
+        if(pricings == null) {
+            throw new NotFoundException("Pricing not found");
+        }
+
+        Date today = new Date();
+        if(!pricings.getStartDate().after(today)) {
+            throw new ActionNotAllowedException("You can't delete pricing that have passed or is currently active.");
+        }
+
+        pricingsRepository.deleteById(id);
     }
 }

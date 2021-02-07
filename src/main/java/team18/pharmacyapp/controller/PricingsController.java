@@ -1,5 +1,6 @@
 package team18.pharmacyapp.controller;
 
+import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -8,6 +9,7 @@ import team18.pharmacyapp.model.Pricings;
 import team18.pharmacyapp.model.Vacation;
 import team18.pharmacyapp.model.dtos.PricingsDTO;
 import team18.pharmacyapp.model.enums.VacationStatus;
+import team18.pharmacyapp.model.exceptions.ActionNotAllowedException;
 import team18.pharmacyapp.service.interfaces.PricingsService;
 
 import java.util.List;
@@ -35,6 +37,19 @@ public class PricingsController {
     public ResponseEntity<List<PricingsDTO>> getAllPricingsForMedicine(@PathVariable UUID phId, @PathVariable UUID mId) {
         List<PricingsDTO> pricings = pricingsService.getAllPricingsForMedicine(phId, mId);
         return new ResponseEntity<>(pricings, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity deletePricing(@PathVariable UUID id) {
+        try {
+            pricingsService.deletePricing(id);
+        } catch (NotFoundException e) {
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
+        } catch (ActionNotAllowedException e) {
+            return new ResponseEntity(HttpStatus.METHOD_NOT_ALLOWED);
+        }
+
+        return new ResponseEntity(HttpStatus.OK);
     }
 
 

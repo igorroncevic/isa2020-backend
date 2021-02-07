@@ -3,7 +3,6 @@ package team18.pharmacyapp.model.medicine;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.Cascade;
 import team18.pharmacyapp.model.Pharmacy;
 import team18.pharmacyapp.model.Pricings;
 import team18.pharmacyapp.model.keys.PharmacyMedicinesId;
@@ -28,16 +27,13 @@ public class PharmacyMedicines {
     @Column(nullable = false)
     private int quantity;
 
-    @OneToMany(mappedBy = "pharmacyMedicine")
-    @Cascade(org.hibernate.annotations.CascadeType.DELETE)
+    @OneToMany(mappedBy = "pharmacyMedicine", cascade = CascadeType.ALL)
     private List<MedicineRequests> medicineRequests;
 
-    @Cascade(org.hibernate.annotations.CascadeType.DELETE)
-    @OneToMany(mappedBy = "pharmacyMedicine")
+    @OneToMany(mappedBy = "pharmacyMedicine", cascade = CascadeType.ALL)
     private List<Pricings> pricings;
 
-    @Cascade(org.hibernate.annotations.CascadeType.DELETE)
-    @OneToMany(mappedBy = "pharmacyMedicines")
+    @OneToMany(mappedBy = "pharmacyMedicines", cascade = CascadeType.ALL)
     private List<EPrescriptionMedicines> ePrescriptionMedicines;
 
     // Verzija torke, koristi se u svrhu optimistickog zakljucavanja
