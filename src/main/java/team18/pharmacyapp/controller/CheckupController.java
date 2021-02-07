@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import team18.pharmacyapp.model.Term;
+import team18.pharmacyapp.model.dtos.CancelTermDTO;
 import team18.pharmacyapp.model.dtos.TermPaginationSortingDTO;
 import team18.pharmacyapp.model.dtos.ScheduleCheckupDTO;
 import team18.pharmacyapp.model.dtos.TermPaginationDTO;
@@ -140,7 +141,7 @@ public class CheckupController {
     }
 
     @PutMapping(consumes = "application/json", value = "/cancel")
-    public ResponseEntity<Void> patientCancelCheckup(@RequestBody ScheduleCheckupDTO term) {
+    public ResponseEntity<Void> patientCancelCheckup(@RequestBody CancelTermDTO term) {
         boolean success;
         try {
             success = checkupService.patientCancelCheckup(term);

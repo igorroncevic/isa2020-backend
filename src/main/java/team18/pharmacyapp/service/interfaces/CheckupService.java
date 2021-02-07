@@ -1,8 +1,8 @@
 package team18.pharmacyapp.service.interfaces;
 
 import team18.pharmacyapp.model.Term;
+import team18.pharmacyapp.model.dtos.CancelTermDTO;
 import team18.pharmacyapp.model.dtos.ScheduleCheckupDTO;
-import team18.pharmacyapp.model.dtos.TermPaginationDTO;
 import team18.pharmacyapp.model.enums.TermType;
 import team18.pharmacyapp.model.exceptions.ActionNotAllowedException;
 import team18.pharmacyapp.model.exceptions.AlreadyScheduledException;
@@ -29,5 +29,5 @@ public interface CheckupService {
 
     boolean patientScheduleCheckup(ScheduleCheckupDTO term) throws ActionNotAllowedException, ScheduleTermException, RuntimeException, AlreadyScheduledException;
 
-    boolean patientCancelCheckup(ScheduleCheckupDTO term) throws EntityNotFoundException, ActionNotAllowedException,RuntimeException;
+    boolean patientCancelCheckup(CancelTermDTO term) throws EntityNotFoundException, ActionNotAllowedException,RuntimeException;
 }

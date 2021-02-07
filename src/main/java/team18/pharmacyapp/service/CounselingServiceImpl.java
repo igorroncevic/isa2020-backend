@@ -1,10 +1,6 @@
 package team18.pharmacyapp.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import team18.pharmacyapp.helpers.DateTimeHelpers;
@@ -142,8 +138,8 @@ public class CounselingServiceImpl implements CounselingService {
 
     @Override
     @Transactional(rollbackFor = {EntityNotFoundException.class, ActionNotAllowedException.class, RuntimeException.class})
-    public boolean patientCancelCounseling(CancelCounselingDTO term) throws EntityNotFoundException, ActionNotAllowedException, RuntimeException {
-        Term checkTerm = counselingRepository.findByIdCustom(term.getCounselingId());
+    public boolean patientCancelCounseling(CancelTermDTO term) throws EntityNotFoundException, ActionNotAllowedException, RuntimeException {
+        Term checkTerm = counselingRepository.findByIdCustom(term.getTermId());
 
         if (checkTerm == null) throw new EntityNotFoundException("There is no such counseling");
         if(!checkTerm.getPatient().getId().equals(term.getPatientId())) throw new ActionNotAllowedException("You can only cancel your own counselings");
@@ -151,7 +147,7 @@ public class CounselingServiceImpl implements CounselingService {
         Date yesterday = new Date(System.currentTimeMillis() - 24 * 60 * 60 * 1000);
         if (checkTerm.getStartTime().before(yesterday)) throw new ActionNotAllowedException("Cannot cancel 24hrs before the counseling or any past counselings");
 
-        int rowsUpdated = counselingRepository.patientCancelCounseling(term.getCounselingId());
+        int rowsUpdated = counselingRepository.patientCancelCounseling(term.getTermId());
         if (rowsUpdated != 1) throw new RuntimeException("Couldn't cancel this term!");
 
         return true;

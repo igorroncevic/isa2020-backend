@@ -14,7 +14,7 @@ public interface CounselingService {
 
     boolean patientScheduleCounseling(ScheduleCounselingDTO term) throws AlreadyScheduledException, ScheduleTermException, RuntimeException;
 
-    boolean patientCancelCounseling(CancelCounselingDTO term) throws EntityNotFoundException, ActionNotAllowedException, RuntimeException;
+    boolean patientCancelCounseling(CancelTermDTO term) throws EntityNotFoundException, ActionNotAllowedException, RuntimeException;
 
     List<Term> findAllPatientsCounselings(UUID id);
 }

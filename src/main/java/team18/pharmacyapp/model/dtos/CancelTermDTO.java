@@ -9,7 +9,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @NoArgsConstructor
-public class CancelCounselingDTO {
-    private UUID counselingId;
+public class CancelTermDTO {
+    private UUID termId;
     private UUID patientId;
 }

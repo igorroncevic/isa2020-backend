@@ -85,7 +85,7 @@ public class CounselingController {
     }
 
     @PutMapping(consumes = "application/json", value = "/cancel")
-    public ResponseEntity<Void> patientCancelCounseling(@RequestBody CancelCounselingDTO term) {
+    public ResponseEntity<Void> patientCancelCounseling(@RequestBody CancelTermDTO term) {
         boolean success;
         try {
             success = counselingService.patientCancelCounseling(term);
