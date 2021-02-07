@@ -12,6 +12,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 import team18.pharmacyapp.model.dtos.RegisterUserDTO;
+import team18.pharmacyapp.model.dtos.security.ChangePassDTO;
 import team18.pharmacyapp.model.dtos.security.LoginDTO;
 import team18.pharmacyapp.model.dtos.security.UserTokenDTO;
 import team18.pharmacyapp.model.enums.UserRole;
@@ -73,7 +74,7 @@ public class AuthenticationController {
 
 
     @PostMapping("/signup/patient")
-    public ResponseEntity<RegisteredUser> addUser(@RequestBody RegisterUserDTO dto, UriComponentsBuilder ucBuilder) {
+    public ResponseEntity<RegisteredUser> addUser(@RequestBody RegisterUserDTO dto) {
         RegisteredUser existUser = this.userService.findByEmail(dto.getEmail());
         if (existUser != null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -82,6 +83,15 @@ public class AuthenticationController {
         String USER_ROLE="ROLE_PATIENT";
         RegisteredUser user = this.userService.save(dto,role,USER_ROLE);
         return new ResponseEntity<>(user, HttpStatus.CREATED);
+    }
+
+    @PutMapping("/firstLoginPass")
+    public ResponseEntity<Boolean> changePass(@RequestBody ChangePassDTO dto) {
+        Authentication authentication = authenticationManager
+                .authenticate(new UsernamePasswordAuthenticationToken(dto.getEmail(),
+                        dto.getOldPass()));
+        userService.changeFirstPass(dto);
+        return new ResponseEntity<>(true,HttpStatus.OK);
     }
 
     @PostMapping(value = "/refresh")
@@ -98,18 +108,4 @@ public class AuthenticationController {
 
     }
 
-    @RequestMapping(value = "/change-password", method = RequestMethod.POST)
-    @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<?> changePassword(@RequestBody PasswordChanger passwordChanger) {
-        userDetailsService.changePassword(passwordChanger.oldPassword, passwordChanger.newPassword);
-
-        Map<String, String> result = new HashMap<>();
-        result.put("result", "success");
-        return ResponseEntity.accepted().body(result);
-    }
-
-    static class PasswordChanger {
-        public String oldPassword;
-        public String newPassword;
-    }
 }

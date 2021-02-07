@@ -5,6 +5,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import team18.pharmacyapp.model.Address;
 import team18.pharmacyapp.model.dtos.RegisterUserDTO;
+import team18.pharmacyapp.model.dtos.security.ChangePassDTO;
 import team18.pharmacyapp.model.enums.UserRole;
 import team18.pharmacyapp.model.users.RegisteredUser;
 import team18.pharmacyapp.repository.AddressRepository;
@@ -75,6 +76,17 @@ public class RegisteredUserServiceImpl implements RegisteredUserService {
             case patient: patientService.register(user);
         }
         return user;
+    }
+
+    @Override
+    public boolean changeFirstPass(ChangePassDTO dto) {
+        RegisteredUser user=findByEmail(dto.getEmail());
+        String newPass= passwordEncoder.encode(dto.getNewPass());
+        user.setPassword(newPass);
+        user.setFirstLogin(false);
+        userRepository.save(user);
+        return true;
+
     }
 
 }
