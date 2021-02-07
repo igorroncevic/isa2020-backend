@@ -128,7 +128,7 @@ public class CheckupController {
         } catch (ScheduleTermException ex) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         } catch (AlreadyScheduledException ex) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
         } catch (RuntimeException ex) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }

@@ -70,7 +70,7 @@ public class CounselingController {
         try {
             success = counselingService.patientScheduleCounseling(term);
         } catch (AlreadyScheduledException ex) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
         } catch (ScheduleTermException ex) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         } catch (RuntimeException ex) {

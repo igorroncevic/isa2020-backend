@@ -35,8 +35,8 @@ public interface CounselingRepository extends JpaRepository<Term, UUID> {
 
     @Transactional
     @Modifying
-    @Query(nativeQuery = true, value = "INSERT INTO term(id, patient_id, doctor_id, start_time, end_time, price, type, report_id, loyalty_points) " +
-            "VALUES (:id, :patientId, :doctorId, :startTime, :endTime, 10, 'counseling', null, 10)")
+    @Query(nativeQuery = true, value = "INSERT INTO term(id, patient_id, doctor_id, start_time, end_time, price, type, report_id) " +
+            "VALUES (:id, :patientId, :doctorId, :startTime, :endTime, 10, 'counseling', null)")
         // Cijeni i poeni zakucani, u specifikaciji ne pise kako se definisu
     int patientScheduleCounseling(@Param("id") UUID id, @Param("patientId") UUID patientId, @Param("doctorId") UUID doctorId,
                                   @Param("startTime") Date startTime, @Param("endTime") Date endTime);
