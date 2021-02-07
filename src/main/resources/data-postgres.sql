@@ -268,5 +268,26 @@ values ('d430072f-57e3-4434-aa5f-516ac45e5715', 'pending', '2021-05-01', '2021-0
 insert into vacation(id, status, start_date, end_date, rejection_reason, doctor_id)
 values ('18be1095-8158-4a8f-b9c7-9cf91f4fab4e', 'pending', '2021-08-01', '2021-08-20', null, '02fb4f65-923c-49fe-b32a-c40ffee74b47');
 
+-- EPrescriptions
+insert into eprescription(id, issue_date, patient_id, status)
+values ('aa7b9e7a-0838-481a-af5a-35d237d2a701', '2021-02-01', 'cc6fd408-0084-420b-8078-687d8a72744b', 'pending');
+insert into eprescription(id, issue_date, patient_id, status)
+values ('7679b21d-386d-4913-97a8-81447b0e922b', '2021-02-05', 'cc6fd408-0084-420b-8078-687d8a72744b', 'pending');
+insert into eprescription(id, issue_date, patient_id, status)
+values ('63ecb45f-8873-43a2-b0f5-586f701ee6c1', '2021-02-11', 'cc6fd408-0084-420b-8078-687d8a72744b', 'processed');
+insert into eprescription(id, issue_date, patient_id, status)
+values ('4160a8fe-efd6-4891-97be-b2618919469d', '2021-02-15', 'cc6fd408-0084-420b-8078-687d8a72744b', 'declined');
 
+insert into eprescription_medicines(e_prescription_id, eprescription_medicine_id, eprescription_pharmacy_id, quantity)
+values ('aa7b9e7a-0838-481a-af5a-35d237d2a701', '7571786b-2fc5-4756-ab5c-1f4af756e6f2', '25fff0b2-ad45-4310-ac7f-96bcc5e517c1', 2);
+insert into eprescription_medicines(e_prescription_id, eprescription_medicine_id, eprescription_pharmacy_id, quantity)
+values ('7679b21d-386d-4913-97a8-81447b0e922b', '592e558c-b3f9-4088-b468-28764908bd92', '25fff0b2-ad45-4310-ac7f-96bcc5e517c1', 5);
+insert into eprescription_medicines(e_prescription_id, eprescription_medicine_id, eprescription_pharmacy_id, quantity)
+values ('63ecb45f-8873-43a2-b0f5-586f701ee6c1', '32636111-4bc6-424c-a200-067e7f8a9386', '25fff0b2-ad45-4310-ac7f-96bcc5e517c1', 3);
+insert into eprescription_medicines(e_prescription_id, eprescription_medicine_id, eprescription_pharmacy_id, quantity)
+values ('4160a8fe-efd6-4891-97be-b2618919469d', '7571786b-2fc5-4756-ab5c-1f4af756e6f2', '25fff0b2-ad45-4310-ac7f-96bcc5e517c1', 2);
+insert into eprescription_medicines(e_prescription_id, eprescription_medicine_id, eprescription_pharmacy_id, quantity)
+values ('4160a8fe-efd6-4891-97be-b2618919469d', '32636111-4bc6-424c-a200-067e7f8a9386', '25fff0b2-ad45-4310-ac7f-96bcc5e517c1', 4);
+insert into eprescription_medicines(e_prescription_id, eprescription_medicine_id, eprescription_pharmacy_id, quantity)
+values ('4160a8fe-efd6-4891-97be-b2618919469d', '592e558c-b3f9-4088-b468-28764908bd92', '25fff0b2-ad45-4310-ac7f-96bcc5e517c1', 2);
 

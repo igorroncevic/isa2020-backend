@@ -57,7 +57,4 @@ public interface CounselingRepository extends JpaRepository<Term, UUID> {
     @Transactional(readOnly = true)
     @Query(value = "SELECT t FROM term t JOIN FETCH t.doctor JOIN FETCH t.patient WHERE t.type = :termType AND t.patient.id = :patientId")
     List<Term> findAllPatientsCounselings(@Param("patientId") UUID id, @Param("termType") TermType counseling);
-
-    @Transactional(readOnly = true)
-    Page<Term> findAllByPatient_IdAndType(@Param("patientId") UUID id, @Param("termType") TermType counseling, Pageable pageable);
 }
