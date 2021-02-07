@@ -1,10 +1,7 @@
 package team18.pharmacyapp.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
 import team18.pharmacyapp.model.Vacation;
 import team18.pharmacyapp.model.enums.VacationStatus;
 import team18.pharmacyapp.model.exceptions.ActionNotAllowedException;

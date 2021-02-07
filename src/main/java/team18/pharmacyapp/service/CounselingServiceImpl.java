@@ -12,6 +12,8 @@ import team18.pharmacyapp.model.exceptions.*;
 import team18.pharmacyapp.model.users.Doctor;
 import team18.pharmacyapp.model.users.Patient;
 import team18.pharmacyapp.repository.*;
+import team18.pharmacyapp.repository.users.DoctorRepository;
+import team18.pharmacyapp.repository.users.PatientRepository;
 import team18.pharmacyapp.service.interfaces.CounselingService;
 import team18.pharmacyapp.service.interfaces.EmailService;
 import team18.pharmacyapp.service.interfaces.TermService;
