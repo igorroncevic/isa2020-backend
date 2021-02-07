@@ -200,6 +200,8 @@ insert into reserved_medicines(id, pickup_date, medicine_id, patient_id, pharmac
 values ('ff1cc92f-30d2-4cad-b3d7-f4a65eaa2d07', '2021-02-25', '7571786b-2fc5-4756-ab5c-1f4af756e6f2', 'cc6fd408-0084-420b-8078-687d8a72744b', 'e93cab4a-f007-412c-b631-7a9a5ee2c6ed', true);
 insert into reserved_medicines(id, pickup_date, medicine_id, patient_id, pharmacy_id, handled)
 values ('3a67b4a6-d043-46ad-a4c3-8629cadca585', '2021-02-25', '7571786b-2fc5-4756-ab5c-1f4af756e6f2', 'dd4c7e5f-f2c4-42dc-a809-fd7f588b3acb', 'e93cab4a-f007-412c-b631-7a9a5ee2c6ed', true);
+insert into reserved_medicines(id, pickup_date, medicine_id, patient_id, pharmacy_id, handled)
+values ('7e471203-64e1-4853-a3a4-c141dfd7125c', '2021-03-25', '659d0931-63d9-4ef6-bbc4-abdeb4a99539', 'dd4c7e5f-f2c4-42dc-a809-fd7f588b3acb', 'e93cab4a-f007-412c-b631-7a9a5ee2c6ed', false);
 
 -- Mark
 insert into mark(id, mark, doctor_id, medicine_id, patient_id, pharmacy_id)

@@ -28,4 +28,8 @@ public interface PharmacyMedicinesRepository extends JpaRepository<PharmacyMedic
     @Modifying
     @Query(nativeQuery = true, value = "INSERT INTO pharmacy_medicines (pharmacy_id, medicine_id, quantity, version) VALUES (:pharmacyId, :medicineId, 0, 1)")
     void insert(UUID pharmacyId, UUID medicineId);
+
+    @Transactional(readOnly = true)
+    @Query(nativeQuery = true, value = "SELECT COUNT(*) FROM reserved_medicines WHERE pharmacy_id = :pharmacyId and medicine_id = :medicineId and handled = false")
+    int getNumberOfUnhandledReservations(UUID pharmacyId, UUID medicineId);
 }

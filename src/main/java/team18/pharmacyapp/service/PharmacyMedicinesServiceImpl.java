@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import team18.pharmacyapp.model.dtos.MedicineQuantityDTO;
 import team18.pharmacyapp.model.dtos.ReportMedicineDTO;
 import team18.pharmacyapp.model.exceptions.ActionNotAllowedException;
+import team18.pharmacyapp.model.keys.PharmacyMedicinesId;
 import team18.pharmacyapp.model.medicine.PharmacyMedicines;
 import team18.pharmacyapp.repository.PharmacyMedicinesRepository;
 import team18.pharmacyapp.service.interfaces.PharmacyMedicinesService;
@@ -54,6 +55,14 @@ public class PharmacyMedicinesServiceImpl implements PharmacyMedicinesService {
     @Override
     public void insert(UUID pharmacyId, UUID medicineId) {
         repository.insert(pharmacyId, medicineId);
+    }
+
+    @Override
+    public void deletePharmacyMedicine(PharmacyMedicinesId pharmacyMedicinesId) throws ActionNotAllowedException {
+        int numberOfUnhandledRegistrations = repository.getNumberOfUnhandledReservations(pharmacyMedicinesId.getPharmacy(), pharmacyMedicinesId.getMedicine());
+        if(numberOfUnhandledRegistrations != 0)
+            throw new ActionNotAllowedException("You can't delete this pharmacy medicine because it has unhandled reservations.");
+        repository.deleteById(pharmacyMedicinesId);
     }
 
 }

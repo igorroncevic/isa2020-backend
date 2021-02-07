@@ -10,6 +10,7 @@ import team18.pharmacyapp.model.dtos.MedicineQuantityDTO;
 import team18.pharmacyapp.model.dtos.ReportMedicineDTO;
 import team18.pharmacyapp.model.dtos.ScheduleCheckupDTO;
 import team18.pharmacyapp.model.exceptions.ActionNotAllowedException;
+import team18.pharmacyapp.model.keys.PharmacyMedicinesId;
 import team18.pharmacyapp.model.medicine.Medicine;
 import team18.pharmacyapp.model.medicine.PharmacyMedicines;
 import team18.pharmacyapp.service.interfaces.PharmacyMedicinesService;
@@ -47,5 +48,18 @@ public class PharmacyMedicineController {
         medicinesService.insert(addPharmacyMedicineDTO.getPharmacyId(), addPharmacyMedicineDTO.getMedicineId());
 
         return new ResponseEntity(HttpStatus.CREATED);
+    }
+
+    @DeleteMapping(value = "/{pid}/medicine/{mid}")
+    public ResponseEntity deletePharmacyMedicine(@PathVariable UUID pid, @PathVariable UUID mid) {
+        PharmacyMedicinesId pharmacyMedicinesId = new PharmacyMedicinesId();
+        pharmacyMedicinesId.setPharmacy(pid);
+        pharmacyMedicinesId.setMedicine(mid);
+        try {
+            medicinesService.deletePharmacyMedicine(pharmacyMedicinesId);
+        } catch (ActionNotAllowedException e) {
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity(HttpStatus.OK);
     }
 }
