@@ -6,7 +6,7 @@ import team18.pharmacyapp.model.dtos.RegisterUserDTO;
 import team18.pharmacyapp.model.enums.UserRole;
 import team18.pharmacyapp.model.users.SystemAdmin;
 import team18.pharmacyapp.repository.AddressRepository;
-import team18.pharmacyapp.repository.SystemAdminRepository;
+import team18.pharmacyapp.repository.users.SystemAdminRepository;
 import team18.pharmacyapp.service.interfaces.SystemAdminService;
 
 import java.util.List;

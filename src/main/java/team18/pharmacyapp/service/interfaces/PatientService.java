@@ -5,6 +5,8 @@ import team18.pharmacyapp.model.exceptions.ActionNotAllowedException;
 import team18.pharmacyapp.model.exceptions.EntityNotFoundException;
 import team18.pharmacyapp.model.medicine.Medicine;
 import team18.pharmacyapp.model.users.Patient;
+import team18.pharmacyapp.model.users.RegisteredUser;
+
 import java.util.List;
 import java.util.UUID;
 
@@ -18,4 +20,10 @@ public interface PatientService {
     boolean updatePatientProfileInfo(UpdateProfileDataDTO patient) throws ActionNotAllowedException, EntityNotFoundException, RuntimeException;
 
     Patient getById(UUID id);
+
+    Patient register(RegisteredUser user);
+
+    boolean isActivated(UUID patientId);
+
+    boolean activateAcc(UUID patientId);
 }

@@ -8,7 +8,7 @@ import team18.pharmacyapp.model.enums.TermType;
 import team18.pharmacyapp.model.exceptions.*;
 import team18.pharmacyapp.model.users.Patient;
 import team18.pharmacyapp.repository.CheckupRepository;
-import team18.pharmacyapp.repository.PatientRepository;
+import team18.pharmacyapp.repository.users.PatientRepository;
 import team18.pharmacyapp.service.interfaces.CheckupService;
 import team18.pharmacyapp.service.interfaces.TermService;
 

@@ -4,14 +4,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import team18.pharmacyapp.model.dtos.LoginPatientDTO;
-import team18.pharmacyapp.model.dtos.RegisterUserDTO;
+import team18.pharmacyapp.model.dtos.security.LoginDTO;
 import team18.pharmacyapp.model.dtos.UpdateProfileDataDTO;
 import team18.pharmacyapp.model.exceptions.ActionNotAllowedException;
 import team18.pharmacyapp.model.exceptions.EntityNotFoundException;
 import team18.pharmacyapp.model.medicine.Medicine;
 import team18.pharmacyapp.model.users.Patient;
-import team18.pharmacyapp.service.PatientServiceImpl;
+import team18.pharmacyapp.service.interfaces.PatientService;
+import team18.pharmacyapp.service.interfaces.RegisteredUserService;
 
 import java.util.List;
 import java.util.UUID;
@@ -21,10 +21,10 @@ import java.util.UUID;
 @RestController
 @RequestMapping(value = "api/patients")
 public class PatientController {
-    private final PatientServiceImpl patientService;
+    private final PatientService patientService;
 
     @Autowired
-    public PatientController(PatientServiceImpl patientService) {
+    public PatientController(PatientService patientService) {
         this.patientService = patientService;
     }
 
@@ -34,13 +34,6 @@ public class PatientController {
     }
 
 
-    @PostMapping("/login")
-    public ResponseEntity<Patient> login(@RequestBody LoginPatientDTO patient){
-        Patient pat = patientService.findRegisteredPatient(patient);
-        if (pat != null && pat.isActivated()) return new ResponseEntity<>(pat, HttpStatus.OK);
-
-        return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-    }
 
     @GetMapping("/profile/{id}")
     public ResponseEntity<Patient> getPatientProfileInfo(@PathVariable UUID id){
@@ -68,16 +61,11 @@ public class PatientController {
         }
     }
 
-    @PostMapping(consumes = "application/json", value = "/register")
-    public ResponseEntity<Patient> saveNewPatient(@RequestBody RegisterUserDTO newPatient){
-        Patient patient = patientService.register(newPatient);
-        return new ResponseEntity<>(patient, HttpStatus.CREATED);
-    }
 
     @PutMapping("/activate/{id}")
     public ResponseEntity<Boolean> activateAccount(@PathVariable String id){
         UUID uuid=UUID.fromString(id);
-        return new ResponseEntity<>(patientService.activateAccount(uuid),HttpStatus.OK);
+        return new ResponseEntity<>(patientService.activateAcc(uuid),HttpStatus.OK);
     }
     @PutMapping("/addPenalty/{id}")
     public ResponseEntity<Integer> addPenalty(@PathVariable UUID id){
