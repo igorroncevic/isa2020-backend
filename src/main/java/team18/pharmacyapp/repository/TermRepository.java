@@ -6,6 +6,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 import team18.pharmacyapp.model.Term;
 
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -39,6 +40,9 @@ public interface TermRepository extends JpaRepository<Term, UUID> {
 
     @Query("SELECT t FROM term t WHERE t.patient.id = :patientId ")
     List<Term> findAllTermsForPatient(@Param("patientId") UUID patientId);
+
+    @Query("select t from term t where t.patient.id=:patientId and t.doctor.id=:doctorId and :time>=t.startTime and :time<t.endTime")
+    Term findTermByDoctorAndPatientAndTime(UUID patientId, UUID doctorId, Date time);
 
 
 

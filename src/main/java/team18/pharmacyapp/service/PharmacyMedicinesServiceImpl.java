@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import team18.pharmacyapp.model.dtos.ReportMedicineDTO;
 import team18.pharmacyapp.model.medicine.Medicine;
+import team18.pharmacyapp.model.medicine.MedicineSpecification;
 import team18.pharmacyapp.repository.PharmacyMedicinesRepository;
 import team18.pharmacyapp.service.interfaces.PharmacyMedicinesService;
 
@@ -37,4 +38,5 @@ public class PharmacyMedicinesServiceImpl implements PharmacyMedicinesService {
     public List<Medicine> getMedicnesByPharmacy(UUID pharmacy) {
         return repository.getMedicineByPharmacy(pharmacy);
     }
+
 }

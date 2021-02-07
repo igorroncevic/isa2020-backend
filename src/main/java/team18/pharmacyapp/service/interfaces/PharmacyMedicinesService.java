@@ -2,6 +2,7 @@ package team18.pharmacyapp.service.interfaces;
 
 import team18.pharmacyapp.model.dtos.ReportMedicineDTO;
 import team18.pharmacyapp.model.medicine.Medicine;
+import team18.pharmacyapp.model.medicine.MedicineSpecification;
 
 import java.util.List;
 import java.util.UUID;

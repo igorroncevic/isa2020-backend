@@ -15,5 +15,6 @@ public interface TermService {
     List<Term> getAllPatientTerms(UUID patientId);
     List<Term> getAllDoctorTerms(UUID doctorId);
     List<Term> getAllDoctorTermsInPharmacy(UUID doctorId,UUID pharmacyId);
+    Term hasPatientHasTermNowWithDoctor(UUID doctorId,UUID patientId);
 
 }

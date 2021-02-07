@@ -50,6 +50,12 @@ public class TermServiceImpl implements TermService {
     }
 
     @Override
+    public Term hasPatientHasTermNowWithDoctor(UUID doctorId, UUID patientId) {
+        Date now =new Date();
+        return termRepository.findTermByDoctorAndPatientAndTime(patientId,doctorId,now);
+    }
+
+    @Override
     public List<Term> getAllPatientTerms(UUID patientId){
         return termRepository.findAllTermsForPatient(patientId);
     }

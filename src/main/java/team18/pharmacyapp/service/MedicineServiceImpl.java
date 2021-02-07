@@ -244,4 +244,8 @@ public class MedicineServiceImpl implements MedicineService {
 
         return finalMedicines;
     }
+    @Override
+    public MedicineSpecification getMedicineSpecification(UUID medicineId) {
+        return medicineRepository.getMedicineSpecification(medicineId);
+    }
 }
