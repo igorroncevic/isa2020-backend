@@ -5,12 +5,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import team18.pharmacyapp.model.dtos.EPrescriptionDTO;
+import team18.pharmacyapp.model.dtos.EPrescriptionSortFilterDTO;
 import team18.pharmacyapp.model.exceptions.ActionNotAllowedException;
-import team18.pharmacyapp.model.medicine.EPrescription;
 import team18.pharmacyapp.service.interfaces.EPrescriptionService;
 
 import java.util.List;
-import java.util.UUID;
 
 @CrossOrigin(origins = {"http://localhost:8080","http://localhost:8081"})
 @RestController
@@ -23,11 +22,11 @@ public class EPrescriptionController {
         this.ePrescriptionService = ePrescriptionService;
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<List<EPrescriptionDTO>> findAllByPatientId(@PathVariable UUID id) {
+    @PostMapping("/patient/")
+    public ResponseEntity<List<EPrescriptionDTO>> findAllByPatientId(@RequestBody EPrescriptionSortFilterDTO esf) {
         List<EPrescriptionDTO> prescriptions;
         try{
-            prescriptions = ePrescriptionService.findAllByPatientId(id);
+            prescriptions = ePrescriptionService.findAllByPatientId(esf);
         }catch(ActionNotAllowedException ex){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }catch(RuntimeException ex){

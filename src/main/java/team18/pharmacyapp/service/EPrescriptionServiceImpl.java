@@ -1,11 +1,14 @@
 package team18.pharmacyapp.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import team18.pharmacyapp.model.Pharmacy;
 import team18.pharmacyapp.model.dtos.EPrescriptionDTO;
 import team18.pharmacyapp.model.dtos.EPrescriptionMedicinesDTO;
 import team18.pharmacyapp.model.dtos.EPrescriptionMedicinesQueryDTO;
+import team18.pharmacyapp.model.dtos.EPrescriptionSortFilterDTO;
+import team18.pharmacyapp.model.enums.EPrescriptionStatus;
 import team18.pharmacyapp.model.exceptions.ActionNotAllowedException;
 import team18.pharmacyapp.model.medicine.EPrescription;
 import team18.pharmacyapp.model.medicine.Medicine;
@@ -16,10 +19,8 @@ import team18.pharmacyapp.repository.PatientRepository;
 import team18.pharmacyapp.repository.PharmacyRepository;
 import team18.pharmacyapp.service.interfaces.EPrescriptionService;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.awt.print.Pageable;
+import java.util.*;
 
 @Service
 public class EPrescriptionServiceImpl implements EPrescriptionService {
@@ -37,8 +38,8 @@ public class EPrescriptionServiceImpl implements EPrescriptionService {
     }
 
     @Override
-    public List<EPrescriptionDTO> findAllByPatientId(UUID id) throws RuntimeException, ActionNotAllowedException {
-        Patient patient = patientRepository.findById(id).orElse(null);
+    public List<EPrescriptionDTO> findAllByPatientId(EPrescriptionSortFilterDTO efs) throws RuntimeException, ActionNotAllowedException {
+        Patient patient = patientRepository.findById(efs.getPatientId()).orElse(null);
         if(patient == null) throw new ActionNotAllowedException("Patient not found");
 
         /* Imao sam jako puno problema koje su mi izazivale veze izmedju EPrescription-a i EPrescriptionMedicines-a
@@ -51,7 +52,14 @@ public class EPrescriptionServiceImpl implements EPrescriptionService {
            Na kraju sam morao posebno izvlaciti ID-eve Pharmacy-a i Medicine-a iz EPrescriptionMedicines i pribaviti
            ih preko njihovog zasebnog findById. Daleko od optimalnog, ali nisam uspio odraditi bolje.
         */
-        List<EPrescription> prescriptions = ePrescriptionRepository.findAllByPatientId(id);
+        EPrescriptionStatus filter;
+        if(efs.getFilter().equalsIgnoreCase("All of them")){
+            filter = null;
+        }else{
+            filter = EPrescriptionStatus.valueOf(efs.getFilter().toLowerCase());
+        }
+
+        List<EPrescription> prescriptions = ePrescriptionRepository.findAllByPatientIdAndStatus(efs.getPatientId(), filter);
         List<EPrescriptionDTO> finalEPrescriptions = new ArrayList<>();
         for(EPrescription e : prescriptions){
             List<EPrescriptionMedicinesQueryDTO> medicinesQuery = ePrescriptionRepository.findEPrescriptionMedicines(e.getId());
@@ -69,6 +77,14 @@ public class EPrescriptionServiceImpl implements EPrescriptionService {
             ePrescriptionDTO.setIssueDate(e.getIssueDate());
             ePrescriptionDTO.setStatus(e.getStatus());
             finalEPrescriptions.add(ePrescriptionDTO);
+        }
+
+        String[] sortParts = efs.getSort().split(" ");
+        if(sortParts.length == 3){
+            if(sortParts[2].equalsIgnoreCase("asc."))
+                finalEPrescriptions.sort(Comparator.comparing(EPrescriptionDTO::getIssueDate));
+            else
+                finalEPrescriptions.sort(Comparator.comparing(EPrescriptionDTO::getIssueDate).reversed());
         }
 
         return finalEPrescriptions;
