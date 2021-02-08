@@ -159,7 +159,7 @@ public class TermServiceImpl implements TermService {
     }
 
     @Override
-    public TermPaginationDTO findAllPatientsUpcomingTermsPaginated(UUID id, String sort, String termType, int page) {
+    public TermPaginationDTO findPatientsUpcomingTermsByTypePaginated(UUID id, String sort, String termType, int page) {
         String[] sortParts = sort.split(" ");
         int startPage = page - 1; // Jer krecu od 1, a ako hocemo prvi da prikazemo, Pageable krece od 0
 
@@ -185,6 +185,23 @@ public class TermServiceImpl implements TermService {
         response.setTotalPages(allTerms.getTotalPages());
 
         return response;
+    }
+
+    @Override
+    public List<Term> findAllPatientsUpcomingTerms(UUID id) {
+        Pageable pageable = PageRequest.of(0, 3, Sort.by("startTime").ascending());
+        Page<Term> allTerms = termRepository.findAllByPatient_IdAndStartTimeAfter(id, new Date(System.currentTimeMillis()), pageable);
+
+        List<Term> upcomingTerms = new ArrayList<>();
+        if(!allTerms.hasContent()) return upcomingTerms;
+
+        for(Term t : allTerms) {
+            Doctor doctor = doctorRepository.findDoctorByTermId(t.getId());
+            t.setDoctor(doctor);
+            upcomingTerms.add(t);
+        }
+
+        return upcomingTerms;
     }
 
 }

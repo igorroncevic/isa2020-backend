@@ -47,4 +47,7 @@ public interface TermRepository extends JpaRepository<Term, UUID> {
 
     @Transactional(readOnly = true)
     Page<Term> findAllByPatient_IdAndTypeAndStartTimeAfter(@Param("patientId") UUID id, @Param("termType") TermType checkup, @Param("today") Date today, Pageable pageable);
+
+    @Transactional(readOnly = true)
+    Page<Term> findAllByPatient_IdAndStartTimeAfter(@Param("patientId") UUID id, @Param("today") Date today, Pageable pageable);
 }

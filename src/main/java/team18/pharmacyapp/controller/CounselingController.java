@@ -42,7 +42,7 @@ public class CounselingController {
 
     @PostMapping("/upcoming")
     public ResponseEntity<TermPaginationDTO> getAllPatientsUpcomingCheckupsPaginated(@RequestBody TermPaginationSortingDTO psDTO) {
-        TermPaginationDTO counselings = termService.findAllPatientsUpcomingTermsPaginated(psDTO.getId(), psDTO.getSort(), psDTO.getTermType(), psDTO.getPage());
+        TermPaginationDTO counselings = termService.findPatientsUpcomingTermsByTypePaginated(psDTO.getId(), psDTO.getSort(), psDTO.getTermType(), psDTO.getPage());
 
         return new ResponseEntity<>(counselings, HttpStatus.OK);
     }
