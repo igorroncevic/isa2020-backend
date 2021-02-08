@@ -4,8 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import team18.pharmacyapp.model.dtos.ReportMedicineDTO;
 import team18.pharmacyapp.model.medicine.Medicine;
-import team18.pharmacyapp.model.medicine.MedicineSpecification;
 import team18.pharmacyapp.repository.PharmacyMedicinesRepository;
+import team18.pharmacyapp.service.interfaces.MedicineService;
 import team18.pharmacyapp.service.interfaces.PharmacyMedicinesService;
 
 import java.util.List;
@@ -14,10 +14,12 @@ import java.util.UUID;
 @Service
 public class PharmacyMedicinesServiceImpl implements PharmacyMedicinesService {
     private final PharmacyMedicinesRepository repository;
+    private final MedicineService medicineService;
 
     @Autowired
-    public PharmacyMedicinesServiceImpl(PharmacyMedicinesRepository repository) {
+    public PharmacyMedicinesServiceImpl(PharmacyMedicinesRepository repository, MedicineService medicineService) {
         this.repository = repository;
+        this.medicineService = medicineService;
     }
 
     @Override
@@ -26,12 +28,16 @@ public class PharmacyMedicinesServiceImpl implements PharmacyMedicinesService {
     }
 
     @Override
-    public boolean checkAvailability(ReportMedicineDTO dto) {
+    public String checkAvailability(ReportMedicineDTO dto) {
         int quantity=medicineQuantity(dto.getPharmacyId(),dto.getMedicineId());
         if(quantity<dto.getMedicineQuantity()){
-            return false;
+            String replacment=medicineService.getReplacmentMedicine(dto.getMedicineId());
+            if(replacment!=null){
+                return replacment;
+            }
+            return "unavailable";
         }
-        return true;
+        return "available";
     }
 
     @Override

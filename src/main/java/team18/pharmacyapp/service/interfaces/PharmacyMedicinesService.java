@@ -9,6 +9,6 @@ import java.util.UUID;
 
 public interface PharmacyMedicinesService {
     int medicineQuantity(UUID pharmacyId,UUID medicineId);
-    boolean checkAvailability(ReportMedicineDTO dto);
+    String checkAvailability(ReportMedicineDTO dto);
     List<Medicine> getMedicnesByPharmacy(UUID pharmacy);
 }

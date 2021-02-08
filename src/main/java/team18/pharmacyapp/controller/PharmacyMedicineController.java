@@ -24,7 +24,7 @@ public class PharmacyMedicineController {
     }
 
     @PostMapping("availability")
-    public boolean checkavAilability(@RequestBody ReportMedicineDTO dto){
+    public String checkavAilability(@RequestBody ReportMedicineDTO dto){
         return medicinesService.checkAvailability(dto);
     }
     @GetMapping("{pharmacyId}")

@@ -119,4 +119,8 @@ public interface MedicineRepository extends JpaRepository<Medicine, UUID> {
     @Query(value = "select s from medicine_specification s where s.medicine.id=:medicineId ")
     MedicineSpecification getMedicineSpecification (UUID medicineId);
 
+    @Transactional(readOnly = true)
+    @Query(value = "select m.name from medicine_specification s inner join medicine m on s.replacementMedicineCode=m.medicineCode where s.medicine.id=:medicineId ")
+    String getReplacmentMedicine (UUID medicineId);
+
 }
