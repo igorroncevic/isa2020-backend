@@ -1,6 +1,7 @@
 package team18.pharmacyapp.service.interfaces;
 
 import team18.pharmacyapp.model.Vacation;
+import team18.pharmacyapp.model.dtos.VacationRequestDTO;
 import team18.pharmacyapp.model.enums.VacationStatus;
 import team18.pharmacyapp.model.exceptions.ActionNotAllowedException;
 import team18.pharmacyapp.model.exceptions.EntityNotFoundException;
@@ -15,5 +16,7 @@ public interface VacationService {
     void approve(UUID vacationId) throws EntityNotFoundException, ActionNotAllowedException;
 
     void refuse(UUID vacationId, String reason) throws EntityNotFoundException, ActionNotAllowedException;
+
+    Vacation create(VacationRequestDTO vacation);
 
 }
