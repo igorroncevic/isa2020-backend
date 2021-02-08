@@ -6,9 +6,12 @@ import team18.pharmacyapp.helpers.DateTimeHelpers;
 import team18.pharmacyapp.model.Term;
 import team18.pharmacyapp.model.WorkSchedule;
 import team18.pharmacyapp.model.dtos.DoctorScheduleTermDTO;
+import team18.pharmacyapp.model.users.Doctor;
+import team18.pharmacyapp.model.users.Patient;
 import team18.pharmacyapp.repository.TermRepository;
 import team18.pharmacyapp.repository.WorkScheduleRepository;
 import team18.pharmacyapp.service.interfaces.DoctorService;
+import team18.pharmacyapp.service.interfaces.EmailService;
 import team18.pharmacyapp.service.interfaces.PatientService;
 import team18.pharmacyapp.service.interfaces.TermService;
 
@@ -24,13 +27,15 @@ public class TermServiceImpl implements TermService {
     private final TermRepository termRepository;
     private final DoctorService doctorService;
     private final PatientService patientService;
+    private final EmailService emailService;
 
     @Autowired
-    public TermServiceImpl(WorkScheduleRepository workScheduleRepository, TermRepository termRepository, DoctorService doctorService, PatientService patientService) {
+    public TermServiceImpl(WorkScheduleRepository workScheduleRepository, TermRepository termRepository, DoctorService doctorService, PatientService patientService, EmailService emailService) {
         this.workScheduleRepository = workScheduleRepository;
         this.termRepository = termRepository;
         this.doctorService = doctorService;
         this.patientService = patientService;
+        this.emailService = emailService;
     }
 
     @Override
@@ -109,12 +114,18 @@ public class TermServiceImpl implements TermService {
         if(isDoctorWorking(termDTO.getDoctorId(),termDTO.getPharmacyId(),termDTO.getStartTime(),termDTO.getEndTime()) && isDoctorFree(termDTO.getDoctorId(),termDTO.getStartTime(),termDTO.getEndTime())
             && isPatientFree(termDTO.getPatientId(),termDTO.getStartTime(),termDTO.getEndTime()) && checkDates(termDTO.getStartTime(),termDTO.getEndTime())){
             Term term=new Term();
-            term.setDoctor(doctorService.getById(termDTO.getDoctorId()));
-            term.setPatient(patientService.getById(termDTO.getPatientId()));
+            Doctor doctor=doctorService.getById(termDTO.getDoctorId());
+            term.setDoctor(doctor);
+            Patient patient=patientService.getById(termDTO.getPatientId());
+            term.setPatient(patient);
             term.setStartTime(termDTO.getStartTime());
             term.setEndTime(termDTO.getEndTime());
             term.setPrice(50);//const
             term.setType(termDTO.getType());
+            String subject = "[ISA Pharmacy] Confirmation aftercare ";
+            String body = "Doctor"+ doctor.getName() + " "+ doctor.getSurname() + " scheduled you new term.\n" +
+                    "Term time: " + termDTO.getStartTime();
+            new Thread(() -> emailService.sendMail(patient.getEmail(), subject, body)).start();
             return termRepository.save(term);
         }
         return null;
