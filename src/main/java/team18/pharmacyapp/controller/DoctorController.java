@@ -4,16 +4,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import team18.pharmacyapp.model.Term;
+import team18.pharmacyapp.model.Pharmacy;
 import team18.pharmacyapp.model.dtos.DoctorDTO;
 import team18.pharmacyapp.model.dtos.RegisterUserDTO;
-import team18.pharmacyapp.model.dtos.DoctorScheduleTermDTO;
 import team18.pharmacyapp.model.dtos.DoctorsPatientDTO;
 import team18.pharmacyapp.model.dtos.PatientDoctorRoleDTO;
 import team18.pharmacyapp.model.enums.UserRole;
 import team18.pharmacyapp.model.users.Doctor;
 import team18.pharmacyapp.service.interfaces.DoctorService;
-import team18.pharmacyapp.service.interfaces.TermService;
 
 import java.util.List;
 import java.util.UUID;
@@ -87,5 +85,10 @@ public class DoctorController {
     @GetMapping("/patients/{id}")
     public ResponseEntity<List<DoctorsPatientDTO>> getAllPharmacists(@PathVariable UUID id) {
         return new ResponseEntity<>(doctorService.findDoctorsPatients(id), HttpStatus.OK);
+    }
+
+    @GetMapping("/pharmacyList/{id}")
+    public List<Pharmacy> getDoctorPharmacyList(@PathVariable UUID id){
+        return doctorService.getDoctorPharmacyList(id);
     }
 }

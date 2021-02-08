@@ -13,7 +13,7 @@ import team18.pharmacyapp.model.dtos.DoctorScheduleTermDTO;
 import team18.pharmacyapp.model.dtos.TermPaginationDTO;
 import team18.pharmacyapp.model.enums.TermType;
 import team18.pharmacyapp.model.users.Doctor;
-import team18.pharmacyapp.repository.DoctorRepository;
+import team18.pharmacyapp.repository.users.DoctorRepository;
 import team18.pharmacyapp.repository.TermRepository;
 import team18.pharmacyapp.repository.WorkScheduleRepository;
 import team18.pharmacyapp.service.interfaces.DoctorService;
@@ -52,8 +52,11 @@ public class TermServiceImpl implements TermService {
     }
 
     @Override
-    public List<Term> getAllDoctorTermsInPharmacy(UUID doctorId) {
-        return null;
+    public List<Term> getAllDoctorTermsInPharmacy(UUID doctorId,UUID pharmacyId) {
+        List<Term> list=new ArrayList<>();
+        list.addAll(termRepository.findAllFreeTermsForDoctorInPharmacy(doctorId,pharmacyId));
+        list.addAll(termRepository.findAllTermsForDoctorInPharmacy(doctorId,pharmacyId));
+        return list;
     }
 
     @Override

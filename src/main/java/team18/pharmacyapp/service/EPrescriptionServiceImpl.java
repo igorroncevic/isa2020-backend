@@ -15,11 +15,10 @@ import team18.pharmacyapp.model.medicine.Medicine;
 import team18.pharmacyapp.model.users.Patient;
 import team18.pharmacyapp.repository.EPrescriptionRepository;
 import team18.pharmacyapp.repository.MedicineRepository;
-import team18.pharmacyapp.repository.PatientRepository;
+import team18.pharmacyapp.repository.users.PatientRepository;
 import team18.pharmacyapp.repository.PharmacyRepository;
 import team18.pharmacyapp.service.interfaces.EPrescriptionService;
 
-import java.awt.print.Pageable;
 import java.util.*;
 
 @Service

@@ -4,15 +4,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import team18.pharmacyapp.model.Mark;
-import team18.pharmacyapp.model.Pharmacy;
 import team18.pharmacyapp.model.Term;
 import team18.pharmacyapp.model.dtos.MarkDTO;
 import team18.pharmacyapp.model.exceptions.ActionNotAllowedException;
 import team18.pharmacyapp.model.exceptions.AlreadyGivenMarkException;
-import team18.pharmacyapp.model.exceptions.EntityNotFoundException;
 import team18.pharmacyapp.model.medicine.Medicine;
 import team18.pharmacyapp.model.users.Doctor;
 import team18.pharmacyapp.repository.*;
+import team18.pharmacyapp.repository.users.DoctorRepository;
 import team18.pharmacyapp.service.interfaces.MarkService;
 
 import java.util.Date;

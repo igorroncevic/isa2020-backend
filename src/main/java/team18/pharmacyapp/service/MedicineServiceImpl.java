@@ -19,7 +19,7 @@ import team18.pharmacyapp.repository.MedicineRepository;
 import team18.pharmacyapp.repository.PharmacyRepository;
 import team18.pharmacyapp.repository.MedicineSpecificationRepository;
 import team18.pharmacyapp.service.interfaces.EmailService;
-import team18.pharmacyapp.repository.PatientRepository;
+import team18.pharmacyapp.repository.users.PatientRepository;
 import team18.pharmacyapp.service.interfaces.LoyaltyService;
 import team18.pharmacyapp.service.interfaces.MedicineService;
 

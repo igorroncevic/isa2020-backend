@@ -7,7 +7,7 @@ import team18.pharmacyapp.model.Loyalty;
 import team18.pharmacyapp.model.dtos.LoyaltyDTO;
 import team18.pharmacyapp.model.users.Patient;
 import team18.pharmacyapp.repository.LoyaltyRepository;
-import team18.pharmacyapp.repository.PatientRepository;
+import team18.pharmacyapp.repository.users.PatientRepository;
 import team18.pharmacyapp.service.interfaces.LoyaltyService;
 
 import java.util.List;

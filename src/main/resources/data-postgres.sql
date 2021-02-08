@@ -14,6 +14,32 @@ values ('01aeb937-998a-4efc-b4d9-e7aa4dd980c6', 'Novi Sad', 'Serbia', 'Pavla Pap
 insert into address(id, city, country, street)
 values ('eb797275-30de-460e-8f9b-f5034ccefc7d', 'Novi Sad', 'Serbia', 'Andje Rankovic 8');
 
+---Authority
+insert into authority (id,"name")
+    values('d774ee37-be38-4bfb-8c01-ef0e8a73e1cf','ROLE_PATIENT');
+insert into authority (id,"name")
+    values('ff2ecb46-200f-4a25-a6c4-0a96f9ab082f','ROLE_DERMATOLOGIST');
+insert into authority (id,"name")
+    values('f71f029d-20c1-46c7-97f3-d64ec1c7e06a','ROLE_PHARMACIST');
+insert into authority (id,"name")
+    values('19c1565a-0e28-4930-9b63-fa2851a69d39','ROLE_PHADMIN');
+insert into authority (id,"name")
+    values('2fef2655-53d0-4233-bcf9-771d12040383','ROLE_SYSADMIN');
+insert into authority (id,"name")
+    values('91541917-0498-4e3a-a8c5-966118f78683','ROLE_SUPPLIER');
+
+-- RegisteredUser
+    insert into registered_user (id, "name","first_login", surname, email, phone_number, "password", "role", fk_address)
+values ('a5ac174a-45b3-487f-91cb-3d3f727d6f1c', 'Pera', false , 'Peric', 'peraperic@gmail.com', '065/123-456', '$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra',
+        'dermatologist', '3b00204e-1897-4b6e-a175-5d0595833ced' );
+insert into registered_user (id, "name","first_login", surname, email, phone_number, "password", "role", fk_address)
+    values ('1accde09-0aa2-4ea1-9a38-17f4635198b9', 'Jovan', false ,'Jovanovic', 'jovajovanovic@gmail.com', '065/598-127', 'nekipass123',
+        'dermatologist', '9241601b-a20a-4f26-9523-d4a670a881dc');
+insert into registered_user (id, "name","first_login", surname, email, phone_number, "password", "role", fk_address)
+        values ('61e9bf31-afae-4b2f-9197-8e2a328707c5', 'Ivana',false ,'Ivanovic', 'ivanaivanovic@gmail.com', '065/917-427', 'nekipass123',
+        'dermatologist', '34c4d86e-8781-4163-b61a-4720c39b7ad6');
+
+
 -- Dermatolozi
 insert into doctor (id, "name", surname, email, phone_number, "password", "role", fk_address)
 values ('a5ac174a-45b3-487f-91cb-3d3f727d6f1c', 'Pera', 'Peric', 'peraperic@gmail.com', '065/123-456', 'nekipass123',
@@ -179,7 +205,9 @@ values('25fff0b2-ad45-4310-ac7f-96bcc5e517c1', 'b7d924b5-c488-47bc-be78-2bdad330
 insert into work_schedule(pharmacy_id, doctor_id, from_hour, to_hour)
 values('25fff0b2-ad45-4310-ac7f-96bcc5e517c1', '236b04cd-2c94-4222-a101-16fb827ce816', '2021-01-01 8:00:00', '2022-01-01 16:00:00');
 insert into work_schedule (from_hour, to_hour, doctor_id, pharmacy_id)
-values ('2021-01-01 09:00:00', '2021-01-01 17:00:00', 'a5ac174a-45b3-487f-91cb-3d3f727d6f1c', 'e93cab4a-f007-412c-b631-7a9a5ee2c6ed');
+values ('2021-01-01 09:00:00', '2021-01-31 17:00:00', 'a5ac174a-45b3-487f-91cb-3d3f727d6f1c', 'e93cab4a-f007-412c-b631-7a9a5ee2c6ed');
+insert into work_schedule (from_hour, to_hour, doctor_id, pharmacy_id)
+values ('2021-02-01 09:00:00', '2021-03-30 17:00:00', 'a5ac174a-45b3-487f-91cb-3d3f727d6f1c', '25fff0b2-ad45-4310-ac7f-96bcc5e517c1');
 insert into work_schedule (from_hour, to_hour, doctor_id, pharmacy_id)
 values ('2021-01-01 09:00:00', '2021-01-01 11:00:00', '1accde09-0aa2-4ea1-9a38-17f4635198b9', 'e93cab4a-f007-412c-b631-7a9a5ee2c6ed');
 insert into work_schedule (from_hour, to_hour, doctor_id, pharmacy_id)

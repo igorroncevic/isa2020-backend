@@ -1,4 +1,4 @@
-package team18.pharmacyapp.repository;
+package team18.pharmacyapp.repository.users;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -6,7 +6,6 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 import team18.pharmacyapp.model.Pharmacy;
 import team18.pharmacyapp.model.dtos.DoctorsPatientDTO;
-import team18.pharmacyapp.model.dtos.ReservedMedicineResponseDTO;
 import team18.pharmacyapp.model.enums.UserRole;
 import team18.pharmacyapp.model.users.Doctor;
 
@@ -54,4 +53,7 @@ public interface DoctorRepository extends JpaRepository<Doctor, UUID> {
     @Transactional(readOnly = true)
     @Query("SELECT d from doctor d JOIN d.terms t WHERE t.id = :termId")
     Doctor findDoctorByTermId(@Param("termId")UUID termId);
+
+    @Query("SELECT p from work_schedule w inner join pharmacy p on w.pharmacy.id=p.id where w.doctor.id=:doctorId")
+    List<Pharmacy> getDoctorPharmacyList(UUID doctorId);
 }

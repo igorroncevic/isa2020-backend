@@ -30,10 +30,12 @@ public class TermController {
         }
         return new ResponseEntity<>(null,HttpStatus.BAD_REQUEST);
     }
-    @GetMapping("/doctor/{id}")
-    public List<Term> getAllDoctorTerms(@PathVariable UUID id){
-        return termService.getAllDoctorTerms(id);
+
+    @GetMapping("doctor/{id}/{pharmacyId}")
+    public List<Term> getAllDoctorTerms(@PathVariable UUID id,@PathVariable UUID pharmacyId) {
+        return termService.getAllDoctorTermsInPharmacy(id, pharmacyId);
     }
+
 
     @GetMapping("/upcoming/{id}")
     public ResponseEntity<List<Term>> getPatientsUpcomingTerms(@PathVariable UUID id){
