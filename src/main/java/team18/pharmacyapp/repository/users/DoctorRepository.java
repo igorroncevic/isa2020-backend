@@ -1,10 +1,12 @@
-package team18.pharmacyapp.repository;
+package team18.pharmacyapp.repository.users;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 import team18.pharmacyapp.model.Pharmacy;
+import team18.pharmacyapp.model.dtos.DoctorsPatientDTO;
+import team18.pharmacyapp.model.dtos.ReservedMedicineResponseDTO;
 import team18.pharmacyapp.model.enums.UserRole;
 import team18.pharmacyapp.model.users.Doctor;
 
@@ -41,6 +43,14 @@ public interface DoctorRepository extends JpaRepository<Doctor, UUID> {
     List<Doctor> findAllPharmacistsInPharmacy(@Param("pharmacyId") UUID pharmacyId);
 
     @Transactional(readOnly = true)
+
+    @Query(value = "select distinct new team18.pharmacyapp.model.dtos.DoctorsPatientDTO(p.name,p.surname,p.email,p.phoneNumber) " +
+            "from term t inner join patient p on t.patient.id=p.id where t.doctor.id=:doctorId")
+    List<DoctorsPatientDTO> findDoctorPatients(UUID doctorId);
+
     @Query("SELECT d FROM doctor d JOIN d.terms t WHERE t.patient.id = :patientId AND t.doctor.id = :doctorId AND t.endTime < :todayTime")
     Doctor checkIfPatientHadAppointmentWithDoctor(@Param("doctorId") UUID doctorId, @Param("patientId") UUID patientId, @Param("todayTime") Date todayTime);
+
+    @Query("SELECT p from work_schedule w inner join pharmacy p on w.pharmacy.id=p.id where w.doctor.id=:doctorId")
+    List<Pharmacy> getDoctorPharmacyList(UUID doctorId);
 }

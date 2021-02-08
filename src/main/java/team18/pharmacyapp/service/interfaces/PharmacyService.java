@@ -1,6 +1,7 @@
 package team18.pharmacyapp.service.interfaces;
 
 import team18.pharmacyapp.model.Pharmacy;
+import team18.pharmacyapp.model.dtos.PharmacyDTO;
 import team18.pharmacyapp.model.dtos.PharmacyFilteringDTO;
 import team18.pharmacyapp.model.dtos.PharmacyMarkPriceDTO;
 
@@ -15,5 +16,8 @@ public interface PharmacyService {
 
     List<PharmacyFilteringDTO> getAllFiltered(String name, Float mark, String city);
 
+    Pharmacy registerNewPharmacy(PharmacyDTO pharmacy);
+
     List<PharmacyMarkPriceDTO> getAllPatientsPharmaciesOptimized(UUID id);
+
 }

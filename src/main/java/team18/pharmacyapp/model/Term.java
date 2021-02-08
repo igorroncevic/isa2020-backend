@@ -48,7 +48,4 @@ public class Term {
 
     @OneToOne(cascade = CascadeType.ALL)
     private Report report;
-
-    @Column(nullable = false)
-    private int loyaltyPoints;
 }

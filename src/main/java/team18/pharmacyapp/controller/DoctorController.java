@@ -4,7 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import team18.pharmacyapp.model.Pharmacy;
 import team18.pharmacyapp.model.dtos.DoctorDTO;
+import team18.pharmacyapp.model.dtos.RegisterUserDTO;
+import team18.pharmacyapp.model.dtos.DoctorsPatientDTO;
 import team18.pharmacyapp.model.dtos.PatientDoctorRoleDTO;
 import team18.pharmacyapp.model.enums.UserRole;
 import team18.pharmacyapp.model.users.Doctor;
@@ -71,5 +74,21 @@ public class DoctorController {
     public ResponseEntity<List<DoctorDTO>> getAllPharmacistsForPharmacy(@PathVariable UUID pharmacyId) {
         List<DoctorDTO> doctors = doctorService.findAllDoctorsForPharmacy(pharmacyId, UserRole.pharmacist);
         return new ResponseEntity<>(doctors, HttpStatus.OK);
+    }
+
+    @PostMapping(consumes = "application/json", value = "/register")
+    public ResponseEntity<Doctor> registerNewDermatologist(@RequestBody RegisterUserDTO newDermatologist) {
+        Doctor doc = doctorService.registerDermatologist(newDermatologist);
+        return new ResponseEntity<>(doc, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/patients/{id}")
+    public ResponseEntity<List<DoctorsPatientDTO>> getAllPharmacists(@PathVariable UUID id) {
+        return new ResponseEntity<>(doctorService.findDoctorsPatients(id), HttpStatus.OK);
+    }
+
+    @GetMapping("/pharmacyList/{id}")
+    public List<Pharmacy> getDoctorPharmacyList(@PathVariable UUID id){
+        return doctorService.getDoctorPharmacyList(id);
     }
 }

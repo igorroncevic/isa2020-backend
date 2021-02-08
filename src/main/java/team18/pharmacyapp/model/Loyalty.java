@@ -1,5 +1,6 @@
 package team18.pharmacyapp.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -29,9 +30,14 @@ public class Loyalty {
     @Column(nullable = false, unique = true)
     private int maxPoints;
     @Column(nullable = false, unique = true)
+    private int checkupPoints;
+    @Column(nullable = false, unique = true)
+    private int counselingPoints;
+    @Column(nullable = false, unique = true)
     private double discount;
 
     @OneToMany(mappedBy = "loyalty", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Patient> patients;
 
 

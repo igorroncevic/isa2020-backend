@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import team18.pharmacyapp.model.Term;
 import team18.pharmacyapp.model.dtos.ScheduleCheckupDTO;
 import team18.pharmacyapp.model.exceptions.ActionNotAllowedException;
+import team18.pharmacyapp.model.exceptions.AlreadyScheduledException;
 import team18.pharmacyapp.model.exceptions.EntityNotFoundException;
 import team18.pharmacyapp.model.exceptions.ScheduleTermException;
 import team18.pharmacyapp.service.interfaces.CheckupService;
@@ -80,7 +81,6 @@ public class CheckupController {
         checkupForUpdate.setPatient(checkup.getPatient());
         checkupForUpdate.setPrice(checkup.getPrice());
         checkupForUpdate.setReport(checkup.getReport());
-        checkupForUpdate.setLoyaltyPoints(checkup.getLoyaltyPoints());
 
         checkupForUpdate = checkupService.save(checkupForUpdate);
         return new ResponseEntity<>(checkupForUpdate, HttpStatus.OK);
@@ -106,6 +106,8 @@ public class CheckupController {
         } catch (ActionNotAllowedException ex) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         } catch (ScheduleTermException ex) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } catch (AlreadyScheduledException ex) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         } catch (RuntimeException ex) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);

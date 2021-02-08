@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
+import team18.pharmacyapp.model.dtos.MedicineAllergyDTO;
 import team18.pharmacyapp.model.dtos.ReservedMedicineDTO;
 import team18.pharmacyapp.model.medicine.Medicine;
 import team18.pharmacyapp.model.medicine.PharmacyMedicines;
@@ -26,9 +27,10 @@ public interface MedicineRepository extends JpaRepository<Medicine, UUID> {
     List<ReservedMedicines> findAllReservedMedicines();
 
     @Transactional(readOnly = true)
-    @Query(value = "SELECT r, p FROM reserved_medicines r INNER JOIN pharmacy_medicines p ON p.medicine = r.medicine " +
-            "JOIN FETCH r.medicine JOIN FETCH p.pricings JOIN FETCH p.pharmacy WHERE r.patient = :patient")
-    List<ReservedMedicineDTO> findAllPatientsReservedMedicines(@Param("patient") Patient patient);
+    @Query("SELECT rm FROM reserved_medicines rm " +
+            "JOIN FETCH rm.medicine JOIN FETCH rm.pharmacy " +
+            "WHERE rm.patient.id = :patientId AND rm.handled = false")
+    List<ReservedMedicines> findAllPatientsReservedMedicinesNotPickedUp(@Param("patientId") UUID patientId);
 
     @Transactional(readOnly = true)
     @Query("SELECT m FROM medicine m " +
@@ -93,4 +95,23 @@ public interface MedicineRepository extends JpaRepository<Medicine, UUID> {
             "JOIN m.reservedMedicines rm " +
             "WHERE rm.patient.id = :patientId AND rm.pharmacy.id = :pharmacyId AND rm.handled = true")
     List<Medicine> getPatientsReservedMedicinesFromPharmacy(@Param("pharmacyId")UUID pharmacyId, @Param("patientId") UUID patientId);
+
+    @Transactional(readOnly = true)
+    @Query(nativeQuery = true, value = "SELECT * FROM medicine m INNER JOIN alergicto a on m.id = a.medicine_id WHERE a.patient_id = :patientId")
+    List<Medicine>getMedicinesPatientsAllergicTo(@Param("patientId")UUID patientId);
+
+    @Transactional(readOnly = true)
+    @Query(nativeQuery = true, value = "SELECT * FROM medicine m WHERE m.id " +
+            "NOT IN (SELECT m2.id FROM medicine m2 INNER JOIN alergicto a on m2.id = a.medicine_id WHERE a.patient_id = :patientId)")
+    List<Medicine> getAllMedicinesPatientsNotAlergicTo(@Param("patientId") UUID patientId);
+
+    @Transactional(readOnly = true)
+    @Query(nativeQuery = true, value = "SELECT * FROM alergicto a WHERE a.patient_id = :patientId AND a.medicine_id = :medicineId")
+    MedicineAllergyDTO checkIfAllergyExists(@Param("patientId")UUID patientId, @Param("medicineId")UUID medicineId);
+
+    @Transactional
+    @Modifying
+    @Query(nativeQuery = true, value = "INSERT INTO alergicto(patient_id, medicine_id) VALUES (:patientId, :medicineId)")
+    int addNewAllergy(@Param("patientId") UUID patientId, @Param("medicineId") UUID medicineId);
+
 }

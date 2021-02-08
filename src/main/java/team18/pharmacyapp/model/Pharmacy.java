@@ -30,7 +30,7 @@ public class Pharmacy {
 
     private String name;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne()
     @JoinColumn(nullable = false)
     private Address address;
 

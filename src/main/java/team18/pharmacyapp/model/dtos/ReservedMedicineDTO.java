@@ -1,28 +1,28 @@
 package team18.pharmacyapp.model.dtos;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import team18.pharmacyapp.model.Pharmacy;
-import team18.pharmacyapp.model.Pricings;
 import team18.pharmacyapp.model.medicine.Medicine;
-import team18.pharmacyapp.model.users.Patient;
 
 import java.time.LocalDate;
+import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
 
 @Getter
 @Setter
 @NoArgsConstructor
-public class ReservedMedicineDTO {
-    @JsonIgnore
-    private Patient patient;
+public class ReservedMedicineDTO implements Serializable {
     private Medicine medicine;
-    @JsonIgnore
-    private List<Pricings> pricings;
     private Pharmacy pharmacy;
     private LocalDate pickupDate;
     private double price;
+
+    public ReservedMedicineDTO(Medicine medicine, Pharmacy pharmacy, Date pickupDate, double price) {
+        this.medicine = medicine;
+        this.pharmacy = pharmacy;
+        this.pickupDate = pickupDate;
+        this.price = price;
+    }
 }

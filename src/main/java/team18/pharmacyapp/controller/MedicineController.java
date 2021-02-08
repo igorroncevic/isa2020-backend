@@ -8,6 +8,7 @@ import team18.pharmacyapp.model.dtos.*;
 import team18.pharmacyapp.model.exceptions.ActionNotAllowedException;
 import team18.pharmacyapp.model.medicine.Medicine;
 import team18.pharmacyapp.model.exceptions.ReserveMedicineException;
+import team18.pharmacyapp.model.medicine.ReservedMedicines;
 import team18.pharmacyapp.service.interfaces.MedicineService;
 import team18.pharmacyapp.service.interfaces.ReservedMedicinesService;
 
@@ -41,9 +42,44 @@ public class MedicineController {
         return new ResponseEntity<>(medicines, HttpStatus.OK);
     }
 
+    @PostMapping("/filter")
+    public ResponseEntity<List<MedicineFilterDTO>> filterMedicines(@RequestBody MedicineFilterRequestDTO mfr) {
+        List<MedicineFilterDTO> medicines = medicineService.filterMedicines(mfr);
+
+        return new ResponseEntity<>(medicines, HttpStatus.OK);
+    }
+
     @GetMapping("/reserved/{id}")
-    public ResponseEntity<List<ReservedMedicineDTO>> getAllPatientsReservedMedicines(@PathVariable UUID id) {
-        List<ReservedMedicineDTO> medicines = medicineService.findAllPatientsReservedMedicines(id);
+    public ResponseEntity<List<ReservedMedicines>> getAllPatientsReservedMedicines(@PathVariable UUID id) {
+        List<ReservedMedicines> medicines;
+        try{
+            medicines = medicineService.findAllPatientsReservedMedicines(id);
+        }catch(RuntimeException e){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        return new ResponseEntity<>(medicines, HttpStatus.OK);
+    }
+
+    @PostMapping("/allergy")
+    public ResponseEntity<Void> addPatientsAllergy(@RequestBody MedicineAllergyDTO allergy) {
+        boolean success;
+        try {
+            success = medicineService.addPatientsAllergy(allergy);
+        }catch(RuntimeException e){
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        if(success){
+            return new ResponseEntity<>(HttpStatus.CREATED);
+        }else{
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping("/notallergic/{id}")
+    public ResponseEntity<List<Medicine>> getAllMedicinesPatientsNotAllergicTo(@PathVariable UUID id) {
+        List<Medicine> medicines = medicineService.getAllMedicinesPatientsNotAlergicTo(id);
 
         return new ResponseEntity<>(medicines, HttpStatus.OK);
     }
@@ -51,12 +87,7 @@ public class MedicineController {
     @GetMapping("/patient/{id}")
     public ResponseEntity<List<MedicineMarkDTO>> getAllPatientsMedicinesOptimized(@PathVariable UUID id) {
         List<MedicineMarkDTO> medicines = medicineService.getAllMedicinesForMarkingOptimized(id);
-
-        if(medicines.size() != 0) {
-            return new ResponseEntity<>(medicines, HttpStatus.OK);
-        }else{
-            return new ResponseEntity<>(medicines, HttpStatus.NOT_FOUND);
-        }
+        return new ResponseEntity<>(medicines, HttpStatus.OK);
     }
 
     @GetMapping(value = "/{id}")
@@ -108,7 +139,7 @@ public class MedicineController {
         }
     }
 
-    @DeleteMapping(consumes = "application/json", value = "/cancel")
+    @PostMapping(consumes = "application/json", value = "/cancel")
     public ResponseEntity<Void> cancelMedicine(@RequestBody CancelMedicineRequestDTO medicine) {
         boolean success;
         try {
@@ -141,4 +172,9 @@ public class MedicineController {
         return reservedMedicinesService.handleMedicine(dto);
     }
 
+    @PostMapping(consumes = "application/json", value = "/save")
+    public ResponseEntity<Medicine> saveNewMedicine(@RequestBody MedicineDTO newMedicine){
+        Medicine medicine = medicineService.registerNewMedicine(newMedicine);
+        return new ResponseEntity<>(medicine, HttpStatus.CREATED);
+    }
 }

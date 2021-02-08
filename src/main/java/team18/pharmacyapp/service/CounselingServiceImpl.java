@@ -10,11 +10,13 @@ import team18.pharmacyapp.model.dtos.*;
 import team18.pharmacyapp.model.enums.TermType;
 import team18.pharmacyapp.model.exceptions.*;
 import team18.pharmacyapp.model.users.Doctor;
-import team18.pharmacyapp.repository.CounselingRepository;
-import team18.pharmacyapp.repository.DoctorRepository;
-import team18.pharmacyapp.repository.MarkRepository;
+import team18.pharmacyapp.model.users.Patient;
+import team18.pharmacyapp.repository.*;
+import team18.pharmacyapp.repository.users.DoctorRepository;
+import team18.pharmacyapp.repository.users.PatientRepository;
 import team18.pharmacyapp.service.interfaces.CounselingService;
 import team18.pharmacyapp.service.interfaces.EmailService;
+import team18.pharmacyapp.service.interfaces.TermService;
 
 import java.time.LocalTime;
 import java.util.*;
@@ -25,13 +27,17 @@ public class CounselingServiceImpl implements CounselingService {
     private final DoctorRepository doctorRepository;
     private final EmailService emailService;
     private final MarkRepository markRepository;
+    private final PatientRepository patientRepository;
+    private final TermService termService;
 
     @Autowired
-    public CounselingServiceImpl(CounselingRepository counselingRepository, DoctorRepository doctorRepository, EmailService emailService, MarkRepository markRepository) {
+    public CounselingServiceImpl(CounselingRepository counselingRepository, DoctorRepository doctorRepository, EmailService emailService, MarkRepository markRepository, PatientRepository patientRepository, TermService termService) {
         this.counselingRepository = counselingRepository;
         this.doctorRepository = doctorRepository;
         this.emailService = emailService;
         this.markRepository = markRepository;
+        this.patientRepository = patientRepository;
+        this.termService = termService;
     }
 
     @Override
@@ -108,8 +114,13 @@ public class CounselingServiceImpl implements CounselingService {
     @Override
     @Transactional(rollbackFor = {AlreadyScheduledException.class, ScheduleTermException.class, RuntimeException.class})
     public boolean patientScheduleCounseling(ScheduleCounselingDTO term) throws AlreadyScheduledException, ScheduleTermException, RuntimeException {
-        Term checkTerm = counselingRepository.checkIfPatientHasCounselingWithDoctor(term.getPatientId(), term.getDoctorId(), new Date());
+        Patient patient = patientRepository.findById(term.getPatientId()).orElse(null);
+        if(patient == null) throw new ScheduleTermException("");
+        if(patient.getPenalties() >= 3) throw new ScheduleTermException("You cannot schedule terms");
 
+        if(!termService.isPatientFree(term.getPatientId(), term.getFromTime(), term.getToTime())) throw new AlreadyScheduledException("You are busy at this time");
+
+        Term checkTerm = counselingRepository.checkIfPatientHasCounselingWithDoctor(term.getPatientId(), term.getDoctorId(), new Date());
         if(checkTerm != null) throw new AlreadyScheduledException("You already have a counseling with this pharmacist.");
 
         UUID id = UUID.randomUUID();
