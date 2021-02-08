@@ -83,7 +83,7 @@ public class PatientServiceImpl implements PatientService {
 
     @Override
     public Patient getById(UUID id) {
-        return patientRepository.findById(id).orElse(null);
+        return patientRepository.findById(id).orElse(new Patient());
     }
 
     @Override

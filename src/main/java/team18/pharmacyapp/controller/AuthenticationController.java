@@ -6,6 +6,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -45,14 +46,20 @@ public class AuthenticationController {
     @PostMapping("/login")
     public ResponseEntity<UserTokenDTO> createAuthenticationToken(@RequestBody LoginDTO authenticationRequest,
                                                                     HttpServletResponse response) {
-        Authentication authentication = authenticationManager
-                .authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getEmail(),
-                        authenticationRequest.getPassword()));
+        Authentication authentication;
+
+        try{
+            authentication = authenticationManager
+                    .authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getEmail(),
+                            authenticationRequest.getPassword()));
+        }catch(BadCredentialsException e){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         RegisteredUser user = (RegisteredUser) authentication.getPrincipal();
-        if(user.getRole()==UserRole.patient){
+        if(user.getRole() == UserRole.patient){
             if(!patientService.isActivated(user.getId()))
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }else if(user.isFirstLogin()) {
