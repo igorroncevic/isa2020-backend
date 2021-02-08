@@ -10,13 +10,11 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.util.UriComponentsBuilder;
 import team18.pharmacyapp.model.dtos.RegisterUserDTO;
 import team18.pharmacyapp.model.dtos.security.ChangePassDTO;
 import team18.pharmacyapp.model.dtos.security.LoginDTO;
 import team18.pharmacyapp.model.dtos.security.UserTokenDTO;
 import team18.pharmacyapp.model.enums.UserRole;
-import team18.pharmacyapp.model.users.Authority;
 import team18.pharmacyapp.model.users.RegisteredUser;
 import team18.pharmacyapp.security.TokenUtils;
 import team18.pharmacyapp.service.CustomUserDetailsService;
@@ -25,13 +23,10 @@ import team18.pharmacyapp.service.interfaces.RegisteredUserService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.HashMap;
-import java.util.Map;
 
 @RestController
 @RequestMapping(value = "/auth", produces = MediaType.APPLICATION_JSON_VALUE)
 public class AuthenticationController {
-
     @Autowired
     private TokenUtils tokenUtils;
 
@@ -47,12 +42,9 @@ public class AuthenticationController {
     @Autowired
     private PatientService patientService;
 
-
     @PostMapping("/login")
     public ResponseEntity<UserTokenDTO> createAuthenticationToken(@RequestBody LoginDTO authenticationRequest,
                                                                     HttpServletResponse response) {
-
-        //
         Authentication authentication = authenticationManager
                 .authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getEmail(),
                         authenticationRequest.getPassword()));
@@ -96,16 +88,14 @@ public class AuthenticationController {
 
     @PostMapping(value = "/refresh")
     public ResponseEntity<UserTokenDTO> refreshAuthenticationToken(HttpServletRequest request) {
-
         String token = tokenUtils.getToken(request);
         String username = this.tokenUtils.getUsernameFromToken(token);
         RegisteredUser user = (RegisteredUser) this.userDetailsService.loadUserByUsername(username);
 
-            String refreshedToken = tokenUtils.refreshToken(token);
-            int expiresIn = tokenUtils.getExpiredIn();
+        String refreshedToken = tokenUtils.refreshToken(token);
+        int expiresIn = tokenUtils.getExpiredIn();
 
-            return ResponseEntity.ok(new UserTokenDTO(refreshedToken, expiresIn,user.getId(),user.getRole(),user.getName(),user.getSurname(),user.getEmail()));
-
+        return ResponseEntity.ok(new UserTokenDTO(refreshedToken, expiresIn,user.getId(),user.getRole(),user.getName(),user.getSurname(),user.getEmail()));
     }
 
 }

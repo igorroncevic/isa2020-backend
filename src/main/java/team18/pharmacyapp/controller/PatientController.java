@@ -21,7 +21,6 @@ import java.util.UUID;
 @CrossOrigin(origins = {"http://localhost:8080","http://localhost:8081"})
 @RestController
 @RequestMapping(value = "api/patients")
-@PreAuthorize("hasRole('ROLE_PATIENT')") // dodati npr  || hasRole('ROLE_DOCTOR') ako treba još neki role
 public class PatientController {
     private final PatientService patientService;
 
@@ -36,7 +35,7 @@ public class PatientController {
     }
 
 
-
+    @PreAuthorize("hasRole('ROLE_PATIENT')")
     @GetMapping("/profile/{id}")
     public ResponseEntity<Patient> getPatientProfileInfo(@PathVariable UUID id){
         Patient pat = patientService.getPatientProfileInfo(id);
@@ -44,6 +43,7 @@ public class PatientController {
         return new ResponseEntity<>(pat, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ROLE_PATIENT')")
     @PutMapping("/profile")
     public ResponseEntity<Void> updatePatientProfileInfo(@RequestBody UpdateProfileDataDTO patient){
         boolean success;
@@ -82,6 +82,7 @@ public class PatientController {
         return new ResponseEntity<>(patientService.getAlergicTo(id),HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ROLE_PATIENT')")
     @GetMapping("penalties/{id}")
     public ResponseEntity<Integer> getPatientPenalties(@PathVariable UUID id){
         return new ResponseEntity<>(patientService.getPatientPenalties(id),HttpStatus.OK);
