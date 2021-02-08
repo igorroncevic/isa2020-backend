@@ -34,4 +34,8 @@ public interface PatientRepository extends JpaRepository<Patient, UUID> {
     @Transactional(readOnly = true)
     @Query("SELECT p FROM patient p JOIN FETCH p.address JOIN FETCH p.loyalty WHERE p.id = :patientId")
     Patient getPatientForProfile(@Param("patientId")UUID patientId);
+
+    @Transactional(readOnly = true)
+    @Query("SELECT p.penalties FROM patient p WHERE p.id = :patientId")
+    int getPatientPenalties(@Param("patientId") UUID patientId);
 }

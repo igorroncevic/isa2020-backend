@@ -291,3 +291,19 @@ values ('4160a8fe-efd6-4891-97be-b2618919469d', '32636111-4bc6-424c-a200-067e7f8
 insert into eprescription_medicines(e_prescription_id, eprescription_medicine_id, eprescription_pharmacy_id, quantity)
 values ('4160a8fe-efd6-4891-97be-b2618919469d', '592e558c-b3f9-4088-b468-28764908bd92', '25fff0b2-ad45-4310-ac7f-96bcc5e517c1', 2);
 
+-- Promocije
+insert into promotion(id, start_date, end_date, text, pharmacy_id)
+values ('11cc4eb4-6113-4a7b-b466-758aa35da89f', '2021-02-21', '2021-03-01', 'Promocija COVID-19 vakcine Sputnik sredom i petkom od 19:00h', '25fff0b2-ad45-4310-ac7f-96bcc5e517c1');
+insert into promotion(id, start_date, end_date, text, pharmacy_id)
+values ('693b2fbb-2082-46e1-ad1b-93970ae6d316', '2021-02-21', '2021-03-01', 'Promocija COVID-19 vakcine Pfizer sredom i petkom od 19:00h', 'e93cab4a-f007-412c-b631-7a9a5ee2c6ed');
+
+-- Mislim da ne treba ova tabela ali je iz nekog razloga generisana
+insert into pharmacy_promotions(pharmacy_id, promotions_id)
+values('e93cab4a-f007-412c-b631-7a9a5ee2c6ed', '693b2fbb-2082-46e1-ad1b-93970ae6d316');
+insert into pharmacy_promotions(pharmacy_id, promotions_id)
+values('25fff0b2-ad45-4310-ac7f-96bcc5e517c1', '11cc4eb4-6113-4a7b-b466-758aa35da89f');
+
+insert into pharmacy_subscribed_patients(subscribed_pharmacies_id, subscribed_patients_id)
+values ('e93cab4a-f007-412c-b631-7a9a5ee2c6ed', 'cc6fd408-0084-420b-8078-687d8a72744b');
+insert into pharmacy_subscribed_patients(subscribed_pharmacies_id, subscribed_patients_id)
+values ('25fff0b2-ad45-4310-ac7f-96bcc5e517c1', 'cc6fd408-0084-420b-8078-687d8a72744b');

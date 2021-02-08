@@ -52,7 +52,7 @@ public class PatientController {
     @PutMapping("/profile")
     public ResponseEntity<Void> updatePatientProfileInfo(@RequestBody UpdateProfileDataDTO patient){
         boolean success;
-        try {
+        try{
             success = patientService.updatePatientProfileInfo(patient);
         }catch(EntityNotFoundException e){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -90,5 +90,10 @@ public class PatientController {
     @GetMapping("alergicMedicines/{id}")
     public ResponseEntity<List<Medicine>> getAlergicMedicines(@PathVariable UUID id){
         return new ResponseEntity<>(patientService.getAlergicTo(id),HttpStatus.OK);
+    }
+
+    @GetMapping("penalties/{id}")
+    public ResponseEntity<Integer> getPatientPenalties(@PathVariable UUID id){
+        return new ResponseEntity<>(patientService.getPatientPenalties(id),HttpStatus.OK);
     }
 }
