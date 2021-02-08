@@ -7,9 +7,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import team18.pharmacyapp.model.Pricings;
 import team18.pharmacyapp.model.Vacation;
+import team18.pharmacyapp.model.dtos.NewPricingDTO;
 import team18.pharmacyapp.model.dtos.PricingsDTO;
 import team18.pharmacyapp.model.enums.VacationStatus;
 import team18.pharmacyapp.model.exceptions.ActionNotAllowedException;
+import team18.pharmacyapp.model.exceptions.BadTimeRangeException;
 import team18.pharmacyapp.service.interfaces.PricingsService;
 
 import java.util.List;
@@ -50,6 +52,20 @@ public class PricingsController {
         }
 
         return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @PostMapping
+    public ResponseEntity<Pricings> addNewPricing(@RequestBody NewPricingDTO newPricingDTO) {
+
+        Pricings pricings = null;
+        try {
+            pricings = pricingsService.addNewPricing(newPricingDTO);
+        } catch (BadTimeRangeException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<>(pricings, HttpStatus.OK);
     }
 
 

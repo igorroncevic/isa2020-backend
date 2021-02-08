@@ -32,4 +32,16 @@ public interface PricingsRepository extends JpaRepository<Pricings, UUID> {
     @Query(nativeQuery = true, value = "DELETE FROM pricings WHERE id = :id")
     void deleteById(UUID id);
 
+    @Transactional(readOnly = true)
+    @Query(nativeQuery = true, value = "SELECT COUNT(*) FROM pricings " +
+            "WHERE ((start_date <= :startDate AND end_date >= :startDate) OR (start_date <= :endDate AND end_date >= :endDate))" +
+            "AND pharmacy_medicine_pharmacy_id = :pharmacyId AND pharmacy_medicine_medicine_id = :medicineId")
+    int getNumberOfOverlappingPricings(Date startDate, Date endDate, UUID pharmacyId, UUID medicineId);
+
+    @Transactional
+    @Modifying
+    @Query(nativeQuery = true, value = "INSERT INTO pricings (id, start_date, end_date, price, pharmacy_medicine_pharmacy_id, pharmacy_medicine_medicine_id) " +
+            "VALUES (:id, :startDate, :endDate, :price, :pharmacyId, :medicineId)")
+    int insert(UUID id, Date startDate, Date endDate, double price, UUID pharmacyId, UUID medicineId);
+
 }

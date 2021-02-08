@@ -4,8 +4,10 @@ import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import team18.pharmacyapp.model.Pricings;
+import team18.pharmacyapp.model.dtos.NewPricingDTO;
 import team18.pharmacyapp.model.dtos.PricingsDTO;
 import team18.pharmacyapp.model.exceptions.ActionNotAllowedException;
+import team18.pharmacyapp.model.exceptions.BadTimeRangeException;
 import team18.pharmacyapp.repository.PricingsRepository;
 import team18.pharmacyapp.service.interfaces.PricingsService;
 
@@ -71,5 +73,37 @@ public class PricingsServiceImpl implements PricingsService {
         }
 
         pricingsRepository.deleteById(id);
+    }
+
+    @Override
+    public Pricings addNewPricing(NewPricingDTO newPricingDTO) throws BadTimeRangeException {
+
+        int overlappingPricings = pricingsRepository.getNumberOfOverlappingPricings(newPricingDTO.getStartDate(), newPricingDTO.getEndDate(),
+                newPricingDTO.getPharmacyId(), newPricingDTO.getMedicineId());
+        if(overlappingPricings != 0) {
+            throw new BadTimeRangeException("Pricing can't overlap with other pricings");
+        }
+
+        if(newPricingDTO.getStartDate().before(new Date())) {
+            throw new BadTimeRangeException("You can't create pricing that start in past.");
+        }
+
+        if(newPricingDTO.getStartDate().after(newPricingDTO.getEndDate())) {
+            throw new BadTimeRangeException("Start date is after end date.");
+        }
+
+        UUID id = UUID.randomUUID();
+        int rowsChanged = pricingsRepository.insert(id, newPricingDTO.getStartDate(), newPricingDTO.getEndDate(),
+                newPricingDTO.getPrice(), newPricingDTO.getPharmacyId(), newPricingDTO.getMedicineId());
+        if(rowsChanged != 1) {
+            throw new InternalError();
+        }
+
+        Pricings pricings = pricingsRepository.findById(id).orElse(null);
+        if(pricings == null) {
+            throw new InternalError();
+        }
+
+        return pricings;
     }
 }
