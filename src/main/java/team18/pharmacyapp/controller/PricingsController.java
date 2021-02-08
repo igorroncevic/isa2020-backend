@@ -9,6 +9,7 @@ import team18.pharmacyapp.model.Pricings;
 import team18.pharmacyapp.model.Vacation;
 import team18.pharmacyapp.model.dtos.NewPricingDTO;
 import team18.pharmacyapp.model.dtos.PricingsDTO;
+import team18.pharmacyapp.model.dtos.UpdatePricingDTO;
 import team18.pharmacyapp.model.enums.VacationStatus;
 import team18.pharmacyapp.model.exceptions.ActionNotAllowedException;
 import team18.pharmacyapp.model.exceptions.BadTimeRangeException;
@@ -66,7 +67,21 @@ public class PricingsController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>(pricings, HttpStatus.OK);
+
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<String> updatePricing(@PathVariable UUID id, @RequestBody UpdatePricingDTO updatePricingDTO) {
+        try {
+            pricingsService.updatePricing(id, updatePricingDTO);
+        } catch (NotFoundException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (ActionNotAllowedException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (BadTimeRangeException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>("", HttpStatus.OK);
+    }
 
 }

@@ -9,6 +9,7 @@ import team18.pharmacyapp.model.Pricings;
 import team18.pharmacyapp.model.medicine.Medicine;
 import team18.pharmacyapp.model.users.Patient;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -22,6 +23,6 @@ public class ReservedMedicineDTO {
     @JsonIgnore
     private List<Pricings> pricings;
     private Pharmacy pharmacy;
-    private Date pickupDate;
+    private LocalDate pickupDate;
     private double price;
 }

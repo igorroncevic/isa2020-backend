@@ -6,11 +6,14 @@ import org.springframework.stereotype.Service;
 import team18.pharmacyapp.model.Pricings;
 import team18.pharmacyapp.model.dtos.NewPricingDTO;
 import team18.pharmacyapp.model.dtos.PricingsDTO;
+import team18.pharmacyapp.model.dtos.UpdatePricingDTO;
 import team18.pharmacyapp.model.exceptions.ActionNotAllowedException;
 import team18.pharmacyapp.model.exceptions.BadTimeRangeException;
+import team18.pharmacyapp.model.keys.PharmacyMedicinesId;
 import team18.pharmacyapp.repository.PricingsRepository;
 import team18.pharmacyapp.service.interfaces.PricingsService;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -67,8 +70,8 @@ public class PricingsServiceImpl implements PricingsService {
             throw new NotFoundException("Pricing not found");
         }
 
-        Date today = new Date();
-        if(!pricings.getStartDate().after(today)) {
+        LocalDate today = LocalDate.now();
+        if(!pricings.getStartDate().isAfter(today)) {
             throw new ActionNotAllowedException("You can't delete pricing that have passed or is currently active.");
         }
 
@@ -84,11 +87,11 @@ public class PricingsServiceImpl implements PricingsService {
             throw new BadTimeRangeException("Pricing can't overlap with other pricings");
         }
 
-        if(newPricingDTO.getStartDate().before(new Date())) {
+        if(newPricingDTO.getStartDate().isBefore(LocalDate.now())) {
             throw new BadTimeRangeException("You can't create pricing that start in past.");
         }
 
-        if(newPricingDTO.getStartDate().after(newPricingDTO.getEndDate())) {
+        if(newPricingDTO.getStartDate().isAfter(newPricingDTO.getEndDate())) {
             throw new BadTimeRangeException("Start date is after end date.");
         }
 
@@ -105,5 +108,41 @@ public class PricingsServiceImpl implements PricingsService {
         }
 
         return pricings;
+    }
+
+    @Override
+    public void updatePricing(UUID id, UpdatePricingDTO updatePricingDTO) throws NotFoundException, ActionNotAllowedException, BadTimeRangeException {
+        Pricings ogPricing = pricingsRepository.findById(id).orElse(null);
+
+        if(ogPricing == null) {
+            throw new NotFoundException("This pricing does not exists.");
+        }
+
+        LocalDate today = LocalDate.now();
+        if(ogPricing.getEndDate().isBefore(today)) {
+            throw new ActionNotAllowedException("You can't modify pricings that have expired");
+        } else if((ogPricing.getStartDate().isBefore(today) || ogPricing.getStartDate().equals(today)) && !ogPricing.getStartDate().equals(updatePricingDTO.getStartDate())) {
+            throw new ActionNotAllowedException("You can't modify start date of pricings that have started");
+        } else if((ogPricing.getStartDate().isBefore(today) || ogPricing.getStartDate().equals(today)) && ogPricing.getPrice() != updatePricingDTO.getPrice()) {
+            throw new ActionNotAllowedException("You can't modify price of pricings that have started");
+        } else if(ogPricing.getStartDate().isAfter(today) && updatePricingDTO.getStartDate().isBefore(today)) {
+            throw new BadTimeRangeException("You can't update pricings to start in past.");
+        } else if(updatePricingDTO.getEndDate().isBefore(today)) {
+            throw new BadTimeRangeException("You can't update pricings to end in past.");
+        } else if(updatePricingDTO.getStartDate().isAfter(updatePricingDTO.getEndDate())) {
+            throw new BadTimeRangeException("Start date is after end date.");
+        }
+
+        int overlappingPricings = pricingsRepository.getNumberOfOverlappingPricings(updatePricingDTO.getStartDate(), updatePricingDTO.getEndDate(), id);
+        if(overlappingPricings != 1) {
+            throw new BadTimeRangeException("Pricing can't overlap with other pricings");
+        }
+
+        ogPricing.setStartDate(updatePricingDTO.getStartDate());
+        ogPricing.setEndDate(updatePricingDTO.getEndDate());
+        ogPricing.setPrice(updatePricingDTO.getPrice());
+
+        pricingsRepository.save(ogPricing);
+
     }
 }

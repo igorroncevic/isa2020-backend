@@ -1,24 +1,17 @@
 package team18.pharmacyapp.model.dtos;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import java.time.LocalDate;
 import java.util.Date;
-import java.util.UUID;
 
 @Getter
 @Setter
 @NoArgsConstructor
-public class PricingsDTO {
+public class UpdatePricingDTO {
 
-    UUID id;
-    String medicine;
-    UUID medicineId;
     LocalDate startDate;
     LocalDate endDate;
     double price;

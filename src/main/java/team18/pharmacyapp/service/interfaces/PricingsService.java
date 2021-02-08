@@ -4,6 +4,7 @@ import javassist.NotFoundException;
 import team18.pharmacyapp.model.Pricings;
 import team18.pharmacyapp.model.dtos.NewPricingDTO;
 import team18.pharmacyapp.model.dtos.PricingsDTO;
+import team18.pharmacyapp.model.dtos.UpdatePricingDTO;
 import team18.pharmacyapp.model.exceptions.ActionNotAllowedException;
 import team18.pharmacyapp.model.exceptions.BadTimeRangeException;
 
@@ -19,4 +20,6 @@ public interface PricingsService {
     void deletePricing(UUID id) throws NotFoundException, ActionNotAllowedException;
 
     Pricings addNewPricing(NewPricingDTO newPricingDTO) throws BadTimeRangeException;
+
+    void updatePricing(UUID id, UpdatePricingDTO updatePricingDTO) throws NotFoundException, ActionNotAllowedException, BadTimeRangeException;
 }

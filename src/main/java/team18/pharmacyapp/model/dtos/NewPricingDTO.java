@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.UUID;
 
 @Getter
@@ -14,8 +14,8 @@ public class NewPricingDTO {
 
     UUID medicineId;
     UUID pharmacyId;
-    Date startDate;
-    Date endDate;
+    LocalDate startDate;
+    LocalDate endDate;
     double price;
 
 }
