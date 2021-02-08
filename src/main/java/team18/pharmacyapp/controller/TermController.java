@@ -15,7 +15,6 @@ import java.util.UUID;
 @CrossOrigin(origins = "http://localhost:8080")
 @RestController
 @RequestMapping(value = "api/terms")
-@PreAuthorize("hasRole('ROLE_PATIENT')") // dodati npr  || hasRole('ROLE_DOCTOR') ako treba još neki role
 public class TermController {
     private final TermService termService;
 
@@ -39,6 +38,7 @@ public class TermController {
     }
 
 
+    @PreAuthorize("hasRole('ROLE_PATIENT')")
     @GetMapping("/upcoming/{id}")
     public ResponseEntity<List<Term>> getPatientsUpcomingTerms(@PathVariable UUID id){
         List<Term> terms = termService.findAllPatientsUpcomingTerms(id);
