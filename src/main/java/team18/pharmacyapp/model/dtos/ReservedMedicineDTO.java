@@ -6,7 +6,6 @@ import lombok.Setter;
 import team18.pharmacyapp.model.Pharmacy;
 import team18.pharmacyapp.model.medicine.Medicine;
 
-import java.time.LocalDate;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -16,7 +15,7 @@ import java.util.Date;
 public class ReservedMedicineDTO implements Serializable {
     private Medicine medicine;
     private Pharmacy pharmacy;
-    private LocalDate pickupDate;
+    private Date pickupDate;
     private double price;
 
     public ReservedMedicineDTO(Medicine medicine, Pharmacy pharmacy, Date pickupDate, double price) {
