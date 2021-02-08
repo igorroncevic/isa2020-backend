@@ -48,4 +48,5 @@ public interface CheckupRepository extends JpaRepository<Term, UUID> {
     @Query("SELECT t FROM term t JOIN FETCH t.patient WHERE t.doctor.id = :doctorId")
     List<Term> findTermByDoctorId(UUID doctorId);
 
+
 }

@@ -33,6 +33,13 @@ public class CheckupController {
         return new ResponseEntity<>(checkups, HttpStatus.OK);
     }
 
+    @GetMapping("/freeCheckups/{doctorId}/{pharmacyId}")
+    public ResponseEntity<List<Term>> getDoctorPharmacyFreeTerms(@PathVariable UUID doctorId,@PathVariable UUID pharmacyId) {
+        List<Term> checkups = checkupService.doctorPharmacyFree(doctorId,pharmacyId);
+
+        return new ResponseEntity<>(checkups, HttpStatus.OK);
+    }
+
     @GetMapping("/patient/{id}")
     public ResponseEntity<List<Term>> getAllPatientsCheckups(@PathVariable UUID id) {
         List<Term> checkups = checkupService.findAllPatientsCheckups(id);

@@ -9,6 +9,7 @@ import team18.pharmacyapp.model.exceptions.*;
 import team18.pharmacyapp.model.users.Patient;
 import team18.pharmacyapp.repository.CheckupRepository;
 import team18.pharmacyapp.repository.PatientRepository;
+import team18.pharmacyapp.repository.TermRepository;
 import team18.pharmacyapp.service.interfaces.CheckupService;
 import team18.pharmacyapp.service.interfaces.TermService;
 
@@ -21,11 +22,13 @@ public class CheckupServiceImpl implements CheckupService {
     private final CheckupRepository checkupRepository;
     private final PatientRepository patientRepository;
     private final TermService termService;
+    private final TermRepository termRepository;
 
-    public CheckupServiceImpl(CheckupRepository checkupRepository, PatientRepository patientRepository, TermService termService) {
+    public CheckupServiceImpl(CheckupRepository checkupRepository, PatientRepository patientRepository, TermService termService, TermRepository termRepository) {
         this.checkupRepository = checkupRepository;
         this.patientRepository = patientRepository;
         this.termService = termService;
+        this.termRepository = termRepository;
     }
 
     public Term findOne(UUID id) {
@@ -92,6 +95,11 @@ public class CheckupServiceImpl implements CheckupService {
         if (rowsUpdated != 1) throw new RuntimeException("Couldn't cancel this term!");
 
         return true;
+    }
+
+    @Override
+    public List<Term> doctorPharmacyFree(UUID doctorId, UUID pharmacyId) {
+        return termRepository.findAllFreeTermsForDoctorInPharmacy(doctorId,pharmacyId);
     }
 
 }

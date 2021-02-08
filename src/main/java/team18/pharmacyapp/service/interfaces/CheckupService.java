@@ -30,4 +30,6 @@ public interface CheckupService {
 
     boolean patientCancelCheckup(ScheduleCheckupDTO term) throws EntityNotFoundException, ActionNotAllowedException,RuntimeException;
 
+    List<Term> doctorPharmacyFree(UUID doctorId,UUID pharmacyId);
+
 }
