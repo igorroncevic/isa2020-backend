@@ -29,14 +29,14 @@ insert into authority (id,"name")
     values('91541917-0498-4e3a-a8c5-966118f78683','ROLE_SUPPLIER');
 
 -- RegisteredUser
-    insert into registered_user (id, "name","first_login", surname, email, phone_number, "password", "role", fk_address)
-values ('a5ac174a-45b3-487f-91cb-3d3f727d6f1c', 'Pera', false , 'Peric', 'peraperic@gmail.com', '065/123-456', '$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra',
+insert into registered_user (id, "name","first_login", surname, email, phone_number, "password", "role", fk_address)
+values ('a5ac174a-45b3-487f-91cb-3d3f727d6f1c', 'Pera', false, 'Peric', 'peraperic@gmail.com', '065/123-456', '$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra',
         'dermatologist', '3b00204e-1897-4b6e-a175-5d0595833ced' );
 insert into registered_user (id, "name","first_login", surname, email, phone_number, "password", "role", fk_address)
-    values ('1accde09-0aa2-4ea1-9a38-17f4635198b9', 'Jovan', false ,'Jovanovic', 'jovajovanovic@gmail.com', '065/598-127', 'nekipass123',
+values ('1accde09-0aa2-4ea1-9a38-17f4635198b9', 'Jovan', false, 'Jovanovic', 'jovajovanovic@gmail.com', '065/598-127', 'nekipass123',
         'dermatologist', '9241601b-a20a-4f26-9523-d4a670a881dc');
 insert into registered_user (id, "name","first_login", surname, email, phone_number, "password", "role", fk_address)
-        values ('61e9bf31-afae-4b2f-9197-8e2a328707c5', 'Ivana',false ,'Ivanovic', 'ivanaivanovic@gmail.com', '065/917-427', 'nekipass123',
+values ('61e9bf31-afae-4b2f-9197-8e2a328707c5', 'Ivana', false, 'Ivanovic', 'ivanaivanovic@gmail.com', '065/917-427', 'nekipass123',
         'dermatologist', '34c4d86e-8781-4163-b61a-4720c39b7ad6');
 
 

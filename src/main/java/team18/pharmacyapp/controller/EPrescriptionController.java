@@ -3,6 +3,7 @@ package team18.pharmacyapp.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import team18.pharmacyapp.model.dtos.EPrescriptionDTO;
 import team18.pharmacyapp.model.dtos.EPrescriptionSortFilterDTO;
@@ -14,6 +15,7 @@ import java.util.List;
 @CrossOrigin(origins = {"http://localhost:8080","http://localhost:8081"})
 @RestController
 @RequestMapping(value = "api/eprescriptions")
+@PreAuthorize("hasRole('ROLE_PATIENT')") // dodati npr  || hasRole('ROLE_DOCTOR') ako treba još neki role
 public class EPrescriptionController {
     private final EPrescriptionService ePrescriptionService;
 
