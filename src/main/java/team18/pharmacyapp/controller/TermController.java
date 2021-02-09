@@ -38,7 +38,7 @@ public class TermController {
     }
 
 
-    @PreAuthorize("hasRole('ROLE_PATIENT')")
+    //@PreAuthorize("hasRole('ROLE_PATIENT')")
     @GetMapping("/upcoming/{id}")
     public ResponseEntity<List<Term>> getPatientsUpcomingTerms(@PathVariable UUID id){
         List<Term> terms = termService.findAllPatientsUpcomingTerms(id);
