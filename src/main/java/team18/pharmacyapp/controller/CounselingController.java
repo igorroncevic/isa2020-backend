@@ -29,8 +29,14 @@ public class CounselingController {
 
     @PreAuthorize("hasRole('ROLE_PATIENT')")
     @GetMapping("/patient/{id}")
-    public ResponseEntity<List<Term>> getAllPatientsCounselings(@PathVariable UUID id) {
-        List<Term> counselings = counselingService.findAllPatientsCounselings(id);
+    public ResponseEntity<List<TermDTO>> getAllPatientsCounselings(@PathVariable UUID id) {
+        List<TermDTO> counselings;
+
+        try{
+            counselings = counselingService.findAllPatientsCounselings(id);
+        }catch(RuntimeException e){
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
 
         return new ResponseEntity<>(counselings, HttpStatus.OK);
     }
@@ -38,7 +44,12 @@ public class CounselingController {
     @PreAuthorize("hasRole('ROLE_PATIENT')")
     @PostMapping("/past")
     public ResponseEntity<TermPaginationDTO> getAllPatientsPastCounselingsPaginated(@RequestBody TermPaginationSortingDTO psDTO) {
-        TermPaginationDTO counselings = termService.findAllPatientsPastTermsPaginated(psDTO.getId(), psDTO.getSort(), psDTO.getTermType(), psDTO.getPage());
+        TermPaginationDTO counselings;
+        try{
+            counselings = termService.findAllPatientsPastTermsPaginated(psDTO.getId(), psDTO.getSort(), psDTO.getTermType(), psDTO.getPage());
+        }catch(RuntimeException e){
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
 
         return new ResponseEntity<>(counselings, HttpStatus.OK);
     }
@@ -46,7 +57,13 @@ public class CounselingController {
     @PreAuthorize("hasRole('ROLE_PATIENT')")
     @PostMapping("/upcoming")
     public ResponseEntity<TermPaginationDTO> getAllPatientsUpcomingCheckupsPaginated(@RequestBody TermPaginationSortingDTO psDTO) {
-        TermPaginationDTO counselings = termService.findPatientsUpcomingTermsByTypePaginated(psDTO.getId(), psDTO.getSort(), psDTO.getTermType(), psDTO.getPage());
+        TermPaginationDTO counselings;
+
+        try{
+            counselings = termService.findPatientsUpcomingTermsByTypePaginated(psDTO.getId(), psDTO.getSort(), psDTO.getTermType(), psDTO.getPage());
+        }catch(RuntimeException e){
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
 
         return new ResponseEntity<>(counselings, HttpStatus.OK);
     }
@@ -65,8 +82,15 @@ public class CounselingController {
 
     @PreAuthorize("hasRole('ROLE_PATIENT')")
     @PostMapping("/available/{id}")
-    public ResponseEntity<List<DoctorDTO>> getFreeDoctorsForPharmacy(@PathVariable UUID id, @RequestBody DateTimeRangeDTO timeRange) {
-        List<DoctorDTO> doctors = counselingService.getFreeDoctorsForPharmacy(id, timeRange);
+    public ResponseEntity<List<DoctorMarkPharmaciesDTO>> getFreeDoctorsForPharmacy(@PathVariable UUID id, @RequestBody DateTimeRangeDTO timeRange) {
+        List<DoctorMarkPharmaciesDTO> doctors;
+
+        try{
+            doctors = counselingService.getFreeDoctorsForPharmacy(id, timeRange);
+        }catch(RuntimeException e){
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
         return new ResponseEntity<>(doctors, HttpStatus.OK);
     }
 

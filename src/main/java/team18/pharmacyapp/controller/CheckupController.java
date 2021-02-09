@@ -6,10 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import team18.pharmacyapp.model.Term;
-import team18.pharmacyapp.model.dtos.CancelTermDTO;
-import team18.pharmacyapp.model.dtos.TermPaginationSortingDTO;
-import team18.pharmacyapp.model.dtos.ScheduleCheckupDTO;
-import team18.pharmacyapp.model.dtos.TermPaginationDTO;
+import team18.pharmacyapp.model.dtos.*;
 import team18.pharmacyapp.model.exceptions.ActionNotAllowedException;
 import team18.pharmacyapp.model.exceptions.AlreadyScheduledException;
 import team18.pharmacyapp.model.exceptions.EntityNotFoundException;
@@ -35,16 +32,28 @@ public class CheckupController {
 
     @PreAuthorize("hasRole('ROLE_PATIENT')")
     @GetMapping
-    public ResponseEntity<List<Term>> getAllAvailableCheckups() {
-        List<Term> checkups = checkupService.findAllAvailableCheckups();
+    public ResponseEntity<List<TermDTO>> getAllAvailableCheckups() {
+        List<TermDTO> checkups;
+
+        try {
+            checkups = checkupService.findAllAvailableCheckups();
+        }catch(RuntimeException e){
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
 
         return new ResponseEntity<>(checkups, HttpStatus.OK);
     }
 
     @PreAuthorize("hasRole('ROLE_PATIENT')")
     @GetMapping("/patient/{id}")
-    public ResponseEntity<List<Term>> getAllPatientsCheckups(@PathVariable UUID id) {
-        List<Term> checkups = checkupService.findAllPatientsCheckups(id);
+    public ResponseEntity<List<TermDTO>> getAllPatientsCheckups(@PathVariable UUID id) {
+        List<TermDTO> checkups;
+
+        try{
+            checkups = checkupService.findAllPatientsCheckups(id);
+        }catch(RuntimeException e){
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
 
         return new ResponseEntity<>(checkups, HttpStatus.OK);
     }
@@ -52,7 +61,12 @@ public class CheckupController {
     @PreAuthorize("hasRole('ROLE_PATIENT')")
     @PostMapping("/past")
     public ResponseEntity<TermPaginationDTO> getAllPatientsPastCheckupsPaginated(@RequestBody TermPaginationSortingDTO psDTO) {
-        TermPaginationDTO checkups = termService.findAllPatientsPastTermsPaginated(psDTO.getId(), psDTO.getSort(), psDTO.getTermType(), psDTO.getPage());
+        TermPaginationDTO checkups;
+        try{
+            checkups = termService.findAllPatientsPastTermsPaginated(psDTO.getId(), psDTO.getSort(), psDTO.getTermType(), psDTO.getPage());
+        }catch(RuntimeException e){
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
 
         return new ResponseEntity<>(checkups, HttpStatus.OK);
     }
@@ -60,14 +74,19 @@ public class CheckupController {
     @PreAuthorize("hasRole('ROLE_PATIENT')")
     @PostMapping("/upcoming")
     public ResponseEntity<TermPaginationDTO> getAllPatientsUpcomingCheckupsPaginated(@RequestBody TermPaginationSortingDTO psDTO) {
-        TermPaginationDTO checkups = termService.findPatientsUpcomingTermsByTypePaginated(psDTO.getId(), psDTO.getSort(), psDTO.getTermType(), psDTO.getPage());
+        TermPaginationDTO checkups;
+        try{
+            checkups = termService.findPatientsUpcomingTermsByTypePaginated(psDTO.getId(), psDTO.getSort(), psDTO.getTermType(), psDTO.getPage());
+        }catch(RuntimeException e){
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
 
         return new ResponseEntity<>(checkups, HttpStatus.OK);
     }
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<Term> getCheckup(@PathVariable UUID id) {
-        Term checkup = checkupService.findOne(id);
+    public ResponseEntity<TermDTO> getCheckup(@PathVariable UUID id) {
+        TermDTO checkup = checkupService.findOne(id);
 
         if (checkup == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -95,26 +114,12 @@ public class CheckupController {
 
     @PutMapping(consumes = "application/json")
     public ResponseEntity<Term> updateCheckup(@RequestBody Term checkup) {
-        Term checkupForUpdate = checkupService.findOne(checkup.getId());
-
-        if (checkupForUpdate == null) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-
-        checkupForUpdate.setDoctor(checkup.getDoctor());
-        checkupForUpdate.setStartTime(checkup.getStartTime());
-        checkupForUpdate.setEndTime(checkup.getEndTime());
-        checkupForUpdate.setPatient(checkup.getPatient());
-        checkupForUpdate.setPrice(checkup.getPrice());
-        checkupForUpdate.setReport(checkup.getReport());
-
-        checkupForUpdate = checkupService.save(checkupForUpdate);
-        return new ResponseEntity<>(checkupForUpdate, HttpStatus.OK);
+        return new ResponseEntity<>(null, HttpStatus.OK);
     }
 
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<Void> deleteCheckup(@PathVariable UUID id) {
-        Term term = checkupService.findOne(id);
+        TermDTO term = checkupService.findOne(id);
 
         if (term != null) {
             checkupService.deleteById(id);

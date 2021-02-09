@@ -48,7 +48,7 @@ public  class RegisteredUser implements UserDetails {
     @Enumerated(EnumType.STRING)
     protected UserRole role;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "fk_address", referencedColumnName = "id")
     protected Address address;
 

@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -28,20 +27,21 @@ import javax.servlet.http.HttpServletResponse;
 @RestController
 @RequestMapping(value = "/auth", produces = MediaType.APPLICATION_JSON_VALUE)
 public class AuthenticationController {
-    @Autowired
     private TokenUtils tokenUtils;
-
-    @Autowired
     private AuthenticationManager authenticationManager;
-
-    @Autowired
     private CustomUserDetailsService userDetailsService;
-
-    @Autowired
     private RegisteredUserService userService;
+    private PatientService patientService;
 
     @Autowired
-    private PatientService patientService;
+    public AuthenticationController(TokenUtils tokenUtils, AuthenticationManager authenticationManager, CustomUserDetailsService userDetailsService,
+                                    RegisteredUserService userService, PatientService patientService){
+        this.tokenUtils = tokenUtils;
+        this.authenticationManager = authenticationManager;
+        this.userDetailsService = userDetailsService;
+        this.userService = userService;
+        this.patientService = patientService;
+    }
 
     @PostMapping("/login")
     public ResponseEntity<UserTokenDTO> createAuthenticationToken(@RequestBody LoginDTO authenticationRequest,
@@ -90,6 +90,7 @@ public class AuthenticationController {
                 .authenticate(new UsernamePasswordAuthenticationToken(dto.getEmail(),
                         dto.getOldPass()));
         userService.changeFirstPass(dto);
+
         return new ResponseEntity<>(true,HttpStatus.OK);
     }
 

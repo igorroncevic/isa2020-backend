@@ -4,11 +4,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import team18.pharmacyapp.model.Term;
 import team18.pharmacyapp.model.dtos.CancelTermDTO;
+import team18.pharmacyapp.model.dtos.DoctorDTO;
 import team18.pharmacyapp.model.dtos.ScheduleCheckupDTO;
+import team18.pharmacyapp.model.dtos.TermDTO;
 import team18.pharmacyapp.model.enums.TermType;
 import team18.pharmacyapp.model.exceptions.*;
+import team18.pharmacyapp.model.users.Doctor;
 import team18.pharmacyapp.model.users.Patient;
 import team18.pharmacyapp.repository.CheckupRepository;
+import team18.pharmacyapp.repository.users.DoctorRepository;
 import team18.pharmacyapp.repository.users.PatientRepository;
 import team18.pharmacyapp.service.interfaces.CheckupService;
 import team18.pharmacyapp.service.interfaces.TermService;
@@ -22,16 +26,22 @@ import java.util.UUID;
 public class CheckupServiceImpl implements CheckupService {
     private final CheckupRepository checkupRepository;
     private final PatientRepository patientRepository;
+    private final DoctorRepository doctorRepository;
     private final TermService termService;
 
-    public CheckupServiceImpl(CheckupRepository checkupRepository, PatientRepository patientRepository, TermService termService) {
+    public CheckupServiceImpl(CheckupRepository checkupRepository, PatientRepository patientRepository, DoctorRepository doctorRepository, TermService termService) {
         this.checkupRepository = checkupRepository;
         this.patientRepository = patientRepository;
+        this.doctorRepository = doctorRepository;
         this.termService = termService;
     }
 
-    public Term findOne(UUID id) {
-        return checkupRepository.findById(id).orElse(null);
+    @Override
+    public TermDTO findOne(UUID id) {
+        Term t = checkupRepository.findById(id).orElse(null);
+        TermDTO termDto = new TermDTO(t.getId(), t.getStartTime(), t.getEndTime(), t.getPrice(), t.getType(), null);
+
+        return termDto;
     }
 
     @Override
@@ -39,18 +49,52 @@ public class CheckupServiceImpl implements CheckupService {
         return checkupRepository.findByIdCustom(id);
     }
 
-    public List<Term> findAll(TermType termType) {
-        return checkupRepository.findAll(termType);
+    public List<TermDTO> findAll(TermType termType) {
+        List<Term> checkups = checkupRepository.findAll(TermType.checkup);
+
+        List<TermDTO> finalCheckups = new ArrayList<>();
+        for(Term t : checkups){
+            Doctor doctor = doctorRepository.findDoctorByTermId(t.getId());
+            DoctorDTO doctorDto = new DoctorDTO(doctor.getId(), doctor.getName(), doctor.getSurname(), doctor.getEmail(), doctor.getPhoneNumber(),
+                    doctor.getRole(), null);
+            TermDTO termDto = new TermDTO(t.getId(), t.getStartTime(), t.getEndTime(), t.getPrice(), t.getType(), doctorDto);
+            finalCheckups.add(termDto);
+        }
+
+        return finalCheckups;
     }
 
-    public List<Term> findAllAvailableCheckups() {
+    public List<TermDTO> findAllAvailableCheckups() {
         Date todaysDate = new Date(System.currentTimeMillis() + 60 * 60 * 1000);
-        return checkupRepository.findAllAvailableCheckups(todaysDate, TermType.checkup);
+
+        List<Term> checkups = checkupRepository.findAllAvailableCheckups(todaysDate, TermType.checkup);
+
+        List<TermDTO> finalCheckups = new ArrayList<>();
+        for(Term t : checkups){
+            Doctor doctor = doctorRepository.findDoctorByTermId(t.getId());
+            DoctorDTO doctorDto = new DoctorDTO(doctor.getId(), doctor.getName(), doctor.getSurname(), doctor.getEmail(), doctor.getPhoneNumber(),
+                    doctor.getRole(), null);
+            TermDTO termDto = new TermDTO(t.getId(), t.getStartTime(), t.getEndTime(), t.getPrice(), t.getType(), doctorDto);
+            finalCheckups.add(termDto);
+        }
+
+        return finalCheckups;
     }
 
     @Override
-    public List<Term> findAllPatientsCheckups(UUID patientId) {
-        return checkupRepository.findAllPatientsCheckups(patientId, TermType.checkup);
+    public List<TermDTO> findAllPatientsCheckups(UUID patientId) {
+        List<Term> checkups = checkupRepository.findAllPatientsCheckups(patientId, TermType.checkup);
+
+        List<TermDTO> finalCheckups = new ArrayList<>();
+        for(Term t : checkups){
+            Doctor doctor = doctorRepository.findDoctorByTermId(t.getId());
+            DoctorDTO doctorDto = new DoctorDTO(doctor.getId(), doctor.getName(), doctor.getSurname(), doctor.getEmail(), doctor.getPhoneNumber(),
+                    doctor.getRole(), null);
+            TermDTO termDto = new TermDTO(t.getId(), t.getStartTime(), t.getEndTime(), t.getPrice(), t.getType(), doctorDto);
+            finalCheckups.add(termDto);
+        }
+
+        return finalCheckups;
     }
 
     public Term save(Term term) {
@@ -71,7 +115,7 @@ public class CheckupServiceImpl implements CheckupService {
 
         if(!termService.isPatientFree(term.getPatientId(), checkTerm.getStartTime(), checkTerm.getEndTime())) throw new AlreadyScheduledException("You are busy at this time");
 
-        Date today = new Date(System.currentTimeMillis() - 60 * 1000);
+        Date today = new Date(System.currentTimeMillis());
         if (checkTerm.getStartTime().before(today)) throw new ScheduleTermException("Can't schedule past terms!");
 
         int rowsUpdated = checkupRepository.patientScheduleCheckup(term.getPatientId(), term.getCheckupId());
@@ -87,8 +131,11 @@ public class CheckupServiceImpl implements CheckupService {
         if (checkTerm == null) throw new EntityNotFoundException("There is no such checkup");
         if(!checkTerm.getPatient().getId().equals(term.getPatientId())) throw new ActionNotAllowedException("You can only cancel your own checkups");
 
-        Date yesterday = new Date(System.currentTimeMillis() - 24 * 60 * 60 * 1000);
-        if (checkTerm.getStartTime().before(yesterday)) throw new ActionNotAllowedException("Cannot cancel 24hrs before the checkup or any past checkups");
+        Date now = new Date(System.currentTimeMillis());
+        int diffInHours = (int)((checkTerm.getStartTime().getTime() - (now.getTime()) / (1000 * 60 * 60)));
+
+        if(diffInHours >= 0 && diffInHours <= 23) throw new ActionNotAllowedException("Cannot cancel 24hrs before the checkup");
+        if (checkTerm.getStartTime().before(now)) throw new ActionNotAllowedException("Cannot cancel any past checkups");
 
         int rowsUpdated = checkupRepository.patientCancelCheckup(term.getTermId());
         if (rowsUpdated != 1) throw new RuntimeException("Couldn't cancel this term!");

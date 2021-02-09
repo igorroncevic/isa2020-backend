@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import team18.pharmacyapp.model.dtos.PatientDTO;
 import team18.pharmacyapp.model.dtos.security.LoginDTO;
 import team18.pharmacyapp.model.dtos.UpdateProfileDataDTO;
 import team18.pharmacyapp.model.exceptions.ActionNotAllowedException;
@@ -37,8 +38,13 @@ public class PatientController {
 
     @PreAuthorize("hasRole('ROLE_PATIENT')")
     @GetMapping("/profile/{id}")
-    public ResponseEntity<Patient> getPatientProfileInfo(@PathVariable UUID id){
-        Patient pat = patientService.getPatientProfileInfo(id);
+    public ResponseEntity<PatientDTO> getPatientProfileInfo(@PathVariable UUID id){
+        PatientDTO pat;
+        try{
+            pat = patientService.getPatientProfileInfo(id);
+        }catch (RuntimeException e){
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
 
         return new ResponseEntity<>(pat, HttpStatus.OK);
     }
@@ -56,6 +62,7 @@ public class PatientController {
         }catch(RuntimeException ex){
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+
         if(success){
             return new ResponseEntity<>(HttpStatus.OK);
         }else{
@@ -63,12 +70,12 @@ public class PatientController {
         }
     }
 
-
     @PutMapping("/activate/{id}")
     public ResponseEntity<Boolean> activateAccount(@PathVariable String id){
         UUID uuid=UUID.fromString(id);
         return new ResponseEntity<>(patientService.activateAcc(uuid),HttpStatus.OK);
     }
+
     @PutMapping("/addPenalty/{id}")
     public ResponseEntity<Integer> addPenalty(@PathVariable UUID id){
         int res=patientService.addPenalty(id);

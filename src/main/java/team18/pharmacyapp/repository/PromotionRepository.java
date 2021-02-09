@@ -12,6 +12,6 @@ import java.util.UUID;
 public interface PromotionRepository extends JpaRepository<Promotion, UUID> {
 
     @Transactional(readOnly = true)
-    @Query("SELECT p FROM Promotion p JOIN FETCH p.pharmacy ph JOIN ph.subscribedPatients sp WHERE sp.id = :patientId")
+    @Query("SELECT p FROM Promotion p JOIN FETCH p.pharmacy ph JOIN FETCH ph.address JOIN ph.subscribedPatients sp WHERE sp.id = :patientId")
     List<Promotion> getPatientsPromotions(@Param("patientId") UUID patientId);
 }

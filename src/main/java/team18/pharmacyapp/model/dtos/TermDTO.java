@@ -5,9 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import team18.pharmacyapp.model.Address;
-import team18.pharmacyapp.model.enums.UserRole;
+import team18.pharmacyapp.model.enums.TermType;
 
+import java.util.Date;
 import java.util.UUID;
 
 @Getter
@@ -15,12 +15,11 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-public class DoctorDTO {
+public class TermDTO {
     private UUID id;
-    private String name;
-    private String surname;
-    private String email;
-    private String phoneNumber;
-    private UserRole role;
-    private Address address;
+    private Date startTime;
+    private Date endTime;
+    private double price;
+    private TermType type;
+    private DoctorDTO doctor;
 }

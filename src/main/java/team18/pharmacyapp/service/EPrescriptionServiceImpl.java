@@ -1,13 +1,9 @@
 package team18.pharmacyapp.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import team18.pharmacyapp.model.Pharmacy;
-import team18.pharmacyapp.model.dtos.EPrescriptionDTO;
-import team18.pharmacyapp.model.dtos.EPrescriptionMedicinesDTO;
-import team18.pharmacyapp.model.dtos.EPrescriptionMedicinesQueryDTO;
-import team18.pharmacyapp.model.dtos.EPrescriptionSortFilterDTO;
+import team18.pharmacyapp.model.dtos.*;
 import team18.pharmacyapp.model.enums.EPrescriptionStatus;
 import team18.pharmacyapp.model.exceptions.ActionNotAllowedException;
 import team18.pharmacyapp.model.medicine.EPrescription;
@@ -66,8 +62,12 @@ public class EPrescriptionServiceImpl implements EPrescriptionService {
             List<EPrescriptionMedicinesDTO> medicines = new ArrayList<>();
             for(EPrescriptionMedicinesQueryDTO epq : medicinesQuery){
                 Medicine med = medicineRepository.findById(epq.getMedicineId()).orElse(null);
-                Pharmacy pharmacy = pharmacyRepository.findById(epq.getPharmacyId()).orElse(null);
-                medicines.add(new EPrescriptionMedicinesDTO(pharmacy, med, epq.getQuantity()));
+                Pharmacy pharmacy = pharmacyRepository.findByIdCustom(epq.getPharmacyId());
+
+                MedicineDTO medicineDTO = new MedicineDTO(med.getId(), med.getName(), "", "", "", "", "", med.getLoyaltyPoints(), "", 0, "", "", "");
+                PharmacyDTO pharmacyDTO = new PharmacyDTO(pharmacy.getId(), pharmacy.getName(), pharmacy.getAddress().getStreet(), pharmacy.getAddress().getCity(), pharmacy.getAddress().getCountry());
+
+                medicines.add(new EPrescriptionMedicinesDTO(pharmacyDTO, medicineDTO, epq.getQuantity()));
             }
 
             EPrescriptionDTO ePrescriptionDTO = new EPrescriptionDTO();

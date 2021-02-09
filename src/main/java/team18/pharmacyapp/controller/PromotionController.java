@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import team18.pharmacyapp.model.Promotion;
+import team18.pharmacyapp.model.dtos.PromotionDTO;
 import team18.pharmacyapp.service.interfaces.PromotionService;
 
 import java.util.List;
@@ -22,8 +23,13 @@ public class PromotionController {
 
     @PreAuthorize("hasRole('ROLE_PATIENT')")
     @GetMapping("patient/{id}")
-    public ResponseEntity<List<Promotion>> getPatientsPromotions(@PathVariable UUID id){
-        List<Promotion>promotions = promotionService.getPatientsPromotions(id);
+    public ResponseEntity<List<PromotionDTO>> getPatientsPromotions(@PathVariable UUID id){
+        List<PromotionDTO> promotions;
+        try{
+            promotions = promotionService.getPatientsPromotions(id);
+        }catch (RuntimeException e){
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
 
         return new ResponseEntity<>(promotions, HttpStatus.OK);
     }

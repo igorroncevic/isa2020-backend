@@ -4,17 +4,19 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import team18.pharmacyapp.model.Pharmacy;
 
+import java.util.Date;
 import java.util.UUID;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class PharmacyDTO {
+public class PromotionDTO {
     private UUID id;
-    private String name;
-    private String street;
-    private String city;
-    private String country;
+    private Date startDate;
+    private Date endDate;
+    private PharmacyDTO pharmacy;
+    private String text;
 }

@@ -9,7 +9,9 @@ import org.springframework.stereotype.Service;
 import team18.pharmacyapp.helpers.DateTimeHelpers;
 import team18.pharmacyapp.model.Term;
 import team18.pharmacyapp.model.WorkSchedule;
+import team18.pharmacyapp.model.dtos.DoctorDTO;
 import team18.pharmacyapp.model.dtos.DoctorScheduleTermDTO;
+import team18.pharmacyapp.model.dtos.TermDTO;
 import team18.pharmacyapp.model.dtos.TermPaginationDTO;
 import team18.pharmacyapp.model.enums.TermType;
 import team18.pharmacyapp.model.users.Doctor;
@@ -66,8 +68,7 @@ public class TermServiceImpl implements TermService {
 
     public boolean isDoctorWorking(UUID doctorId, UUID pharmacyId, Date startTime,Date endTime) {
         WorkSchedule workSchedule=workScheduleRepository.getDoctorSchedule(doctorId,pharmacyId);
-        if(workSchedule==null){
-            System.out.println("Ne radi u toj apoteci tad");
+        if(workSchedule == null){
             return false;
         }
         LocalTime startWorking =DateTimeHelpers.getTimeWithoutDate(workSchedule.getFromHour());
@@ -75,11 +76,9 @@ public class TermServiceImpl implements TermService {
         LocalTime start =DateTimeHelpers.getTimeWithoutDate(startTime);
         LocalTime end =DateTimeHelpers.getTimeWithoutDate(endTime);
         if(startTime.before(workSchedule.getFromHour()) || endTime.after(workSchedule.getToHour())){
-            System.out.println("Nije u radnom vremenu");
             return false;
         }
         if(start.isBefore(startWorking) || start.isAfter(endWorking) ||end.isBefore(startWorking) || end.isAfter(endWorking) ){
-            System.out.println("Nije u radnom vremenu");
             return false;
         }
         return true;
@@ -88,9 +87,8 @@ public class TermServiceImpl implements TermService {
 
     @Override
     public boolean isDoctorFree(UUID doctorId,Date startTime,Date endTime){
-        for (Term term:getAllDoctorTerms(doctorId)) {
+        for (Term term : getAllDoctorTerms(doctorId)) {
             if(DateTimeHelpers.checkIfTimesIntersect(startTime,endTime,term.getStartTime(),term.getEndTime())){
-                System.out.println("Doktor zauzet");
                 return  false;
             }
         }
@@ -101,7 +99,6 @@ public class TermServiceImpl implements TermService {
     public boolean isPatientFree(UUID patientId, Date startTime, Date endTime){
         for(Term term:getAllPatientTerms(patientId)){
             if(DateTimeHelpers.checkIfTimesIntersect(startTime,endTime,term.getStartTime(),term.getEndTime())){
-                System.out.println("Pacijent zauzet");
                 return false;
             }
         }
@@ -148,14 +145,16 @@ public class TermServiceImpl implements TermService {
         TermPaginationDTO response = new TermPaginationDTO();
         if(!allTerms.hasContent()) return response;
 
-        List<Term> pastTerms = new ArrayList<>();
-        for(Term t : allTerms){
+        List<TermDTO> upcomingTerms = new ArrayList<>();
+        for(Term t : allTerms) {
             Doctor doctor = doctorRepository.findDoctorByTermId(t.getId());
-            t.setDoctor(doctor);
-            pastTerms.add(t);
+            DoctorDTO doctorDto = new DoctorDTO(doctor.getId(), doctor.getName(), doctor.getSurname(), doctor.getEmail(), doctor.getPhoneNumber(),
+                    doctor.getRole(), null);
+            TermDTO termDto = new TermDTO(t.getId(), t.getStartTime(), t.getEndTime(), t.getPrice(), t.getType(), doctorDto);
+            upcomingTerms.add(termDto);
         }
 
-        response.setTerms(new ArrayList<>(allTerms.getContent()));
+        response.setTerms(new ArrayList<>(upcomingTerms));
         response.setTotalPages(allTerms.getTotalPages());
 
         return response;
@@ -177,11 +176,13 @@ public class TermServiceImpl implements TermService {
         TermPaginationDTO response = new TermPaginationDTO();
         if(!allTerms.hasContent()) return response;
 
-        List<Term> upcomingTerms = new ArrayList<>();
+        List<TermDTO> upcomingTerms = new ArrayList<>();
         for(Term t : allTerms) {
             Doctor doctor = doctorRepository.findDoctorByTermId(t.getId());
-            t.setDoctor(doctor);
-            upcomingTerms.add(t);
+            DoctorDTO doctorDto = new DoctorDTO(doctor.getId(), doctor.getName(), doctor.getSurname(), doctor.getEmail(), doctor.getPhoneNumber(),
+                    doctor.getRole(), null);
+            TermDTO termDto = new TermDTO(t.getId(), t.getStartTime(), t.getEndTime(), t.getPrice(), t.getType(), doctorDto);
+            upcomingTerms.add(termDto);
         }
 
         response.setTerms(upcomingTerms);
@@ -191,17 +192,19 @@ public class TermServiceImpl implements TermService {
     }
 
     @Override
-    public List<Term> findAllPatientsUpcomingTerms(UUID id) {
+    public List<TermDTO> findAllPatientsUpcomingTerms(UUID id) {
         Pageable pageable = PageRequest.of(0, 3, Sort.by("startTime").ascending());
         Page<Term> allTerms = termRepository.findAllByPatient_IdAndStartTimeAfter(id, new Date(System.currentTimeMillis()), pageable);
 
-        List<Term> upcomingTerms = new ArrayList<>();
+        List<TermDTO> upcomingTerms = new ArrayList<>();
         if(!allTerms.hasContent()) return upcomingTerms;
 
         for(Term t : allTerms) {
             Doctor doctor = doctorRepository.findDoctorByTermId(t.getId());
-            t.setDoctor(doctor);
-            upcomingTerms.add(t);
+            DoctorDTO doctorDto = new DoctorDTO(doctor.getId(), doctor.getName(), doctor.getSurname(), doctor.getEmail(), doctor.getPhoneNumber(),
+                    doctor.getRole(), null);
+            TermDTO termDto = new TermDTO(t.getId(), t.getStartTime(), t.getEndTime(), t.getPrice(), t.getType(), doctorDto);
+            upcomingTerms.add(termDto);
         }
 
         return upcomingTerms;

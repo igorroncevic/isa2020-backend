@@ -1,6 +1,5 @@
 package team18.pharmacyapp.model.dtos;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,8 +13,7 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
-public class DoctorDTO {
+public class PatientDTO {
     private UUID id;
     private String name;
     private String surname;
@@ -23,4 +21,7 @@ public class DoctorDTO {
     private String phoneNumber;
     private UserRole role;
     private Address address;
+    private int loyaltyPoints;
+    private LoyaltyDTO loyalty;
+    private int penalties;
 }

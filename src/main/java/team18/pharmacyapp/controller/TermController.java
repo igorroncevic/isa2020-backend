@@ -7,6 +7,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import team18.pharmacyapp.model.Term;
 import team18.pharmacyapp.model.dtos.DoctorScheduleTermDTO;
+import team18.pharmacyapp.model.dtos.TermDTO;
 import team18.pharmacyapp.service.interfaces.TermService;
 
 import java.util.List;
@@ -40,8 +41,13 @@ public class TermController {
 
     //@PreAuthorize("hasRole('ROLE_PATIENT')")
     @GetMapping("/upcoming/{id}")
-    public ResponseEntity<List<Term>> getPatientsUpcomingTerms(@PathVariable UUID id){
-        List<Term> terms = termService.findAllPatientsUpcomingTerms(id);
+    public ResponseEntity<List<TermDTO>> getPatientsUpcomingTerms(@PathVariable UUID id){
+        List<TermDTO> terms;
+        try{
+            terms = termService.findAllPatientsUpcomingTerms(id);
+        }catch(RuntimeException ex){
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
 
         return new ResponseEntity<>(terms,HttpStatus.OK);
     }

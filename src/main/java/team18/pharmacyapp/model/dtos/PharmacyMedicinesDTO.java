@@ -10,8 +10,8 @@ import team18.pharmacyapp.model.medicine.Medicine;
 @Setter
 @NoArgsConstructor
 public class PharmacyMedicinesDTO {
-    Pharmacy pharmacy;
-    Medicine medicine;
+    PharmacyDTO pharmacy;
+    MedicineDTO medicine;
     int quantity;
     double price;
 }

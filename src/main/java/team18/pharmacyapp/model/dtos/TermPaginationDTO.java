@@ -3,7 +3,6 @@ package team18.pharmacyapp.model.dtos;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import team18.pharmacyapp.model.Term;
 
 import java.util.List;
 
@@ -11,6 +10,6 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 public class TermPaginationDTO {
-    List<Term> terms;
+    List<TermDTO> terms;
     int totalPages;
 }

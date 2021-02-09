@@ -32,7 +32,12 @@ public class MedicineController {
     @PreAuthorize("hasRole('ROLE_PATIENT')")
     @GetMapping
     public ResponseEntity<List<PharmacyMedicinesDTO>> getAllAvailableMedicines() {
-        List<PharmacyMedicinesDTO> medicines = medicineService.findAllAvailableMedicines();
+        List<PharmacyMedicinesDTO> medicines;
+        try{
+            medicines = medicineService.findAllAvailableMedicines();
+        }catch(RuntimeException e){
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
 
         return new ResponseEntity<>(medicines, HttpStatus.OK);
     }
@@ -40,15 +45,20 @@ public class MedicineController {
     @PreAuthorize("hasRole('ROLE_PATIENT')")
     @PostMapping("/filter")
     public ResponseEntity<List<MedicineFilterDTO>> filterMedicines(@RequestBody MedicineFilterRequestDTO mfr) {
-        List<MedicineFilterDTO> medicines = medicineService.filterMedicines(mfr);
+        List<MedicineFilterDTO> medicines;
+        try{
+            medicines = medicineService.filterMedicines(mfr);
+        }catch(RuntimeException e){
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
 
         return new ResponseEntity<>(medicines, HttpStatus.OK);
     }
 
     @PreAuthorize("hasRole('ROLE_PATIENT')")
     @GetMapping("/reserved/{id}")
-    public ResponseEntity<List<ReservedMedicines>> getAllPatientsReservedMedicines(@PathVariable UUID id) {
-        List<ReservedMedicines> medicines;
+    public ResponseEntity<List<ReservedMedicinesDTO>> getAllPatientsReservedMedicines(@PathVariable UUID id) {
+        List<ReservedMedicinesDTO> medicines;
         try{
             medicines = medicineService.findAllPatientsReservedMedicines(id);
         }catch(RuntimeException e){
@@ -77,8 +87,28 @@ public class MedicineController {
 
     @PreAuthorize("hasRole('ROLE_PATIENT')")
     @GetMapping("/notallergic/{id}")
-    public ResponseEntity<List<Medicine>> getAllMedicinesPatientsNotAllergicTo(@PathVariable UUID id) {
-        List<Medicine> medicines = medicineService.getAllMedicinesPatientsNotAlergicTo(id);
+    public ResponseEntity<List<MedicineDTO>> getAllMedicinesPatientsNotAllergicTo(@PathVariable UUID id) {
+        List<MedicineDTO> medicines;
+
+        try{
+            medicines = medicineService.getAllMedicinesPatientsNotAlergicTo(id);
+        }catch(RuntimeException e){
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return new ResponseEntity<>(medicines, HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasRole('ROLE_PATIENT')")
+    @GetMapping("/allergic/{id}")
+    public ResponseEntity<List<MedicineDTO>> getAllMedicinesPatientsAllergicTo(@PathVariable UUID id) {
+        List<MedicineDTO> medicines;
+
+        try{
+            medicines = medicineService.getAllMedicinesPatientsAllergicTo(id);
+        }catch(RuntimeException e){
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
 
         return new ResponseEntity<>(medicines, HttpStatus.OK);
     }
@@ -86,7 +116,14 @@ public class MedicineController {
     @PreAuthorize("hasRole('ROLE_PATIENT')")
     @GetMapping("/patient/{id}")
     public ResponseEntity<List<MedicineMarkDTO>> getAllPatientsMedicinesOptimized(@PathVariable UUID id) {
-        List<MedicineMarkDTO> medicines = medicineService.getAllMedicinesForMarkingOptimized(id);
+        List<MedicineMarkDTO> medicines;
+
+        try{
+            medicines = medicineService.getAllMedicinesForMarkingOptimized(id);
+        }catch(RuntimeException ex){
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
         return new ResponseEntity<>(medicines, HttpStatus.OK);
     }
 

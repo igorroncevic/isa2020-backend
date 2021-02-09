@@ -12,6 +12,6 @@ public interface RegisteredUserService {
     RegisteredUser findById(UUID id);
     RegisteredUser findByEmail(String email);
     List<RegisteredUser> findAll();
-    RegisteredUser save(RegisterUserDTO user, UserRole role,String user_role);
+    RegisteredUser save(RegisterUserDTO user, UserRole role, String user_role);
     boolean changeFirstPass(ChangePassDTO dto);
 }

@@ -7,7 +7,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import team18.pharmacyapp.helpers.FilteringHelpers;
 import team18.pharmacyapp.model.Pharmacy;
-import team18.pharmacyapp.model.dtos.PharmacyDTO;
 import team18.pharmacyapp.model.dtos.PharmacyFilteringDTO;
 import team18.pharmacyapp.model.dtos.PharmacyMarkPriceDTO;
 import team18.pharmacyapp.service.interfaces.PharmacyService;
@@ -61,7 +60,7 @@ public class PharmacyController {
     }
 
     @PostMapping(consumes = "application/json", value = "/register")
-    public ResponseEntity<Pharmacy> saveNewPharmacy(@RequestBody PharmacyDTO newPharmacy){
+    public ResponseEntity<Pharmacy> saveNewPharmacy(@RequestBody team18.pharmacyapp.model.dtos.PharmacyDTO newPharmacy){
         Pharmacy pharmacy = pharmacyService.registerNewPharmacy(newPharmacy);
         return new ResponseEntity<>(pharmacy, HttpStatus.CREATED);
     }

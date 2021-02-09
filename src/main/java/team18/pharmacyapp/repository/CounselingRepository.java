@@ -55,6 +55,6 @@ public interface CounselingRepository extends JpaRepository<Term, UUID> {
     Term findByIdCustom(@Param("counselingId") UUID id);
 
     @Transactional(readOnly = true)
-    @Query(value = "SELECT t FROM term t JOIN FETCH t.doctor JOIN FETCH t.patient WHERE t.type = :termType AND t.patient.id = :patientId")
+    @Query(value = "SELECT t FROM term t JOIN FETCH t.doctor JOIN t.patient WHERE t.type = :termType AND t.patient.id = :patientId")
     List<Term> findAllPatientsCounselings(@Param("patientId") UUID id, @Param("termType") TermType counseling);
 }

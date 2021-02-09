@@ -267,12 +267,14 @@ values ('25fff0b2-ad45-4310-ac7f-96bcc5e517c1', '3163f62a-5b88-4295-854c-c9400e1
 insert into pharmacy_medicines (pharmacy_id, medicine_id, quantity, version)
 values ('25fff0b2-ad45-4310-ac7f-96bcc5e517c1', '32636111-4bc6-424c-a200-067e7f8a9386', 23, 1);
 insert into pharmacy_medicines (pharmacy_id, medicine_id, quantity, version)
-values ('25fff0b2-ad45-4310-ac7f-96bcc5e517c1', '659d0931-63d9-4ef6-bbc4-abdeb4a99539', 0, 1);
+values ('25fff0b2-ad45-4310-ac7f-96bcc5e517c1', '659d0931-63d9-4ef6-bbc4-abdeb4a99539', 5, 1);
 
 insert into pharmacy_medicines (pharmacy_id, medicine_id, quantity, version)
 values ('e93cab4a-f007-412c-b631-7a9a5ee2c6ed', '7571786b-2fc5-4756-ab5c-1f4af756e6f2', 49, 1);
 insert into pharmacy_medicines (pharmacy_id, medicine_id, quantity, version)
-values ('e93cab4a-f007-412c-b631-7a9a5ee2c6ed', '592e558c-b3f9-4088-b468-28764908bd92', 0, 1);
+values ('e93cab4a-f007-412c-b631-7a9a5ee2c6ed', '592e558c-b3f9-4088-b468-28764908bd92', 5, 1);
+insert into pharmacy_medicines (pharmacy_id, medicine_id, quantity, version)
+values ('e93cab4a-f007-412c-b631-7a9a5ee2c6ed', '3163f62a-5b88-4295-854c-c9400e19089f', 15, 1);
 insert into pharmacy_medicines (pharmacy_id, medicine_id, quantity, version)
 values ('e93cab4a-f007-412c-b631-7a9a5ee2c6ed', '32636111-4bc6-424c-a200-067e7f8a9386', 23, 1);
 insert into pharmacy_medicines (pharmacy_id, medicine_id, quantity, version)
