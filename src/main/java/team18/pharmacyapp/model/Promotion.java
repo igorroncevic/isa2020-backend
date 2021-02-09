@@ -1,5 +1,6 @@
 package team18.pharmacyapp.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,9 +24,11 @@ public class Promotion {
     private UUID id;
 
     @Column(nullable = false)
+    @JsonFormat(pattern="yyyy-MM-dd")
     private Date startDate;
 
     @Column(nullable = false)
+    @JsonFormat(pattern="yyyy-MM-dd")
     private Date endDate;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)

@@ -6,6 +6,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import team18.pharmacyapp.model.Promotion;
+import team18.pharmacyapp.model.dtos.NewPromotionDTO;
+import team18.pharmacyapp.model.exceptions.BadTimeRangeException;
 import team18.pharmacyapp.service.interfaces.PromotionService;
 
 import java.util.List;
@@ -23,9 +25,21 @@ public class PromotionController {
         this.promotionService = promotionService;
     }
 
-    @GetMapping("/pharmacy/{id}")
-    public ResponseEntity<List<Promotion>> getAllPromotionsForPharmacy(@PathVariable UUID id) {
-        List<Promotion> promotions = promotionService.getAllPromotionsForPharmacy(id);
+    @GetMapping("/pharmacy/{pharmacyId}")
+    public ResponseEntity<List<Promotion>> getAllPromotionsForPharmacy(@PathVariable UUID pharmacyId) {
+        List<Promotion> promotions = promotionService.getAllPromotionsForPharmacy(pharmacyId);
         return new ResponseEntity<>(promotions, HttpStatus.OK);
+    }
+
+    @PostMapping("/pharmacy/{pharmacyId}")
+    public ResponseEntity<Promotion> addNewPromotion(@PathVariable UUID pharmacyId, @RequestBody NewPromotionDTO newPromotionDTO) {
+        Promotion promotion = null;
+        try {
+            promotion = promotionService.addNewPromotion(pharmacyId, newPromotionDTO);
+        } catch (BadTimeRangeException e) {
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
+
+        return new ResponseEntity<>(promotion, HttpStatus.OK);
     }
 }
