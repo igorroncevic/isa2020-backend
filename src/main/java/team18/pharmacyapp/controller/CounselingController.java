@@ -17,7 +17,6 @@ import java.util.UUID;
 @CrossOrigin(origins = {"http://localhost:8080","http://localhost:8081"})
 @RestController
 @RequestMapping(value = "api/counseling")
-@PreAuthorize("hasRole('ROLE_PATIENT')") // dodati npr  || hasRole('ROLE_DOCTOR') ako treba još neki role
 public class CounselingController {
     private final CounselingService counselingService;
     private final TermService termService;
@@ -28,6 +27,7 @@ public class CounselingController {
         this.termService = termService;
     }
 
+    @PreAuthorize("hasRole('ROLE_PATIENT')")
     @GetMapping("/patient/{id}")
     public ResponseEntity<List<Term>> getAllPatientsCounselings(@PathVariable UUID id) {
         List<Term> counselings = counselingService.findAllPatientsCounselings(id);
@@ -35,6 +35,7 @@ public class CounselingController {
         return new ResponseEntity<>(counselings, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ROLE_PATIENT')")
     @PostMapping("/past")
     public ResponseEntity<TermPaginationDTO> getAllPatientsPastCounselingsPaginated(@RequestBody TermPaginationSortingDTO psDTO) {
         TermPaginationDTO counselings = termService.findAllPatientsPastTermsPaginated(psDTO.getId(), psDTO.getSort(), psDTO.getTermType(), psDTO.getPage());
@@ -42,6 +43,7 @@ public class CounselingController {
         return new ResponseEntity<>(counselings, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ROLE_PATIENT')")
     @PostMapping("/upcoming")
     public ResponseEntity<TermPaginationDTO> getAllPatientsUpcomingCheckupsPaginated(@RequestBody TermPaginationSortingDTO psDTO) {
         TermPaginationDTO counselings = termService.findPatientsUpcomingTermsByTypePaginated(psDTO.getId(), psDTO.getSort(), psDTO.getTermType(), psDTO.getPage());
@@ -49,6 +51,7 @@ public class CounselingController {
         return new ResponseEntity<>(counselings, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ROLE_PATIENT')")
     @PostMapping("/available")
     public ResponseEntity<List<PharmacyMarkPriceDTO>> getPharmaciesWithAvailableCounselings(@RequestBody DateTimeRangeDTO timeRange) {
         List<PharmacyMarkPriceDTO> pharmacies;
@@ -60,12 +63,14 @@ public class CounselingController {
         return new ResponseEntity<>(pharmacies, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ROLE_PATIENT')")
     @PostMapping("/available/{id}")
     public ResponseEntity<List<DoctorDTO>> getFreeDoctorsForPharmacy(@PathVariable UUID id, @RequestBody DateTimeRangeDTO timeRange) {
         List<DoctorDTO> doctors = counselingService.getFreeDoctorsForPharmacy(id, timeRange);
         return new ResponseEntity<>(doctors, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ROLE_PATIENT')")
     @PostMapping(consumes = "application/json", value = "/schedule")
     public ResponseEntity<Void> patientScheduleCounseling(@RequestBody ScheduleCounselingDTO term) {
         boolean success;
@@ -86,6 +91,7 @@ public class CounselingController {
         }
     }
 
+    @PreAuthorize("hasRole('ROLE_PATIENT')")
     @PutMapping(consumes = "application/json", value = "/cancel")
     public ResponseEntity<Void> patientCancelCounseling(@RequestBody CancelTermDTO term) {
         boolean success;

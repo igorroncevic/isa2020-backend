@@ -19,7 +19,6 @@ import java.util.UUID;
 @CrossOrigin(origins = {"http://localhost:8080","http://localhost:8081"})
 @RestController
 @RequestMapping(value = "api/medicines")
-@PreAuthorize("hasRole('ROLE_PATIENT')") // dodati npr  || hasRole('ROLE_DOCTOR') ako treba još neki role
 public class MedicineController {
     private final MedicineService medicineService;
     private final ReservedMedicinesService reservedMedicinesService;
@@ -30,6 +29,7 @@ public class MedicineController {
         this.reservedMedicinesService = reservedMedicinesService;
     }
 
+    @PreAuthorize("hasRole('ROLE_PATIENT')")
     @GetMapping
     public ResponseEntity<List<PharmacyMedicinesDTO>> getAllAvailableMedicines() {
         List<PharmacyMedicinesDTO> medicines = medicineService.findAllAvailableMedicines();
@@ -37,6 +37,7 @@ public class MedicineController {
         return new ResponseEntity<>(medicines, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ROLE_PATIENT')")
     @PostMapping("/filter")
     public ResponseEntity<List<MedicineFilterDTO>> filterMedicines(@RequestBody MedicineFilterRequestDTO mfr) {
         List<MedicineFilterDTO> medicines = medicineService.filterMedicines(mfr);
@@ -44,6 +45,7 @@ public class MedicineController {
         return new ResponseEntity<>(medicines, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ROLE_PATIENT')")
     @GetMapping("/reserved/{id}")
     public ResponseEntity<List<ReservedMedicines>> getAllPatientsReservedMedicines(@PathVariable UUID id) {
         List<ReservedMedicines> medicines;
@@ -56,6 +58,7 @@ public class MedicineController {
         return new ResponseEntity<>(medicines, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ROLE_PATIENT')")
     @PostMapping("/allergy")
     public ResponseEntity<Void> addPatientsAllergy(@RequestBody MedicineAllergyDTO allergy) {
         boolean success;
@@ -72,6 +75,7 @@ public class MedicineController {
         }
     }
 
+    @PreAuthorize("hasRole('ROLE_PATIENT')")
     @GetMapping("/notallergic/{id}")
     public ResponseEntity<List<Medicine>> getAllMedicinesPatientsNotAllergicTo(@PathVariable UUID id) {
         List<Medicine> medicines = medicineService.getAllMedicinesPatientsNotAlergicTo(id);
@@ -79,6 +83,7 @@ public class MedicineController {
         return new ResponseEntity<>(medicines, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ROLE_PATIENT')")
     @GetMapping("/patient/{id}")
     public ResponseEntity<List<MedicineMarkDTO>> getAllPatientsMedicinesOptimized(@PathVariable UUID id) {
         List<MedicineMarkDTO> medicines = medicineService.getAllMedicinesForMarkingOptimized(id);
@@ -114,6 +119,7 @@ public class MedicineController {
         }
     }
 
+    @PreAuthorize("hasRole('ROLE_PATIENT')")
     @PostMapping(consumes = "application/json", value = "/reserve")
     public ResponseEntity<Void> reserveMedicine(@RequestBody ReserveMedicineRequestDTO medicine) {
         boolean success;
@@ -134,6 +140,7 @@ public class MedicineController {
         }
     }
 
+    @PreAuthorize("hasRole('ROLE_PATIENT')")
     @PostMapping(consumes = "application/json", value = "/cancel")
     public ResponseEntity<Void> cancelMedicine(@RequestBody CancelMedicineRequestDTO medicine) {
         boolean success;

@@ -14,7 +14,6 @@ import team18.pharmacyapp.service.interfaces.MarkService;
 @CrossOrigin(origins = {"http://localhost:8080","http://localhost:8081"})
 @RestController
 @RequestMapping(value = "api/marks")
-@PreAuthorize("hasRole('ROLE_PATIENT')") // dodati npr  || hasRole('ROLE_DOCTOR') ako treba još neki role
 public class MarkController {
     private final MarkService markService;
 
@@ -23,6 +22,7 @@ public class MarkController {
         this.markService = markService;
     }
 
+    @PreAuthorize("hasRole('ROLE_PATIENT')")
     @PostMapping(consumes = "application/json")
     public ResponseEntity<Void> giveMark(@RequestBody MarkDTO markDTO) {
         boolean success;
@@ -44,6 +44,7 @@ public class MarkController {
         }
     }
 
+    @PreAuthorize("hasRole('ROLE_PATIENT')")
     @PutMapping(consumes = "application/json")
     public ResponseEntity<Void> updateMark(@RequestBody MarkDTO markDTO) {
         boolean success;

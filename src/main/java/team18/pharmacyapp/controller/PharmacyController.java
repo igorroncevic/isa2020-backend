@@ -18,7 +18,6 @@ import java.util.UUID;
 @CrossOrigin(origins = {"http://localhost:8080", "http://localhost:8081"})
 @RestController
 @RequestMapping(value = "api/pharmacies")
-@PreAuthorize("hasRole('ROLE_PATIENT')") // dodati npr  || hasRole('ROLE_DOCTOR') ako treba još neki role
 public class PharmacyController {
     private final PharmacyService pharmacyService;
 
@@ -27,6 +26,7 @@ public class PharmacyController {
         this.pharmacyService = pharmacyService;
     }
 
+    @PreAuthorize("hasRole('ROLE_PATIENT')")
     @GetMapping("/search")
     public ResponseEntity<List<PharmacyFilteringDTO>> getAllForFiltered(@RequestParam(name = "name", required = false) String name, @RequestParam(name = "mark", required = false, defaultValue = "0.0") float mark, @RequestParam(name = "city", required = false) String city) {
         if(!FilteringHelpers.isAlpha(name) || !FilteringHelpers.isAlpha(city))
@@ -36,6 +36,7 @@ public class PharmacyController {
         return new ResponseEntity<>(pharmacies, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ROLE_PATIENT')")
     @GetMapping("/patient/{id}")
     public ResponseEntity<List<PharmacyMarkPriceDTO>> getAllPatientsPharmacies(@PathVariable UUID id) {
         List<PharmacyMarkPriceDTO> pharmacies = pharmacyService.getAllPatientsPharmaciesOptimized(id);

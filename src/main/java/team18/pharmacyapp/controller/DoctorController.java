@@ -44,6 +44,7 @@ public class DoctorController {
         return new ResponseEntity<>(doc, HttpStatus.BAD_REQUEST);
     }
 
+    @PreAuthorize("hasRole('ROLE_PATIENT')")
     @PostMapping("/patient")
     public ResponseEntity<List<DoctorDTO>> getPatientsDoctorsByRole(@RequestBody PatientDoctorRoleDTO patientDoctorRoleDTO) {
         List<DoctorDTO> doctors = doctorService.getPatientsDoctors(patientDoctorRoleDTO);

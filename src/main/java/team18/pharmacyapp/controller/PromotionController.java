@@ -13,7 +13,6 @@ import java.util.UUID;
 @CrossOrigin(origins = {"http://localhost:8080","http://localhost:8081"})
 @RestController
 @RequestMapping(value = "api/promotions")
-@PreAuthorize("hasRole('ROLE_PATIENT')") // dodati npr  || hasRole('ROLE_DOCTOR') ako treba još neki role
 public class PromotionController {
     private final PromotionService promotionService;
 
@@ -21,6 +20,7 @@ public class PromotionController {
         this.promotionService = promotionService;
     }
 
+    @PreAuthorize("hasRole('ROLE_PATIENT')")
     @GetMapping("patient/{id}")
     public ResponseEntity<List<Promotion>> getPatientsPromotions(@PathVariable UUID id){
         List<Promotion>promotions = promotionService.getPatientsPromotions(id);

@@ -15,7 +15,6 @@ import java.util.List;
 @CrossOrigin(origins = {"http://localhost:8080","http://localhost:8081"})
 @RestController
 @RequestMapping(value = "api/eprescriptions")
-@PreAuthorize("hasRole('ROLE_PATIENT')") // dodati npr  || hasRole('ROLE_DOCTOR') ako treba još neki role
 public class EPrescriptionController {
     private final EPrescriptionService ePrescriptionService;
 
@@ -24,6 +23,7 @@ public class EPrescriptionController {
         this.ePrescriptionService = ePrescriptionService;
     }
 
+    @PreAuthorize("hasRole('ROLE_PATIENT')")
     @PostMapping("/patient/")
     public ResponseEntity<List<EPrescriptionDTO>> findAllByPatientId(@RequestBody EPrescriptionSortFilterDTO esf) {
         List<EPrescriptionDTO> prescriptions;

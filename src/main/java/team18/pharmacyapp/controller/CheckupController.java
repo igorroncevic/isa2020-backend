@@ -23,7 +23,6 @@ import java.util.UUID;
 @CrossOrigin(origins = {"http://localhost:8080","http://localhost:8081"})
 @RestController
 @RequestMapping(value = "api/checkups")
-@PreAuthorize("hasRole('ROLE_PATIENT')") // dodati npr  || hasRole('ROLE_DOCTOR') ako treba još neki role
 public class CheckupController {
     private final CheckupService checkupService;
     private final TermService termService;
@@ -34,6 +33,7 @@ public class CheckupController {
         this.termService = termService;
     }
 
+    @PreAuthorize("hasRole('ROLE_PATIENT')")
     @GetMapping
     public ResponseEntity<List<Term>> getAllAvailableCheckups() {
         List<Term> checkups = checkupService.findAllAvailableCheckups();
@@ -41,6 +41,7 @@ public class CheckupController {
         return new ResponseEntity<>(checkups, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ROLE_PATIENT')")
     @GetMapping("/patient/{id}")
     public ResponseEntity<List<Term>> getAllPatientsCheckups(@PathVariable UUID id) {
         List<Term> checkups = checkupService.findAllPatientsCheckups(id);
@@ -48,6 +49,7 @@ public class CheckupController {
         return new ResponseEntity<>(checkups, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ROLE_PATIENT')")
     @PostMapping("/past")
     public ResponseEntity<TermPaginationDTO> getAllPatientsPastCheckupsPaginated(@RequestBody TermPaginationSortingDTO psDTO) {
         TermPaginationDTO checkups = termService.findAllPatientsPastTermsPaginated(psDTO.getId(), psDTO.getSort(), psDTO.getTermType(), psDTO.getPage());
@@ -55,6 +57,7 @@ public class CheckupController {
         return new ResponseEntity<>(checkups, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ROLE_PATIENT')")
     @PostMapping("/upcoming")
     public ResponseEntity<TermPaginationDTO> getAllPatientsUpcomingCheckupsPaginated(@RequestBody TermPaginationSortingDTO psDTO) {
         TermPaginationDTO checkups = termService.findPatientsUpcomingTermsByTypePaginated(psDTO.getId(), psDTO.getSort(), psDTO.getTermType(), psDTO.getPage());
@@ -72,6 +75,7 @@ public class CheckupController {
 
         return new ResponseEntity<>(checkup, HttpStatus.OK);
     }
+
     @GetMapping(value = "/patientCheckup/{id}")
     public ResponseEntity<Term> getCheckupFetchPatient(@PathVariable UUID id) {
         Term checkup = checkupService.findByIdFetchDoctor(id);
@@ -120,6 +124,7 @@ public class CheckupController {
         }
     }
 
+    @PreAuthorize("hasRole('ROLE_PATIENT')")
     @PutMapping(consumes = "application/json", value = "/schedule")
     public ResponseEntity<Void> patientScheduleCheckup(@RequestBody ScheduleCheckupDTO term) {
         boolean success;
@@ -142,6 +147,7 @@ public class CheckupController {
         }
     }
 
+    @PreAuthorize("hasRole('ROLE_PATIENT')")
     @PutMapping(consumes = "application/json", value = "/cancel")
     public ResponseEntity<Void> patientCancelCheckup(@RequestBody CancelTermDTO term) {
         boolean success;
