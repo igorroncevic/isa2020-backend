@@ -21,4 +21,8 @@ public interface PromotionRepository extends JpaRepository<Promotion, UUID> {
     @Query(nativeQuery = true, value = "INSERT INTO promotion(id, start_date, end_date, text, pharmacy_id) VALUES (:id, :startDate, :endDate, :text, :pharmacyId)")
     int insert(UUID id, Date startDate, Date endDate, String text, UUID pharmacyId);
 
+    @Query(nativeQuery = true, value = "SELECT p.email FROM pharmacy_subscribed_patients psp JOIN patient p ON p.id = psp.subscribed_patients_id " +
+            "WHERE psp.subscribed_pharmacies_id = :pharmacyId")
+    List<String> getEmailsOfSubscribedPatients(UUID pharmacyId);
+
 }

@@ -136,7 +136,7 @@ values ('ab98fe4c-0e70-4087-b53f-637bbac6bfe4', 'Platinum', 14, 150, -1, 10, 9);
 
 -- Pacijenti
 insert into patient (id, "name", surname, email, phone_number, "password", "role", fk_address, loyalty_points, loyalty_id, penalties, activated)
-values ('cc6fd408-0084-420b-8078-687d8a72744b', 'Slobodanka', 'Ilic', 'slobodankailic@gmail.com', '063/111-456', 'nekipass123', 'patient',
+values ('cc6fd408-0084-420b-8078-687d8a72744b', 'Slobodanka', 'Ilic', 'zukovicfilip@gmail.com', '063/111-456', 'nekipass123', 'patient',
         '1eb485a6-4afd-4121-ad03-af571841ddbd', 0, 'c976e4d9-0bd0-470d-9a10-bdc1ff1ba91c', 0, true );
 insert into patient (id, "name", surname, email, phone_number, "password", "role", fk_address, loyalty_points, loyalty_id, penalties, activated)
 values ('dd4c7e5f-f2c4-42dc-a809-fd7f588b3acb', 'Ilija', 'Stevic', 'ilijastevic@gmail.com', '063/999-254', 'nekipass123', 'patient',
@@ -330,6 +330,14 @@ insert into promotion(id, start_date, end_date, text, pharmacy_id)
 values ('420d9dad-e742-4e53-a2d5-66aa6ba3e50e', '2021-02-10', '2021-02-25', 'U nasoj apoteci bice postavljen stand za promociju Ferfex-a', 'e93cab4a-f007-412c-b631-7a9a5ee2c6ed');
 insert into promotion(id, start_date, end_date, text, pharmacy_id)
 values ('b0acb3c6-f244-44d3-b833-4a3d307f47d2', '2021-02-01', '2021-04-01', 'Na rasprodaji je bensedin!', 'e93cab4a-f007-412c-b631-7a9a5ee2c6ed');
+
+-- Pharmacy subscribed patients
+insert into pharmacy_subscribed_patients(subscribed_pharmacies_id, subscribed_patients_id)
+values ('e93cab4a-f007-412c-b631-7a9a5ee2c6ed', 'cc6fd408-0084-420b-8078-687d8a72744b');
+insert into pharmacy_subscribed_patients(subscribed_pharmacies_id, subscribed_patients_id)
+values ('e93cab4a-f007-412c-b631-7a9a5ee2c6ed', 'dd4c7e5f-f2c4-42dc-a809-fd7f588b3acb');
+insert into pharmacy_subscribed_patients(subscribed_pharmacies_id, subscribed_patients_id)
+values ('25fff0b2-ad45-4310-ac7f-96bcc5e517c1', '5ffe884f-9cd8-42f5-adc4-2a27cd8d2737');
 
 
 
