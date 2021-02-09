@@ -1,5 +1,6 @@
 package team18.pharmacyapp.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -9,7 +10,7 @@ import javax.persistence.*;
 import java.util.Date;
 import java.util.UUID;
 
-@Entity
+@Entity(name = "promotion")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -29,6 +30,7 @@ public class Promotion {
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(nullable = false)
+    @JsonIgnore
     private Pharmacy pharmacy;
 
     @Column(nullable = false)
