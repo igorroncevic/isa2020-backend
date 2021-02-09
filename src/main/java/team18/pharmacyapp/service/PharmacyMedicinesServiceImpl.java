@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import team18.pharmacyapp.model.dtos.ReportMedicineDTO;
 import team18.pharmacyapp.model.medicine.Medicine;
 import team18.pharmacyapp.repository.PharmacyMedicinesRepository;
+import team18.pharmacyapp.service.interfaces.MedicineRequestsService;
 import team18.pharmacyapp.service.interfaces.MedicineService;
 import team18.pharmacyapp.service.interfaces.PharmacyMedicinesService;
 
@@ -15,11 +16,13 @@ import java.util.UUID;
 public class PharmacyMedicinesServiceImpl implements PharmacyMedicinesService {
     private final PharmacyMedicinesRepository repository;
     private final MedicineService medicineService;
+    private final MedicineRequestsService medicineRequestsService;
 
     @Autowired
-    public PharmacyMedicinesServiceImpl(PharmacyMedicinesRepository repository, MedicineService medicineService) {
+    public PharmacyMedicinesServiceImpl(PharmacyMedicinesRepository repository, MedicineService medicineService, MedicineRequestsService medicineRequestsService) {
         this.repository = repository;
         this.medicineService = medicineService;
+        this.medicineRequestsService = medicineRequestsService;
     }
 
     @Override
@@ -31,6 +34,7 @@ public class PharmacyMedicinesServiceImpl implements PharmacyMedicinesService {
     public String checkAvailability(ReportMedicineDTO dto) {
         int quantity=medicineQuantity(dto.getPharmacyId(),dto.getMedicineId());
         if(quantity<dto.getMedicineQuantity()){
+            medicineRequestsService.checkRequest(dto.getMedicineId(),dto.getPharmacyId());
             String replacment=medicineService.getReplacmentMedicine(dto.getMedicineId());
             if(replacment!=null){
                 return replacment;
