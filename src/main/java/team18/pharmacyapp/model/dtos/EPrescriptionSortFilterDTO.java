@@ -9,7 +9,8 @@ import java.util.UUID;
 @Getter
 @Setter
 @NoArgsConstructor
-public class CancelCounselingDTO {
-    private UUID counselingId;
-    private UUID patientId;
+public class EPrescriptionSortFilterDTO {
+    UUID patientId;
+    String filter;
+    String sort;
 }

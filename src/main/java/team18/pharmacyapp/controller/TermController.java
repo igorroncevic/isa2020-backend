@@ -3,15 +3,17 @@ package team18.pharmacyapp.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import team18.pharmacyapp.model.Term;
 import team18.pharmacyapp.model.dtos.DoctorScheduleTermDTO;
+import team18.pharmacyapp.model.dtos.TermDTO;
 import team18.pharmacyapp.service.interfaces.TermService;
 
 import java.util.List;
 import java.util.UUID;
 
-@CrossOrigin(origins = {"http://localhost:8080","http://localhost:8081"})
+@CrossOrigin(origins = "http://localhost:8080")
 @RestController
 @RequestMapping(value = "api/terms")
 public class TermController {
@@ -30,13 +32,23 @@ public class TermController {
         }
         return new ResponseEntity<>(null,HttpStatus.BAD_REQUEST);
     }
-    @GetMapping("doctor/{id}")
-    public List<Term> getAllDoctorTerms(@PathVariable UUID id){
-        return termService.getAllDoctorTerms(id);
-    }
 
     @GetMapping("doctor/{id}/{pharmacyId}")
-    public List<Term> getAllDoctorTerms(@PathVariable UUID id,@PathVariable UUID pharmacyId){
-        return termService.getAllDoctorTermsInPharmacy(id,pharmacyId);
+    public List<Term> getAllDoctorTerms(@PathVariable UUID id,@PathVariable UUID pharmacyId) {
+        return termService.getAllDoctorTermsInPharmacy(id, pharmacyId);
+    }
+
+
+    //@PreAuthorize("hasRole('ROLE_PATIENT')")
+    @GetMapping("/upcoming/{id}")
+    public ResponseEntity<List<TermDTO>> getPatientsUpcomingTerms(@PathVariable UUID id){
+        List<TermDTO> terms;
+        try{
+            terms = termService.findAllPatientsUpcomingTerms(id);
+        }catch(RuntimeException ex){
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return new ResponseEntity<>(terms,HttpStatus.OK);
     }
 }

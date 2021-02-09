@@ -1,11 +1,15 @@
 package team18.pharmacyapp.repository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 import team18.pharmacyapp.model.Term;
+import team18.pharmacyapp.model.enums.TermType;
 
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -36,10 +40,15 @@ public interface TermRepository extends JpaRepository<Term, UUID> {
             "and t.startTime>=w.fromHour and t.endTime<=w.toHour")
     List<Term> findAllFreeTermsForDoctorInPharmacy(@Param("doctorId") UUID doctorId,@Param("pharmacyId")UUID pharmacyId);
 
-
     @Query("SELECT t FROM term t WHERE t.patient.id = :patientId ")
     List<Term> findAllTermsForPatient(@Param("patientId") UUID patientId);
 
+    @Transactional(readOnly = true)
+    Page<Term> findAllByPatient_IdAndTypeAndStartTimeBefore(@Param("patientId") UUID id, @Param("termType") TermType checkup, @Param("today") Date today, Pageable pageable);
 
+    @Transactional(readOnly = true)
+    Page<Term> findAllByPatient_IdAndTypeAndStartTimeAfter(@Param("patientId") UUID id, @Param("termType") TermType checkup, @Param("today") Date today, Pageable pageable);
 
+    @Transactional(readOnly = true)
+    Page<Term> findAllByPatient_IdAndStartTimeAfter(@Param("patientId") UUID id, @Param("today") Date today, Pageable pageable);
 }

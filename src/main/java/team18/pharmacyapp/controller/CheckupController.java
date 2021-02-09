@@ -3,14 +3,16 @@ package team18.pharmacyapp.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import team18.pharmacyapp.model.Term;
-import team18.pharmacyapp.model.dtos.ScheduleCheckupDTO;
+import team18.pharmacyapp.model.dtos.*;
 import team18.pharmacyapp.model.exceptions.ActionNotAllowedException;
 import team18.pharmacyapp.model.exceptions.AlreadyScheduledException;
 import team18.pharmacyapp.model.exceptions.EntityNotFoundException;
 import team18.pharmacyapp.model.exceptions.ScheduleTermException;
 import team18.pharmacyapp.service.interfaces.CheckupService;
+import team18.pharmacyapp.service.interfaces.TermService;
 
 import java.util.List;
 import java.util.UUID;
@@ -20,29 +22,71 @@ import java.util.UUID;
 @RequestMapping(value = "api/checkups")
 public class CheckupController {
     private final CheckupService checkupService;
+    private final TermService termService;
 
     @Autowired
-    public CheckupController(CheckupService checkupService) {
+    public CheckupController(CheckupService checkupService, TermService termService) {
         this.checkupService = checkupService;
+        this.termService = termService;
     }
 
+    @PreAuthorize("hasRole('ROLE_PATIENT')")
     @GetMapping
-    public ResponseEntity<List<Term>> getAllAvailableCheckups() {
-        List<Term> checkups = checkupService.findAllAvailableCheckups();
+    public ResponseEntity<List<TermDTO>> getAllAvailableCheckups() {
+        List<TermDTO> checkups;
+
+        try {
+            checkups = checkupService.findAllAvailableCheckups();
+        }catch(RuntimeException e){
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
 
         return new ResponseEntity<>(checkups, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ROLE_PATIENT')")
     @GetMapping("/patient/{id}")
-    public ResponseEntity<List<Term>> getAllPatientsCheckups(@PathVariable UUID id) {
-        List<Term> checkups = checkupService.findAllPatientsCheckups(id);
+    public ResponseEntity<List<TermDTO>> getAllPatientsCheckups(@PathVariable UUID id) {
+        List<TermDTO> checkups;
+
+        try{
+            checkups = checkupService.findAllPatientsCheckups(id);
+        }catch(RuntimeException e){
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return new ResponseEntity<>(checkups, HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasRole('ROLE_PATIENT')")
+    @PostMapping("/past")
+    public ResponseEntity<TermPaginationDTO> getAllPatientsPastCheckupsPaginated(@RequestBody TermPaginationSortingDTO psDTO) {
+        TermPaginationDTO checkups;
+        try{
+            checkups = termService.findAllPatientsPastTermsPaginated(psDTO.getId(), psDTO.getSort(), psDTO.getTermType(), psDTO.getPage());
+        }catch(RuntimeException e){
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return new ResponseEntity<>(checkups, HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasRole('ROLE_PATIENT')")
+    @PostMapping("/upcoming")
+    public ResponseEntity<TermPaginationDTO> getAllPatientsUpcomingCheckupsPaginated(@RequestBody TermPaginationSortingDTO psDTO) {
+        TermPaginationDTO checkups;
+        try{
+            checkups = termService.findPatientsUpcomingTermsByTypePaginated(psDTO.getId(), psDTO.getSort(), psDTO.getTermType(), psDTO.getPage());
+        }catch(RuntimeException e){
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
 
         return new ResponseEntity<>(checkups, HttpStatus.OK);
     }
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<Term> getCheckup(@PathVariable UUID id) {
-        Term checkup = checkupService.findOne(id);
+    public ResponseEntity<TermDTO> getCheckup(@PathVariable UUID id) {
+        TermDTO checkup = checkupService.findOne(id);
 
         if (checkup == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -50,6 +94,7 @@ public class CheckupController {
 
         return new ResponseEntity<>(checkup, HttpStatus.OK);
     }
+
     @GetMapping(value = "/patientCheckup/{id}")
     public ResponseEntity<Term> getCheckupFetchPatient(@PathVariable UUID id) {
         Term checkup = checkupService.findByIdFetchDoctor(id);
@@ -69,26 +114,12 @@ public class CheckupController {
 
     @PutMapping(consumes = "application/json")
     public ResponseEntity<Term> updateCheckup(@RequestBody Term checkup) {
-        Term checkupForUpdate = checkupService.findOne(checkup.getId());
-
-        if (checkupForUpdate == null) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-
-        checkupForUpdate.setDoctor(checkup.getDoctor());
-        checkupForUpdate.setStartTime(checkup.getStartTime());
-        checkupForUpdate.setEndTime(checkup.getEndTime());
-        checkupForUpdate.setPatient(checkup.getPatient());
-        checkupForUpdate.setPrice(checkup.getPrice());
-        checkupForUpdate.setReport(checkup.getReport());
-
-        checkupForUpdate = checkupService.save(checkupForUpdate);
-        return new ResponseEntity<>(checkupForUpdate, HttpStatus.OK);
+        return new ResponseEntity<>(null, HttpStatus.OK);
     }
 
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<Void> deleteCheckup(@PathVariable UUID id) {
-        Term term = checkupService.findOne(id);
+        TermDTO term = checkupService.findOne(id);
 
         if (term != null) {
             checkupService.deleteById(id);
@@ -98,6 +129,7 @@ public class CheckupController {
         }
     }
 
+    @PreAuthorize("hasRole('ROLE_PATIENT')")
     @PutMapping(consumes = "application/json", value = "/schedule")
     public ResponseEntity<Void> patientScheduleCheckup(@RequestBody ScheduleCheckupDTO term) {
         boolean success;
@@ -108,7 +140,7 @@ public class CheckupController {
         } catch (ScheduleTermException ex) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         } catch (AlreadyScheduledException ex) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
         } catch (RuntimeException ex) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -120,8 +152,9 @@ public class CheckupController {
         }
     }
 
+    @PreAuthorize("hasRole('ROLE_PATIENT')")
     @PutMapping(consumes = "application/json", value = "/cancel")
-    public ResponseEntity<Void> patientCancelCheckup(@RequestBody ScheduleCheckupDTO term) {
+    public ResponseEntity<Void> patientCancelCheckup(@RequestBody CancelTermDTO term) {
         boolean success;
         try {
             success = checkupService.patientCancelCheckup(term);

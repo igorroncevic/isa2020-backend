@@ -11,6 +11,6 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 public class MedicineFilterDTO {
-    Medicine medicine;
+    MedicineDTO medicine;
     List<PharmacyFilteringDTO> pharmacies;
 }
