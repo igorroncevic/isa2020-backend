@@ -24,7 +24,7 @@ public class MedicineSpecification {
     )
     private UUID id;
 
-    @OneToOne()
+    @OneToOne(fetch = FetchType.LAZY)
     private Medicine medicine;
 
     private String replacementMedicineCode;

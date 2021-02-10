@@ -4,6 +4,7 @@ package team18.pharmacyapp.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import team18.pharmacyapp.model.dtos.MarkDTO;
 import team18.pharmacyapp.model.exceptions.ActionNotAllowedException;
@@ -21,6 +22,7 @@ public class MarkController {
         this.markService = markService;
     }
 
+    @PreAuthorize("hasRole('ROLE_PATIENT')")
     @PostMapping(consumes = "application/json")
     public ResponseEntity<Void> giveMark(@RequestBody MarkDTO markDTO) {
         boolean success;
@@ -42,6 +44,7 @@ public class MarkController {
         }
     }
 
+    @PreAuthorize("hasRole('ROLE_PATIENT')")
     @PutMapping(consumes = "application/json")
     public ResponseEntity<Void> updateMark(@RequestBody MarkDTO markDTO) {
         boolean success;

@@ -1,7 +1,10 @@
 package team18.pharmacyapp.service.interfaces;
 
 import team18.pharmacyapp.model.Term;
+import team18.pharmacyapp.model.dtos.CancelTermDTO;
+import team18.pharmacyapp.model.dtos.DoctorTermDTO;
 import team18.pharmacyapp.model.dtos.ScheduleCheckupDTO;
+import team18.pharmacyapp.model.dtos.TermDTO;
 import team18.pharmacyapp.model.enums.TermType;
 import team18.pharmacyapp.model.exceptions.ActionNotAllowedException;
 import team18.pharmacyapp.model.exceptions.AlreadyScheduledException;
@@ -12,15 +15,15 @@ import java.util.List;
 import java.util.UUID;
 
 public interface CheckupService {
-    Term findOne(UUID id);
+    TermDTO findOne(UUID id);
 
-    Term findByIdFetchDoctor(UUID id);
+    DoctorTermDTO findByIdFetchPatint(UUID id);
 
-    List<Term> findAll(TermType termType);
+    List<TermDTO> findAll(TermType termType);
 
-    List<Term> findAllAvailableCheckups();
+    List<TermDTO> findAllAvailableCheckups();
 
-    List<Term> findAllPatientsCheckups(UUID patientId);
+    List<TermDTO> findAllPatientsCheckups(UUID patientId);
 
     Term save(Term term);
 
@@ -28,6 +31,8 @@ public interface CheckupService {
 
     boolean patientScheduleCheckup(ScheduleCheckupDTO term) throws ActionNotAllowedException, ScheduleTermException, RuntimeException, AlreadyScheduledException;
 
-    boolean patientCancelCheckup(ScheduleCheckupDTO term) throws EntityNotFoundException, ActionNotAllowedException,RuntimeException;
 
+    List<Term> doctorPharmacyFree(UUID doctorId,UUID pharmacyId);
+
+    boolean patientCancelCheckup(CancelTermDTO term) throws EntityNotFoundException, ActionNotAllowedException,RuntimeException;
 }

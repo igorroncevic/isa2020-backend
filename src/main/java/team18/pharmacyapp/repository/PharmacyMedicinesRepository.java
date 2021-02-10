@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import team18.pharmacyapp.model.dtos.ReservedMedicineDTO;
 import team18.pharmacyapp.model.keys.PharmacyMedicinesId;
 import team18.pharmacyapp.model.medicine.Medicine;
+import team18.pharmacyapp.model.medicine.MedicineSpecification;
 import team18.pharmacyapp.model.medicine.PharmacyMedicines;
 import team18.pharmacyapp.model.users.Patient;
 
@@ -32,4 +33,5 @@ public interface PharmacyMedicinesRepository extends JpaRepository<PharmacyMedic
     @Transactional(readOnly = true)
     @Query(nativeQuery = true, value = "SELECT COUNT(*) FROM reserved_medicines WHERE pharmacy_id = :pharmacyId and medicine_id = :medicineId and handled = false")
     int getNumberOfUnhandledReservations(UUID pharmacyId, UUID medicineId);
+
 }

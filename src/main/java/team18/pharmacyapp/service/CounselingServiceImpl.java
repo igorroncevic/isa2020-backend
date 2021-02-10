@@ -50,7 +50,7 @@ public class CounselingServiceImpl implements CounselingService {
         if(today.after(timeRange.getFromTime()) || today.after(timeRange.getToTime())) throw new BadTimeRangeException("");
 
         for (PharmacyMarkPriceDTO p : allPharmacies) {
-            List<DoctorDTO> doctors = this.getFreeDoctorsForPharmacy(p.getId(), timeRange);
+            List<DoctorMarkPharmaciesDTO> doctors = this.getFreeDoctorsForPharmacy(p.getId(), timeRange);
             if (doctors.size() >= 1) availablePharmacies.add(p);
         }
 
@@ -58,9 +58,9 @@ public class CounselingServiceImpl implements CounselingService {
     }
 
     @Override
-    public List<DoctorDTO> getFreeDoctorsForPharmacy(UUID pharmacyId, DateTimeRangeDTO timeRange) {
+    public List<DoctorMarkPharmaciesDTO> getFreeDoctorsForPharmacy(UUID pharmacyId, DateTimeRangeDTO timeRange) {
         List<Doctor> doctors = doctorRepository.findAllPharmacistsInPharmacy(pharmacyId);
-        List<DoctorDTO> freeDoctors = new ArrayList<>();
+        List<DoctorMarkPharmaciesDTO> freeDoctors = new ArrayList<>();
 
         for (Doctor d : doctors) {
             LocalTime timeRangeStartTime = DateTimeHelpers.getTimeWithoutDate(timeRange.getFromTime());
@@ -98,14 +98,14 @@ public class CounselingServiceImpl implements CounselingService {
 
             if (continueFlag) continue; // Ako se vrijeme nekog termina poklapa sa ovim terminom
 
-            DoctorDTO doctorDTO = new DoctorDTO();
-            doctorDTO.setId(d.getId());
-            doctorDTO.setName(d.getName());
-            doctorDTO.setSurname(d.getSurname());
+            DoctorMarkPharmaciesDTO doctorMarkPharmaciesDTO = new DoctorMarkPharmaciesDTO();
+            doctorMarkPharmaciesDTO.setId(d.getId());
+            doctorMarkPharmaciesDTO.setName(d.getName());
+            doctorMarkPharmaciesDTO.setSurname(d.getSurname());
             float averageMark = markRepository.getAverageMarkForDoctor(d.getId());
-            doctorDTO.setAverageMark(averageMark);
+            doctorMarkPharmaciesDTO.setAverageMark(averageMark);
 
-            freeDoctors.add(doctorDTO); // Ako nista od ovoga nije tacno, doktor je slobodan
+            freeDoctors.add(doctorMarkPharmaciesDTO); // Ako nista od ovoga nije tacno, doktor je slobodan
         }
 
         return freeDoctors;
@@ -140,24 +140,38 @@ public class CounselingServiceImpl implements CounselingService {
 
     @Override
     @Transactional(rollbackFor = {EntityNotFoundException.class, ActionNotAllowedException.class, RuntimeException.class})
-    public boolean patientCancelCounseling(CancelCounselingDTO term) throws EntityNotFoundException, ActionNotAllowedException, RuntimeException {
-        Term checkTerm = counselingRepository.findByIdCustom(term.getCounselingId());
+    public boolean patientCancelCounseling(CancelTermDTO term) throws EntityNotFoundException, ActionNotAllowedException, RuntimeException {
+        Term checkTerm = counselingRepository.findByIdCustom(term.getTermId());
 
         if (checkTerm == null) throw new EntityNotFoundException("There is no such counseling");
         if(!checkTerm.getPatient().getId().equals(term.getPatientId())) throw new ActionNotAllowedException("You can only cancel your own counselings");
 
-        Date yesterday = new Date(System.currentTimeMillis() - 24 * 60 * 60 * 1000);
-        if (checkTerm.getStartTime().before(yesterday)) throw new ActionNotAllowedException("Cannot cancel 24hrs before the counseling or any past counselings");
+        Date now = new Date(System.currentTimeMillis());
+        if (checkTerm.getStartTime().before(now)) throw new ActionNotAllowedException("Cannot cancel any past counselings");
 
-        int rowsUpdated = counselingRepository.patientCancelCounseling(term.getCounselingId());
+        Date termTime = new Date(checkTerm.getStartTime().getTime());
+        int diffInHours = (int)(termTime.getTime() - now.getTime()) / (1000 * 60 * 60);
+        if(diffInHours <= 23) throw new ActionNotAllowedException("Cannot cancel 24hrs before the counseling");
+
+        int rowsUpdated = counselingRepository.patientCancelCounseling(term.getTermId());
         if (rowsUpdated != 1) throw new RuntimeException("Couldn't cancel this term!");
 
         return true;
     }
 
     @Override
-    public List<Term> findAllPatientsCounselings(UUID id) {
-        return counselingRepository.findAllPatientsCounselings(id, TermType.counseling);
-    }
+    public List<TermDTO> findAllPatientsCounselings(UUID id) {
+        List<Term> counselings = counselingRepository.findAllPatientsCounselings(id, TermType.counseling);
 
+        List<TermDTO> finalCounselings = new ArrayList<>();
+        for(Term t : counselings){
+            Doctor doctor = doctorRepository.findDoctorByTermId(t.getId());
+            DoctorDTO doctorDto = new DoctorDTO(doctor.getId(), doctor.getName(), doctor.getSurname(), doctor.getEmail(), doctor.getPhoneNumber(),
+                    doctor.getRole(), null);
+            TermDTO termDto = new TermDTO(t.getId(), t.getStartTime(), t.getEndTime(), t.getPrice(), t.getType(), doctorDto);
+            finalCounselings.add(termDto);
+        }
+
+        return finalCounselings;
+    }
 }

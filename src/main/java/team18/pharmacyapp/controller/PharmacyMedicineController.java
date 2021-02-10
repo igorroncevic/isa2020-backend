@@ -7,6 +7,7 @@ import team18.pharmacyapp.model.Pharmacy;
 import team18.pharmacyapp.model.Term;
 import team18.pharmacyapp.model.dtos.AddPharmacyMedicineDTO;
 import team18.pharmacyapp.model.dtos.MedicineQuantityDTO;
+import team18.pharmacyapp.model.dtos.MedicineIdNameDTO;
 import team18.pharmacyapp.model.dtos.ReportMedicineDTO;
 import team18.pharmacyapp.model.dtos.ScheduleCheckupDTO;
 import team18.pharmacyapp.model.exceptions.ActionNotAllowedException;
@@ -34,7 +35,7 @@ public class PharmacyMedicineController {
     }
 
     @PostMapping("availability")
-    public boolean checkavAilability(@RequestBody ReportMedicineDTO dto){
+    public String checkavAilability(@RequestBody ReportMedicineDTO dto){
         return medicinesService.checkAvailability(dto);
     }
 

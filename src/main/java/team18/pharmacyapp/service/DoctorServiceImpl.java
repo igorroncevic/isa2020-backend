@@ -4,10 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import team18.pharmacyapp.model.Address;
 import team18.pharmacyapp.model.Pharmacy;
-import team18.pharmacyapp.model.dtos.DoctorDTO;
-import team18.pharmacyapp.model.dtos.PatientDoctorRoleDTO;
-import team18.pharmacyapp.model.dtos.RegisterUserDTO;
-import team18.pharmacyapp.model.dtos.DoctorsPatientDTO;
+import team18.pharmacyapp.model.dtos.*;
 import team18.pharmacyapp.model.enums.UserRole;
 import team18.pharmacyapp.model.users.Doctor;
 import team18.pharmacyapp.repository.AddressRepository;
@@ -36,40 +33,40 @@ public class DoctorServiceImpl implements DoctorService {
 
 
     @Override
-    public List<DoctorDTO> findAllDoctors(UserRole role) {
+    public List<DoctorMarkPharmaciesDTO> findAllDoctors(UserRole role) {
         List<Doctor> dermatologists = doctorRepository.findAllDoctors(role);
-        List<DoctorDTO> doctorDTOs = new ArrayList<>();
+        List<DoctorMarkPharmaciesDTO> doctorMarkPharmaciesDTOS = new ArrayList<>();
         for(Doctor doctor : dermatologists) {
             List<String> pharmacies = doctorRepository.findAllDoctorsPharmaciesNames(doctor.getId());
             Float averageMark = markRepository.getAverageMarkForDoctor(doctor.getId());
-            DoctorDTO doctorDTO = new DoctorDTO();
-            doctorDTO.setId(doctor.getId());
-            doctorDTO.setName(doctor.getName());
-            doctorDTO.setSurname(doctor.getSurname());
-            doctorDTO.setAverageMark(averageMark);
-            doctorDTO.setPharmacies(pharmacies);
-            doctorDTOs.add(doctorDTO);
+            DoctorMarkPharmaciesDTO doctorMarkPharmaciesDTO = new DoctorMarkPharmaciesDTO();
+            doctorMarkPharmaciesDTO.setId(doctor.getId());
+            doctorMarkPharmaciesDTO.setName(doctor.getName());
+            doctorMarkPharmaciesDTO.setSurname(doctor.getSurname());
+            doctorMarkPharmaciesDTO.setAverageMark(averageMark);
+            doctorMarkPharmaciesDTO.setPharmacies(pharmacies);
+            doctorMarkPharmaciesDTOS.add(doctorMarkPharmaciesDTO);
         }
-        return doctorDTOs;
+        return doctorMarkPharmaciesDTOS;
     }
 
-    public List<DoctorDTO> findAllDoctorsForPharmacy(UUID pharmacyId, UserRole role) {
+    public List<DoctorMarkPharmaciesDTO> findAllDoctorsForPharmacy(UUID pharmacyId, UserRole role) {
         List<Doctor> dermatologists = doctorRepository.findAllDoctors(role);
         Pharmacy pharmacy = new Pharmacy();
         pharmacy.setId(pharmacyId);
-        List<DoctorDTO> dermatologistsForPharmacy = new ArrayList<>();
+        List<DoctorMarkPharmaciesDTO> dermatologistsForPharmacy = new ArrayList<>();
         for (Doctor doctor : dermatologists) {
             List<Pharmacy> pharmacies = doctorRepository.findAllDoctorsPharmacies(doctor.getId());
             if(pharmacies.contains(pharmacy)) {
                 List<String> pharmaciesNames = doctorRepository.findAllDoctorsPharmaciesNames(doctor.getId());
                 Float averageMark = markRepository.getAverageMarkForDoctor(doctor.getId());
-                DoctorDTO doctorDTO = new DoctorDTO();
-                doctorDTO.setId(doctor.getId());
-                doctorDTO.setName(doctor.getName());
-                doctorDTO.setSurname(doctor.getSurname());
-                doctorDTO.setAverageMark(averageMark);
-                doctorDTO.setPharmacies(pharmaciesNames);
-                dermatologistsForPharmacy.add(doctorDTO);
+                DoctorMarkPharmaciesDTO doctorMarkPharmaciesDTO = new DoctorMarkPharmaciesDTO();
+                doctorMarkPharmaciesDTO.setId(doctor.getId());
+                doctorMarkPharmaciesDTO.setName(doctor.getName());
+                doctorMarkPharmaciesDTO.setSurname(doctor.getSurname());
+                doctorMarkPharmaciesDTO.setAverageMark(averageMark);
+                doctorMarkPharmaciesDTO.setPharmacies(pharmaciesNames);
+                dermatologistsForPharmacy.add(doctorMarkPharmaciesDTO);
             }
         }
         return dermatologistsForPharmacy;
@@ -115,8 +112,12 @@ public class DoctorServiceImpl implements DoctorService {
     }
 
     @Override
-    public List<Pharmacy> getDoctorPharmacyList(UUID doctorId) {
-        return doctorRepository.getDoctorPharmacyList(doctorId);
+    public List<PharmacyDTO> getDoctorPharmacyList(UUID doctorId) {
+        List<PharmacyDTO> ret=new ArrayList<>();
+        for(Pharmacy pharmacy:doctorRepository.getDoctorPharmacyList(doctorId)){
+            ret.add(new PharmacyDTO(pharmacy.getId(),pharmacy.getName(),pharmacy.getAddress().getCountry(),pharmacy.getAddress().getCity(),pharmacy.getAddress().getStreet()));
+        }
+        return ret;
     }
 
     public List<DoctorsPatientDTO> findDoctorsPatients(UUID doctorId) {
@@ -125,24 +126,20 @@ public class DoctorServiceImpl implements DoctorService {
     }
 
     @Override
-    public List<DoctorDTO> getPatientsDoctors( PatientDoctorRoleDTO patientDoctorRoleDTO) {
+    public List<DoctorMarkPharmaciesDTO> getPatientsDoctors(PatientDoctorRoleDTO patientDoctorRoleDTO) {
         List<Doctor> doctors = doctorRepository.getPatientsDoctors(patientDoctorRoleDTO.getPatientId(),
                 patientDoctorRoleDTO.getDoctorRole(), new Date(System.currentTimeMillis()));
-        List<DoctorDTO> doctorMarkDTOS = new ArrayList<>();
+        List<DoctorMarkPharmaciesDTO> doctorMarkDTOS = new ArrayList<>();
         for (Doctor d : doctors) {
-            DoctorDTO doctorDTO = new DoctorDTO();
-            doctorDTO.setId(d.getId());
-            doctorDTO.setName(d.getName());
-            doctorDTO.setSurname(d.getSurname());
+            DoctorMarkPharmaciesDTO doctorMarkPharmaciesDTO = new DoctorMarkPharmaciesDTO();
+            doctorMarkPharmaciesDTO.setId(d.getId());
+            doctorMarkPharmaciesDTO.setName(d.getName());
+            doctorMarkPharmaciesDTO.setSurname(d.getSurname());
             Float averageMark = markRepository.getAverageMarkForDoctor(d.getId());
-            doctorDTO.setAverageMark(averageMark);
-            doctorMarkDTOS.add(doctorDTO);
+            doctorMarkPharmaciesDTO.setAverageMark(averageMark);
+            doctorMarkDTOS.add(doctorMarkPharmaciesDTO);
         }
 
         return doctorMarkDTOS;
     }
-
-
-
-
 }

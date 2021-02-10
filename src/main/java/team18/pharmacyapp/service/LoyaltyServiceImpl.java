@@ -110,6 +110,11 @@ public class LoyaltyServiceImpl implements LoyaltyService {
         patientRepository.save(pat);
     }
 
+    @Override
+    public Loyalty getPatientsLoyalty(UUID patientId) {
+        return loyaltyRepository.getPatientsLoyalty(patientId);
+    }
+
 
     @Override
     public void deleteById(UUID id) {

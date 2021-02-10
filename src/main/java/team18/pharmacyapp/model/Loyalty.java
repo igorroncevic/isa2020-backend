@@ -39,6 +39,4 @@ public class Loyalty {
     @OneToMany(mappedBy = "loyalty", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Patient> patients;
-
-
 }

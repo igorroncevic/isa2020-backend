@@ -20,10 +20,8 @@ import team18.pharmacyapp.service.CustomUserDetailsService;
 
 
 @Configuration
-// Ukljucivanje podrske za anotacije "@Pre*" i "@Post*" koje ce aktivirati autorizacione provere za svaki pristup metodi
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -53,9 +51,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .exceptionHandling().authenticationEntryPoint(restAuthenticationEntryPoint).and()
 
                 // svim korisnicima dopusti da pristupe putanjama /auth/**, (/h2-console/** ako se koristi H2 baza) i /api/foo
-                .authorizeRequests().antMatchers("/auth/login").permitAll().antMatchers("/h2-console/**").permitAll().antMatchers("/api/foo").permitAll()
+                .authorizeRequests().antMatchers("/auth/**").permitAll()
+                .antMatchers("/h2-console/**").permitAll()
                 .antMatchers("/api/patients/activate/**").permitAll()
-                .antMatchers("/auth/firstLoginPass").permitAll()
+                .antMatchers("/api/medicines/noauth/**").permitAll()
+                .antMatchers("/api/pharmacies/search").permitAll()
+
 
                 .anyRequest().authenticated().and()
 

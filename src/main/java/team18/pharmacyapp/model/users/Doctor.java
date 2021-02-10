@@ -16,8 +16,7 @@ import java.util.List;
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class Doctor extends RegisteredUser implements Serializable {
-
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "doctor")
+    @OneToMany(mappedBy = "doctor", cascade = CascadeType.ALL)
     private List<Vacation> vacations;
 
     @OneToMany(mappedBy = "doctor", cascade = CascadeType.ALL)

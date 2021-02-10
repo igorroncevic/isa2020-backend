@@ -27,7 +27,6 @@ public class RegisteredUserServiceImpl implements RegisteredUserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-
     @Autowired
     public RegisteredUserServiceImpl(RegisteredUserRepository userRepository, AddressRepository addressRepository, AuthorityService authorityService, PatientService patientService) {
         this.userRepository = userRepository;
@@ -61,7 +60,7 @@ public class RegisteredUserServiceImpl implements RegisteredUserService {
             address.setCountry(dto.getCountry());
             address = addressRepository.save(address);
         }
-        RegisteredUser user=new RegisteredUser();
+        RegisteredUser user = new RegisteredUser();
         user.setRole(role);
         user.setName(dto.getName());
         user.setSurname(dto.getSurname());
