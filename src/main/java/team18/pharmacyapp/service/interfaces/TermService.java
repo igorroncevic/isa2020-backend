@@ -17,6 +17,8 @@ public interface TermService {
     Term scheduleTerm(DoctorScheduleTermDTO termDTO);
     List<Term> getAllPatientTerms(UUID patientId);
     List<Term> getAllDoctorTerms(UUID doctorId);
+    Term hasPatientHasTermNowWithDoctor(UUID doctorId,UUID patientId);
+
     TermPaginationDTO findAllPatientsPastTermsPaginated(UUID id, String sort, String termType, int page);
     TermPaginationDTO findPatientsUpcomingTermsByTypePaginated(UUID id, String sort, String termType, int page);
     List<DoctorTermDTO> getAllDoctorTermsInPharmacy(UUID doctorId, UUID pharmacyId);

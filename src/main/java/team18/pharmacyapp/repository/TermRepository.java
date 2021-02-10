@@ -43,6 +43,9 @@ public interface TermRepository extends JpaRepository<Term, UUID> {
     @Query("SELECT t FROM term t WHERE t.patient.id = :patientId ")
     List<Term> findAllTermsForPatient(@Param("patientId") UUID patientId);
 
+    @Query("select t from term t where t.patient.id=:patientId and t.doctor.id=:doctorId and :time>=t.startTime and :time<t.endTime")
+    Term findTermByDoctorAndPatientAndTime(UUID patientId, UUID doctorId, Date time);
+
     @Transactional(readOnly = true)
     Page<Term> findAllByPatient_IdAndTypeAndStartTimeBefore(@Param("patientId") UUID id, @Param("termType") TermType checkup, @Param("today") Date today, Pageable pageable);
 

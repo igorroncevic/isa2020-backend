@@ -44,6 +44,13 @@ public class CheckupController {
         return new ResponseEntity<>(checkups, HttpStatus.OK);
     }
 
+    @GetMapping("/freeCheckups/{doctorId}/{pharmacyId}")
+    public ResponseEntity<List<Term>> getDoctorPharmacyFreeTerms(@PathVariable UUID doctorId,@PathVariable UUID pharmacyId) {
+        List<Term> checkups = checkupService.doctorPharmacyFree(doctorId,pharmacyId);
+
+        return new ResponseEntity<>(checkups, HttpStatus.OK);
+    }
+
     @PreAuthorize("hasRole('ROLE_PATIENT')")
     @GetMapping("/patient/{id}")
     public ResponseEntity<List<TermDTO>> getAllPatientsCheckups(@PathVariable UUID id) {

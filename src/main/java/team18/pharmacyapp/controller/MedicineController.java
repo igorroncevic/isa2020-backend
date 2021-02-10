@@ -9,6 +9,7 @@ import team18.pharmacyapp.model.dtos.*;
 import team18.pharmacyapp.model.exceptions.ActionNotAllowedException;
 import team18.pharmacyapp.model.medicine.Medicine;
 import team18.pharmacyapp.model.exceptions.ReserveMedicineException;
+import team18.pharmacyapp.model.medicine.MedicineSpecification;
 import team18.pharmacyapp.model.medicine.ReservedMedicines;
 import team18.pharmacyapp.service.interfaces.MedicineService;
 import team18.pharmacyapp.service.interfaces.ReservedMedicinesService;
@@ -228,4 +229,15 @@ public class MedicineController {
         Medicine medicine = medicineService.registerNewMedicine(newMedicine);
         return new ResponseEntity<>(medicine, HttpStatus.CREATED);
     }
+
+    @GetMapping("specification/{id}")
+    public ResponseEntity<MedicineSpecification> getSpecificatin(@PathVariable UUID id){
+        MedicineSpecification specification=medicineService.getMedicineSpecification(id);
+        if(specification!=null){
+            return new ResponseEntity<>(specification,HttpStatus.OK);
+        }
+        return  new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
+
 }

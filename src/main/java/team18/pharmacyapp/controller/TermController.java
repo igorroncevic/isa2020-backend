@@ -52,4 +52,15 @@ public class TermController {
 
         return new ResponseEntity<>(terms,HttpStatus.OK);
     }
+
+    @GetMapping("nowTerm/{patientId}/{doctorId}")
+    public ResponseEntity<Term> getNowTerm(@PathVariable UUID patientId,@PathVariable UUID doctorId){
+        Term term=termService.hasPatientHasTermNowWithDoctor(doctorId,patientId);
+        if(term!=null){
+            return new ResponseEntity<>(term,HttpStatus.OK);
+        }
+        return new  ResponseEntity<>(null,HttpStatus.BAD_REQUEST);
+    }
+
+
 }

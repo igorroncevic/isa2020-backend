@@ -9,6 +9,8 @@ import team18.pharmacyapp.model.exceptions.*;
 import team18.pharmacyapp.model.users.Doctor;
 import team18.pharmacyapp.model.users.Patient;
 import team18.pharmacyapp.repository.CheckupRepository;
+
+import team18.pharmacyapp.repository.TermRepository;
 import team18.pharmacyapp.repository.users.DoctorRepository;
 import team18.pharmacyapp.repository.users.PatientRepository;
 import team18.pharmacyapp.service.interfaces.CheckupService;
@@ -25,12 +27,16 @@ public class CheckupServiceImpl implements CheckupService {
     private final PatientRepository patientRepository;
     private final DoctorRepository doctorRepository;
     private final TermService termService;
+    private final TermRepository termRepository;
 
-    public CheckupServiceImpl(CheckupRepository checkupRepository, PatientRepository patientRepository, DoctorRepository doctorRepository, TermService termService) {
+
+    public CheckupServiceImpl(CheckupRepository checkupRepository, PatientRepository patientRepository, DoctorRepository doctorRepository, TermService termService,TermRepository termRepository) {
+
         this.checkupRepository = checkupRepository;
         this.patientRepository = patientRepository;
         this.doctorRepository = doctorRepository;
         this.termService = termService;
+        this.termRepository = termRepository;
     }
 
     @Override
@@ -142,4 +148,11 @@ public class CheckupServiceImpl implements CheckupService {
 
         return true;
     }
+
+    @Override
+    public List<Term> doctorPharmacyFree(UUID doctorId, UUID pharmacyId) {
+        return termRepository.findAllFreeTermsForDoctorInPharmacy(doctorId,pharmacyId);
+    }
+
+
 }

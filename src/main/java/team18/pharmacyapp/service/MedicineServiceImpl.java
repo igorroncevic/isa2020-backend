@@ -280,7 +280,15 @@ public class MedicineServiceImpl implements MedicineService {
 
         return finalMedicines;
     }
+    @Override
+    public MedicineSpecification getMedicineSpecification(UUID medicineId) {
+        return medicineRepository.getMedicineSpecification(medicineId);
+    }
 
+    @Override
+    public String getReplacmentMedicine(UUID medicineId) {
+        return medicineRepository.getReplacmentMedicine(medicineId);
+    }
     @Override
     public List<MedicineFilterDTO> filterNoAuthMedicines(MedicineFilterRequestDTO mfr) {
         List<Medicine>medicines = medicineRepository.findAllAvailableMedicinesNoAuth();
