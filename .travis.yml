@@ -17,7 +17,14 @@ install:
 
 before_script:
   - psql -c 'create database pharmacydb;' -U postgres
-  - psql -c "SELECT version();"
 
 script:
   - mvn package
+
+deploy:
+  provider: heroku
+  api_key: $HEROKU_API_KEY
+  app: isa-pharmacy-team18-backend
+  on:
+    branch: master
+
