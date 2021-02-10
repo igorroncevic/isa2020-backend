@@ -18,9 +18,13 @@ import java.util.UUID;
 
 public interface MedicineRepository extends JpaRepository<Medicine, UUID> {
     @Transactional(readOnly = true)
-    @Query(value = "SELECT p FROM medicine m INNER JOIN pharmacy_medicines p ON p.medicine = m.id JOIN FETCH p.pricings " +
+    @Query(value = "SELECT distinct p FROM medicine m INNER JOIN pharmacy_medicines p ON p.medicine = m.id JOIN FETCH p.pricings " +
             "JOIN FETCH p.pharmacy JOIN FETCH p.medicine WHERE p.quantity > 0 ORDER BY p.quantity DESC")
     List<PharmacyMedicines> findAllAvailableMedicines();
+
+    @Transactional(readOnly = true)
+    @Query(value = "SELECT distinct m FROM medicine m JOIN m.pharmacyMedicines pm WHERE pm.quantity > 0")
+    List<Medicine> findAllAvailableMedicinesNoAuth();
 
     @Transactional(readOnly = true)
     @Query("SELECT r FROM reserved_medicines r JOIN FETCH r.patient")

@@ -36,4 +36,6 @@ public interface MedicineService {
     boolean addPatientsAllergy(MedicineAllergyDTO allergy) throws RuntimeException;
 
     List<MedicineFilterDTO> filterMedicines(MedicineFilterRequestDTO mfr);
+
+    List<MedicineFilterDTO> filterNoAuthMedicines(MedicineFilterRequestDTO mfr);
 }
