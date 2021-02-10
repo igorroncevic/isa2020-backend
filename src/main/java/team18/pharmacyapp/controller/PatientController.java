@@ -3,15 +3,18 @@ package team18.pharmacyapp.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import team18.pharmacyapp.model.dtos.LoginPatientDTO;
-import team18.pharmacyapp.model.dtos.RegisterUserDTO;
+import team18.pharmacyapp.model.dtos.MedicineIdNameDTO;
+import team18.pharmacyapp.model.dtos.PatientDTO;
+import team18.pharmacyapp.model.dtos.security.LoginDTO;
 import team18.pharmacyapp.model.dtos.UpdateProfileDataDTO;
 import team18.pharmacyapp.model.exceptions.ActionNotAllowedException;
 import team18.pharmacyapp.model.exceptions.EntityNotFoundException;
 import team18.pharmacyapp.model.medicine.Medicine;
 import team18.pharmacyapp.model.users.Patient;
-import team18.pharmacyapp.service.PatientServiceImpl;
+import team18.pharmacyapp.service.interfaces.PatientService;
+import team18.pharmacyapp.service.interfaces.RegisteredUserService;
 
 import java.util.List;
 import java.util.UUID;
@@ -21,10 +24,10 @@ import java.util.UUID;
 @RestController
 @RequestMapping(value = "api/patients")
 public class PatientController {
-    private final PatientServiceImpl patientService;
+    private final PatientService patientService;
 
     @Autowired
-    public PatientController(PatientServiceImpl patientService) {
+    public PatientController(PatientService patientService) {
         this.patientService = patientService;
     }
 
@@ -34,25 +37,24 @@ public class PatientController {
     }
 
 
-    @PostMapping("/login")
-    public ResponseEntity<Patient> login(@RequestBody LoginPatientDTO patient){
-        Patient pat = patientService.findRegisteredPatient(patient);
-        if (pat != null && pat.isActivated()) return new ResponseEntity<>(pat, HttpStatus.OK);
-
-        return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-    }
-
+    @PreAuthorize("hasRole('ROLE_PATIENT')")
     @GetMapping("/profile/{id}")
-    public ResponseEntity<Patient> getPatientProfileInfo(@PathVariable UUID id){
-        Patient pat = patientService.getPatientProfileInfo(id);
+    public ResponseEntity<PatientDTO> getPatientProfileInfo(@PathVariable UUID id){
+        PatientDTO pat;
+        try{
+            pat = patientService.getPatientProfileInfo(id);
+        }catch (RuntimeException e){
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
 
         return new ResponseEntity<>(pat, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ROLE_PATIENT')")
     @PutMapping("/profile")
     public ResponseEntity<Void> updatePatientProfileInfo(@RequestBody UpdateProfileDataDTO patient){
         boolean success;
-        try {
+        try{
             success = patientService.updatePatientProfileInfo(patient);
         }catch(EntityNotFoundException e){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -61,6 +63,7 @@ public class PatientController {
         }catch(RuntimeException ex){
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+
         if(success){
             return new ResponseEntity<>(HttpStatus.OK);
         }else{
@@ -68,17 +71,12 @@ public class PatientController {
         }
     }
 
-    @PostMapping(consumes = "application/json", value = "/register")
-    public ResponseEntity<Patient> saveNewPatient(@RequestBody RegisterUserDTO newPatient){
-        Patient patient = patientService.register(newPatient);
-        return new ResponseEntity<>(patient, HttpStatus.CREATED);
-    }
-
     @PutMapping("/activate/{id}")
     public ResponseEntity<Boolean> activateAccount(@PathVariable String id){
         UUID uuid=UUID.fromString(id);
-        return new ResponseEntity<>(patientService.activateAccount(uuid),HttpStatus.OK);
+        return new ResponseEntity<>(patientService.activateAcc(uuid),HttpStatus.OK);
     }
+
     @PutMapping("/addPenalty/{id}")
     public ResponseEntity<Integer> addPenalty(@PathVariable UUID id){
         int res=patientService.addPenalty(id);
@@ -88,7 +86,13 @@ public class PatientController {
     }
 
     @GetMapping("alergicMedicines/{id}")
-    public ResponseEntity<List<Medicine>> getAlergicMedicines(@PathVariable UUID id){
+    public ResponseEntity<List<MedicineIdNameDTO>> getAlergicMedicines(@PathVariable UUID id){
         return new ResponseEntity<>(patientService.getAlergicTo(id),HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasRole('ROLE_PATIENT')")
+    @GetMapping("penalties/{id}")
+    public ResponseEntity<Integer> getPatientPenalties(@PathVariable UUID id){
+        return new ResponseEntity<>(patientService.getPatientPenalties(id),HttpStatus.OK);
     }
 }

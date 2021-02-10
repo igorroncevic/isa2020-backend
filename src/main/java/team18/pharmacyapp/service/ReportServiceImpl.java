@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import team18.pharmacyapp.model.Report;
 import team18.pharmacyapp.model.Term;
 import team18.pharmacyapp.model.dtos.ReportCreateDTO;
+import team18.pharmacyapp.repository.CheckupRepository;
 import team18.pharmacyapp.repository.ReportRepository;
 import team18.pharmacyapp.service.interfaces.CheckupService;
 import team18.pharmacyapp.service.interfaces.ReportService;
@@ -13,11 +14,13 @@ import team18.pharmacyapp.service.interfaces.ReportService;
 public class ReportServiceImpl implements ReportService {
     private final ReportRepository reportRepository;
     private final CheckupService checkupService;
+    private final CheckupRepository checkupRepository;
 
     @Autowired
-    public ReportServiceImpl(ReportRepository reportRepository, CheckupService checkupService) {
+    public ReportServiceImpl(ReportRepository reportRepository, CheckupService checkupService, CheckupRepository checkupRepository) {
         this.reportRepository = reportRepository;
         this.checkupService = checkupService;
+        this.checkupRepository = checkupRepository;
     }
 
     @Override
@@ -27,11 +30,12 @@ public class ReportServiceImpl implements ReportService {
 
     @Override
     public Report createNew(ReportCreateDTO report) {
-        Report r=new Report();
-        Term term=checkupService.findOne(report.getTermId());
+        Report r = new Report();
+        //Term term = checkupService.findOne(report.getTermId());
+        Term term = checkupRepository.findById(report.getTermId()).orElseGet(null);
         r.setTerm(term);
         r.setText(report.getText());
-        Report saved=save(r);
+        Report saved = save(r);
         term.setReport(saved);
         checkupService.save(term);
         return saved;

@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
+import team18.pharmacyapp.model.enums.EPrescriptionStatus;
 import team18.pharmacyapp.model.users.Patient;
 
 import javax.persistence.*;
@@ -33,4 +34,7 @@ public class EPrescription {
     @OneToMany(mappedBy = "ePrescription", cascade = CascadeType.ALL)
     private List<EPrescriptionMedicines> ePrescriptionMedicines;
 
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private EPrescriptionStatus status;
 }

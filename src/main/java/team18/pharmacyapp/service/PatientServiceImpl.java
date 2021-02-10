@@ -1,25 +1,31 @@
 package team18.pharmacyapp.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import team18.pharmacyapp.model.Address;
-import team18.pharmacyapp.model.dtos.LoginPatientDTO;
-import team18.pharmacyapp.model.dtos.RegisterUserDTO;
+import team18.pharmacyapp.model.Loyalty;
+import team18.pharmacyapp.model.dtos.LoyaltyDTO;
+import team18.pharmacyapp.model.dtos.MedicineIdNameDTO;
+import team18.pharmacyapp.model.dtos.PatientDTO;
+import team18.pharmacyapp.model.dtos.security.LoginDTO;
 import team18.pharmacyapp.model.dtos.UpdateProfileDataDTO;
 import team18.pharmacyapp.model.enums.UserRole;
 import team18.pharmacyapp.model.exceptions.ActionNotAllowedException;
 import team18.pharmacyapp.model.exceptions.EntityNotFoundException;
 import team18.pharmacyapp.model.medicine.Medicine;
 import team18.pharmacyapp.model.users.Patient;
+import team18.pharmacyapp.model.users.RegisteredUser;
 import team18.pharmacyapp.repository.AddressRepository;
 import team18.pharmacyapp.repository.LoyaltyRepository;
 import team18.pharmacyapp.repository.MedicineRepository;
-import team18.pharmacyapp.repository.PatientRepository;
+import team18.pharmacyapp.repository.UserRepository;
+import team18.pharmacyapp.repository.users.PatientRepository;
 import team18.pharmacyapp.service.interfaces.EmailService;
 import team18.pharmacyapp.service.interfaces.LoyaltyService;
 import team18.pharmacyapp.service.interfaces.PatientService;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -30,12 +36,17 @@ public class PatientServiceImpl implements PatientService {
     private final AddressRepository addressRepository;
     private final LoyaltyService loyaltyService;
     private final EmailService emailService;
+    private final UserRepository userRepository;
+
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public PatientServiceImpl(PatientRepository patientRepository, MedicineRepository medicineRepository, AddressRepository addressRepository, LoyaltyRepository loyaltyRepository, EmailService emailService){
+    public PatientServiceImpl(PatientRepository patientRepository, MedicineRepository medicineRepository, AddressRepository addressRepository, LoyaltyRepository loyaltyRepository, EmailService emailService, UserRepository userRepository, PasswordEncoder passwordEncoder){
         this.patientRepository = patientRepository;
         this.medicineRepository = medicineRepository;
         this.addressRepository = addressRepository;
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
         this.loyaltyService = new LoyaltyServiceImpl(loyaltyRepository, patientRepository);
         this.emailService = emailService;
     }
@@ -51,16 +62,25 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
-    public List<Medicine> getAlergicTo(UUID patientId) {
-        return  patientRepository.getAlergicMedicines(patientId);
+    public List<MedicineIdNameDTO> getAlergicTo(UUID patientId) {
+        List<MedicineIdNameDTO> list=new ArrayList<>();
+        for(Medicine m:patientRepository.getAlergicMedicines(patientId)){
+            list.add(new MedicineIdNameDTO(m.getId(),m.getName()));
+        }
+        return list;
     }
 
     @Override
-    public Patient getPatientProfileInfo(UUID id) {
+    public PatientDTO getPatientProfileInfo(UUID id) {
         Patient patient = patientRepository.getPatientForProfile(id);
-        List<Medicine> allergicTo = medicineRepository.getMedicinesPatientsAllergicTo(id);
-        patient.setAlergicMedicines(allergicTo);
-        return patient;
+
+        Loyalty l = patient.getLoyalty();
+        PatientDTO patientDto = new PatientDTO(patient.getId(), patient.getName(), patient.getSurname(), patient.getEmail(), patient.getPhoneNumber(),
+                patient.getRole(), patient.getAddress(), patient.getLoyaltyPoints(),
+                new LoyaltyDTO(l.getCategory(), l.getMinPoints(), l.getMaxPoints(), l.getDiscount(), 0, 0),
+                patient.getPenalties());
+
+        return patientDto;
     }
 
     @Override
@@ -75,23 +95,29 @@ public class PatientServiceImpl implements PatientService {
         if(!patient.getName().equals("")) pat.setName(patient.getName());
         if(!patient.getSurname().equals("")) pat.setSurname(patient.getSurname());
         if(!patient.getPhoneNumber().equals("")) pat.setPhoneNumber(patient.getPhoneNumber());
-        if(!patient.getNewPassword().equals("")) pat.setPassword(patient.getNewPassword());
+        if(!patient.getNewPassword().equals("")) pat.setPassword(passwordEncoder.encode(patient.getNewPassword()));
 
         patientRepository.save(pat);
+        RegisteredUser user = updateUser(pat.getName(), pat.getSurname(), pat.getPhoneNumber(), pat.getPassword(), pat.getId());
 
         return true;
     }
 
     @Override
     public Patient getById(UUID id) {
-        return patientRepository.findById(id).orElse(null);
+        return patientRepository.findById(id).orElse(new Patient());
     }
 
-    public Patient findRegisteredPatient(LoginPatientDTO patient){
+    @Override
+    public int getPatientPenalties(UUID id) {
+        return patientRepository.getPatientPenalties(id);
+    }
+
+    public Patient findRegisteredPatient(LoginDTO patient){
         return patientRepository.findByEmailAndPassword(patient.getEmail(),patient.getPassword());
     }
 
-    public boolean activateAccount(UUID id){
+    public boolean activateAcc(UUID id){
         Patient p = patientRepository.findById(id).orElse(null);
         if(p != null){
             p.setActivated(true);
@@ -101,31 +127,44 @@ public class PatientServiceImpl implements PatientService {
         return false;
     }
 
-    public Patient register(RegisterUserDTO patient){
+    @Override
+    public Patient register(RegisteredUser user){
         Patient pat = new Patient();
-        Address address=addressRepository.findByCountryAndCityAndStreet(patient.getCountry(), patient.getCity(), patient.getStreet());
-        if(address == null){
-            address = new Address();
-            address.setStreet(patient.getStreet());
-            address.setCity(patient.getCity());
-            address.setCountry(patient.getCountry());
-            address = addressRepository.save(address);
-        }
         pat.setRole(UserRole.patient);
-        pat.setName(patient.getName());
-        pat.setSurname(patient.getSurname());
-        pat.setPhoneNumber(patient.getPhoneNumber());
-        pat.setEmail(patient.getEmail());
-        pat.setPassword(patient.getPassword());
-        pat.setAddress(address);
+        pat.setName(user.getName());
+        pat.setSurname(user.getSurname());
+        pat.setPhoneNumber(user.getPhoneNumber());
+        pat.setEmail(user.getEmail());
+        pat.setPassword(user.getPassword());
+        pat.setAddress(user.getAddress());
         pat.setLoyalty(loyaltyService.findOneByCategory("Regular"));
         Patient newPatient= patientRepository.save(pat);
-        UUID id= patientRepository.findByEmail(newPatient.getEmail()).getId();
-        String userMail = patient.getEmail();   // zakucano za sada
+        patientRepository.setId(newPatient.getId(),user.getId());
+        UUID id= user.getId();
+        String userMail = pat.getEmail();
         String subject = "[ISA Pharmacy]  Account activation";
         String body = "You have successfully registred on our site.\n" +
                 "Your activation link is : http://localhost:8080/#/activate/" +id;
         new Thread(() -> emailService.sendMail(userMail, subject, body)).start();
         return newPatient;
+    }
+
+    @Transactional
+    @Override
+    public RegisteredUser updateUser(String name, String surname, String phone, String password, UUID id) {
+        RegisteredUser forUpdate = userRepository.getOne(id);
+        if(name != "") forUpdate.setName(name);
+        if(surname != "") forUpdate.setSurname(surname);
+        if(phone != "") forUpdate.setPhoneNumber(phone);
+        if(password != "") forUpdate.setPassword(password);
+
+        forUpdate = userRepository.save(forUpdate);
+
+        return forUpdate;
+    }
+
+    @Override
+    public boolean isActivated(UUID patientId) {
+        return getById(patientId).isActivated();
     }
 }

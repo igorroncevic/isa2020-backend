@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import team18.pharmacyapp.model.Address;
 import team18.pharmacyapp.model.Pharmacy;
-import team18.pharmacyapp.model.dtos.PharmacyDTO;
 import team18.pharmacyapp.model.dtos.PharmacyFilteringDTO;
 import team18.pharmacyapp.repository.AddressRepository;
 import team18.pharmacyapp.model.dtos.PharmacyMarkPriceDTO;
@@ -85,7 +84,7 @@ public class PharmacyServiceImpl implements PharmacyService {
     }
 
     @Override
-    public Pharmacy registerNewPharmacy(PharmacyDTO pharmacy){
+    public Pharmacy registerNewPharmacy(team18.pharmacyapp.model.dtos.PharmacyDTO pharmacy){
         Pharmacy newPharmacy = new Pharmacy();
         Address address = addressRepository.findByCountryAndCityAndStreet(pharmacy.getCountry(), pharmacy.getCity(), pharmacy.getStreet());
         if(address == null){

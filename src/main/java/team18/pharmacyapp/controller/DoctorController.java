@@ -3,18 +3,13 @@ package team18.pharmacyapp.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import team18.pharmacyapp.model.Pharmacy;
-import team18.pharmacyapp.model.Term;
-import team18.pharmacyapp.model.dtos.DoctorDTO;
-import team18.pharmacyapp.model.dtos.RegisterUserDTO;
-import team18.pharmacyapp.model.dtos.DoctorScheduleTermDTO;
-import team18.pharmacyapp.model.dtos.DoctorsPatientDTO;
-import team18.pharmacyapp.model.dtos.PatientDoctorRoleDTO;
+import team18.pharmacyapp.model.dtos.*;
 import team18.pharmacyapp.model.enums.UserRole;
 import team18.pharmacyapp.model.users.Doctor;
 import team18.pharmacyapp.service.interfaces.DoctorService;
-import team18.pharmacyapp.service.interfaces.TermService;
 
 import java.util.List;
 import java.util.UUID;
@@ -22,6 +17,7 @@ import java.util.UUID;
 @CrossOrigin(origins = {"http://localhost:8080","http://localhost:8081"})
 @RestController
 @RequestMapping(value = "api/doctors")
+//@PreAuthorize("hasRole('ROLE_PATIENT')") // dodati npr  || hasRole('ROLE_DOCTOR') ako treba još neki role
 public class DoctorController {
     private final DoctorService doctorService;
 
@@ -45,9 +41,10 @@ public class DoctorController {
         return new ResponseEntity<>(doc, HttpStatus.BAD_REQUEST);
     }
 
+    @PreAuthorize("hasRole('ROLE_PATIENT')")
     @PostMapping("/patient")
-    public ResponseEntity<List<DoctorDTO>> getPatientsDoctorsByRole(@RequestBody PatientDoctorRoleDTO patientDoctorRoleDTO) {
-        List<DoctorDTO> doctors = doctorService.getPatientsDoctors(patientDoctorRoleDTO);
+    public ResponseEntity<List<DoctorMarkPharmaciesDTO>> getPatientsDoctorsByRole(@RequestBody PatientDoctorRoleDTO patientDoctorRoleDTO) {
+        List<DoctorMarkPharmaciesDTO> doctors = doctorService.getPatientsDoctors(patientDoctorRoleDTO);
         if(doctors.size() != 0) {
             return new ResponseEntity<>(doctors, HttpStatus.OK);
         }else{
@@ -56,26 +53,26 @@ public class DoctorController {
     }
 
     @GetMapping("/dermatologists")
-    public ResponseEntity<List<DoctorDTO>> getAllDermatologists() {
-        List<DoctorDTO> doctors = doctorService.findAllDoctors(UserRole.dermatologist);
+    public ResponseEntity<List<DoctorMarkPharmaciesDTO>> getAllDermatologists() {
+        List<DoctorMarkPharmaciesDTO> doctors = doctorService.findAllDoctors(UserRole.dermatologist);
         return new ResponseEntity<>(doctors, HttpStatus.OK);
     }
 
     @GetMapping("/pharmacy/{pharmacyId}/dermatologists")
-    public ResponseEntity<List<DoctorDTO>> getAllDermatologistsForPharmacy(@PathVariable UUID pharmacyId) {
-        List<DoctorDTO> doctors = doctorService.findAllDoctorsForPharmacy(pharmacyId, UserRole.dermatologist);
+    public ResponseEntity<List<DoctorMarkPharmaciesDTO>> getAllDermatologistsForPharmacy(@PathVariable UUID pharmacyId) {
+        List<DoctorMarkPharmaciesDTO> doctors = doctorService.findAllDoctorsForPharmacy(pharmacyId, UserRole.dermatologist);
         return new ResponseEntity<>(doctors, HttpStatus.OK);
     }
 
     @GetMapping("/pharmacists")
-    public ResponseEntity<List<DoctorDTO>> getAllPharmacists() {
-        List<DoctorDTO> doctors = doctorService.findAllDoctors(UserRole.pharmacist);
+    public ResponseEntity<List<DoctorMarkPharmaciesDTO>> getAllPharmacists() {
+        List<DoctorMarkPharmaciesDTO> doctors = doctorService.findAllDoctors(UserRole.pharmacist);
         return new ResponseEntity<>(doctors, HttpStatus.OK);
     }
 
     @GetMapping("/pharmacy/{pharmacyId}/pharmacists")
-    public ResponseEntity<List<DoctorDTO>> getAllPharmacistsForPharmacy(@PathVariable UUID pharmacyId) {
-        List<DoctorDTO> doctors = doctorService.findAllDoctorsForPharmacy(pharmacyId, UserRole.pharmacist);
+    public ResponseEntity<List<DoctorMarkPharmaciesDTO>> getAllPharmacistsForPharmacy(@PathVariable UUID pharmacyId) {
+        List<DoctorMarkPharmaciesDTO> doctors = doctorService.findAllDoctorsForPharmacy(pharmacyId, UserRole.pharmacist);
         return new ResponseEntity<>(doctors, HttpStatus.OK);
     }
 
@@ -91,7 +88,7 @@ public class DoctorController {
     }
 
     @GetMapping("/pharmacyList/{id}")
-    public List<Pharmacy> getDoctorPharmacyList(@PathVariable UUID id){
+    public List<PharmacyDTO> getDoctorPharmacyList(@PathVariable UUID id){
         return doctorService.getDoctorPharmacyList(id);
     }
 }

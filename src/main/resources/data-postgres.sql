@@ -14,48 +14,112 @@ values ('01aeb937-998a-4efc-b4d9-e7aa4dd980c6', 'Novi Sad', 'Serbia', 'Pavla Pap
 insert into address(id, city, country, street)
 values ('eb797275-30de-460e-8f9b-f5034ccefc7d', 'Novi Sad', 'Serbia', 'Andje Rankovic 8');
 
--- Dermatolozi
-insert into doctor (id, "name", surname, email, phone_number, "password", "role", fk_address)
-values ('a5ac174a-45b3-487f-91cb-3d3f727d6f1c', 'Pera', 'Peric', 'peraperic@gmail.com', '065/123-456', 'nekipass123',
-        'dermatologist', '3b00204e-1897-4b6e-a175-5d0595833ced');
-insert into doctor (id, "name", surname, email, phone_number, "password", "role", fk_address)
-values ('1accde09-0aa2-4ea1-9a38-17f4635198b9', 'Jovan', 'Jovanovic', 'jovajovanovic@gmail.com', '065/598-127', 'nekipass123',
+---Authority
+insert into authority (id,"name") values('d774ee37-be38-4bfb-8c01-ef0e8a73e1cf','ROLE_PATIENT');
+insert into authority (id,"name") values('ff2ecb46-200f-4a25-a6c4-0a96f9ab082f','ROLE_DERMATOLOGIST');
+insert into authority (id,"name") values('f71f029d-20c1-46c7-97f3-d64ec1c7e06a','ROLE_PHARMACIST');
+insert into authority (id,"name") values('19c1565a-0e28-4930-9b63-fa2851a69d39','ROLE_PHADMIN');
+insert into authority (id,"name") values('2fef2655-53d0-4233-bcf9-771d12040383','ROLE_SYSADMIN');
+insert into authority (id,"name") values('91541917-0498-4e3a-a8c5-966118f78683','ROLE_SUPPLIER');
+
+-- RegisteredUser
+-- Sifra je za sve ista - 123
+-- Doktori
+insert into registered_user (id, "name","first_login", surname, email, phone_number, "password", "role", fk_address)
+values ('a5ac174a-45b3-487f-91cb-3d3f727d6f1c', 'Pera', false, 'Peric', 'peraperic@gmail.com', '065/123-456', '$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra',
+        'dermatologist', '3b00204e-1897-4b6e-a175-5d0595833ced' );
+insert into registered_user (id, "name","first_login", surname, email, phone_number, "password", "role", fk_address)
+values ('1accde09-0aa2-4ea1-9a38-17f4635198b9', 'Jovan', false, 'Jovanovic', 'jovajovanovic@gmail.com', '065/598-127', '$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra',
         'dermatologist', '9241601b-a20a-4f26-9523-d4a670a881dc');
-insert into doctor (id, "name", surname, email, phone_number, "password", "role", fk_address)
-values ('61e9bf31-afae-4b2f-9197-8e2a328707c5', 'Ivana', 'Ivanovic', 'ivanaivanovic@gmail.com', '065/917-427', 'nekipass123',
+insert into registered_user (id, "name","first_login", surname, email, phone_number, "password", "role", fk_address)
+values ('61e9bf31-afae-4b2f-9197-8e2a328707c5', 'Ivana', false, 'Ivanovic', 'ivanaivanovic@gmail.com', '065/917-427', '$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra',
+        'dermatologist', '34c4d86e-8781-4163-b61a-4720c39b7ad6');
+
+insert into registered_user (id, "name", "first_login", surname, email, phone_number, "password", "role", fk_address)
+values ('b0a591d4-f627-45ba-8aa9-926e85c93e08', 'Jovana', false, 'Jovic', 'jovanajovic@gmail.com', '065/123-456', '$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra',
+        'pharmacist', '3b00204e-1897-4b6e-a175-5d0595833ced');
+insert into registered_user (id, "name", "first_login", surname, email, phone_number, "password", "role", fk_address)
+values ('b7d924b5-c488-47bc-be78-2bdad330f468', 'Milan', false, 'Milovanovic', 'milanmilovanovic@gmail.com', '065/123-456', '$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra',
+        'pharmacist', '3b00204e-1897-4b6e-a175-5d0595833ced');
+insert into registered_user (id, "name", "first_login", surname, email, phone_number, "password", "role", fk_address)
+values ('236b04cd-2c94-4222-a101-16fb827ce816', 'Jelena', false, 'Jelicic', 'jelenajelicic@gmail.com', '065/123-456', '$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra',
+        'pharmacist', '3b00204e-1897-4b6e-a175-5d0595833ced');
+insert into registered_user (id, "name", "first_login", surname, email, phone_number, "password", "role", fk_address)
+values ('cb317110-4d3e-4a52-8ca6-0c73bc62b4d2', 'Milos', false, 'Markovic', 'milosmarkovic@gmail.com', '069/384-012', '$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra',
+        'pharmacist', '01aeb937-998a-4efc-b4d9-e7aa4dd980c6');
+insert into registered_user (id, "name", "first_login", surname, email, phone_number, "password", "role", fk_address)
+values ('02fb4f65-923c-49fe-b32a-c40ffee74b47', 'Milija', false,'Raicevic', 'milijaraicevic@gmail.com', '069/222-111', '$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra',
+        'pharmacist', 'eb797275-30de-460e-8f9b-f5034ccefc7d');
+
+insert into registered_user (id, "name", "first_login", surname, email, phone_number, "password", "role", fk_address)
+values ('cc6fd408-0084-420b-8078-687d8a72744b', 'Slobodanka', false, 'Ilic', 'slobodankailic@gmail.com', '063/111-456', '$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra', 'patient',
+        '1eb485a6-4afd-4121-ad03-af571841ddbd');
+insert into registered_user (id, "name", "first_login", surname, email, phone_number, "password", "role", fk_address)
+values ('dd4c7e5f-f2c4-42dc-a809-fd7f588b3acb', 'Ilija', false, 'Stevic', 'ilijastevic@gmail.com', '063/999-254', '$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra', 'patient',
+        '1eb485a6-4afd-4121-ad03-af571841ddbd');
+insert into registered_user (id, "name", "first_login", surname, email, phone_number, "password", "role", fk_address)
+values ('5ffe884f-9cd8-42f5-adc4-2a27cd8d2737', 'Mileta', false, 'Perovic', 'miletaperovic@gmail.com', '063/948-949', '$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra', 'patient',
+        '34c4d86e-8781-4163-b61a-4720c39b7ad6');
+
+
+-- User authority
+-- Pacijenti
+insert into user_authority(user_id, authority_id) values ('cc6fd408-0084-420b-8078-687d8a72744b', 'd774ee37-be38-4bfb-8c01-ef0e8a73e1cf');
+insert into user_authority(user_id, authority_id) values ('dd4c7e5f-f2c4-42dc-a809-fd7f588b3acb', 'd774ee37-be38-4bfb-8c01-ef0e8a73e1cf');
+insert into user_authority(user_id, authority_id) values ('5ffe884f-9cd8-42f5-adc4-2a27cd8d2737', 'd774ee37-be38-4bfb-8c01-ef0e8a73e1cf');
+-- Farmaceuti
+insert into user_authority(user_id, authority_id) values ('b0a591d4-f627-45ba-8aa9-926e85c93e08', 'f71f029d-20c1-46c7-97f3-d64ec1c7e06a');
+insert into user_authority(user_id, authority_id) values ('b7d924b5-c488-47bc-be78-2bdad330f468', 'f71f029d-20c1-46c7-97f3-d64ec1c7e06a');
+insert into user_authority(user_id, authority_id) values ('236b04cd-2c94-4222-a101-16fb827ce816', 'f71f029d-20c1-46c7-97f3-d64ec1c7e06a');
+insert into user_authority(user_id, authority_id) values ('cb317110-4d3e-4a52-8ca6-0c73bc62b4d2', 'f71f029d-20c1-46c7-97f3-d64ec1c7e06a');
+insert into user_authority(user_id, authority_id) values ('02fb4f65-923c-49fe-b32a-c40ffee74b47', 'f71f029d-20c1-46c7-97f3-d64ec1c7e06a');
+-- Dermatolozi
+insert into user_authority(user_id, authority_id) values ('a5ac174a-45b3-487f-91cb-3d3f727d6f1c', 'ff2ecb46-200f-4a25-a6c4-0a96f9ab082f');
+insert into user_authority(user_id, authority_id) values ('1accde09-0aa2-4ea1-9a38-17f4635198b9', 'ff2ecb46-200f-4a25-a6c4-0a96f9ab082f');
+insert into user_authority(user_id, authority_id) values ('61e9bf31-afae-4b2f-9197-8e2a328707c5', 'ff2ecb46-200f-4a25-a6c4-0a96f9ab082f');
+
+-- Dermatolozi
+insert into doctor (id, "name", "first_login", surname, email, phone_number, "password", "role", fk_address)
+values ('a5ac174a-45b3-487f-91cb-3d3f727d6f1c', 'Pera', false, 'Peric', 'peraperic@gmail.com', '065/123-456', '$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra',
+        'dermatologist', '3b00204e-1897-4b6e-a175-5d0595833ced');
+insert into doctor (id, "name", "first_login", surname, email, phone_number, "password", "role", fk_address)
+values ('1accde09-0aa2-4ea1-9a38-17f4635198b9', 'Jovan', false, 'Jovanovic', 'jovajovanovic@gmail.com', '065/598-127', '$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra',
+        'dermatologist', '9241601b-a20a-4f26-9523-d4a670a881dc');
+insert into doctor (id, "name", "first_login", surname, email, phone_number, "password", "role", fk_address)
+values ('61e9bf31-afae-4b2f-9197-8e2a328707c5', 'Ivana', false, 'Ivanovic', 'ivanaivanovic@gmail.com', '065/917-427', '$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra',
         'dermatologist', '34c4d86e-8781-4163-b61a-4720c39b7ad6');
 
 -- Farmaceuti
-insert into doctor (id, "name", surname, email, phone_number, "password", "role", fk_address)
-values ('b0a591d4-f627-45ba-8aa9-926e85c93e08', 'Jovana', 'Jovic', 'jovanajovic@gmail.com', '065/123-456', 'nekipass123',
+insert into doctor (id, "name", "first_login", surname, email, phone_number, "password", "role", fk_address)
+values ('b0a591d4-f627-45ba-8aa9-926e85c93e08', 'Jovana', false, 'Jovic', 'jovanajovic@gmail.com', '065/123-456', '$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra',
         'pharmacist', '3b00204e-1897-4b6e-a175-5d0595833ced');
-insert into doctor (id, "name", surname, email, phone_number, "password", "role", fk_address)
-values ('b7d924b5-c488-47bc-be78-2bdad330f468', 'Milan', 'Milovanovic', 'milanmilovanovic@gmail.com', '065/123-456', 'nekipass123',
+insert into doctor (id, "name", "first_login", surname, email, phone_number, "password", "role", fk_address)
+values ('b7d924b5-c488-47bc-be78-2bdad330f468', 'Milan', false, 'Milovanovic', 'milanmilovanovic@gmail.com', '065/123-456', '$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra',
         'pharmacist', '3b00204e-1897-4b6e-a175-5d0595833ced');
-insert into doctor (id, "name", surname, email, phone_number, "password", "role", fk_address)
-values ('236b04cd-2c94-4222-a101-16fb827ce816', 'Jelena', 'Jelicic', 'jelenajelicic@gmail.com', '065/123-456', 'nekipass123',
+insert into doctor (id, "name", "first_login", surname, email, phone_number, "password", "role", fk_address)
+values ('236b04cd-2c94-4222-a101-16fb827ce816', 'Jelena', false, 'Jelicic', 'jelenajelicic@gmail.com', '065/123-456', '$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra',
         'pharmacist', '3b00204e-1897-4b6e-a175-5d0595833ced');
-insert into doctor (id, "name", surname, email, phone_number, "password", "role", fk_address)
-values ('cb317110-4d3e-4a52-8ca6-0c73bc62b4d2', 'Milos', 'Markovic', 'milosmarkovic@gmail.com', '069/384-012', 'nekipass123',
+insert into doctor (id, "name", "first_login", surname, email, phone_number, "password", "role", fk_address)
+values ('cb317110-4d3e-4a52-8ca6-0c73bc62b4d2', 'Milos', false, 'Markovic', 'milosmarkovic@gmail.com', '069/384-012', '$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra',
         'pharmacist', '01aeb937-998a-4efc-b4d9-e7aa4dd980c6');
-insert into doctor (id, "name", surname, email, phone_number, "password", "role", fk_address)
-values ('02fb4f65-923c-49fe-b32a-c40ffee74b47', 'Milija', 'Raicevic', 'milijaraicevic@gmail.com', '069/222-111', 'nekipass123',
+insert into doctor (id, "name", "first_login", surname, email, phone_number, "password", "role", fk_address)
+values ('02fb4f65-923c-49fe-b32a-c40ffee74b47', 'Milija', false,'Raicevic', 'milijaraicevic@gmail.com', '069/222-111', '$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra',
         'pharmacist', 'eb797275-30de-460e-8f9b-f5034ccefc7d');
 
 -- Dobavljaci
 insert into supplier (id, "name", surname, email, phone_number, "password", "role", fk_address)
-values ('b861fa5d-e543-4c61-adac-0c3f27bc32a0', 'Jagoš', 'Marić', 'jagosmaric@gmail.com', '064/123-456', 'nekipass123',
+values ('b861fa5d-e543-4c61-adac-0c3f27bc32a0', 'Jagoš', 'Marić', 'jagosmaric@gmail.com', '064/123-456', '$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra',
         'supplier', '3b00204e-1897-4b6e-a175-5d0595833ced');
 insert into supplier (id, "name", surname, email, phone_number, "password", "role", fk_address)
-values ('6dbd78ec-c0c7-403a-b1d0-bea63b5a1981', 'Janko', 'Jovanovic', 'jankojovanovic@gmail.com', '064/598-127', 'nekipass123',
+values ('6dbd78ec-c0c7-403a-b1d0-bea63b5a1981', 'Janko', 'Jovanovic', 'jankojovanovic@gmail.com', '064/598-127', '$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra',
         'supplier', '9241601b-a20a-4f26-9523-d4a670a881dc');
 insert into supplier (id, "name", surname, email, phone_number, "password", "role", fk_address)
-values ('84f5d15e-8b52-4e00-ac4f-6b35e030c732', 'Marina', 'Marković', 'marinamarkovic@gmail.com', '065/917-427', 'nekipass123',
+values ('84f5d15e-8b52-4e00-ac4f-6b35e030c732', 'Marina', 'Marković', 'marinamarkovic@gmail.com', '065/917-427', '$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra',
         'supplier', '34c4d86e-8781-4163-b61a-4720c39b7ad6');
 
 -- Sistem administrator
 insert into system_admin (id, "name", surname, email, phone_number, "password", "role", fk_address)
-values ('5baee785-9b8b-4287-a0bb-cfbee680b88d', 'Olivera', 'Petrović', 'opetrovic@gmail.com', '064/987-456', 'nekipass123',
+values ('5baee785-9b8b-4287-a0bb-cfbee680b88d', 'Olivera', 'Petrović', 'opetrovic@gmail.com', '064/987-456', '$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra',
         'sysAdmin', '3b00204e-1897-4b6e-a175-5d0595833ced');
 
 -- Loyalty program
@@ -70,15 +134,15 @@ values ('ab98fe4c-0e70-4087-b53f-637bbac6bfe4', 'Platinum', 14, 150, -1, 10, 9);
 --ako je max -1, to znaci da su svi 150+ u ovoj kategoriji
 
 -- Pacijenti
-insert into patient (id, "name", surname, email, phone_number, "password", "role", fk_address, loyalty_points, loyalty_id, penalties, activated)
-values ('cc6fd408-0084-420b-8078-687d8a72744b', 'Slobodanka', 'Ilic', 'slobodankailic@gmail.com', '063/111-456', 'nekipass123', 'patient',
-        '1eb485a6-4afd-4121-ad03-af571841ddbd', 0, 'c976e4d9-0bd0-470d-9a10-bdc1ff1ba91c', 0, true );
-insert into patient (id, "name", surname, email, phone_number, "password", "role", fk_address, loyalty_points, loyalty_id, penalties, activated)
-values ('dd4c7e5f-f2c4-42dc-a809-fd7f588b3acb', 'Ilija', 'Stevic', 'ilijastevic@gmail.com', '063/999-254', 'nekipass123', 'patient',
-        '1eb485a6-4afd-4121-ad03-af571841ddbd', 0, 'c976e4d9-0bd0-470d-9a10-bdc1ff1ba91c', 0, true );
-insert into patient (id, "name", surname, email, phone_number, "password", "role", fk_address, loyalty_points, loyalty_id, penalties, activated)
-values ('5ffe884f-9cd8-42f5-adc4-2a27cd8d2737', 'Mileta', 'Perovic', 'miletaperovic@gmail.com', '063/948-949', 'nekipass123', 'patient',
-        '34c4d86e-8781-4163-b61a-4720c39b7ad6', 0, 'c976e4d9-0bd0-470d-9a10-bdc1ff1ba91c', 0, true );
+insert into patient (id, "name", "first_login", surname, email, phone_number, "password", "role", fk_address, loyalty_points, loyalty_id, penalties, activated)
+values ('cc6fd408-0084-420b-8078-687d8a72744b', 'Slobodanka', false, 'Ilic', 'slobodankailic@gmail.com', '063/111-456', '$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra', 'patient',
+        '1eb485a6-4afd-4121-ad03-af571841ddbd', 0, 'c976e4d9-0bd0-470d-9a10-bdc1ff1ba91c', 0, true);
+insert into patient (id, "name", "first_login", surname, email, phone_number, "password", "role", fk_address, loyalty_points, loyalty_id, penalties, activated)
+values ('dd4c7e5f-f2c4-42dc-a809-fd7f588b3acb', 'Ilija', false, 'Stevic', 'ilijastevic@gmail.com', '063/999-254', '$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra', 'patient',
+        '1eb485a6-4afd-4121-ad03-af571841ddbd', 0, 'c976e4d9-0bd0-470d-9a10-bdc1ff1ba91c', 0, true);
+insert into patient (id, "name", "first_login", surname, email, phone_number, "password", "role", fk_address, loyalty_points, loyalty_id, penalties, activated)
+values ('5ffe884f-9cd8-42f5-adc4-2a27cd8d2737', 'Mileta', false, 'Perovic', 'miletaperovic@gmail.com', '063/948-949', '$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra', 'patient',
+        '34c4d86e-8781-4163-b61a-4720c39b7ad6', 0, 'c976e4d9-0bd0-470d-9a10-bdc1ff1ba91c', 0, true);
 
 -- Pregledi
 insert into term (id, doctor_id, start_time, end_time, price, "type", report_id, patient_id)
@@ -109,13 +173,23 @@ insert into term (id, doctor_id, start_time, end_time, price, "type", report_id,
 values ('ddf04525-26f4-4d13-a267-00a30ec2412a', 'a5ac174a-45b3-487f-91cb-3d3f727d6f1c', '2021-01-15 14:15:00',
         '2021-01-15 14:45:00', 12, 'checkup', null, 'dd4c7e5f-f2c4-42dc-a809-fd7f588b3acb');
 
+insert into term (id, doctor_id, start_time, end_time, price, "type", report_id, patient_id)
+values ('a045baba-1d99-44e9-a6c9-693c6717a336', 'a5ac174a-45b3-487f-91cb-3d3f727d6f1c', '2021-02-21 12:25:00',
+        '2021-02-21 13:00:00', 12, 'checkup', null, 'cc6fd408-0084-420b-8078-687d8a72744b');
+insert into term (id, doctor_id, start_time, end_time, price, "type", report_id, patient_id)
+values ('a6d049b5-8fe0-471d-8b33-d83bdb0c4602', 'a5ac174a-45b3-487f-91cb-3d3f727d6f1c', '2021-02-23 10:00:00',
+        '2021-02-23 10:15:00', 9, 'checkup', null, 'cc6fd408-0084-420b-8078-687d8a72744b');
+
 -- Savjetovanja
 insert into term (id, doctor_id, start_time, end_time, price, "type", report_id, patient_id)
 values ('fa417459-da91-4812-9d74-3a8ebaa25288', 'b0a591d4-f627-45ba-8aa9-926e85c93e08', '2021-01-15 13:15:00',
         '2021-01-15 13:35:00', 14, 'counseling', null, null);
 insert into term (id, doctor_id, start_time, end_time, price, "type", report_id, patient_id)
 values ('d3e0f32b-f933-445a-b743-1930da41aa00', 'b7d924b5-c488-47bc-be78-2bdad330f468', '2021-01-15 13:15:00',
-        '2021-01-15 13:35:00', 15, 'counseling', null, null);
+        '2021-01-15 13:35:00', 15, 'counseling', null, 'cc6fd408-0084-420b-8078-687d8a72744b');
+insert into term (id, doctor_id, start_time, end_time, price, "type", report_id, patient_id)
+values ('8f31bed6-1816-48dc-93f4-f7c5fc3cffe2', 'b7d924b5-c488-47bc-be78-2bdad330f468', '2021-03-01 13:15:00',
+        '2021-03-01 13:35:00', 15, 'counseling', null, 'cc6fd408-0084-420b-8078-687d8a72744b');
 insert into term (id, doctor_id, start_time, end_time, price, "type", report_id, patient_id)
 values ('3c16d087-fcc9-4c31-9431-71a92bc781fd', 'b0a591d4-f627-45ba-8aa9-926e85c93e08', '2021-01-15 13:45:00',
         '2021-01-15 14:00:00', 19, 'counseling', null, null);
@@ -193,12 +267,14 @@ values ('25fff0b2-ad45-4310-ac7f-96bcc5e517c1', '3163f62a-5b88-4295-854c-c9400e1
 insert into pharmacy_medicines (pharmacy_id, medicine_id, quantity, version)
 values ('25fff0b2-ad45-4310-ac7f-96bcc5e517c1', '32636111-4bc6-424c-a200-067e7f8a9386', 23, 1);
 insert into pharmacy_medicines (pharmacy_id, medicine_id, quantity, version)
-values ('25fff0b2-ad45-4310-ac7f-96bcc5e517c1', '659d0931-63d9-4ef6-bbc4-abdeb4a99539', 0, 1);
+values ('25fff0b2-ad45-4310-ac7f-96bcc5e517c1', '659d0931-63d9-4ef6-bbc4-abdeb4a99539', 5, 1);
 
 insert into pharmacy_medicines (pharmacy_id, medicine_id, quantity, version)
 values ('e93cab4a-f007-412c-b631-7a9a5ee2c6ed', '7571786b-2fc5-4756-ab5c-1f4af756e6f2', 49, 1);
 insert into pharmacy_medicines (pharmacy_id, medicine_id, quantity, version)
-values ('e93cab4a-f007-412c-b631-7a9a5ee2c6ed', '592e558c-b3f9-4088-b468-28764908bd92', 0, 1);
+values ('e93cab4a-f007-412c-b631-7a9a5ee2c6ed', '592e558c-b3f9-4088-b468-28764908bd92', 5, 1);
+insert into pharmacy_medicines (pharmacy_id, medicine_id, quantity, version)
+values ('e93cab4a-f007-412c-b631-7a9a5ee2c6ed', '3163f62a-5b88-4295-854c-c9400e19089f', 15, 1);
 insert into pharmacy_medicines (pharmacy_id, medicine_id, quantity, version)
 values ('e93cab4a-f007-412c-b631-7a9a5ee2c6ed', '32636111-4bc6-424c-a200-067e7f8a9386', 23, 1);
 insert into pharmacy_medicines (pharmacy_id, medicine_id, quantity, version)
@@ -260,5 +336,42 @@ values ('d430072f-57e3-4434-aa5f-516ac45e5715', 'pending', '2021-05-01', '2021-0
 insert into vacation(id, status, start_date, end_date, rejection_reason, doctor_id)
 values ('18be1095-8158-4a8f-b9c7-9cf91f4fab4e', 'pending', '2021-08-01', '2021-08-20', null, '02fb4f65-923c-49fe-b32a-c40ffee74b47');
 
+-- EPrescriptions
+insert into eprescription(id, issue_date, patient_id, status)
+values ('aa7b9e7a-0838-481a-af5a-35d237d2a701', '2021-02-01', 'cc6fd408-0084-420b-8078-687d8a72744b', 'pending');
+insert into eprescription(id, issue_date, patient_id, status)
+values ('7679b21d-386d-4913-97a8-81447b0e922b', '2021-02-05', 'cc6fd408-0084-420b-8078-687d8a72744b', 'pending');
+insert into eprescription(id, issue_date, patient_id, status)
+values ('63ecb45f-8873-43a2-b0f5-586f701ee6c1', '2021-02-11', 'cc6fd408-0084-420b-8078-687d8a72744b', 'processed');
+insert into eprescription(id, issue_date, patient_id, status)
+values ('4160a8fe-efd6-4891-97be-b2618919469d', '2021-02-15', 'cc6fd408-0084-420b-8078-687d8a72744b', 'declined');
 
+insert into eprescription_medicines(e_prescription_id, eprescription_medicine_id, eprescription_pharmacy_id, quantity)
+values ('aa7b9e7a-0838-481a-af5a-35d237d2a701', '7571786b-2fc5-4756-ab5c-1f4af756e6f2', '25fff0b2-ad45-4310-ac7f-96bcc5e517c1', 2);
+insert into eprescription_medicines(e_prescription_id, eprescription_medicine_id, eprescription_pharmacy_id, quantity)
+values ('7679b21d-386d-4913-97a8-81447b0e922b', '592e558c-b3f9-4088-b468-28764908bd92', '25fff0b2-ad45-4310-ac7f-96bcc5e517c1', 5);
+insert into eprescription_medicines(e_prescription_id, eprescription_medicine_id, eprescription_pharmacy_id, quantity)
+values ('63ecb45f-8873-43a2-b0f5-586f701ee6c1', '32636111-4bc6-424c-a200-067e7f8a9386', '25fff0b2-ad45-4310-ac7f-96bcc5e517c1', 3);
+insert into eprescription_medicines(e_prescription_id, eprescription_medicine_id, eprescription_pharmacy_id, quantity)
+values ('4160a8fe-efd6-4891-97be-b2618919469d', '7571786b-2fc5-4756-ab5c-1f4af756e6f2', '25fff0b2-ad45-4310-ac7f-96bcc5e517c1', 2);
+insert into eprescription_medicines(e_prescription_id, eprescription_medicine_id, eprescription_pharmacy_id, quantity)
+values ('4160a8fe-efd6-4891-97be-b2618919469d', '32636111-4bc6-424c-a200-067e7f8a9386', '25fff0b2-ad45-4310-ac7f-96bcc5e517c1', 4);
+insert into eprescription_medicines(e_prescription_id, eprescription_medicine_id, eprescription_pharmacy_id, quantity)
+values ('4160a8fe-efd6-4891-97be-b2618919469d', '592e558c-b3f9-4088-b468-28764908bd92', '25fff0b2-ad45-4310-ac7f-96bcc5e517c1', 2);
 
+-- Promocije
+insert into promotion(id, start_date, end_date, text, pharmacy_id)
+values ('11cc4eb4-6113-4a7b-b466-758aa35da89f', '2021-02-21', '2021-03-01', 'Promocija COVID-19 vakcine Sputnik sredom i petkom od 19:00h', '25fff0b2-ad45-4310-ac7f-96bcc5e517c1');
+insert into promotion(id, start_date, end_date, text, pharmacy_id)
+values ('693b2fbb-2082-46e1-ad1b-93970ae6d316', '2021-02-21', '2021-03-01', 'Promocija COVID-19 vakcine Pfizer sredom i petkom od 19:00h', 'e93cab4a-f007-412c-b631-7a9a5ee2c6ed');
+
+-- Mislim da ne treba ova tabela ali je iz nekog razloga generisana
+insert into pharmacy_promotions(pharmacy_id, promotions_id)
+values('e93cab4a-f007-412c-b631-7a9a5ee2c6ed', '693b2fbb-2082-46e1-ad1b-93970ae6d316');
+insert into pharmacy_promotions(pharmacy_id, promotions_id)
+values('25fff0b2-ad45-4310-ac7f-96bcc5e517c1', '11cc4eb4-6113-4a7b-b466-758aa35da89f');
+
+insert into pharmacy_subscribed_patients(subscribed_pharmacies_id, subscribed_patients_id)
+values ('e93cab4a-f007-412c-b631-7a9a5ee2c6ed', 'cc6fd408-0084-420b-8078-687d8a72744b');
+insert into pharmacy_subscribed_patients(subscribed_pharmacies_id, subscribed_patients_id)
+values ('25fff0b2-ad45-4310-ac7f-96bcc5e517c1', 'cc6fd408-0084-420b-8078-687d8a72744b');

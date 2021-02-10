@@ -5,11 +5,10 @@ import org.springframework.stereotype.Service;
 import team18.pharmacyapp.model.Address;
 import team18.pharmacyapp.model.Pharmacy;
 import team18.pharmacyapp.model.dtos.PharmacyAdminDTO;
-import team18.pharmacyapp.model.dtos.RegisterUserDTO;
 import team18.pharmacyapp.model.enums.UserRole;
 import team18.pharmacyapp.model.users.PharmacyAdmin;
 import team18.pharmacyapp.repository.AddressRepository;
-import team18.pharmacyapp.repository.PharmacyAdminRepository;
+import team18.pharmacyapp.repository.users.PharmacyAdminRepository;
 import team18.pharmacyapp.repository.PharmacyRepository;
 import team18.pharmacyapp.service.interfaces.PharmacyAdminService;
 
