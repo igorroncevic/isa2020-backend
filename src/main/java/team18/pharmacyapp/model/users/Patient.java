@@ -1,28 +1,32 @@
 package team18.pharmacyapp.model.users;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import team18.pharmacyapp.model.*;
+import team18.pharmacyapp.model.Complaint;
+import team18.pharmacyapp.model.Loyalty;
+import team18.pharmacyapp.model.Pharmacy;
 import team18.pharmacyapp.model.medicine.EPrescription;
 import team18.pharmacyapp.model.medicine.Medicine;
+import team18.pharmacyapp.model.medicine.ReservedMedicines;
 
 import javax.persistence.*;
 import java.util.List;
 
-@Entity
+@Entity(name="patient")
 @Getter
 @Setter
 @NoArgsConstructor
-public class Patient extends User {
-
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "alergicto",joinColumns = @JoinColumn(name = "patientId",referencedColumnName = "id"),inverseJoinColumns = @JoinColumn(name = "medicineId",referencedColumnName = "id"))
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
+public class Patient extends RegisteredUser {
+    @ManyToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    @JoinTable(name = "alergicto", joinColumns = @JoinColumn(name = "patientId", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "medicineId", referencedColumnName = "id"))
     private List<Medicine> alergicMedicines;
 
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "reservedMedicines")
-    private List<Medicine> reservedMedicines;
+    @OneToMany(mappedBy = "patient")
+    private List<ReservedMedicines> reservedMedicines;
 
     @Column(nullable = false)
     private int penalties;
@@ -30,18 +34,20 @@ public class Patient extends User {
     @OneToMany(cascade = CascadeType.ALL)
     private List<EPrescription> prescriptions;
 
-    @ManyToMany(mappedBy = "subscribedPatients",cascade = CascadeType.ALL)
+    @ManyToMany(mappedBy = "subscribedPatients", cascade = CascadeType.ALL)
     private List<Pharmacy> subscribedPharmacies;
 
-    @OneToMany(mappedBy = "patient",cascade = CascadeType.ALL)
-    private  List<Complaint> complaints;
+    @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL)
+    private List<Complaint> complaints;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false)
     private Loyalty loyalty;
 
     @Column(nullable = false)
-    private  int loyaltyPoints;
+    private int loyaltyPoints;
 
-
+    @Column(nullable = false)
+    @JsonIgnore
+    private boolean activated=false;
 }

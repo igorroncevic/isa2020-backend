@@ -5,13 +5,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
+import team18.pharmacyapp.model.enums.VacationStatus;
 import team18.pharmacyapp.model.users.Doctor;
 
 import javax.persistence.*;
 import java.util.Date;
 import java.util.UUID;
 
-@Entity
+@Entity(name = "vacation")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -19,7 +20,7 @@ public class Vacation {
     @Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(
-            name = "UUID",strategy = "org.hibernate.id.UUIDGenerator"
+            name = "UUID", strategy = "org.hibernate.id.UUIDGenerator"
     )
     private UUID id;
 
@@ -29,13 +30,13 @@ public class Vacation {
     @Column(nullable = false)
     private Date endDate;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
     @JoinColumn(nullable = false)
-    @JsonIgnore
     private Doctor doctor;
 
     @Column(nullable = false)
-    private boolean approved;
+    @Enumerated(EnumType.STRING)
+    private VacationStatus status;
 
     private String rejectionReason;
 

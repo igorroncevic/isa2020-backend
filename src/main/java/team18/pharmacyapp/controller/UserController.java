@@ -2,26 +2,25 @@ package team18.pharmacyapp.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import team18.pharmacyapp.model.users.User;
-import team18.pharmacyapp.service.UserService;
+import team18.pharmacyapp.model.users.RegisteredUser;
+import team18.pharmacyapp.service.interfaces.RegisteredUserService;
 
 import java.util.List;
 
-@RequestMapping("users")
+@CrossOrigin(origins = {"http://localhost:8080","http://localhost:8081"})
 @RestController
-@CrossOrigin("*")
+@RequestMapping(value = "api/users")
 public class UserController {
-    private final UserService userService;
+    private final RegisteredUserService userService;
 
     @Autowired
-    public UserController(UserService userService) {
+    public UserController(RegisteredUserService userService) {
         this.userService = userService;
     }
+
     @GetMapping
-    public List<User> getAll() {return  userService.findAll(); }
-    @PostMapping
-    public void newUser(){
-        userService.addUser();
+    public List<RegisteredUser> getAll() {
+        return userService.findAll();
     }
 
 }

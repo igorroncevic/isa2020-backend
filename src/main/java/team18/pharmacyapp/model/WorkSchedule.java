@@ -9,17 +9,17 @@ import team18.pharmacyapp.model.users.Doctor;
 import javax.persistence.*;
 import java.util.Date;
 
-@Entity
+@Entity(name = "work_schedule")
 @Getter
 @Setter
 @NoArgsConstructor
 @IdClass(WorkScheduleId.class)
 public class WorkSchedule {
     @Id
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Doctor doctor;
     @Id
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Pharmacy pharmacy;
 
     @Column(nullable = false)

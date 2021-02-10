@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import team18.pharmacyapp.model.keys.SupplierMedicineId;
-import team18.pharmacyapp.model.medicine.Medicine;
 import team18.pharmacyapp.model.users.Supplier;
 
 import javax.persistence.*;
@@ -16,11 +15,11 @@ import javax.persistence.*;
 @IdClass(SupplierMedicineId.class)
 public class SupplierMedicine {
     @Id
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Supplier supplier;
 
     @Id
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Medicine medicine;
 
     @Column(nullable = false)

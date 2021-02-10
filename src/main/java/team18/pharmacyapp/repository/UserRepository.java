@@ -1,9 +1,15 @@
 package team18.pharmacyapp.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import team18.pharmacyapp.model.users.User;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
+import team18.pharmacyapp.model.medicine.PharmacyMedicines;
+import team18.pharmacyapp.model.users.RegisteredUser;
 
+import java.util.List;
 import java.util.UUID;
 
-public interface UserRepository extends JpaRepository <User, UUID> {
+public interface UserRepository extends JpaRepository<RegisteredUser, UUID> {
+
 }

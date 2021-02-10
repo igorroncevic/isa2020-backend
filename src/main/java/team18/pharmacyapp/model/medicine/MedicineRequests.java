@@ -16,17 +16,17 @@ public class MedicineRequests {
     @Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(
-            name = "UUID",strategy = "org.hibernate.id.UUIDGenerator"
+            name = "UUID", strategy = "org.hibernate.id.UUIDGenerator"
     )
     private UUID id;
 
     @ManyToOne
     @JoinColumns({
-            @JoinColumn(unique = true,nullable = false,referencedColumnName = "medicine_id"),
-            @JoinColumn(unique = true,nullable = false,referencedColumnName = "pharmacy_id"),
+            @JoinColumn(unique = true, nullable = false, referencedColumnName = "medicine_id"),
+            @JoinColumn(unique = true, nullable = false, referencedColumnName = "pharmacy_id"),
     })
     private PharmacyMedicines pharmacyMedicine;
 
-    private int timesRequested=0;
+    private int timesRequested = 0;
 
 }

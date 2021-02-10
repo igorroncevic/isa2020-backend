@@ -1,5 +1,6 @@
 package team18.pharmacyapp.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -18,21 +19,24 @@ public class Loyalty {
     @Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(
-            name = "UUID",strategy = "org.hibernate.id.UUIDGenerator"
+            name = "UUID", strategy = "org.hibernate.id.UUIDGenerator"
     )
     private UUID id;
 
-    @Column(nullable = false,unique = true)
+    @Column(nullable = false, unique = true)
     private String category;
-    @Column(nullable = false,unique = true)
+    @Column(nullable = false, unique = true)
     private int minPoints;
-    @Column(nullable = false,unique = true)
+    @Column(nullable = false, unique = true)
     private int maxPoints;
-    @Column(nullable = false,unique = true)
+    @Column(nullable = false, unique = true)
+    private int checkupPoints;
+    @Column(nullable = false, unique = true)
+    private int counselingPoints;
+    @Column(nullable = false, unique = true)
     private double discount;
 
-    @OneToMany(mappedBy = "loyalty",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "loyalty", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Patient> patients;
-
-
 }
