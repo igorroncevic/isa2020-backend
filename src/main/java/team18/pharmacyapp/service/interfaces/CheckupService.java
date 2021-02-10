@@ -2,6 +2,7 @@ package team18.pharmacyapp.service.interfaces;
 
 import team18.pharmacyapp.model.Term;
 import team18.pharmacyapp.model.dtos.CancelTermDTO;
+import team18.pharmacyapp.model.dtos.DoctorTermDTO;
 import team18.pharmacyapp.model.dtos.ScheduleCheckupDTO;
 import team18.pharmacyapp.model.dtos.TermDTO;
 import team18.pharmacyapp.model.enums.TermType;
@@ -16,7 +17,7 @@ import java.util.UUID;
 public interface CheckupService {
     TermDTO findOne(UUID id);
 
-    Term findByIdFetchDoctor(UUID id);
+    DoctorTermDTO findByIdFetchPatint(UUID id);
 
     List<TermDTO> findAll(TermType termType);
 

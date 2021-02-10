@@ -3,6 +3,7 @@ package team18.pharmacyapp.service.interfaces;
 
 import team18.pharmacyapp.model.Term;
 import team18.pharmacyapp.model.dtos.DoctorScheduleTermDTO;
+import team18.pharmacyapp.model.dtos.DoctorTermDTO;
 import team18.pharmacyapp.model.dtos.TermDTO;
 import team18.pharmacyapp.model.dtos.TermPaginationDTO;
 
@@ -18,6 +19,6 @@ public interface TermService {
     List<Term> getAllDoctorTerms(UUID doctorId);
     TermPaginationDTO findAllPatientsPastTermsPaginated(UUID id, String sort, String termType, int page);
     TermPaginationDTO findPatientsUpcomingTermsByTypePaginated(UUID id, String sort, String termType, int page);
-    List<Term> getAllDoctorTermsInPharmacy(UUID doctorId,UUID pharmacyId);
+    List<DoctorTermDTO> getAllDoctorTermsInPharmacy(UUID doctorId, UUID pharmacyId);
     List<TermDTO> findAllPatientsUpcomingTerms(UUID id);
 }

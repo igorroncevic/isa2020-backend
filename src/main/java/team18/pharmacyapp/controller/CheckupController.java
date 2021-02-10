@@ -96,8 +96,8 @@ public class CheckupController {
     }
 
     @GetMapping(value = "/patientCheckup/{id}")
-    public ResponseEntity<Term> getCheckupFetchPatient(@PathVariable UUID id) {
-        Term checkup = checkupService.findByIdFetchDoctor(id);
+    public ResponseEntity<DoctorTermDTO> getCheckupFetchPatient(@PathVariable UUID id) {
+        DoctorTermDTO checkup = checkupService.findByIdFetchPatint(id);
 
         if (checkup == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

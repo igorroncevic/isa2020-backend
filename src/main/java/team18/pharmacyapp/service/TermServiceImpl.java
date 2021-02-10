@@ -9,12 +9,10 @@ import org.springframework.stereotype.Service;
 import team18.pharmacyapp.helpers.DateTimeHelpers;
 import team18.pharmacyapp.model.Term;
 import team18.pharmacyapp.model.WorkSchedule;
-import team18.pharmacyapp.model.dtos.DoctorDTO;
-import team18.pharmacyapp.model.dtos.DoctorScheduleTermDTO;
-import team18.pharmacyapp.model.dtos.TermDTO;
-import team18.pharmacyapp.model.dtos.TermPaginationDTO;
+import team18.pharmacyapp.model.dtos.*;
 import team18.pharmacyapp.model.enums.TermType;
 import team18.pharmacyapp.model.users.Doctor;
+import team18.pharmacyapp.model.users.Patient;
 import team18.pharmacyapp.repository.users.DoctorRepository;
 import team18.pharmacyapp.repository.TermRepository;
 import team18.pharmacyapp.repository.WorkScheduleRepository;
@@ -54,10 +52,17 @@ public class TermServiceImpl implements TermService {
     }
 
     @Override
-    public List<Term> getAllDoctorTermsInPharmacy(UUID doctorId,UUID pharmacyId) {
-        List<Term> list=new ArrayList<>();
-        list.addAll(termRepository.findAllFreeTermsForDoctorInPharmacy(doctorId,pharmacyId));
-        list.addAll(termRepository.findAllTermsForDoctorInPharmacy(doctorId,pharmacyId));
+    public List<DoctorTermDTO> getAllDoctorTermsInPharmacy(UUID doctorId, UUID pharmacyId) {
+        List<DoctorTermDTO> list=new ArrayList<>();
+        for(Term term:termRepository.findAllFreeTermsForDoctorInPharmacy(doctorId,pharmacyId)){
+            list.add(new DoctorTermDTO(term.getId(),term.getStartTime(),term.getEndTime(),term.getType(),null));
+        }
+        for(Term term:termRepository.findAllTermsForDoctorInPharmacy(doctorId,pharmacyId)){
+            Patient p=term.getPatient();
+            DoctorsPatientDTO patientDTO=new DoctorsPatientDTO(p.getId(),p.getName(),p.getSurname(),p.getEmail(),p.getPhoneNumber());
+            list.add(new DoctorTermDTO(term.getId(),term.getStartTime(),term.getEndTime(),term.getType(),patientDTO));
+        }
+
         return list;
     }
 
@@ -92,6 +97,7 @@ public class TermServiceImpl implements TermService {
                 return  false;
             }
         }
+        System.out.println("=============SLOBODAN===============");
         return true;
     }
 
@@ -116,13 +122,14 @@ public class TermServiceImpl implements TermService {
             term.setEndTime(termDTO.getEndTime());
             term.setPrice(50);//const
             term.setType(termDTO.getType());
+            System.out.println("=============SACUVAOOO===============");
             return termRepository.save(term);
         }
         return null;
     }
 
     public boolean checkDates(Date startTime,Date endTime){
-        if(!startTime.before(endTime)){
+        if(!startTime.before(endTime) && startTime.before(new Date())){
             System.out.println("Kraj termina pre pocetka");
             return false;
         }

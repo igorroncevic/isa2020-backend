@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import team18.pharmacyapp.model.dtos.MedicineIdNameDTO;
 import team18.pharmacyapp.model.dtos.PatientDTO;
 import team18.pharmacyapp.model.dtos.security.LoginDTO;
 import team18.pharmacyapp.model.dtos.UpdateProfileDataDTO;
@@ -85,7 +86,7 @@ public class PatientController {
     }
 
     @GetMapping("alergicMedicines/{id}")
-    public ResponseEntity<List<Medicine>> getAlergicMedicines(@PathVariable UUID id){
+    public ResponseEntity<List<MedicineIdNameDTO>> getAlergicMedicines(@PathVariable UUID id){
         return new ResponseEntity<>(patientService.getAlergicTo(id),HttpStatus.OK);
     }
 

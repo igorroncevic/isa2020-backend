@@ -43,7 +43,7 @@ public interface DoctorRepository extends JpaRepository<Doctor, UUID> {
 
     @Transactional(readOnly = true)
 
-    @Query(value = "select distinct new team18.pharmacyapp.model.dtos.DoctorsPatientDTO(p.name,p.surname,p.email,p.phoneNumber) " +
+    @Query(value = "select distinct new team18.pharmacyapp.model.dtos.DoctorsPatientDTO(p.id,p.name,p.surname,p.email,p.phoneNumber) " +
             "from term t inner join patient p on t.patient.id=p.id where t.doctor.id=:doctorId")
     List<DoctorsPatientDTO> findDoctorPatients(UUID doctorId);
 

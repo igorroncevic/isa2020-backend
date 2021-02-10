@@ -3,10 +3,7 @@ package team18.pharmacyapp.service;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import team18.pharmacyapp.model.Term;
-import team18.pharmacyapp.model.dtos.CancelTermDTO;
-import team18.pharmacyapp.model.dtos.DoctorDTO;
-import team18.pharmacyapp.model.dtos.ScheduleCheckupDTO;
-import team18.pharmacyapp.model.dtos.TermDTO;
+import team18.pharmacyapp.model.dtos.*;
 import team18.pharmacyapp.model.enums.TermType;
 import team18.pharmacyapp.model.exceptions.*;
 import team18.pharmacyapp.model.users.Doctor;
@@ -45,8 +42,11 @@ public class CheckupServiceImpl implements CheckupService {
     }
 
     @Override
-    public Term findByIdFetchDoctor(UUID id) {
-        return checkupRepository.findByIdCustom(id);
+    public DoctorTermDTO findByIdFetchPatint(UUID id) {
+
+        Term t= checkupRepository.findByIdCustom(id);
+        Patient p=t.getPatient();
+        return new DoctorTermDTO(t.getId(),t.getStartTime(),t.getEndTime(),t.getType(),new DoctorsPatientDTO(p.getId(),p.getName(),p.getSurname(),p.getEmail(),p.getPhoneNumber()));
     }
 
     public List<TermDTO> findAll(TermType termType) {
