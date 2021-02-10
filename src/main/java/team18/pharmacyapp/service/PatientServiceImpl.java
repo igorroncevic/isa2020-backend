@@ -38,15 +38,15 @@ public class PatientServiceImpl implements PatientService {
     private final EmailService emailService;
     private final UserRepository userRepository;
 
-    private final PasswordEncoder passwordEncoder;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
-    public PatientServiceImpl(PatientRepository patientRepository, MedicineRepository medicineRepository, AddressRepository addressRepository, LoyaltyRepository loyaltyRepository, EmailService emailService, UserRepository userRepository, PasswordEncoder passwordEncoder){
+    public PatientServiceImpl(PatientRepository patientRepository, MedicineRepository medicineRepository, AddressRepository addressRepository, LoyaltyRepository loyaltyRepository, EmailService emailService, UserRepository userRepository){
         this.patientRepository = patientRepository;
         this.medicineRepository = medicineRepository;
         this.addressRepository = addressRepository;
         this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
         this.loyaltyService = new LoyaltyServiceImpl(loyaltyRepository, patientRepository);
         this.emailService = emailService;
     }
