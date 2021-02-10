@@ -4,7 +4,7 @@ import team18.pharmacyapp.model.dtos.*;
 import team18.pharmacyapp.model.exceptions.ActionNotAllowedException;
 import team18.pharmacyapp.model.medicine.Medicine;
 import team18.pharmacyapp.model.exceptions.ReserveMedicineException;
-import team18.pharmacyapp.model.medicine.ReservedMedicines;
+import team18.pharmacyapp.model.medicine.MedicineSpecification;
 
 import java.util.List;
 import java.util.UUID;
@@ -20,7 +20,7 @@ public interface MedicineService {
 
     void deleteById(UUID id);
 
-    List<ReservedMedicines> findAllPatientsReservedMedicines(UUID id);
+    List<ReservedMedicinesDTO> findAllPatientsReservedMedicines(UUID id);
 
     boolean reserveMedicine(ReserveMedicineRequestDTO reserveMedicineRequestDTO) throws ReserveMedicineException, RuntimeException, ActionNotAllowedException;
 
@@ -30,9 +30,19 @@ public interface MedicineService {
 
     List<MedicineMarkDTO> getAllMedicinesForMarkingOptimized(UUID patientId);
 
-    List<Medicine> getAllMedicinesPatientsNotAlergicTo(UUID id);
+    List<MedicineDTO> getAllMedicinesPatientsNotAlergicTo(UUID id);
+
+    List<MedicineDTO> getAllMedicinesPatientsAllergicTo(UUID id);
 
     boolean addPatientsAllergy(MedicineAllergyDTO allergy) throws RuntimeException;
 
     List<MedicineFilterDTO> filterMedicines(MedicineFilterRequestDTO mfr);
+
+
+    MedicineSpecification getMedicineSpecification(UUID medicineId);
+
+    String getReplacmentMedicine(UUID medicineId);
+
+    List<MedicineFilterDTO> filterNoAuthMedicines(MedicineFilterRequestDTO mfr);
+
 }

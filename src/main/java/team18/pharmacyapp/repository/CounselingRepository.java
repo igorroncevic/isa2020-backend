@@ -1,9 +1,10 @@
 package team18.pharmacyapp.repository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.RepositoryDefinition;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,8 +35,8 @@ public interface CounselingRepository extends JpaRepository<Term, UUID> {
 
     @Transactional
     @Modifying
-    @Query(nativeQuery = true, value = "INSERT INTO term(id, patient_id, doctor_id, start_time, end_time, price, type, report_id, loyalty_points) " +
-            "VALUES (:id, :patientId, :doctorId, :startTime, :endTime, 10, 'counseling', null, 10)")
+    @Query(nativeQuery = true, value = "INSERT INTO term(id, patient_id, doctor_id, start_time, end_time, price, type, report_id) " +
+            "VALUES (:id, :patientId, :doctorId, :startTime, :endTime, 10, 'counseling', null)")
         // Cijeni i poeni zakucani, u specifikaciji ne pise kako se definisu
     int patientScheduleCounseling(@Param("id") UUID id, @Param("patientId") UUID patientId, @Param("doctorId") UUID doctorId,
                                   @Param("startTime") Date startTime, @Param("endTime") Date endTime);
@@ -54,6 +55,6 @@ public interface CounselingRepository extends JpaRepository<Term, UUID> {
     Term findByIdCustom(@Param("counselingId") UUID id);
 
     @Transactional(readOnly = true)
-    @Query(value = "SELECT t FROM term t JOIN FETCH t.doctor JOIN FETCH t.patient WHERE t.type = :termType AND t.patient.id = :patientId")
+    @Query(value = "SELECT t FROM term t JOIN FETCH t.doctor JOIN t.patient WHERE t.type = :termType AND t.patient.id = :patientId")
     List<Term> findAllPatientsCounselings(@Param("patientId") UUID id, @Param("termType") TermType counseling);
 }

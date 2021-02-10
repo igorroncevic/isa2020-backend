@@ -1,6 +1,7 @@
 package team18.pharmacyapp.controller;
 
 import org.springframework.web.bind.annotation.*;
+import team18.pharmacyapp.model.dtos.MedicineIdNameDTO;
 import team18.pharmacyapp.model.dtos.ReportMedicineDTO;
 import team18.pharmacyapp.model.medicine.Medicine;
 import team18.pharmacyapp.service.interfaces.PharmacyMedicinesService;
@@ -24,11 +25,11 @@ public class PharmacyMedicineController {
     }
 
     @PostMapping("availability")
-    public boolean checkavAilability(@RequestBody ReportMedicineDTO dto){
+    public String checkavAilability(@RequestBody ReportMedicineDTO dto){
         return medicinesService.checkAvailability(dto);
     }
     @GetMapping("{pharmacyId}")
-    public List<Medicine> getPharamacyMedicine(@PathVariable UUID pharmacyId){
+    public List<MedicineIdNameDTO> getPharamacyMedicine(@PathVariable UUID pharmacyId){
         return medicinesService.getMedicnesByPharmacy(pharmacyId);
     }
 }

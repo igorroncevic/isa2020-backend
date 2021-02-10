@@ -5,9 +5,9 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import team18.pharmacyapp.model.Promotion;
 
-import javax.transaction.Transactional;
-import java.time.LocalDate;
 import java.util.Date;
+import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.UUID;
 
@@ -25,4 +25,7 @@ public interface PromotionRepository extends JpaRepository<Promotion, UUID> {
             "WHERE psp.subscribed_pharmacies_id = :pharmacyId")
     List<String> getEmailsOfSubscribedPatients(UUID pharmacyId);
 
+    @Transactional(readOnly = true)
+    @Query("SELECT p FROM promotion p JOIN FETCH p.pharmacy ph JOIN FETCH ph.address JOIN ph.subscribedPatients sp WHERE sp.id = :patientId")
+    List<Promotion> getPatientsPromotions(@Param("patientId") UUID patientId);
 }

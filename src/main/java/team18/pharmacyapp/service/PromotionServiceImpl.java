@@ -11,6 +11,10 @@ import team18.pharmacyapp.service.interfaces.PromotionService;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import team18.pharmacyapp.model.dtos.PharmacyDTO;
+import team18.pharmacyapp.model.dtos.PromotionDTO;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -60,4 +64,18 @@ public class PromotionServiceImpl implements PromotionService {
             emailService.sendMail(email, subject, body);
     }
 
+    @Override
+    public List<PromotionDTO> getPatientsPromotions(UUID id) {
+        List<Promotion> promotions = promotionRepository.getPatientsPromotions(id);
+        List<PromotionDTO>finalPromotions = new ArrayList<>();
+
+        for(Promotion p : promotions){
+            finalPromotions.add(new PromotionDTO(p.getId(), p.getStartDate(), p.getEndDate(),
+                    new PharmacyDTO(p.getPharmacy().getId(), p.getPharmacy().getName(), p.getPharmacy().getAddress().getStreet(),
+                                    p.getPharmacy().getAddress().getCity(), p.getPharmacy().getAddress().getCountry()),
+                    p.getText()));
+        }
+
+        return finalPromotions;
+    }
 }

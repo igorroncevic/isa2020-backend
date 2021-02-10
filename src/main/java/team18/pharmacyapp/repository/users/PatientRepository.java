@@ -8,7 +8,6 @@ import org.springframework.transaction.annotation.Transactional;
 import team18.pharmacyapp.model.medicine.Medicine;
 import team18.pharmacyapp.model.users.Patient;
 
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -48,4 +47,8 @@ public interface PatientRepository extends JpaRepository<Patient, UUID> {
     @Transactional(readOnly = true)
     @Query("SELECT p FROM patient p JOIN FETCH p.address JOIN FETCH p.loyalty WHERE p.id = :patientId")
     Patient getPatientForProfile(@Param("patientId")UUID patientId);
+
+    @Transactional(readOnly = true)
+    @Query("SELECT p.penalties FROM patient p WHERE p.id = :patientId")
+    int getPatientPenalties(@Param("patientId") UUID patientId);
 }

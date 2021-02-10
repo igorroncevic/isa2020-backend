@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import team18.pharmacyapp.model.Vacation;
 import team18.pharmacyapp.model.dtos.RefuseVacationDTO;
+import team18.pharmacyapp.model.dtos.VacationRequestDTO;
 import team18.pharmacyapp.model.enums.VacationStatus;
 import team18.pharmacyapp.model.exceptions.ActionNotAllowedException;
 import team18.pharmacyapp.model.exceptions.EntityNotFoundException;
@@ -24,6 +25,15 @@ public class VacationController {
     @Autowired
     public VacationController(VacationService vacationService) {
         this.vacationService = vacationService;
+    }
+
+    @PostMapping
+    public ResponseEntity<Vacation> createVacationRequest(@RequestBody VacationRequestDTO dto){
+        Vacation v=vacationService.create(dto);
+        if(v!=null){
+            return new ResponseEntity<>(v,HttpStatus.CREATED);
+        }
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
     @GetMapping("/pending")

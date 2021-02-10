@@ -75,6 +75,4 @@ public class Medicine implements Serializable {
 
     @Column(nullable = false)
     private int loyaltyPoints;
-
-
 }

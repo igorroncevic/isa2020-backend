@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import team18.pharmacyapp.model.Promotion;
 import team18.pharmacyapp.model.dtos.NewPromotionDTO;
 import team18.pharmacyapp.model.exceptions.BadTimeRangeException;
+import team18.pharmacyapp.model.dtos.PromotionDTO;
 import team18.pharmacyapp.service.interfaces.PromotionService;
 
 import java.util.List;
@@ -41,5 +42,19 @@ public class PromotionController {
         }
 
         return new ResponseEntity<>(promotion, HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasRole('ROLE_PATIENT')")
+    @GetMapping("patient/{id}")
+    public ResponseEntity<List<PromotionDTO>> getPatientsPromotions(@PathVariable UUID id){
+        List<PromotionDTO> promotions;
+        try{
+            promotions = promotionService.getPatientsPromotions(id);
+        }catch (RuntimeException e){
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return new ResponseEntity<>(promotions, HttpStatus.OK);
+
     }
 }
