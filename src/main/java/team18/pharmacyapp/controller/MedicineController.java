@@ -55,6 +55,18 @@ public class MedicineController {
         return new ResponseEntity<>(medicines, HttpStatus.OK);
     }
 
+    @PostMapping("/noauth/filter")
+    public ResponseEntity<List<MedicineFilterDTO>> filterNoAuthMedicines(@RequestBody MedicineFilterRequestDTO mfr) {
+        List<MedicineFilterDTO> medicines;
+        try{
+            medicines = medicineService.filterNoAuthMedicines(mfr);
+        }catch(RuntimeException e){
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return new ResponseEntity<>(medicines, HttpStatus.OK);
+    }
+
     @PreAuthorize("hasRole('ROLE_PATIENT')")
     @GetMapping("/reserved/{id}")
     public ResponseEntity<List<ReservedMedicinesDTO>> getAllPatientsReservedMedicines(@PathVariable UUID id) {

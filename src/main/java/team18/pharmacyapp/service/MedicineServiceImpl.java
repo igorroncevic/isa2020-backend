@@ -280,4 +280,21 @@ public class MedicineServiceImpl implements MedicineService {
 
         return finalMedicines;
     }
+
+    @Override
+    public List<MedicineFilterDTO> filterNoAuthMedicines(MedicineFilterRequestDTO mfr) {
+        List<Medicine>medicines = medicineRepository.findAllAvailableMedicinesNoAuth();
+
+        List<MedicineFilterDTO> finalMedicines = new ArrayList<>();
+        for(Medicine m : medicines){
+            if(!m.getName().toLowerCase().contains(mfr.getName().toLowerCase())) continue;
+
+            MedicineFilterDTO med = new MedicineFilterDTO();
+            med.setMedicine(new MedicineDTO(m.getId(), m.getName(), "", "", "", "", "", m.getLoyaltyPoints(), "", 0, "", "", ""));
+            med.setPharmacies(new ArrayList<>());
+            finalMedicines.add(med);
+        }
+
+        return finalMedicines;
+    }
 }

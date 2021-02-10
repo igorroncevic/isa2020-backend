@@ -25,7 +25,6 @@ public class PharmacyController {
         this.pharmacyService = pharmacyService;
     }
 
-    @PreAuthorize("hasRole('ROLE_PATIENT')")
     @GetMapping("/search")
     public ResponseEntity<List<PharmacyFilteringDTO>> getAllForFiltered(@RequestParam(name = "name", required = false) String name, @RequestParam(name = "mark", required = false, defaultValue = "0.0") float mark, @RequestParam(name = "city", required = false) String city) {
         if(!FilteringHelpers.isAlpha(name) || !FilteringHelpers.isAlpha(city))
