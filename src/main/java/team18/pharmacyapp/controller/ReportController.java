@@ -33,7 +33,7 @@ public class ReportController {
     public ResponseEntity<ReportMedicines> saveReportMedicine(@RequestBody ReportMedicines reportMedicines){
         ReportMedicines rm=reportMedicinesService.save(reportMedicines);
         if(rm!=null){
-            return new ResponseEntity<>(rm,HttpStatus.CREATED);
+            return new ResponseEntity<>(HttpStatus.CREATED);
         }
         return new ResponseEntity<>(null,HttpStatus.BAD_REQUEST);
     }

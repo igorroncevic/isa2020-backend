@@ -11,11 +11,7 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class DoctorsPatientDTO {
-    private UUID id;
-    private String name;
-    private String surname;
-    private String mail;
-    private String phone;
-
+public class MedicineIdNameDTO {
+    UUID id;
+    String name;
 }
