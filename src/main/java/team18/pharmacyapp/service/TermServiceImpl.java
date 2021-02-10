@@ -128,7 +128,7 @@ public class TermServiceImpl implements TermService {
             Term term=new Term();
             Doctor doctor=doctorService.getById(termDTO.getDoctorId());
             term.setDoctor(doctor);
-            Patient patient=patientService.getById(termDTO.getPatientId());
+            Patient patient = patientService.getById(termDTO.getPatientId());
             term.setPatient(patient);
             term.setStartTime(termDTO.getStartTime());
             term.setEndTime(termDTO.getEndTime());
