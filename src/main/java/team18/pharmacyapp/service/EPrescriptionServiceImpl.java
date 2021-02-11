@@ -11,11 +11,13 @@ import team18.pharmacyapp.model.medicine.Medicine;
 import team18.pharmacyapp.model.users.Patient;
 import team18.pharmacyapp.repository.EPrescriptionRepository;
 import team18.pharmacyapp.repository.MedicineRepository;
-import team18.pharmacyapp.repository.users.PatientRepository;
 import team18.pharmacyapp.repository.PharmacyRepository;
+import team18.pharmacyapp.repository.users.PatientRepository;
 import team18.pharmacyapp.service.interfaces.EPrescriptionService;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 
 @Service
 public class EPrescriptionServiceImpl implements EPrescriptionService {
@@ -25,7 +27,7 @@ public class EPrescriptionServiceImpl implements EPrescriptionService {
     private final PharmacyRepository pharmacyRepository;
 
     @Autowired
-    public EPrescriptionServiceImpl(EPrescriptionRepository ePrescriptionRepository, PatientRepository patientRepository, MedicineRepository medicineRepository, PharmacyRepository pharmacyRepository){
+    public EPrescriptionServiceImpl(EPrescriptionRepository ePrescriptionRepository, PatientRepository patientRepository, MedicineRepository medicineRepository, PharmacyRepository pharmacyRepository) {
         this.ePrescriptionRepository = ePrescriptionRepository;
         this.patientRepository = patientRepository;
         this.medicineRepository = medicineRepository;
@@ -35,7 +37,7 @@ public class EPrescriptionServiceImpl implements EPrescriptionService {
     @Override
     public List<EPrescriptionDTO> findAllByPatientId(EPrescriptionSortFilterDTO efs) throws RuntimeException, ActionNotAllowedException {
         Patient patient = patientRepository.findById(efs.getPatientId()).orElse(null);
-        if(patient == null) throw new ActionNotAllowedException("Patient not found");
+        if (patient == null) throw new ActionNotAllowedException("Patient not found");
 
         /* Imao sam jako puno problema koje su mi izazivale veze izmedju EPrescription-a i EPrescriptionMedicines-a
            i ovo je bio jedini nacin.
@@ -48,19 +50,19 @@ public class EPrescriptionServiceImpl implements EPrescriptionService {
            ih preko njihovog zasebnog findById. Daleko od optimalnog, ali nisam uspio odraditi bolje.
         */
         EPrescriptionStatus filter;
-        if(efs.getFilter().equalsIgnoreCase("All of them")){
+        if (efs.getFilter().equalsIgnoreCase("All of them")) {
             filter = null;
-        }else{
+        } else {
             filter = EPrescriptionStatus.valueOf(efs.getFilter().toLowerCase());
         }
 
         List<EPrescription> prescriptions = ePrescriptionRepository.findAllByPatientIdAndStatus(efs.getPatientId(), filter);
         List<EPrescriptionDTO> finalEPrescriptions = new ArrayList<>();
-        for(EPrescription e : prescriptions){
+        for (EPrescription e : prescriptions) {
             List<EPrescriptionMedicinesQueryDTO> medicinesQuery = ePrescriptionRepository.findEPrescriptionMedicines(e.getId());
 
             List<EPrescriptionMedicinesDTO> medicines = new ArrayList<>();
-            for(EPrescriptionMedicinesQueryDTO epq : medicinesQuery){
+            for (EPrescriptionMedicinesQueryDTO epq : medicinesQuery) {
                 Medicine med = medicineRepository.findById(epq.getMedicineId()).orElse(null);
                 Pharmacy pharmacy = pharmacyRepository.findByIdCustom(epq.getPharmacyId());
 
@@ -79,8 +81,8 @@ public class EPrescriptionServiceImpl implements EPrescriptionService {
         }
 
         String[] sortParts = efs.getSort().split(" ");
-        if(sortParts.length == 3){
-            if(sortParts[2].equalsIgnoreCase("asc."))
+        if (sortParts.length == 3) {
+            if (sortParts[2].equalsIgnoreCase("asc."))
                 finalEPrescriptions.sort(Comparator.comparing(EPrescriptionDTO::getIssueDate));
             else
                 finalEPrescriptions.sort(Comparator.comparing(EPrescriptionDTO::getIssueDate).reversed());

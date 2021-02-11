@@ -38,7 +38,7 @@ public class VacationServiceImpl implements VacationService {
     public List<VacationDTO> getAll(VacationStatus vacationStatus) {
         List<Vacation> vacations = vacationRepository.getAll(vacationStatus);
         List<VacationDTO> vacationDTOs = new ArrayList<>();
-        for(Vacation vacation : vacations) {
+        for (Vacation vacation : vacations) {
             DoctorDTO doctorDTO = new DoctorDTO(vacation.getDoctor().getId(), vacation.getDoctor().getName(),
                     vacation.getDoctor().getSurname(), vacation.getDoctor().getEmail(), vacation.getDoctor().getPhoneNumber(),
                     vacation.getDoctor().getRole(), vacation.getDoctor().getAddress());
@@ -52,9 +52,9 @@ public class VacationServiceImpl implements VacationService {
     @Override
     public void approve(UUID vacationId) throws EntityNotFoundException, ActionNotAllowedException, RuntimeException {
         Vacation vacation = vacationRepository.getById(vacationId).orElse(null);
-        if(vacation == null)
+        if (vacation == null)
             throw new EntityNotFoundException("There is no such vacation request");
-        else if(vacation.getStatus() != VacationStatus.pending)
+        else if (vacation.getStatus() != VacationStatus.pending)
             throw new ActionNotAllowedException("You can only approve pending vacation requests");
 
         int rowsUpdated = vacationRepository.approve(vacationId);
@@ -69,13 +69,13 @@ public class VacationServiceImpl implements VacationService {
     }
 
     @Override
-    public void refuse(UUID vacationId, String reason) throws EntityNotFoundException, ActionNotAllowedException, RuntimeException, IllegalArgumentException {
+    public void refuse(UUID vacationId, String reason) throws EntityNotFoundException, ActionNotAllowedException, RuntimeException {
         Vacation vacation = vacationRepository.getById(vacationId).orElse(null);
-        if(vacation == null)
+        if (vacation == null)
             throw new EntityNotFoundException("There is no such vacation request");
-        else if(vacation.getStatus() != VacationStatus.pending)
+        else if (vacation.getStatus() != VacationStatus.pending)
             throw new ActionNotAllowedException("You can only refuse pending vacation requests");
-        else if(reason.length() < 10 || reason.length() > 255)
+        else if (reason.length() < 10 || reason.length() > 255)
             throw new IllegalArgumentException("Reason must be between 10 and 255 characters");
 
         int rowsUpdated = vacationRepository.refuse(vacationId, reason);
@@ -91,18 +91,18 @@ public class VacationServiceImpl implements VacationService {
 
     @Override
     public Vacation create(VacationRequestDTO vacation) {
-        Vacation v=new Vacation();
+        Vacation v = new Vacation();
         v.setEndDate(vacation.getEndDate());
         v.setStartDate(vacation.getStartDate());
-        Doctor d=doctorService.getById(vacation.getDoctorId());
+        Doctor d = doctorService.getById(vacation.getDoctorId());
         System.out.println(d.getName());
         v.setDoctor(d);
-        if(d==null){
+        if (d == null) {
             return null;
         }
         v.setStatus(VacationStatus.pending);
 
-        return  vacationRepository.save(v);
+        return vacationRepository.save(v);
     }
 
 }

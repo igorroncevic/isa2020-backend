@@ -6,7 +6,9 @@ import lombok.Setter;
 import team18.pharmacyapp.model.SupplierPurchaseOrder;
 import team18.pharmacyapp.model.medicine.SupplierMedicine;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.OneToMany;
 import java.util.List;
 
 @Entity

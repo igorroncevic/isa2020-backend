@@ -1,8 +1,8 @@
 package team18.pharmacyapp.controller;
 
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import team18.pharmacyapp.model.dtos.AddPharmacyMedicineDTO;
 import team18.pharmacyapp.model.dtos.MedicineQuantityDTO;
@@ -10,10 +10,11 @@ import team18.pharmacyapp.model.dtos.ReportMedicineDTO;
 import team18.pharmacyapp.model.exceptions.ActionNotAllowedException;
 import team18.pharmacyapp.model.keys.PharmacyMedicinesId;
 import team18.pharmacyapp.service.interfaces.PharmacyMedicinesService;
+
 import java.util.List;
 import java.util.UUID;
 
-@CrossOrigin(origins = {"http://localhost:8080","http://localhost:8081"})
+@CrossOrigin(origins = {"http://localhost:8080", "http://localhost:8081"})
 @RestController
 @RequestMapping(value = "api/pharmacyMedicines")
 public class PharmacyMedicineController {
@@ -24,23 +25,23 @@ public class PharmacyMedicineController {
     }
 
     @GetMapping("{pharmacyId}/{medicineId}")
-    public int getQyantity(@PathVariable UUID pharmacyId,@PathVariable UUID medicineId){
-        return medicinesService.medicineQuantity(pharmacyId,medicineId);
+    public int getQyantity(@PathVariable UUID pharmacyId, @PathVariable UUID medicineId) {
+        return medicinesService.medicineQuantity(pharmacyId, medicineId);
     }
 
     @PreAuthorize("hasRole('ROLE_DERMATOLOGIST') || hasRole('ROLE_PHARMACIST')")
     @PostMapping("availability")
-    public String checkavAilability(@RequestBody ReportMedicineDTO dto){
+    public String checkavAilability(@RequestBody ReportMedicineDTO dto) {
         return medicinesService.checkAvailability(dto);
     }
 
     @GetMapping("{pharmacyId}")
-    public List<MedicineQuantityDTO> getPharamacyMedicine(@PathVariable UUID pharmacyId){
+    public List<MedicineQuantityDTO> getPharamacyMedicine(@PathVariable UUID pharmacyId) {
         return medicinesService.getMedicnesByPharmacy(pharmacyId);
     }
 
     @PostMapping("")
-    public ResponseEntity addNewMedicineToPharmacy(@RequestBody AddPharmacyMedicineDTO addPharmacyMedicineDTO){
+    public ResponseEntity addNewMedicineToPharmacy(@RequestBody AddPharmacyMedicineDTO addPharmacyMedicineDTO) {
         medicinesService.insert(addPharmacyMedicineDTO.getPharmacyId(), addPharmacyMedicineDTO.getMedicineId());
 
         return new ResponseEntity(HttpStatus.CREATED);

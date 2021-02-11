@@ -22,7 +22,7 @@ public interface TermRepository extends JpaRepository<Term, UUID> {
             "JOIN d.workSchedules ws " +
             "JOIN ws.pharmacy pha " +
             "WHERE pha.id = :pharmacyId AND pat.id = :patientId")
-    List<Term> getPatientsTermsFromPharmacy(@Param("pharmacyId")UUID pharmacyId, @Param("patientId") UUID patientId);
+    List<Term> getPatientsTermsFromPharmacy(@Param("pharmacyId") UUID pharmacyId, @Param("patientId") UUID patientId);
 
 
     @Query("SELECT t FROM term t join fetch t.patient p WHERE t.doctor.id = :doctorId ")
@@ -34,11 +34,11 @@ public interface TermRepository extends JpaRepository<Term, UUID> {
 
     @Query("SELECT t FROM term t inner join work_schedule w on t.doctor.id=w.doctor.id join fetch t.patient p WHERE t.doctor.id = :doctorId and w.pharmacy.id=:pharmacyId " +
             "and t.startTime>=w.fromHour and t.endTime<=w.toHour")
-    List<Term> findAllTermsForDoctorInPharmacy(@Param("doctorId") UUID doctorId,@Param("pharmacyId")UUID pharmacyId);
+    List<Term> findAllTermsForDoctorInPharmacy(@Param("doctorId") UUID doctorId, @Param("pharmacyId") UUID pharmacyId);
 
     @Query("SELECT t FROM term t inner join work_schedule w on t.doctor.id=w.doctor.id WHERE t.doctor.id = :doctorId and t.patient is null and w.pharmacy.id=:pharmacyId " +
             "and t.startTime>=w.fromHour and t.endTime<=w.toHour")
-    List<Term> findAllFreeTermsForDoctorInPharmacy(@Param("doctorId") UUID doctorId,@Param("pharmacyId")UUID pharmacyId);
+    List<Term> findAllFreeTermsForDoctorInPharmacy(@Param("doctorId") UUID doctorId, @Param("pharmacyId") UUID pharmacyId);
 
     @Query("SELECT t FROM term t WHERE t.patient.id = :patientId ")
     List<Term> findAllTermsForPatient(@Param("patientId") UUID patientId);

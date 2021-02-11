@@ -10,10 +10,10 @@ import team18.pharmacyapp.model.dtos.*;
 import team18.pharmacyapp.model.enums.UserRole;
 import team18.pharmacyapp.model.users.Doctor;
 import team18.pharmacyapp.repository.AddressRepository;
+import team18.pharmacyapp.repository.MarkRepository;
 import team18.pharmacyapp.repository.PharmacyRepository;
 import team18.pharmacyapp.repository.WorkScheduleRepository;
 import team18.pharmacyapp.repository.users.DoctorRepository;
-import team18.pharmacyapp.repository.MarkRepository;
 import team18.pharmacyapp.service.interfaces.DoctorService;
 
 import java.time.LocalTime;
@@ -45,7 +45,7 @@ public class DoctorServiceImpl implements DoctorService {
     public List<DoctorMarkPharmaciesDTO> findAllDoctors(UserRole role) {
         List<Doctor> dermatologists = doctorRepository.findAllDoctors(role);
         List<DoctorMarkPharmaciesDTO> doctorMarkPharmaciesDTOS = new ArrayList<>();
-        for(Doctor doctor : dermatologists) {
+        for (Doctor doctor : dermatologists) {
             List<String> pharmacies = doctorRepository.findAllDoctorsPharmaciesNames(doctor.getId());
             Float averageMark = markRepository.getAverageMarkForDoctor(doctor.getId());
             DoctorMarkPharmaciesDTO doctorMarkPharmaciesDTO = new DoctorMarkPharmaciesDTO();
@@ -66,7 +66,7 @@ public class DoctorServiceImpl implements DoctorService {
         List<DoctorMarkPharmaciesDTO> dermatologistsForPharmacy = new ArrayList<>();
         for (Doctor doctor : dermatologists) {
             List<Pharmacy> pharmacies = doctorRepository.findAllDoctorsPharmacies(doctor.getId());
-            if(pharmacies.contains(pharmacy)) {
+            if (pharmacies.contains(pharmacy)) {
                 List<String> pharmaciesNames = doctorRepository.findAllDoctorsPharmaciesNames(doctor.getId());
                 Float averageMark = markRepository.getAverageMarkForDoctor(doctor.getId());
                 DoctorMarkPharmaciesDTO doctorMarkPharmaciesDTO = new DoctorMarkPharmaciesDTO();
@@ -87,17 +87,17 @@ public class DoctorServiceImpl implements DoctorService {
 
     @Override
     public DoctorDTO getDTOyId(UUID id) {
-        Doctor d=getById(id);
-        if(d!=null){
-            return new DoctorDTO(d.getId(),d.getName(),d.getSurname(),d.getEmail(),d.getPhoneNumber(),d.getRole(),null);
+        Doctor d = getById(id);
+        if (d != null) {
+            return new DoctorDTO(d.getId(), d.getName(), d.getSurname(), d.getEmail(), d.getPhoneNumber(), d.getRole(), null);
         }
         return null;
     }
 
     @Override
     public Doctor update(Doctor doctor) {
-        Doctor doc=getById(doctor.getId());
-        if(doc!=null) {
+        Doctor doc = getById(doctor.getId());
+        if (doc != null) {
             doc.setName(doctor.getName());
             doc.setSurname(doctor.getSurname());
             doc.setEmail(doctor.getEmail());
@@ -131,31 +131,31 @@ public class DoctorServiceImpl implements DoctorService {
 
     @Override
     public List<PharmacyDTO> getDoctorPharmacyList(UUID doctorId) {
-        List<PharmacyDTO> ret=new ArrayList<>();
-        for(Pharmacy pharmacy:doctorRepository.getDoctorPharmacyList(doctorId)){
-            ret.add(new PharmacyDTO(pharmacy.getId(),pharmacy.getName(),pharmacy.getAddress().getCountry(),pharmacy.getAddress().getCity(),pharmacy.getAddress().getStreet()));
+        List<PharmacyDTO> ret = new ArrayList<>();
+        for (Pharmacy pharmacy : doctorRepository.getDoctorPharmacyList(doctorId)) {
+            ret.add(new PharmacyDTO(pharmacy.getId(), pharmacy.getName(), pharmacy.getAddress().getCountry(), pharmacy.getAddress().getCity(), pharmacy.getAddress().getStreet()));
         }
         return ret;
     }
 
     @Override
     public PharmacyDTO getCurrentPharmacy(UUID doctorId) {
-        List<WorkSchedule> schedules=workScheduleRepository.getDoctorWorkSchedules(doctorId);
-        WorkSchedule workSchedule=null;
-        for(WorkSchedule ws :schedules){
-            Date now =new Date();
+        List<WorkSchedule> schedules = workScheduleRepository.getDoctorWorkSchedules(doctorId);
+        WorkSchedule workSchedule = null;
+        for (WorkSchedule ws : schedules) {
+            Date now = new Date();
             LocalTime startWorking = DateTimeHelpers.getTimeWithoutDate(ws.getFromHour());
-            LocalTime endWorking =DateTimeHelpers.getTimeWithoutDate(ws.getToHour());
-            LocalTime start =DateTimeHelpers.getTimeWithoutDate(now);
-            if(start.isAfter(startWorking) && start.isBefore(endWorking) && now.after(ws.getFromHour()) && now.before(ws.getToHour())){
+            LocalTime endWorking = DateTimeHelpers.getTimeWithoutDate(ws.getToHour());
+            LocalTime start = DateTimeHelpers.getTimeWithoutDate(now);
+            if (start.isAfter(startWorking) && start.isBefore(endWorking) && now.after(ws.getFromHour()) && now.before(ws.getToHour())) {
                 System.out.println(start);
                 System.out.println(startWorking);
                 System.out.println(endWorking);
-               workSchedule=ws;
+                workSchedule = ws;
             }
         }
-        if(workSchedule!=null) {
-            Pharmacy p=workSchedule.getPharmacy();
+        if (workSchedule != null) {
+            Pharmacy p = workSchedule.getPharmacy();
             return new PharmacyDTO(p.getId(), p.getName(), p.getAddress().getStreet(), p.getAddress().getCity(), p.getAddress().getCountry());
         }
         return null;
@@ -163,7 +163,7 @@ public class DoctorServiceImpl implements DoctorService {
 
     @Override
     public PharmacyDTO getPharmacistPharmacy(UUID id) {
-        Pharmacy p=doctorRepository.getPharmPharmacy(id);
+        Pharmacy p = doctorRepository.getPharmPharmacy(id);
         return new PharmacyDTO(p.getId(), p.getName(), p.getAddress().getStreet(), p.getAddress().getCity(), p.getAddress().getCountry());
     }
 

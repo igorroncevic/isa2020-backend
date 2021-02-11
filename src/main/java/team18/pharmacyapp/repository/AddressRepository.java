@@ -6,5 +6,5 @@ import team18.pharmacyapp.model.Address;
 import java.util.UUID;
 
 public interface AddressRepository extends JpaRepository<Address, UUID> {
-    Address findByCountryAndCityAndStreet(String country,String city,String street);
+    Address findByCountryAndCityAndStreet(String country, String city, String street);
 }

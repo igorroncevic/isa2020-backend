@@ -13,14 +13,22 @@ import java.util.UUID;
 
 public interface TermService {
     boolean isDoctorFree(UUID doctorId, Date startTime, Date endTime);
+
     boolean isPatientFree(UUID patientId, Date startTime, Date endTime);
+
     Term scheduleTerm(DoctorScheduleTermDTO termDTO);
+
     List<Term> getAllPatientTerms(UUID patientId);
+
     List<DoctorTermDTO> getAllDoctorTerms(UUID doctorId);
+
     DoctorTermDTO hasPatientHasTermNowWithDoctor(UUID doctorId, UUID patientId);
 
     TermPaginationDTO findAllPatientsPastTermsPaginated(UUID id, String sort, String termType, int page);
+
     TermPaginationDTO findPatientsUpcomingTermsByTypePaginated(UUID id, String sort, String termType, int page);
+
     List<DoctorTermDTO> getAllDoctorTermsInPharmacy(UUID doctorId, UUID pharmacyId);
+
     List<TermDTO> findAllPatientsUpcomingTerms(UUID id);
 }

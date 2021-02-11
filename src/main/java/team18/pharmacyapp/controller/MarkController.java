@@ -11,7 +11,7 @@ import team18.pharmacyapp.model.exceptions.ActionNotAllowedException;
 import team18.pharmacyapp.model.exceptions.AlreadyGivenMarkException;
 import team18.pharmacyapp.service.interfaces.MarkService;
 
-@CrossOrigin(origins = {"http://localhost:8080","http://localhost:8081"})
+@CrossOrigin(origins = {"http://localhost:8080", "http://localhost:8081"})
 @RestController
 @RequestMapping(value = "api/marks")
 public class MarkController {
@@ -27,19 +27,19 @@ public class MarkController {
     public ResponseEntity<Void> giveMark(@RequestBody MarkDTO markDTO) {
         boolean success;
 
-        try{
+        try {
             success = markService.giveMark(markDTO);
-        }catch(ActionNotAllowedException e){
+        } catch (ActionNotAllowedException e) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        }catch(AlreadyGivenMarkException e){
+        } catch (AlreadyGivenMarkException e) {
             return new ResponseEntity<>(HttpStatus.ALREADY_REPORTED);
-        }catch(RuntimeException e){
+        } catch (RuntimeException e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        if(success){
+        if (success) {
             return new ResponseEntity<>(HttpStatus.CREATED);
-        }else{
+        } else {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
@@ -49,17 +49,17 @@ public class MarkController {
     public ResponseEntity<Void> updateMark(@RequestBody MarkDTO markDTO) {
         boolean success;
 
-        try{
+        try {
             success = markService.updateMark(markDTO);
-        }catch(ActionNotAllowedException e){
+        } catch (ActionNotAllowedException e) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        }catch(RuntimeException e){
+        } catch (RuntimeException e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        if(success){
+        if (success) {
             return new ResponseEntity<>(HttpStatus.OK);
-        }else{
+        } else {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }

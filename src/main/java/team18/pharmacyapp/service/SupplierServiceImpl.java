@@ -29,8 +29,8 @@ public class SupplierServiceImpl implements SupplierService {
     @Override
     public Supplier registerNewSupplier(RegisterUserDTO supplier) {
         Supplier sup = new Supplier();
-        Address address=addressRepository.findByCountryAndCityAndStreet(supplier.getCountry(), supplier.getCity(), supplier.getStreet());
-        if(address == null){
+        Address address = addressRepository.findByCountryAndCityAndStreet(supplier.getCountry(), supplier.getCity(), supplier.getStreet());
+        if (address == null) {
             address = new Address();
             address.setStreet(supplier.getStreet());
             address.setCity(supplier.getCity());

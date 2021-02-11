@@ -8,8 +8,8 @@ import team18.pharmacyapp.model.Loyalty;
 import team18.pharmacyapp.model.dtos.LoyaltyDTO;
 import team18.pharmacyapp.model.dtos.MedicineIdNameDTO;
 import team18.pharmacyapp.model.dtos.PatientDTO;
-import team18.pharmacyapp.model.dtos.security.LoginDTO;
 import team18.pharmacyapp.model.dtos.UpdateProfileDataDTO;
+import team18.pharmacyapp.model.dtos.security.LoginDTO;
 import team18.pharmacyapp.model.enums.UserRole;
 import team18.pharmacyapp.model.exceptions.ActionNotAllowedException;
 import team18.pharmacyapp.model.exceptions.EntityNotFoundException;
@@ -42,7 +42,7 @@ public class PatientServiceImpl implements PatientService {
     private PasswordEncoder passwordEncoder;
 
     @Autowired
-    public PatientServiceImpl(PatientRepository patientRepository, MedicineRepository medicineRepository, AddressRepository addressRepository, LoyaltyRepository loyaltyRepository, EmailService emailService, RegisteredUserRepository userRepository, PasswordEncoder passwordEncoder){
+    public PatientServiceImpl(PatientRepository patientRepository, MedicineRepository medicineRepository, AddressRepository addressRepository, LoyaltyRepository loyaltyRepository, EmailService emailService, RegisteredUserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.patientRepository = patientRepository;
         this.medicineRepository = medicineRepository;
         this.addressRepository = addressRepository;
@@ -63,9 +63,9 @@ public class PatientServiceImpl implements PatientService {
 
     @Override
     public List<MedicineIdNameDTO> getAlergicTo(UUID patientId) {
-        List<MedicineIdNameDTO> list=new ArrayList<>();
-        for(Medicine m:patientRepository.getAlergicMedicines(patientId)){
-            list.add(new MedicineIdNameDTO(m.getId(),m.getName()));
+        List<MedicineIdNameDTO> list = new ArrayList<>();
+        for (Medicine m : patientRepository.getAlergicMedicines(patientId)) {
+            list.add(new MedicineIdNameDTO(m.getId(), m.getName()));
         }
         return list;
     }
@@ -87,17 +87,18 @@ public class PatientServiceImpl implements PatientService {
     @Transactional(rollbackFor = {ActionNotAllowedException.class, EntityNotFoundException.class, RuntimeException.class})
     public boolean updatePatientProfileInfo(UpdateProfileDataDTO patient) throws ActionNotAllowedException, EntityNotFoundException, RuntimeException {
         Patient pat = patientRepository.findById(patient.getId()).orElse(null);
-        if(pat == null) throw new EntityNotFoundException("Not found");
+        if (pat == null) throw new EntityNotFoundException("Not found");
 
-        if(!patient.getNewPassword().equals(null) && !patient.getConfirmPassword().equals(null)){
-            if(!patient.getConfirmPassword().equals(patient.getNewPassword())) throw new ActionNotAllowedException("Passwords do not match");
+        if (!patient.getNewPassword().equals(null) && !patient.getConfirmPassword().equals(null)) {
+            if (!patient.getConfirmPassword().equals(patient.getNewPassword()))
+                throw new ActionNotAllowedException("Passwords do not match");
         }
-        if(!patient.getName().equals("")) pat.setName(patient.getName());
-        if(!patient.getSurname().equals("")) pat.setSurname(patient.getSurname());
-        if(!patient.getPhoneNumber().equals("")) pat.setPhoneNumber(patient.getPhoneNumber());
-        if(!patient.getNewPassword().equals("")) pat.setPassword(passwordEncoder.encode(patient.getNewPassword()));
+        if (!patient.getName().equals("")) pat.setName(patient.getName());
+        if (!patient.getSurname().equals("")) pat.setSurname(patient.getSurname());
+        if (!patient.getPhoneNumber().equals("")) pat.setPhoneNumber(patient.getPhoneNumber());
+        if (!patient.getNewPassword().equals("")) pat.setPassword(passwordEncoder.encode(patient.getNewPassword()));
 
-        pat=patientRepository.save(pat);
+        pat = patientRepository.save(pat);
         RegisteredUser user = updateUser(pat.getName(), pat.getSurname(), pat.getPhoneNumber(), pat.getPassword(), pat.getId());
 
         return true;
@@ -113,13 +114,13 @@ public class PatientServiceImpl implements PatientService {
         return patientRepository.getPatientPenalties(id);
     }
 
-    public Patient findRegisteredPatient(LoginDTO patient){
-        return patientRepository.findByEmailAndPassword(patient.getEmail(),patient.getPassword());
+    public Patient findRegisteredPatient(LoginDTO patient) {
+        return patientRepository.findByEmailAndPassword(patient.getEmail(), patient.getPassword());
     }
 
-    public boolean activateAcc(UUID id){
+    public boolean activateAcc(UUID id) {
         Patient p = patientRepository.findById(id).orElse(null);
-        if(p != null){
+        if (p != null) {
             p.setActivated(true);
             patientRepository.save(p);
             return true;
@@ -128,7 +129,7 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
-    public Patient register(RegisteredUser user){
+    public Patient register(RegisteredUser user) {
         Patient pat = new Patient();
         pat.setRole(UserRole.patient);
         pat.setName(user.getName());
@@ -138,13 +139,13 @@ public class PatientServiceImpl implements PatientService {
         pat.setPassword(user.getPassword());
         pat.setAddress(user.getAddress());
         pat.setLoyalty(loyaltyService.findOneByCategory("Regular"));
-        Patient newPatient= patientRepository.save(pat);
-        patientRepository.setId(newPatient.getId(),user.getId());
-        UUID id= user.getId();
+        Patient newPatient = patientRepository.save(pat);
+        patientRepository.setId(newPatient.getId(), user.getId());
+        UUID id = user.getId();
         String userMail = pat.getEmail();
         String subject = "[ISA Pharmacy]  Account activation";
         String body = "You have successfully registred on our site.\n" +
-                "Your activation link is : http://localhost:8080/#/activate/" +id;
+                "Your activation link is : http://localhost:8080/#/activate/" + id;
         new Thread(() -> emailService.sendMail(userMail, subject, body)).start();
         return newPatient;
     }
@@ -154,10 +155,10 @@ public class PatientServiceImpl implements PatientService {
         RegisteredUser forUpdate = userRepository.findById(id).orElse(null);
         System.out.println(forUpdate.getEmail());
         System.out.println(password);
-        if(!name.equals("")) forUpdate.setName(name);
-        if(!surname.equals("")) forUpdate.setSurname(surname);
-        if(!phone.equals("")) forUpdate.setPhoneNumber(phone);
-        if(!password.equals("")) {
+        if (!name.equals("")) forUpdate.setName(name);
+        if (!surname.equals("")) forUpdate.setSurname(surname);
+        if (!phone.equals("")) forUpdate.setPhoneNumber(phone);
+        if (!password.equals("")) {
             forUpdate.setPassword(password);
         }
 

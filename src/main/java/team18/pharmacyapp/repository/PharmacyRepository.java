@@ -31,7 +31,7 @@ public interface PharmacyRepository extends JpaRepository<Pharmacy, UUID> {
             "WHERE pm.medicine.id = :medicineId " +
             "GROUP BY p.id, p.name, p.address, pm.quantity " +
             "HAVING pm.quantity > 0")
-    List<PharmacyFilteringDTO>getAllPharmaciesForMedicine(@Param("medicineId")UUID medicineId);
+    List<PharmacyFilteringDTO> getAllPharmaciesForMedicine(@Param("medicineId") UUID medicineId);
 
     @Transactional(readOnly = true)
     @Query("SELECT p FROM pharmacy p JOIN FETCH p.address WHERE p.id = :id")
