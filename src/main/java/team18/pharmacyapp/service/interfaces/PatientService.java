@@ -31,4 +31,6 @@ public interface PatientService {
     boolean isActivated(UUID patientId);
 
     boolean activateAcc(UUID patientId);
+
+    Patient save(Patient patientForUpdate);
 }
