@@ -9,6 +9,7 @@ import team18.pharmacyapp.model.*;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
+import java.util.UUID;
 
 @Entity(name = "doctor")
 @Getter
@@ -30,4 +31,10 @@ public class Doctor extends RegisteredUser implements Serializable {
 
     @OneToMany(mappedBy = "doctor", cascade = CascadeType.ALL)
     private List<WorkSchedule> workSchedules;
+
+    public Doctor(UUID id, String name, String surname) {
+        this.id=id;
+        this.name=name;
+        this.surname=surname;
+    }
 }
