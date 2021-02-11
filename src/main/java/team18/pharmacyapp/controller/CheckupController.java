@@ -116,7 +116,7 @@ public class CheckupController {
         return new ResponseEntity<>(checkup, HttpStatus.OK);
     }
 
-    @PreAuthorize("hasRole('ROLE_PATIENT') || hasRole('ROLE_DERMATOLOGIST') || hasRole('ROLE_PHARMACIST')")
+    @PreAuthorize("hasRole('ROLE_DERMATOLOGIST') || hasRole('ROLE_PHARMACIST')")
     @PostMapping(consumes = "application/json")
     public ResponseEntity<Term> saveCheckup(@RequestBody Term checkup) {
         Term savedCheckup = checkupService.save(checkup);
