@@ -63,7 +63,7 @@ public class AuthenticationController {
         if(user.getRole() == UserRole.patient){
             if(!patientService.isActivated(user.getId()))
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        }else if(user.isFirstLogin()) {
+        }else if(user.getFirstLogin()) {
             return new ResponseEntity<>(HttpStatus.LOCKED);
         }
         String jwt = tokenUtils.generateToken(user.getUsername());

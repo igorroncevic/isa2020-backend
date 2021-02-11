@@ -27,13 +27,13 @@ public class PharmacyMedicines {
     @Column(nullable = false)
     private int quantity;
 
-    @OneToMany(mappedBy = "pharmacyMedicine")
+    @OneToMany(mappedBy = "pharmacyMedicine", cascade = CascadeType.ALL)
     private List<MedicineRequests> medicineRequests;
 
-    @OneToMany(mappedBy = "pharmacyMedicine")
+    @OneToMany(mappedBy = "pharmacyMedicine", cascade = CascadeType.ALL)
     private List<Pricings> pricings;
 
-    @OneToMany(mappedBy = "pharmacyMedicines")
+    @OneToMany(mappedBy = "pharmacyMedicines", cascade = CascadeType.ALL)
     private List<EPrescriptionMedicines> ePrescriptionMedicines;
 
     // Verzija torke, koristi se u svrhu optimistickog zakljucavanja

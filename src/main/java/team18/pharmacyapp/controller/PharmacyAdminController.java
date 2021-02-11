@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import team18.pharmacyapp.model.dtos.PharmacyAdminDTO;
+import team18.pharmacyapp.model.dtos.PharmacyAdminInfoDTO;
 import team18.pharmacyapp.model.users.PharmacyAdmin;
 import team18.pharmacyapp.service.interfaces.PharmacyAdminService;
 
@@ -20,13 +21,13 @@ public class PharmacyAdminController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<PharmacyAdmin> getById(@PathVariable UUID id) {
-        PharmacyAdmin pharmacyAdmin = pharmacyAdminService.getById(id);
+    public ResponseEntity<PharmacyAdminInfoDTO> getById(@PathVariable UUID id) {
+        PharmacyAdminInfoDTO pharmacyAdmin = pharmacyAdminService.getInfoById(id);
         return new ResponseEntity<>(pharmacyAdmin, HttpStatus.OK);
     }
 
     @PutMapping(consumes = "application/json")
-    public ResponseEntity<PharmacyAdmin> update(@RequestBody PharmacyAdmin pharmacyAdmin) {
+    public ResponseEntity<PharmacyAdminInfoDTO> update(@RequestBody PharmacyAdminInfoDTO pharmacyAdmin) {
         PharmacyAdmin pharmacyAdminForUpdate = pharmacyAdminService.getById(pharmacyAdmin.getId());
 
         if (pharmacyAdmin == null) {
