@@ -81,7 +81,7 @@ public class DoctorIntegrationTestSTUD3 {
     public void testGetAllDoctorTerms() throws Exception {
         mockMvc.perform(get(URL_PREFIX_TERM + "/doctorAll/" + ID_PERA)).andExpect(status().isOk())
                 .andExpect(content().contentType(contentType))
-                .andExpect(jsonPath("$", hasSize(7)))
+                .andExpect(jsonPath("$", hasSize(8)))
                 .andExpect(jsonPath("$.[*].patient.name").value(hasItem("Slobodanka")))
                 .andExpect(jsonPath("$.[*].patient.surname").value(hasItem("Ilic")))
                 .andExpect(jsonPath("$.[*].patient.mail").value(hasItem("slobodankailic@gmail.com")));
