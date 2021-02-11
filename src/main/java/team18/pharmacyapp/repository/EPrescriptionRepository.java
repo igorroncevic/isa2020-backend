@@ -15,7 +15,7 @@ public interface EPrescriptionRepository extends JpaRepository<EPrescription, UU
 
     @Transactional(readOnly = true)
     @Query("SELECT ep FROM EPrescription ep WHERE ep.patient.id = :patientId AND (:status IS NULL OR ep.status = :status)")
-    List<EPrescription> findAllByPatientIdAndStatus(@Param("patientId") UUID patientId, @Param("status") EPrescriptionStatus status);
+    List<EPrescription> findAllByPatientIdAndStatus(@Param("patientId") UUID patientId, @Param("status")EPrescriptionStatus status);
 
     @Transactional(readOnly = true)
     @Query("SELECT new team18.pharmacyapp.model.dtos.EPrescriptionMedicinesQueryDTO(pm.pharmacy.id, pm.medicine.id, epm.quantity) " +

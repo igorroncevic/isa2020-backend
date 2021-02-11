@@ -6,10 +6,12 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 import team18.pharmacyapp.model.dtos.MedicineAllergyDTO;
+import team18.pharmacyapp.model.dtos.ReservedMedicineDTO;
 import team18.pharmacyapp.model.medicine.Medicine;
 import team18.pharmacyapp.model.medicine.MedicineSpecification;
 import team18.pharmacyapp.model.medicine.PharmacyMedicines;
 import team18.pharmacyapp.model.medicine.ReservedMedicines;
+import team18.pharmacyapp.model.users.Patient;
 
 import java.util.Date;
 import java.util.List;
@@ -75,7 +77,7 @@ public interface MedicineRepository extends JpaRepository<Medicine, UUID> {
     @Query("SELECT m FROM medicine m " +
             "JOIN m.reservedMedicines rm " +
             "WHERE rm.patient.id = :patientId AND rm.medicine.id = :medicineId AND rm.handled = true")
-    Medicine checkIfPatientReservedMedicine(@Param("medicineId") UUID medicineId, @Param("patientId") UUID patientId);
+    Medicine checkIfPatientReservedMedicine(@Param("medicineId")UUID medicineId, @Param("patientId") UUID patientId);
 
     @Transactional(readOnly = true)
     @Query("SELECT m FROM medicine m " +
@@ -83,7 +85,7 @@ public interface MedicineRepository extends JpaRepository<Medicine, UUID> {
             "JOIN pm.ePrescriptionMedicines epm " +
             "JOIN epm.ePrescription e " +
             "WHERE e.patient.id = :patientId AND pm.medicine.id = :medicineId")
-    Medicine checkIfPatientGotPrescribedMedicine(@Param("medicineId") UUID medicineId, @Param("patientId") UUID patientId);
+    Medicine checkIfPatientGotPrescribedMedicine(@Param("medicineId")UUID medicineId, @Param("patientId") UUID patientId);
 
     @Transactional(readOnly = true)
     @Query("SELECT m FROM medicine m " +
@@ -91,17 +93,17 @@ public interface MedicineRepository extends JpaRepository<Medicine, UUID> {
             "JOIN pm.ePrescriptionMedicines epm " +
             "JOIN epm.ePrescription e " +
             "WHERE pm.pharmacy.id = :pharmacyId AND e.patient.id = :patientId")
-    List<Medicine> getPatientsEPrescriptionMedicinesFromPharmacy(@Param("pharmacyId") UUID pharmacyId, @Param("patientId") UUID patientId);
+    List<Medicine> getPatientsEPrescriptionMedicinesFromPharmacy(@Param("pharmacyId")UUID pharmacyId, @Param("patientId") UUID patientId);
 
     @Transactional(readOnly = true)
     @Query("SELECT m FROM medicine m " +
             "JOIN m.reservedMedicines rm " +
             "WHERE rm.patient.id = :patientId AND rm.pharmacy.id = :pharmacyId AND rm.handled = true")
-    List<Medicine> getPatientsReservedMedicinesFromPharmacy(@Param("pharmacyId") UUID pharmacyId, @Param("patientId") UUID patientId);
+    List<Medicine> getPatientsReservedMedicinesFromPharmacy(@Param("pharmacyId")UUID pharmacyId, @Param("patientId") UUID patientId);
 
     @Transactional(readOnly = true)
     @Query(nativeQuery = true, value = "SELECT * FROM medicine m INNER JOIN alergicto a on m.id = a.medicine_id WHERE a.patient_id = :patientId")
-    List<Medicine> getMedicinesPatientsAllergicTo(@Param("patientId") UUID patientId);
+    List<Medicine>getMedicinesPatientsAllergicTo(@Param("patientId")UUID patientId);
 
     @Transactional(readOnly = true)
     @Query(nativeQuery = true, value = "SELECT * FROM medicine m WHERE m.id " +
@@ -110,7 +112,7 @@ public interface MedicineRepository extends JpaRepository<Medicine, UUID> {
 
     @Transactional(readOnly = true)
     @Query(nativeQuery = true, value = "SELECT * FROM alergicto a WHERE a.patient_id = :patientId AND a.medicine_id = :medicineId")
-    MedicineAllergyDTO checkIfAllergyExists(@Param("patientId") UUID patientId, @Param("medicineId") UUID medicineId);
+    MedicineAllergyDTO checkIfAllergyExists(@Param("patientId")UUID patientId, @Param("medicineId")UUID medicineId);
 
     @Transactional
     @Modifying
@@ -119,10 +121,10 @@ public interface MedicineRepository extends JpaRepository<Medicine, UUID> {
 
     @Transactional(readOnly = true)
     @Query(value = "select s from medicine_specification s where s.medicine.id=:medicineId ")
-    MedicineSpecification getMedicineSpecification(UUID medicineId);
+    MedicineSpecification getMedicineSpecification (UUID medicineId);
 
     @Transactional(readOnly = true)
     @Query(value = "select m.name from medicine_specification s inner join medicine m on s.replacementMedicineCode=m.medicineCode where s.medicine.id=:medicineId ")
-    String getReplacmentMedicine(UUID medicineId);
+    String getReplacmentMedicine (UUID medicineId);
 
 }

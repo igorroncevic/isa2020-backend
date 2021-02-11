@@ -37,31 +37,33 @@ public class PatientServiceImpl implements PatientService {
     private final LoyaltyService loyaltyService;
     private final EmailService emailService;
     private final RegisteredUserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    @Autowired
-    public PatientServiceImpl(PatientRepository patientRepository, MedicineRepository medicineRepository, AddressRepository addressRepository, LoyaltyRepository loyaltyRepository, EmailService emailService, RegisteredUserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public PatientServiceImpl(PatientRepository patientRepository, MedicineRepository medicineRepository, AddressRepository addressRepository, LoyaltyRepository loyaltyRepository, EmailService emailService, RegisteredUserRepository userRepository, PasswordEncoder passwordEncoder, PasswordEncoder passwordEncoder1) {
         this.patientRepository = patientRepository;
         this.medicineRepository = medicineRepository;
         this.addressRepository = addressRepository;
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder1;
         this.loyaltyService = new LoyaltyServiceImpl(loyaltyRepository, patientRepository);
         this.emailService = emailService;
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Patient> findAll() {
         return patientRepository.findAll();
     }
 
     @Override
+    @Transactional
     public int addPenalty(UUID patientId) {
         return patientRepository.addPenalty(patientId);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<MedicineIdNameDTO> getAlergicTo(UUID patientId) {
         List<MedicineIdNameDTO> list = new ArrayList<>();
         for (Medicine m : patientRepository.getAlergicMedicines(patientId)) {
@@ -71,6 +73,7 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public PatientDTO getPatientProfileInfo(UUID id) {
         Patient patient = patientRepository.getPatientForProfile(id);
 
@@ -99,17 +102,20 @@ public class PatientServiceImpl implements PatientService {
         if (!patient.getNewPassword().equals("")) pat.setPassword(passwordEncoder.encode(patient.getNewPassword()));
 
         pat = patientRepository.save(pat);
-        RegisteredUser user = updateUser(pat.getName(), pat.getSurname(), pat.getPhoneNumber(), pat.getPassword(), pat.getId());
+        int updated = userRepository.update(pat.getId(), pat.getName(), pat.getSurname(), pat.getPassword(), pat.getPhoneNumber());
+        if(updated != 1) throw new RuntimeException("Couldnt change password");
 
         return true;
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Patient getById(UUID id) {
         return patientRepository.findById(id).orElse(new Patient());
     }
 
     @Override
+    @Transactional(readOnly = true)
     public int getPatientPenalties(UUID id) {
         return patientRepository.getPatientPenalties(id);
     }
@@ -148,22 +154,6 @@ public class PatientServiceImpl implements PatientService {
                 "Your activation link is : http://localhost:8080/#/activate/" + id;
         new Thread(() -> emailService.sendMail(userMail, subject, body)).start();
         return newPatient;
-    }
-
-    @Override
-    public RegisteredUser updateUser(String name, String surname, String phone, String password, UUID id) {
-        RegisteredUser forUpdate = userRepository.findById(id).orElse(null);
-        System.out.println(forUpdate.getEmail());
-        System.out.println(password);
-        if (!name.equals("")) forUpdate.setName(name);
-        if (!surname.equals("")) forUpdate.setSurname(surname);
-        if (!phone.equals("")) forUpdate.setPhoneNumber(phone);
-        if (!password.equals("")) {
-            forUpdate.setPassword(password);
-        }
-
-        userRepository.saveAndFlush(forUpdate);
-        return forUpdate;
     }
 
     @Override

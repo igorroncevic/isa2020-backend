@@ -32,7 +32,7 @@ public interface DoctorRepository extends JpaRepository<Doctor, UUID> {
 
     @Transactional(readOnly = true)
     @Query("SELECT d FROM doctor d JOIN d.terms t WHERE t.patient.id = :patientId AND d.role = :doctorRole AND t.endTime < :todaysTime")
-    List<Doctor> getPatientsDoctors(@Param("patientId") UUID patientId, @Param("doctorRole") UserRole doctorRole, @Param("todaysTime") Date todaysTime);
+    List<Doctor> getPatientsDoctors(@Param("patientId") UUID patientId, @Param("doctorRole")UserRole doctorRole, @Param("todaysTime") Date todaysTime);
 
     @Transactional(readOnly = true)
     @Query("SELECT d FROM doctor d " +
@@ -52,7 +52,7 @@ public interface DoctorRepository extends JpaRepository<Doctor, UUID> {
 
     @Transactional(readOnly = true)
     @Query("SELECT d from doctor d JOIN d.terms t WHERE t.id = :termId")
-    Doctor findDoctorByTermId(@Param("termId") UUID termId);
+    Doctor findDoctorByTermId(@Param("termId")UUID termId);
 
     @Query("SELECT p from work_schedule w inner join pharmacy p on w.pharmacy.id=p.id where w.doctor.id=:doctorId")
     List<Pharmacy> getDoctorPharmacyList(UUID doctorId);

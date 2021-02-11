@@ -5,6 +5,6 @@ import team18.pharmacyapp.model.Report;
 
 import java.util.UUID;
 
-public interface ReportRepository extends JpaRepository<Report, UUID> {
+public interface ReportRepository extends JpaRepository <Report, UUID> {
 
 }

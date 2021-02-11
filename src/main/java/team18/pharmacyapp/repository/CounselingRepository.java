@@ -1,5 +1,7 @@
 package team18.pharmacyapp.repository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -46,7 +48,7 @@ public interface CounselingRepository extends JpaRepository<Term, UUID> {
 
     @Transactional(readOnly = true)
     @Query("SELECT t FROM term t WHERE t.startTime >= :todaysDate AND t.patient.id = :patientId AND t.doctor.id = :doctorId")
-    Term checkIfPatientHasCounselingWithDoctor(@Param("patientId") UUID patientId, @Param("doctorId") UUID doctorId, @Param("todaysDate") Date todaysDate);
+    Term checkIfPatientHasCounselingWithDoctor(@Param("patientId") UUID patientId, @Param("doctorId")UUID doctorId, @Param("todaysDate") Date todaysDate);
 
     @Transactional(readOnly = true)
     @Query("SELECT t FROM term t JOIN FETCH t.patient WHERE t.id = :counselingId")
