@@ -8,7 +8,7 @@ import team18.pharmacyapp.model.keys.PurchaseOrderMedicineId;
 
 import javax.persistence.*;
 
-@Entity
+@Entity (name = "purchase_order_medicine")
 @Getter
 @Setter
 @NoArgsConstructor

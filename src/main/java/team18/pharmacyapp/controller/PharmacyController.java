@@ -9,7 +9,9 @@ import team18.pharmacyapp.helpers.FilteringHelpers;
 import team18.pharmacyapp.model.Pharmacy;
 import team18.pharmacyapp.model.dtos.PharmacyFilteringDTO;
 import team18.pharmacyapp.model.dtos.PharmacyMarkPriceDTO;
+import team18.pharmacyapp.model.dtos.PurchaseOrderDTO;
 import team18.pharmacyapp.service.interfaces.PharmacyService;
+import team18.pharmacyapp.service.interfaces.PurchaseOrderService;
 
 import java.util.List;
 import java.util.UUID;
@@ -19,10 +21,12 @@ import java.util.UUID;
 @RequestMapping(value = "api/pharmacies")
 public class PharmacyController {
     private final PharmacyService pharmacyService;
+    private final PurchaseOrderService purchaseOrderService;
 
     @Autowired
-    public PharmacyController(PharmacyService pharmacyService) {
+    public PharmacyController(PharmacyService pharmacyService, PurchaseOrderService purchaseOrderService) {
         this.pharmacyService = pharmacyService;
+        this.purchaseOrderService = purchaseOrderService;
     }
 
     @GetMapping("/search")
@@ -62,5 +66,11 @@ public class PharmacyController {
     public ResponseEntity<Pharmacy> saveNewPharmacy(@RequestBody team18.pharmacyapp.model.dtos.PharmacyDTO newPharmacy){
         Pharmacy pharmacy = pharmacyService.registerNewPharmacy(newPharmacy);
         return new ResponseEntity<>(pharmacy, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/{id}/orders")
+    public ResponseEntity<List<PurchaseOrderDTO>> getPharmacyPurchaseOrders(@PathVariable UUID id) {
+        List<PurchaseOrderDTO> purchaseOrderDTOs = purchaseOrderService.getPharmacyPurchaseOrders(id);
+        return new ResponseEntity<>(purchaseOrderDTOs, HttpStatus.OK);
     }
 }
