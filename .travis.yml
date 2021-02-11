@@ -11,12 +11,15 @@ notifications:
 
 before_install:
   - chmod +x mvnw
-  - psql -c 'create database pharmacydb;' -U postgres
 
 install:
-  - mvn install -Dmaven.javadoc.skip=true -B -V
+  - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
+
+before_script:
+  - psql -c 'create database pharmacydb;' -U postgres
 
 script:
+  - mvn test
   - mvn package
 
 deploy:
