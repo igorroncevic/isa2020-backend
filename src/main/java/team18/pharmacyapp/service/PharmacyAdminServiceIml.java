@@ -9,8 +9,8 @@ import team18.pharmacyapp.model.dtos.PharmacyAdminInfoDTO;
 import team18.pharmacyapp.model.enums.UserRole;
 import team18.pharmacyapp.model.users.PharmacyAdmin;
 import team18.pharmacyapp.repository.AddressRepository;
-import team18.pharmacyapp.repository.users.PharmacyAdminRepository;
 import team18.pharmacyapp.repository.PharmacyRepository;
+import team18.pharmacyapp.repository.users.PharmacyAdminRepository;
 import team18.pharmacyapp.service.interfaces.PharmacyAdminService;
 
 import java.util.UUID;
@@ -52,7 +52,7 @@ public class PharmacyAdminServiceIml implements PharmacyAdminService {
     public PharmacyAdmin registerNewPharmacyAdmin(PharmacyAdminDTO pharmacyAdmin) {
         PharmacyAdmin phAdmin = new PharmacyAdmin();
         Address address = addressRepository.findByCountryAndCityAndStreet(pharmacyAdmin.getCountry(), pharmacyAdmin.getCity(), pharmacyAdmin.getStreet());
-        if(address == null){
+        if (address == null) {
             address = new Address();
             address.setStreet(pharmacyAdmin.getStreet());
             address.setCity(pharmacyAdmin.getCity());
@@ -69,7 +69,7 @@ public class PharmacyAdminServiceIml implements PharmacyAdminService {
         phAdmin.setPassword(pharmacyAdmin.getPassword());
         phAdmin.setAddress(address);
         phAdmin.setPharmacy(pharmacy);
-        phAdmin= pharmacyAdminRepository.save(phAdmin);
+        phAdmin = pharmacyAdminRepository.save(phAdmin);
         return phAdmin;
     }
 }

@@ -8,7 +8,7 @@ import team18.pharmacyapp.model.dtos.RegisterUserDTO;
 import team18.pharmacyapp.model.users.SystemAdmin;
 import team18.pharmacyapp.service.interfaces.SystemAdminService;
 
-@CrossOrigin(origins = {"http://localhost:8080","http://localhost:8081"})
+@CrossOrigin(origins = {"http://localhost:8080", "http://localhost:8081"})
 @RestController
 @RequestMapping(value = "api/sysadmins")
 public class SystemAdminController {
@@ -20,7 +20,7 @@ public class SystemAdminController {
     }
 
     @PostMapping(consumes = "application/json", value = "/register")
-    public ResponseEntity<SystemAdmin> registerNewSysAdmin(@RequestBody RegisterUserDTO newSysAdmin){
+    public ResponseEntity<SystemAdmin> registerNewSysAdmin(@RequestBody RegisterUserDTO newSysAdmin) {
         SystemAdmin sysAdm = systemAdminService.registerNewSysAdmin(newSysAdmin);
         return new ResponseEntity<>(sysAdm, HttpStatus.CREATED);
 

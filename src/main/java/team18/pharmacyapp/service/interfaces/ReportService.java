@@ -5,5 +5,6 @@ import team18.pharmacyapp.model.dtos.ReportCreateDTO;
 
 public interface ReportService {
     Report save(Report report);
+
     Report createNew(ReportCreateDTO report);
 }

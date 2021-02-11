@@ -12,7 +12,7 @@ import team18.pharmacyapp.service.interfaces.LoyaltyService;
 import java.util.List;
 import java.util.UUID;
 
-@CrossOrigin(origins = {"http://localhost:8080","http://localhost:8081"})
+@CrossOrigin(origins = {"http://localhost:8080", "http://localhost:8081"})
 @RestController
 @RequestMapping(value = "api/loyalty")
 @PreAuthorize("hasRole('ROLE_PATIENT')") // dodati npr  || hasRole('ROLE_DOCTOR') ako treba još neki role
@@ -20,17 +20,17 @@ public class LoyaltyController {
     private final LoyaltyService loyaltyService;
 
     @Autowired
-    public  LoyaltyController(LoyaltyService loyaltyService){
+    public LoyaltyController(LoyaltyService loyaltyService) {
         this.loyaltyService = loyaltyService;
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<Loyalty>> getAll(){
+    public ResponseEntity<List<Loyalty>> getAll() {
         return new ResponseEntity<>(loyaltyService.findAll(), HttpStatus.OK);
     }
 
     @PostMapping(consumes = "application/json", value = "/add")
-    public ResponseEntity<Loyalty> saveNewLoyalty(@RequestBody LoyaltyDTO newLoyalty){
+    public ResponseEntity<Loyalty> saveNewLoyalty(@RequestBody LoyaltyDTO newLoyalty) {
         Loyalty loyalty = loyaltyService.saveNewLoyalty(newLoyalty);
         return new ResponseEntity<>(loyalty, HttpStatus.CREATED);
     }

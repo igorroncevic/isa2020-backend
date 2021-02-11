@@ -25,9 +25,9 @@ public class TermController {
     }
 
     @PostMapping(consumes = "application/json")
-    public ResponseEntity<Term> saveTerm(@RequestBody DoctorScheduleTermDTO dto){
-        Term term=termService.scheduleTerm(dto);
-        if(term!=null){
+    public ResponseEntity<Term> saveTerm(@RequestBody DoctorScheduleTermDTO dto) {
+        Term term = termService.scheduleTerm(dto);
+        if (term != null) {
             return new ResponseEntity<>(HttpStatus.CREATED);
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -48,25 +48,25 @@ public class TermController {
 
     @PreAuthorize("hasRole('ROLE_PATIENT')")
     @GetMapping("/upcoming/{id}")
-    public ResponseEntity<List<TermDTO>> getPatientsUpcomingTerms(@PathVariable UUID id){
+    public ResponseEntity<List<TermDTO>> getPatientsUpcomingTerms(@PathVariable UUID id) {
         List<TermDTO> terms;
-        try{
+        try {
             terms = termService.findAllPatientsUpcomingTerms(id);
-        }catch(RuntimeException ex){
+        } catch (RuntimeException ex) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        return new ResponseEntity<>(terms,HttpStatus.OK);
+        return new ResponseEntity<>(terms, HttpStatus.OK);
     }
 
     @PreAuthorize("hasRole('ROLE_PHADMIN') || hasRole('ROLE_DERMATOLOGIST') || hasRole('ROLE_PHARMACIST')")
     @GetMapping("nowTerm/{patientId}/{doctorId}")
-    public ResponseEntity<DoctorTermDTO> getNowTerm(@PathVariable UUID patientId,@PathVariable UUID doctorId){
-        DoctorTermDTO term=termService.hasPatientHasTermNowWithDoctor(doctorId,patientId);
-        if(term!=null){
-            return new ResponseEntity<>(term,HttpStatus.OK);
+    public ResponseEntity<DoctorTermDTO> getNowTerm(@PathVariable UUID patientId, @PathVariable UUID doctorId) {
+        DoctorTermDTO term = termService.hasPatientHasTermNowWithDoctor(doctorId, patientId);
+        if (term != null) {
+            return new ResponseEntity<>(term, HttpStatus.OK);
         }
-        return new  ResponseEntity<>(null,HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
     }
 
 

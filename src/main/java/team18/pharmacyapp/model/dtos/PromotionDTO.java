@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import team18.pharmacyapp.model.Pharmacy;
 
 import java.util.Date;
 import java.util.UUID;

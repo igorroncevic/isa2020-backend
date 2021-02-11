@@ -31,6 +31,4 @@ public interface PatientService {
     boolean isActivated(UUID patientId);
 
     boolean activateAcc(UUID patientId);
-
-    RegisteredUser updateUser(String name, String surname, String phone, String password, UUID id);
 }

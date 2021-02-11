@@ -5,7 +5,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import team18.pharmacyapp.model.Pharmacy;
 import team18.pharmacyapp.model.dtos.*;
 import team18.pharmacyapp.model.enums.UserRole;
 import team18.pharmacyapp.model.users.Doctor;
@@ -14,7 +13,7 @@ import team18.pharmacyapp.service.interfaces.DoctorService;
 import java.util.List;
 import java.util.UUID;
 
-@CrossOrigin(origins = {"http://localhost:8080","http://localhost:8081"})
+@CrossOrigin(origins = {"http://localhost:8080", "http://localhost:8081"})
 @RestController
 @RequestMapping(value = "api/doctors")
 //@PreAuthorize("hasRole('ROLE_PATIENT')") // dodati npr  || hasRole('ROLE_DOCTOR') ako treba još neki role
@@ -28,26 +27,26 @@ public class DoctorController {
 
     @GetMapping("/{id}")
     public ResponseEntity<DoctorDTO> getById(@PathVariable UUID id) {
-        DoctorDTO doctor=doctorService.getDTOyId(id);
+        DoctorDTO doctor = doctorService.getDTOyId(id);
         return new ResponseEntity<>(doctor, HttpStatus.OK);
     }
 
     @PutMapping(consumes = "application/json")
     public ResponseEntity<Doctor> update(@RequestBody Doctor doctor) {
-        Doctor doc=doctorService.update(doctor);
-        if (doc!=null) {
-            return new ResponseEntity<>( HttpStatus.OK);
+        Doctor doc = doctorService.update(doctor);
+        if (doc != null) {
+            return new ResponseEntity<>(HttpStatus.OK);
         }
-        return new ResponseEntity<>( HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
     @PreAuthorize("hasRole('ROLE_PATIENT')")
     @PostMapping("/patient")
     public ResponseEntity<List<DoctorMarkPharmaciesDTO>> getPatientsDoctorsByRole(@RequestBody PatientDoctorRoleDTO patientDoctorRoleDTO) {
         List<DoctorMarkPharmaciesDTO> doctors = doctorService.getPatientsDoctors(patientDoctorRoleDTO);
-        if(doctors.size() != 0) {
+        if (doctors.size() != 0) {
             return new ResponseEntity<>(doctors, HttpStatus.OK);
-        }else{
+        } else {
             return new ResponseEntity<>(doctors, HttpStatus.NOT_FOUND);
         }
     }
@@ -90,17 +89,17 @@ public class DoctorController {
 
     @PreAuthorize("hasRole('ROLE_DERMATOLOGIST') || hasRole('ROLE_PHARMACIST')")
     @GetMapping("/pharmacyList/{id}")
-    public List<PharmacyDTO> getDoctorPharmacyList(@PathVariable UUID id){
+    public List<PharmacyDTO> getDoctorPharmacyList(@PathVariable UUID id) {
         return doctorService.getDoctorPharmacyList(id);
     }
 
     @GetMapping("currentPharmacy/{id}")
-    public PharmacyDTO getCurrentPharmacu(@PathVariable UUID id){
+    public PharmacyDTO getCurrentPharmacu(@PathVariable UUID id) {
         return doctorService.getCurrentPharmacy(id);
     }
 
     @GetMapping("pharmPharmacy/{id}")
-    public PharmacyDTO getPharmacistPharmacy(@PathVariable UUID id){
+    public PharmacyDTO getPharmacistPharmacy(@PathVariable UUID id) {
         return doctorService.getPharmacistPharmacy(id);
     }
 }

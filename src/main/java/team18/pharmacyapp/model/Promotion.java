@@ -24,11 +24,11 @@ public class Promotion {
     private UUID id;
 
     @Column(nullable = false)
-    @JsonFormat(pattern="yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date startDate;
 
     @Column(nullable = false)
-    @JsonFormat(pattern="yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date endDate;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)

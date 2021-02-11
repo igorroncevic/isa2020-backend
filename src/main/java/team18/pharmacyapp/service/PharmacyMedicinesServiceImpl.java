@@ -31,16 +31,16 @@ public class PharmacyMedicinesServiceImpl implements PharmacyMedicinesService {
 
     @Override
     public int medicineQuantity(UUID pharmacyId, UUID medicineId) {
-        return repository.findQyantity(pharmacyId,medicineId);
+        return repository.findQyantity(pharmacyId, medicineId);
     }
 
     @Override
     public String checkAvailability(ReportMedicineDTO dto) {
-        int quantity=medicineQuantity(dto.getPharmacyId(),dto.getMedicineId());
-        if(quantity<dto.getMedicineQuantity()){
-            medicineRequestsService.checkRequest(dto.getMedicineId(),dto.getPharmacyId());
-            String replacment=medicineService.getReplacmentMedicine(dto.getMedicineId());
-            if(replacment!=null){
+        int quantity = medicineQuantity(dto.getPharmacyId(), dto.getMedicineId());
+        if (quantity < dto.getMedicineQuantity()) {
+            medicineRequestsService.checkRequest(dto.getMedicineId(), dto.getPharmacyId());
+            String replacment = medicineService.getReplacmentMedicine(dto.getMedicineId());
+            if (replacment != null) {
                 return replacment;
             }
             return "unavailable";
@@ -52,7 +52,7 @@ public class PharmacyMedicinesServiceImpl implements PharmacyMedicinesService {
     public List<MedicineQuantityDTO> getMedicnesByPharmacy(UUID pharmacy) {
         List<PharmacyMedicines> pharmacyMedicines = repository.getMedicineByPharmacy(pharmacy);
         List<MedicineQuantityDTO> medicineQuantityDTOs = new ArrayList<>();
-        for(PharmacyMedicines pharmacyMedicine : pharmacyMedicines) {
+        for (PharmacyMedicines pharmacyMedicine : pharmacyMedicines) {
             MedicineQuantityDTO medicineQuantityDTO = new MedicineQuantityDTO();
             medicineQuantityDTO.setId(pharmacyMedicine.getMedicine().getId());
             medicineQuantityDTO.setName(pharmacyMedicine.getMedicine().getName());
@@ -71,7 +71,7 @@ public class PharmacyMedicinesServiceImpl implements PharmacyMedicinesService {
     @Override
     public void deletePharmacyMedicine(PharmacyMedicinesId pharmacyMedicinesId) throws ActionNotAllowedException {
         int numberOfUnhandledRegistrations = repository.getNumberOfUnhandledReservations(pharmacyMedicinesId.getPharmacy(), pharmacyMedicinesId.getMedicine());
-        if(numberOfUnhandledRegistrations != 0)
+        if (numberOfUnhandledRegistrations != 0)
             throw new ActionNotAllowedException("You can't delete this pharmacy medicine because it has unhandled reservations.");
         repository.deleteById(pharmacyMedicinesId);
     }

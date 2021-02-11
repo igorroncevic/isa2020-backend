@@ -2,9 +2,8 @@ package team18.pharmacyapp.service.interfaces;
 
 import team18.pharmacyapp.model.dtos.*;
 import team18.pharmacyapp.model.exceptions.ActionNotAllowedException;
-import team18.pharmacyapp.model.medicine.Medicine;
 import team18.pharmacyapp.model.exceptions.ReserveMedicineException;
-
+import team18.pharmacyapp.model.medicine.Medicine;
 
 import java.util.List;
 import java.util.UUID;

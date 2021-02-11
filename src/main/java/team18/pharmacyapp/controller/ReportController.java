@@ -12,7 +12,7 @@ import team18.pharmacyapp.model.medicine.ReportMedicines;
 import team18.pharmacyapp.service.interfaces.ReportMedicinesService;
 import team18.pharmacyapp.service.interfaces.ReportService;
 
-@CrossOrigin(origins = {"http://localhost:8080","http://localhost:8081"})
+@CrossOrigin(origins = {"http://localhost:8080", "http://localhost:8081"})
 @RestController
 @RequestMapping(value = "api/reports")
 public class ReportController {
@@ -27,17 +27,17 @@ public class ReportController {
 
     @PreAuthorize("hasRole('ROLE_DERMATOLOGIST') || hasRole('ROLE_PHARMACIST')")
     @PostMapping
-    public ResponseEntity<Report> save(@RequestBody ReportCreateDTO report){
-        return  new ResponseEntity<>(reportService.createNew(report), HttpStatus.CREATED);
+    public ResponseEntity<Report> save(@RequestBody ReportCreateDTO report) {
+        return new ResponseEntity<>(reportService.createNew(report), HttpStatus.CREATED);
     }
 
     @PreAuthorize("hasRole('ROLE_DERMATOLOGIST') || hasRole('ROLE_PHARMACIST')")
     @PostMapping("reportMedicine")
-    public ResponseEntity<ReportMedicines> saveReportMedicine(@RequestBody ReportMedicines reportMedicines){
-        ReportMedicines rm=reportMedicinesService.save(reportMedicines);
-        if(rm!=null){
+    public ResponseEntity<ReportMedicines> saveReportMedicine(@RequestBody ReportMedicines reportMedicines) {
+        ReportMedicines rm = reportMedicinesService.save(reportMedicines);
+        if (rm != null) {
             return new ResponseEntity<>(HttpStatus.CREATED);
         }
-        return new ResponseEntity<>(null,HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
     }
 }

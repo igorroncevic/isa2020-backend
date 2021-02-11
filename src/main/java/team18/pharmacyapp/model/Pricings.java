@@ -1,6 +1,5 @@
 package team18.pharmacyapp.model;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -9,7 +8,6 @@ import team18.pharmacyapp.model.medicine.PharmacyMedicines;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.UUID;
 
 @Entity(name = "pricings")

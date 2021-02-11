@@ -3,6 +3,7 @@ package team18.pharmacyapp.repository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -10,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import team18.pharmacyapp.model.Term;
 import team18.pharmacyapp.model.enums.TermType;
 
+import javax.persistence.LockModeType;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -44,10 +46,4 @@ public interface CheckupRepository extends JpaRepository<Term, UUID> {
     @Transactional(readOnly = true)
     @Query("SELECT t FROM term t JOIN FETCH t.patient  WHERE t.id = :checkupId")
     Term findByIdCustom(@Param("checkupId") UUID checkupId);
-
-    @Transactional(readOnly = true)
-    @Query("SELECT t FROM term t JOIN FETCH t.patient WHERE t.doctor.id = :doctorId")
-    List<Term> findTermByDoctorId(UUID doctorId);
-
-
 }

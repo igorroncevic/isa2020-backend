@@ -12,7 +12,7 @@ import team18.pharmacyapp.service.interfaces.EPrescriptionService;
 
 import java.util.List;
 
-@CrossOrigin(origins = {"http://localhost:8080","http://localhost:8081"})
+@CrossOrigin(origins = {"http://localhost:8080", "http://localhost:8081"})
 @RestController
 @RequestMapping(value = "api/eprescriptions")
 public class EPrescriptionController {
@@ -27,11 +27,11 @@ public class EPrescriptionController {
     @PostMapping("/patient/")
     public ResponseEntity<List<EPrescriptionDTO>> findAllByPatientId(@RequestBody EPrescriptionSortFilterDTO esf) {
         List<EPrescriptionDTO> prescriptions;
-        try{
+        try {
             prescriptions = ePrescriptionService.findAllByPatientId(esf);
-        }catch(ActionNotAllowedException ex){
+        } catch (ActionNotAllowedException ex) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }catch(RuntimeException ex){
+        } catch (RuntimeException ex) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>(prescriptions, HttpStatus.OK);
