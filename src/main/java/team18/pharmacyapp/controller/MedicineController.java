@@ -225,9 +225,10 @@ public class MedicineController {
     }
 
 
-    @PreAuthorize("hasRole('ROLE_DERMATOLOGIST') || hasRole('ROLE_PHARMACIST')")
-    @PutMapping(value = "handleReservation", consumes = "application/json")
-    public boolean handleReservation(@RequestBody HandleReservationDTO dto) {
+
+    @PreAuthorize("hasRole('ROLE_PHARMACIST')")
+    @PutMapping(value = "handleReservation",consumes = "application/json")
+    public boolean handleReservation(@RequestBody HandleReservationDTO dto){
         return reservedMedicinesService.handleMedicine(dto);
     }
 
