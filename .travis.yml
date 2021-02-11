@@ -12,14 +12,11 @@ notifications:
 before_install:
   - chmod +x mvnw
 
-install:
-  - mvn install -DskipTests=false -Dmaven.javadoc.skip=true -B -V
-
 before_script:
   - psql -c 'create database pharmacydb;' -U postgres
 
 script:
-  - mvn package
+  - mvn install -DskipTests=false -Dmaven.javadoc.skip=true -B -V
 
 deploy:
   provider: heroku
