@@ -79,12 +79,6 @@ public class DoctorController {
         return new ResponseEntity<>(doctors, HttpStatus.OK);
     }
 
-    @PostMapping(consumes = "application/json", value = "/register")
-    public ResponseEntity<Doctor> registerNewDermatologist(@RequestBody RegisterUserDTO newDermatologist) {
-        Doctor doc = doctorService.registerDermatologist(newDermatologist);
-        return new ResponseEntity<>(doc, HttpStatus.CREATED);
-    }
-
     @GetMapping("/patients/{id}")
     public ResponseEntity<List<DoctorsPatientDTO>> getAllPharmacists(@PathVariable UUID id) {
         return new ResponseEntity<>(doctorService.findDoctorsPatients(id), HttpStatus.OK);

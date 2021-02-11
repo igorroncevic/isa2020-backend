@@ -10,9 +10,7 @@ import team18.pharmacyapp.model.enums.UserRole;
 import team18.pharmacyapp.model.users.RegisteredUser;
 import team18.pharmacyapp.repository.AddressRepository;
 import team18.pharmacyapp.repository.users.RegisteredUserRepository;
-import team18.pharmacyapp.service.interfaces.AuthorityService;
-import team18.pharmacyapp.service.interfaces.PatientService;
-import team18.pharmacyapp.service.interfaces.RegisteredUserService;
+import team18.pharmacyapp.service.interfaces.*;
 
 import java.util.List;
 import java.util.UUID;
@@ -23,16 +21,24 @@ public class RegisteredUserServiceImpl implements RegisteredUserService {
     private final AddressRepository addressRepository;
     private final AuthorityService authorityService;
     private final PatientService patientService;
+    private final DoctorService doctorService;
+    private final SupplierService supplierService;
+    private final SystemAdminService systemAdminService;
+    private final PharmacyAdminService pharmacyAdminService;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
 
     @Autowired
-    public RegisteredUserServiceImpl(RegisteredUserRepository userRepository, AddressRepository addressRepository, AuthorityService authorityService, PatientService patientService) {
+    public RegisteredUserServiceImpl(RegisteredUserRepository userRepository, AddressRepository addressRepository, AuthorityService authorityService, PatientService patientService, DoctorService doctorService, SupplierService supplierService, SystemAdminService systemAdminService, PharmacyAdminService pharmacyAdminService) {
         this.userRepository = userRepository;
         this.addressRepository = addressRepository;
         this.authorityService = authorityService;
         this.patientService = patientService;
+        this.doctorService = doctorService;
+        this.supplierService = supplierService;
+        this.systemAdminService = systemAdminService;
+        this.pharmacyAdminService = pharmacyAdminService;
     }
 
     @Override
@@ -73,6 +79,15 @@ public class RegisteredUserServiceImpl implements RegisteredUserService {
 
         switch (role){
             case patient: patientService.register(user);
+                break;
+            case dermatologist: doctorService.registerDermatologist(user);
+                break;
+            case supplier: supplierService.registerSupplier(user);
+                break;
+            case sysAdmin: systemAdminService.registerSysAdmin(user);
+                break;
+            case pharmacyAdmin: pharmacyAdminService.registerPharmacyAdmin(user, dto.getPharmacy());
+                break;
         }
         return user;
     }

@@ -2,15 +2,13 @@ package team18.pharmacyapp.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import team18.pharmacyapp.model.Address;
 import team18.pharmacyapp.model.Pharmacy;
 import team18.pharmacyapp.model.dtos.DoctorMarkPharmaciesDTO;
 import team18.pharmacyapp.model.dtos.PatientDoctorRoleDTO;
-import team18.pharmacyapp.model.dtos.RegisterUserDTO;
 import team18.pharmacyapp.model.dtos.DoctorsPatientDTO;
 import team18.pharmacyapp.model.enums.UserRole;
 import team18.pharmacyapp.model.users.Doctor;
-import team18.pharmacyapp.repository.AddressRepository;
+import team18.pharmacyapp.model.users.RegisteredUser;
 import team18.pharmacyapp.repository.users.DoctorRepository;
 import team18.pharmacyapp.repository.MarkRepository;
 import team18.pharmacyapp.service.interfaces.DoctorService;
@@ -23,14 +21,12 @@ import java.util.UUID;
 @Service
 public class DoctorServiceImpl implements DoctorService {
     private final DoctorRepository doctorRepository;
-    private final AddressRepository addressRepository;
     private final MarkRepository markRepository;
 
 
     @Autowired
-    public DoctorServiceImpl(DoctorRepository doctorRepository, AddressRepository addressRepository, MarkRepository markRepository) {
+    public DoctorServiceImpl(DoctorRepository doctorRepository, MarkRepository markRepository) {
         this.doctorRepository = doctorRepository;
-        this.addressRepository = addressRepository;
         this.markRepository = markRepository;
     }
 
@@ -93,24 +89,17 @@ public class DoctorServiceImpl implements DoctorService {
     }
 
     @Override
-    public Doctor registerDermatologist(RegisterUserDTO dermatologist) {
+    public Doctor registerDermatologist(RegisteredUser user) {
         Doctor derm = new Doctor();
-        Address address = addressRepository.findByCountryAndCityAndStreet(dermatologist.getCountry(), dermatologist.getCity(), dermatologist.getStreet());
-        if (address == null) {
-            address = new Address();
-            address.setStreet(dermatologist.getStreet());
-            address.setCity(dermatologist.getCity());
-            address.setCountry(dermatologist.getCountry());
-            address = addressRepository.save(address);
-        }
         derm.setRole(UserRole.dermatologist);
-        derm.setName(dermatologist.getName());
-        derm.setSurname(dermatologist.getSurname());
-        derm.setPhoneNumber(dermatologist.getPhoneNumber());
-        derm.setEmail(dermatologist.getEmail());
-        derm.setPassword(dermatologist.getPassword());
-        derm.setAddress(address);
+        derm.setName(user.getName());
+        derm.setSurname(user.getSurname());
+        derm.setPhoneNumber(user.getPhoneNumber());
+        derm.setEmail(user.getEmail());
+        derm.setPassword(user.getPassword());
+        derm.setAddress(user.getAddress());
         derm = doctorRepository.save(derm);
+        doctorRepository.setId(derm.getId(),user.getId());
         return derm;
     }
 

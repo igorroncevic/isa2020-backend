@@ -10,6 +10,7 @@ import team18.pharmacyapp.model.exceptions.ActionNotAllowedException;
 import team18.pharmacyapp.model.medicine.Medicine;
 import team18.pharmacyapp.model.exceptions.ReserveMedicineException;
 import team18.pharmacyapp.model.medicine.ReservedMedicines;
+import team18.pharmacyapp.model.medicine.SupplierMedicine;
 import team18.pharmacyapp.service.interfaces.MedicineService;
 import team18.pharmacyapp.service.interfaces.ReservedMedicinesService;
 
@@ -216,4 +217,26 @@ public class MedicineController {
         Medicine medicine = medicineService.registerNewMedicine(newMedicine);
         return new ResponseEntity<>(medicine, HttpStatus.CREATED);
     }
+
+    @GetMapping("suppliermeds/{id}")
+    public ResponseEntity<List<SupplierMedicinesDTO>> getSupplierMedicines(@PathVariable UUID id){
+        List<SupplierMedicinesDTO> medicines = medicineService.findSupplierMedicines(id);
+
+        if(medicines.size() != 0) {
+            return new ResponseEntity<>(medicines, HttpStatus.OK);
+        }else{
+            return new ResponseEntity<>(medicines, HttpStatus.NO_CONTENT);
+        }
+    }
+
+    @PostMapping(consumes = "application/json", value = "/add")
+    public ResponseEntity<SupplierMedicine> add(@RequestBody SupplierMedicinesDTO medicineDTO){
+        SupplierMedicine med = medicineService.addNewSupplierMedicine(medicineDTO);
+
+        if(med != null) {
+            return new ResponseEntity<>(med, HttpStatus.CREATED);
+        }
+        return  new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
 }

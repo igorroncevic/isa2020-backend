@@ -41,9 +41,4 @@ public class PharmacyAdminController {
         return new ResponseEntity<>(pharmacyAdmin, HttpStatus.OK);
     }
 
-    @PostMapping(consumes = "application/json", value = "/register")
-    public ResponseEntity<PharmacyAdmin> saveNewPharmacyAdmin(@RequestBody PharmacyAdminDTO newPharmacyAdmin){
-        PharmacyAdmin phAdmin = pharmacyAdminService.registerNewPharmacyAdmin(newPharmacyAdmin);
-        return new ResponseEntity<>(phAdmin, HttpStatus.CREATED);
-    }
 }

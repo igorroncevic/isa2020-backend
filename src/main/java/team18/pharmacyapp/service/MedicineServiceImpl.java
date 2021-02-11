@@ -10,15 +10,10 @@ import team18.pharmacyapp.model.dtos.*;
 import team18.pharmacyapp.model.enums.*;
 import team18.pharmacyapp.model.exceptions.ActionNotAllowedException;
 import team18.pharmacyapp.model.exceptions.ReserveMedicineException;
-import team18.pharmacyapp.model.medicine.Medicine;
-import team18.pharmacyapp.model.medicine.MedicineSpecification;
-import team18.pharmacyapp.model.medicine.PharmacyMedicines;
-import team18.pharmacyapp.model.medicine.ReservedMedicines;
+import team18.pharmacyapp.model.medicine.*;
 import team18.pharmacyapp.model.users.Patient;
-import team18.pharmacyapp.repository.MarkRepository;
-import team18.pharmacyapp.repository.MedicineRepository;
-import team18.pharmacyapp.repository.PharmacyRepository;
-import team18.pharmacyapp.repository.MedicineSpecificationRepository;
+import team18.pharmacyapp.model.users.Supplier;
+import team18.pharmacyapp.repository.*;
 import team18.pharmacyapp.service.interfaces.EmailService;
 import team18.pharmacyapp.repository.users.PatientRepository;
 import team18.pharmacyapp.service.interfaces.LoyaltyService;
@@ -38,10 +33,11 @@ public class MedicineServiceImpl implements MedicineService {
     private final MarkRepository markRepository;
     private final PharmacyRepository pharmacyRepository;
     private final LoyaltyService loyaltyService;
+    private final SupplierMedicinesRepository supplierMedicinesRepository;
 
 
     @Autowired
-    public MedicineServiceImpl(MedicineRepository medicineRepository, EmailService emailService, PatientRepository patientRepository, PharmacyRepository pharmacyRepository, MedicineSpecificationRepository medicineSpecificationRepository, MarkRepository markRepository, LoyaltyService loyaltyService) {
+    public MedicineServiceImpl(MedicineRepository medicineRepository, EmailService emailService, PatientRepository patientRepository, PharmacyRepository pharmacyRepository, MedicineSpecificationRepository medicineSpecificationRepository, MarkRepository markRepository, LoyaltyService loyaltyService, SupplierMedicinesRepository supplierMedicinesRepository) {
         this.medicineRepository = medicineRepository;
         this.emailService = emailService;
         this.patientRepository = patientRepository;
@@ -49,6 +45,7 @@ public class MedicineServiceImpl implements MedicineService {
         this.markRepository = markRepository;
         this.pharmacyRepository = pharmacyRepository;
         this.loyaltyService = loyaltyService;
+        this.supplierMedicinesRepository = supplierMedicinesRepository;
     }
 
     @Override
@@ -279,5 +276,34 @@ public class MedicineServiceImpl implements MedicineService {
         }
 
         return finalMedicines;
+    }
+
+    @Override
+    public List<SupplierMedicinesDTO> findSupplierMedicines(UUID supplierId) {
+        List<SupplierMedicine> meds = medicineRepository.findMedicinesBySupplierId(supplierId);
+        List<SupplierMedicinesDTO> ret = new ArrayList<>();
+        for (SupplierMedicine sm : meds) {
+            SupplierMedicinesDTO dto = new SupplierMedicinesDTO();
+            dto.setSupplierId(supplierId);
+            dto.setMedicineName(sm.getMedicine().getName());
+            dto.setQuantity(sm.getQuantity());
+            ret.add(dto);
+        }
+        return ret;
+    }
+
+    @Override
+    public SupplierMedicine addNewSupplierMedicine(SupplierMedicinesDTO supplierMedicinesDTO) {
+        SupplierMedicine supplierMedicine = new SupplierMedicine();
+        Medicine m = medicineRepository.findByName(supplierMedicinesDTO.getMedicineName());
+        if(m != null){
+            if(supplierMedicinesRepository.findByName(m.getName()) != null){
+                int ret = supplierMedicinesRepository.updateMedicineQuantity(m.getId(), supplierMedicinesDTO.getQuantity());
+                return supplierMedicine;
+            }
+            int ret = supplierMedicinesRepository.addSupplierMedicine(supplierMedicinesDTO.getSupplierId(), m.getId(), supplierMedicinesDTO.getQuantity());
+            return supplierMedicine;
+        }
+        return null;
     }
 }

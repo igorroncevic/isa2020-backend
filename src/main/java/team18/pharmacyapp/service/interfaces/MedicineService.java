@@ -4,6 +4,7 @@ import team18.pharmacyapp.model.dtos.*;
 import team18.pharmacyapp.model.exceptions.ActionNotAllowedException;
 import team18.pharmacyapp.model.medicine.Medicine;
 import team18.pharmacyapp.model.exceptions.ReserveMedicineException;
+import team18.pharmacyapp.model.medicine.SupplierMedicine;
 
 import java.util.List;
 import java.util.UUID;
@@ -36,4 +37,8 @@ public interface MedicineService {
     boolean addPatientsAllergy(MedicineAllergyDTO allergy) throws RuntimeException;
 
     List<MedicineFilterDTO> filterMedicines(MedicineFilterRequestDTO mfr);
+
+    List<SupplierMedicinesDTO> findSupplierMedicines(UUID supplierId);
+
+    SupplierMedicine addNewSupplierMedicine(SupplierMedicinesDTO supplierMedicinesDTO);
 }

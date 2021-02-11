@@ -84,6 +84,54 @@ public class AuthenticationController {
         return new ResponseEntity<>(user, HttpStatus.CREATED);
     }
 
+    @PostMapping("/signup/derm")
+    public ResponseEntity<RegisteredUser> addDerm(@RequestBody RegisterUserDTO dto) {
+        RegisteredUser existUser = this.userService.findByEmail(dto.getEmail());
+        if (existUser != null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        UserRole role = UserRole.dermatologist;
+        String USER_ROLE = "ROLE_DERMATOLOGIST";
+        RegisteredUser user = this.userService.save(dto,role,USER_ROLE);
+        return new ResponseEntity<>(user, HttpStatus.CREATED);
+    }
+
+    @PostMapping("/signup/sysadmin")
+    public ResponseEntity<RegisteredUser> addSysAdmin(@RequestBody RegisterUserDTO dto) {
+        RegisteredUser existUser = this.userService.findByEmail(dto.getEmail());
+        if (existUser != null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        UserRole role = UserRole.sysAdmin;
+        String USER_ROLE = "ROLE_SYSADMIN";
+        RegisteredUser user = this.userService.save(dto,role,USER_ROLE);
+        return new ResponseEntity<>(user, HttpStatus.CREATED);
+    }
+
+    @PostMapping("/signup/supplier")
+    public ResponseEntity<RegisteredUser> addSupplier(@RequestBody RegisterUserDTO dto) {
+        RegisteredUser existUser = this.userService.findByEmail(dto.getEmail());
+        if (existUser != null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        UserRole role = UserRole.supplier;
+        String USER_ROLE = "ROLE_SUPPLIER";
+        RegisteredUser user = this.userService.save(dto,role,USER_ROLE);
+        return new ResponseEntity<>(user, HttpStatus.CREATED);
+    }
+
+    @PostMapping("/signup/pharmadmin")
+    public ResponseEntity<RegisteredUser> addPharmAdmin(@RequestBody RegisterUserDTO dto) {
+        RegisteredUser existUser = this.userService.findByEmail(dto.getEmail());
+        if (existUser != null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        UserRole role = UserRole.pharmacyAdmin;
+        String USER_ROLE = "ROLE_PHADMIN";
+        RegisteredUser user = this.userService.save(dto,role,USER_ROLE);
+        return new ResponseEntity<>(user, HttpStatus.CREATED);
+    }
+
     @PutMapping("/firstLoginPass")
     public ResponseEntity<Boolean> changePass(@RequestBody ChangePassDTO dto) {
         Authentication authentication = authenticationManager
