@@ -6,6 +6,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import team18.pharmacyapp.helpers.DateTimeHelpers;
 import team18.pharmacyapp.model.Term;
 import team18.pharmacyapp.model.WorkSchedule;
@@ -47,6 +48,7 @@ public class TermServiceImpl implements TermService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<DoctorTermDTO> getAllDoctorTerms(UUID doctorId) {
         List<DoctorTermDTO> list = new ArrayList<>();
         for (Term term : termRepository.findAllFreeTermsForDoctor(doctorId)) {
@@ -62,6 +64,7 @@ public class TermServiceImpl implements TermService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<DoctorTermDTO> getAllDoctorTermsInPharmacy(UUID doctorId, UUID pharmacyId) {
         List<DoctorTermDTO> list = new ArrayList<>();
         for (Term term : termRepository.findAllFreeTermsForDoctorInPharmacy(doctorId, pharmacyId)) {
@@ -77,6 +80,7 @@ public class TermServiceImpl implements TermService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public DoctorTermDTO hasPatientHasTermNowWithDoctor(UUID doctorId, UUID patientId) {
         Date now = new Date();
         Term t = termRepository.findTermByDoctorAndPatientAndTime(patientId, doctorId, now);
@@ -160,6 +164,7 @@ public class TermServiceImpl implements TermService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public TermPaginationDTO findAllPatientsPastTermsPaginated(UUID id, String sort, String termType, int page) {
         String[] sortParts = sort.split(" ");
         int startPage = page - 1; // Jer krecu od 1, a ako hocemo prvi da prikazemo, Pageable krece od 0
@@ -191,6 +196,7 @@ public class TermServiceImpl implements TermService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public TermPaginationDTO findPatientsUpcomingTermsByTypePaginated(UUID id, String sort, String termType, int page) {
         String[] sortParts = sort.split(" ");
         int startPage = page - 1; // Jer krecu od 1, a ako hocemo prvi da prikazemo, Pageable krece od 0
@@ -222,6 +228,7 @@ public class TermServiceImpl implements TermService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<TermDTO> findAllPatientsUpcomingTerms(UUID id) {
         Pageable pageable = PageRequest.of(0, 3, Sort.by("startTime").ascending());
         Page<Term> allTerms = termRepository.findAllByPatient_IdAndStartTimeAfter(id, new Date(System.currentTimeMillis()), pageable);

@@ -1,6 +1,7 @@
 package team18.pharmacyapp.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import team18.pharmacyapp.helpers.DateTimeHelpers;
@@ -27,6 +28,7 @@ import team18.pharmacyapp.service.interfaces.EmailService;
 import team18.pharmacyapp.service.interfaces.LoyaltyService;
 import team18.pharmacyapp.service.interfaces.MedicineService;
 
+import javax.persistence.LockModeType;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
@@ -82,6 +84,7 @@ public class MedicineServiceImpl implements MedicineService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<PharmacyMedicinesDTO> findAllAvailableMedicines() {
         List<PharmacyMedicines> pharmacyMedicines = medicineRepository.findAllAvailableMedicines();
         List<PharmacyMedicinesDTO> resultSet = new ArrayList<>();
@@ -115,6 +118,7 @@ public class MedicineServiceImpl implements MedicineService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<ReservedMedicinesDTO> findAllPatientsReservedMedicines(UUID id) {
         Patient pat = patientRepository.getOne(id);
         if (pat == null) throw new RuntimeException("Invalid patient id");
@@ -134,8 +138,9 @@ public class MedicineServiceImpl implements MedicineService {
         return finalReservedMedicines;
     }
 
-    @Transactional(rollbackFor = {ActionNotAllowedException.class, RuntimeException.class, ReserveMedicineException.class})
     @Override
+    //@Lock(LockModeType.WRITE) // Ubaciti optimistic lock kada se predje .save()
+    @Transactional(rollbackFor = {ActionNotAllowedException.class, RuntimeException.class, ReserveMedicineException.class})
     public boolean reserveMedicine(ReserveMedicineRequestDTO rmrDTO) throws ActionNotAllowedException, ReserveMedicineException, RuntimeException {
         Medicine med = medicineRepository.getOne(rmrDTO.getMedicineId());
         if (med == null) throw new RuntimeException("");
@@ -151,7 +156,6 @@ public class MedicineServiceImpl implements MedicineService {
         UUID reservationId = UUID.randomUUID();
         int reserved = medicineRepository.reserveMedicine(reservationId, rmrDTO.getPatientId(), rmrDTO.getPharmacyId(), rmrDTO.getMedicineId(), rmrDTO.getPickupDate());
         int updateQuantity = medicineRepository.decrementMedicineQuantity(rmrDTO.getMedicineId(), rmrDTO.getPharmacyId());
-
         if (reserved != 1) throw new ReserveMedicineException("Medicine wasn't reserved!");
         if (updateQuantity != 1) throw new ReserveMedicineException("Medicine quantity wasn't decremented!");
 
@@ -167,8 +171,8 @@ public class MedicineServiceImpl implements MedicineService {
         return true;
     }
 
-    @Transactional(rollbackFor = {RuntimeException.class, ReserveMedicineException.class})
     @Override
+    @Transactional(rollbackFor = {RuntimeException.class, ReserveMedicineException.class})
     public boolean cancelMedicine(CancelMedicineRequestDTO cmrDTO) throws ReserveMedicineException, RuntimeException {
         Medicine med = medicineRepository.getOne(cmrDTO.getMedicineId());
         if (med == null) throw new RuntimeException("");
@@ -179,11 +183,10 @@ public class MedicineServiceImpl implements MedicineService {
         tomorrow = DateTimeHelpers.getDateWithoutTime(tomorrow);
         reservationDate = DateTimeHelpers.getDateWithoutTime(reservationDate);
 
-        if (tomorrow.after(reservationDate)) return false;
+        if (tomorrow.compareTo(reservationDate) >= 0) return false;
 
         int cancelled = medicineRepository.cancelMedicine(cmrDTO.getReservationId());
         int updateQuantity = medicineRepository.incrementMedicineQuantity(cmrDTO.getMedicineId(), cmrDTO.getPharmacyId());
-
         if (cancelled != 1) throw new ReserveMedicineException("Medicine wasn't cancelled!");
         if (updateQuantity != 1) throw new ReserveMedicineException("Medicine quantity wasn't incremented!");
 
@@ -218,9 +221,10 @@ public class MedicineServiceImpl implements MedicineService {
 
         medSpec = medicineSpecificationRepository.save(medSpec);
         return med;
-
     }
 
+    @Override
+    @Transactional(readOnly = true)
     public List<MedicineMarkDTO> getAllMedicinesForMarkingOptimized(UUID patientId) {
         List<Medicine> allMedicines = medicineRepository.getPatientsMedicines(patientId);
 
@@ -239,6 +243,7 @@ public class MedicineServiceImpl implements MedicineService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<MedicineDTO> getAllMedicinesPatientsNotAlergicTo(UUID id) {
         List<Medicine> medicines = medicineRepository.getAllMedicinesPatientsNotAlergicTo(id);
         List<MedicineDTO> finalMedicines = new ArrayList<>();
@@ -252,6 +257,7 @@ public class MedicineServiceImpl implements MedicineService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<MedicineDTO> getAllMedicinesPatientsAllergicTo(UUID id) {
         List<Medicine> medicines = medicineRepository.getMedicinesPatientsAllergicTo(id);
         List<MedicineDTO> finalMedicines = new ArrayList<>();
@@ -273,6 +279,7 @@ public class MedicineServiceImpl implements MedicineService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<MedicineFilterDTO> filterMedicines(MedicineFilterRequestDTO mfr) {
         List<Medicine> medicines = medicineRepository.getAllMedicinesPatientsNotAlergicTo(mfr.getPatientId());
         List<MedicineFilterDTO> finalMedicines = new ArrayList<>();

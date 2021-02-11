@@ -1,6 +1,8 @@
 package team18.pharmacyapp.service;
 
+import org.hibernate.annotations.Loader;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import team18.pharmacyapp.helpers.DateTimeHelpers;
@@ -19,6 +21,7 @@ import team18.pharmacyapp.service.interfaces.CounselingService;
 import team18.pharmacyapp.service.interfaces.EmailService;
 import team18.pharmacyapp.service.interfaces.TermService;
 
+import javax.persistence.LockModeType;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Date;
@@ -45,6 +48,7 @@ public class CounselingServiceImpl implements CounselingService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<PharmacyMarkPriceDTO> getPharmaciesWithAvailableCounselings(DateTimeRangeDTO timeRange) throws BadTimeRangeException {
         List<PharmacyMarkPriceDTO> allPharmacies = counselingRepository.getPharmaciesWithAvailableCounselings(timeRange.getFromTime(), timeRange.getToTime());
 
@@ -63,6 +67,7 @@ public class CounselingServiceImpl implements CounselingService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<DoctorMarkPharmaciesDTO> getFreeDoctorsForPharmacy(UUID pharmacyId, DateTimeRangeDTO timeRange) {
         List<Doctor> doctors = doctorRepository.findAllPharmacistsInPharmacy(pharmacyId);
         List<DoctorMarkPharmaciesDTO> freeDoctors = new ArrayList<>();
@@ -117,6 +122,7 @@ public class CounselingServiceImpl implements CounselingService {
     }
 
     @Override
+    @Lock(LockModeType.PESSIMISTIC_WRITE)   // Da ne bi slučajno zakazao dva termina u isto vrijeme
     @Transactional(rollbackFor = {AlreadyScheduledException.class, ScheduleTermException.class, RuntimeException.class})
     public boolean patientScheduleCounseling(ScheduleCounselingDTO term) throws AlreadyScheduledException, ScheduleTermException, RuntimeException {
         Patient patient = patientRepository.findById(term.getPatientId()).orElse(null);
@@ -131,15 +137,18 @@ public class CounselingServiceImpl implements CounselingService {
             throw new AlreadyScheduledException("You already have a counseling with this pharmacist.");
 
         UUID id = UUID.randomUUID();
-        int retVal = counselingRepository.patientScheduleCounseling(id, term.getPatientId(),
-                term.getDoctorId(), term.getFromTime(), term.getToTime());
-
-        if (retVal != 1) throw new ScheduleTermException("Could not save this counseling");
+        Doctor doctor = new Doctor();
+        doctor.setId(term.getDoctorId());
+        Term counseling = new Term(id, patient, doctor, term.getFromTime(), term.getToTime(), 10, TermType.counseling, null, 0L);
+        counseling = counselingRepository.save(counseling);
+        //int retVal = counselingRepository.patientScheduleCounseling(id, term.getPatientId(),
+                //term.getDoctorId(), term.getFromTime(), term.getToTime());
+        //if (retVal != 1) throw new ScheduleTermException("Could not save this counseling");
 
         String userMail = "savooroz33@gmail.com";   // zakucano za sada
         String subject = "[ISA Pharmacy] Confirmation - Counseling scheduling";
         String body = "You have successfully scheduled a counseling on our site.\n" +
-                "Your reservation ID: " + id.toString();
+                "Your reservation ID: " + counseling.getId().toString();
         new Thread(() -> emailService.sendMail(userMail, subject, body)).start();
 
         return true;
@@ -169,6 +178,7 @@ public class CounselingServiceImpl implements CounselingService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<TermDTO> findAllPatientsCounselings(UUID id) {
         List<Term> counselings = counselingRepository.findAllPatientsCounselings(id, TermType.counseling);
 

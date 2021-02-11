@@ -2,6 +2,7 @@ package team18.pharmacyapp.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import team18.pharmacyapp.model.Address;
 import team18.pharmacyapp.model.Pharmacy;
 import team18.pharmacyapp.model.dtos.PharmacyFilteringDTO;
@@ -39,6 +40,7 @@ public class PharmacyServiceImpl implements PharmacyService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<PharmacyMarkPriceDTO> getAllPatientsPharmaciesOptimized(UUID id) {
         List<Pharmacy> pTerms = pharmacyRepository.getPatientsPharmacies(id);
 
@@ -59,6 +61,7 @@ public class PharmacyServiceImpl implements PharmacyService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<PharmacyFilteringDTO> getAllFiltered(String name, Float mark, String city) {
         List<PharmacyFilteringDTO> pharmacies = pharmacyRepository.findAllForFiltering();
         List<PharmacyFilteringDTO> finalPharmacies = new ArrayList<>();

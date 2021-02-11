@@ -2,6 +2,7 @@ package team18.pharmacyapp.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import team18.pharmacyapp.model.Pharmacy;
 import team18.pharmacyapp.model.dtos.*;
 import team18.pharmacyapp.model.enums.EPrescriptionStatus;
@@ -35,6 +36,7 @@ public class EPrescriptionServiceImpl implements EPrescriptionService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<EPrescriptionDTO> findAllByPatientId(EPrescriptionSortFilterDTO efs) throws RuntimeException, ActionNotAllowedException {
         Patient patient = patientRepository.findById(efs.getPatientId()).orElse(null);
         if (patient == null) throw new ActionNotAllowedException("Patient not found");

@@ -1,6 +1,7 @@
 package team18.pharmacyapp.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import team18.pharmacyapp.model.Mark;
@@ -17,6 +18,7 @@ import team18.pharmacyapp.repository.TermRepository;
 import team18.pharmacyapp.repository.users.DoctorRepository;
 import team18.pharmacyapp.service.interfaces.MarkService;
 
+import javax.persistence.LockModeType;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -40,7 +42,9 @@ public class MarkServiceImpl implements MarkService {
 
 
     @Override
-    public boolean giveMark(MarkDTO markDTO) throws ActionNotAllowedException, AlreadyGivenMarkException {
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Transactional(rollbackFor = {ActionNotAllowedException.class, AlreadyGivenMarkException.class, RuntimeException.class})
+    public boolean giveMark(MarkDTO markDTO) throws ActionNotAllowedException, AlreadyGivenMarkException, RuntimeException {
         boolean success = false;
         if (markDTO.getDoctorId() != null && markDTO.getMedicineId() == null && markDTO.getPharmacyId() == null) {
             success = this.giveMarkToDoctor(markDTO);
@@ -54,7 +58,9 @@ public class MarkServiceImpl implements MarkService {
     }
 
     @Override
-    public boolean updateMark(MarkDTO markDTO) throws ActionNotAllowedException {
+    @Lock(LockModeType.WRITE)
+    @Transactional(rollbackFor = {ActionNotAllowedException.class, RuntimeException.class})
+    public boolean updateMark(MarkDTO markDTO) throws ActionNotAllowedException{
         boolean success = false;
         if (markDTO.getDoctorId() != null && markDTO.getMedicineId() == null && markDTO.getPharmacyId() == null) {
             success = this.updateDoctorsMark(markDTO);
@@ -68,6 +74,7 @@ public class MarkServiceImpl implements MarkService {
     }
 
     @Override
+    @Transactional(rollbackFor = {ActionNotAllowedException.class, AlreadyGivenMarkException.class, RuntimeException.class})
     public boolean giveMarkToDoctor(MarkDTO markDTO) throws ActionNotAllowedException, AlreadyGivenMarkException {
         Doctor doctor = doctorRepository.checkIfPatientHadAppointmentWithDoctor(markDTO.getDoctorId(), markDTO.getPatientId(), new Date());
         if (doctor == null) throw new ActionNotAllowedException("You have not had any appointments with this doctor");
@@ -84,6 +91,7 @@ public class MarkServiceImpl implements MarkService {
     }
 
     @Override
+    @Transactional(rollbackFor = {ActionNotAllowedException.class, AlreadyGivenMarkException.class, RuntimeException.class})
     public boolean giveMarkToPharmacy(MarkDTO markDTO) throws ActionNotAllowedException, AlreadyGivenMarkException {
         List<Medicine> reservedMedicines = medicineRepository.getPatientsReservedMedicinesFromPharmacy(markDTO.getPharmacyId(), markDTO.getPatientId());
         List<Medicine> ePrescriptionMedicines = medicineRepository.getPatientsEPrescriptionMedicinesFromPharmacy(markDTO.getPharmacyId(), markDTO.getPatientId());
@@ -111,6 +119,7 @@ public class MarkServiceImpl implements MarkService {
     }
 
     @Override
+    @Transactional(rollbackFor = {ActionNotAllowedException.class, AlreadyGivenMarkException.class, RuntimeException.class})
     public boolean giveMarkToMedicine(MarkDTO markDTO) throws ActionNotAllowedException, AlreadyGivenMarkException {
         Medicine medicineReserved = medicineRepository.checkIfPatientReservedMedicine(markDTO.getMedicineId(), markDTO.getPatientId());
         Medicine medicinePrescribed = medicineRepository.checkIfPatientGotPrescribedMedicine(markDTO.getMedicineId(), markDTO.getPatientId());
@@ -128,6 +137,7 @@ public class MarkServiceImpl implements MarkService {
     }
 
     @Override
+    @Transactional(rollbackFor = {ActionNotAllowedException.class, RuntimeException.class})
     public boolean updateDoctorsMark(MarkDTO markDTO) throws ActionNotAllowedException {
         Doctor doctor = doctorRepository.checkIfPatientHadAppointmentWithDoctor(markDTO.getDoctorId(), markDTO.getPatientId(), new Date());
         if (doctor == null) throw new ActionNotAllowedException("You have not had any appointments with this doctor");
@@ -142,6 +152,7 @@ public class MarkServiceImpl implements MarkService {
     }
 
     @Override
+    @Transactional(rollbackFor = {ActionNotAllowedException.class, RuntimeException.class})
     public boolean updatePharmacysMark(MarkDTO markDTO) throws ActionNotAllowedException {
         List<Medicine> reservedMedicines = medicineRepository.getPatientsReservedMedicinesFromPharmacy(markDTO.getPharmacyId(), markDTO.getPatientId());
         List<Medicine> ePrescriptionMedicines = medicineRepository.getPatientsEPrescriptionMedicinesFromPharmacy(markDTO.getPharmacyId(), markDTO.getPatientId());

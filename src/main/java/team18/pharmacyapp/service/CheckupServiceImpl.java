@@ -1,5 +1,6 @@
 package team18.pharmacyapp.service;
 
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import team18.pharmacyapp.model.Term;
@@ -18,6 +19,7 @@ import team18.pharmacyapp.repository.users.PatientRepository;
 import team18.pharmacyapp.service.interfaces.CheckupService;
 import team18.pharmacyapp.service.interfaces.TermService;
 
+import javax.persistence.LockModeType;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -33,7 +35,6 @@ public class CheckupServiceImpl implements CheckupService {
 
 
     public CheckupServiceImpl(CheckupRepository checkupRepository, PatientRepository patientRepository, DoctorRepository doctorRepository, TermService termService, TermRepository termRepository) {
-
         this.checkupRepository = checkupRepository;
         this.patientRepository = patientRepository;
         this.doctorRepository = doctorRepository;
@@ -51,12 +52,13 @@ public class CheckupServiceImpl implements CheckupService {
 
     @Override
     public DoctorTermDTO findByIdFetchPatint(UUID id) {
-
         Term t = checkupRepository.findByIdCustom(id);
         Patient p = t.getPatient();
         return new DoctorTermDTO(t.getId(), t.getStartTime(), t.getEndTime(), t.getType(), new DoctorsPatientDTO(p.getId(), p.getName(), p.getSurname(), p.getEmail(), p.getPhoneNumber()));
     }
 
+    @Override
+    @Transactional(readOnly = true)
     public List<TermDTO> findAll(TermType termType) {
         List<Term> checkups = checkupRepository.findAll(TermType.checkup);
 
@@ -72,6 +74,8 @@ public class CheckupServiceImpl implements CheckupService {
         return finalCheckups;
     }
 
+    @Override
+    @Transactional(readOnly = true)
     public List<TermDTO> findAllAvailableCheckups() {
         Date todaysDate = new Date(System.currentTimeMillis() + 60 * 60 * 1000);
 
@@ -90,6 +94,7 @@ public class CheckupServiceImpl implements CheckupService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<TermDTO> findAllPatientsCheckups(UUID patientId) {
         List<Term> checkups = checkupRepository.findAllPatientsCheckups(patientId, TermType.checkup);
 
@@ -113,6 +118,8 @@ public class CheckupServiceImpl implements CheckupService {
         checkupRepository.deleteById(id);
     }
 
+    @Override
+    @Lock(LockModeType.WRITE) // Optimistično, jer pregled postoji u bazi i ima svoju verziju
     @Transactional(rollbackFor = {ActionNotAllowedException.class, AlreadyScheduledException.class, RuntimeException.class, ScheduleTermException.class})
     public boolean patientScheduleCheckup(ScheduleCheckupDTO term) throws ActionNotAllowedException, ScheduleTermException, RuntimeException, AlreadyScheduledException {
         Patient patient = patientRepository.getOne(term.getPatientId());
@@ -127,12 +134,15 @@ public class CheckupServiceImpl implements CheckupService {
         Date today = new Date(System.currentTimeMillis());
         if (checkTerm.getStartTime().before(today)) throw new ScheduleTermException("Can't schedule past terms!");
 
-        int rowsUpdated = checkupRepository.patientScheduleCheckup(term.getPatientId(), term.getCheckupId());
-        if (rowsUpdated != 1) throw new RuntimeException("Couldn't schedule this term!");
+        checkTerm.setPatient(patient);
+        checkupRepository.save(checkTerm);
+        //int rowsUpdated = checkupRepository.patientScheduleCheckup(term.getPatientId(), term.getCheckupId());
+        //if (rowsUpdated != 1) throw new RuntimeException("Couldn't schedule this term!");
 
         return true;
     }
 
+    @Override
     @Transactional(rollbackFor = {EntityNotFoundException.class, ActionNotAllowedException.class, RuntimeException.class})
     public boolean patientCancelCheckup(CancelTermDTO term) throws EntityNotFoundException, ActionNotAllowedException, RuntimeException {
         Term checkTerm = checkupRepository.findByIdCustom(term.getTermId());
