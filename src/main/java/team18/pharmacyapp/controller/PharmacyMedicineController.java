@@ -1,5 +1,6 @@
 package team18.pharmacyapp.controller;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import team18.pharmacyapp.model.dtos.MedicineIdNameDTO;
 import team18.pharmacyapp.model.dtos.ReportMedicineDTO;
@@ -24,10 +25,13 @@ public class PharmacyMedicineController {
         return medicinesService.medicineQuantity(pharmacyId,medicineId);
     }
 
+    @PreAuthorize("hasRole('ROLE_DERMATOLOGIST') || hasRole('ROLE_PHARMACIST')")
     @PostMapping("availability")
     public String checkavAilability(@RequestBody ReportMedicineDTO dto){
         return medicinesService.checkAvailability(dto);
     }
+
+
     @GetMapping("{pharmacyId}")
     public List<MedicineIdNameDTO> getPharamacyMedicine(@PathVariable UUID pharmacyId){
         return medicinesService.getMedicnesByPharmacy(pharmacyId);

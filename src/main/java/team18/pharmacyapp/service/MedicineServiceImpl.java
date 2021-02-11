@@ -281,8 +281,9 @@ public class MedicineServiceImpl implements MedicineService {
         return finalMedicines;
     }
     @Override
-    public MedicineSpecification getMedicineSpecification(UUID medicineId) {
-        return medicineRepository.getMedicineSpecification(medicineId);
+    public MedicineSpecificationDTO getMedicineSpecification(UUID medicineId) {
+        MedicineSpecification ms= medicineRepository.getMedicineSpecification(medicineId);
+        return new MedicineSpecificationDTO(ms.getReplacementMedicineCode(),ms.getRecommendedDose(), ms.getContraindications(), ms.getDrugComposition(),ms.getAdditionalNotes());
     }
 
     @Override

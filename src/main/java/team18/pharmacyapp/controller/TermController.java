@@ -14,7 +14,6 @@ import team18.pharmacyapp.service.interfaces.TermService;
 import java.util.List;
 import java.util.UUID;
 
-@CrossOrigin(origins = "http://localhost:8080")
 @RestController
 @RequestMapping(value = "api/terms")
 public class TermController {
@@ -34,13 +33,20 @@ public class TermController {
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
+    @PreAuthorize("hasRole('ROLE_PHADMIN') || hasRole('ROLE_DERMATOLOGIST') || hasRole('ROLE_PHARMACIST')")
     @GetMapping("doctor/{id}/{pharmacyId}")
-    public List<DoctorTermDTO> getAllDoctorTerms(@PathVariable UUID id, @PathVariable UUID pharmacyId) {
+    public List<DoctorTermDTO> getAllDoctorTermsInPharmacy(@PathVariable UUID id, @PathVariable UUID pharmacyId) {
         return termService.getAllDoctorTermsInPharmacy(id, pharmacyId);
     }
 
+    @PreAuthorize("hasRole('ROLE_PHADMIN') || hasRole('ROLE_DERMATOLOGIST') || hasRole('ROLE_PHARMACIST')")
+    @GetMapping("doctorAll/{id}")
+    public List<DoctorTermDTO> getAllDoctorTerms(@PathVariable UUID id) {
+        return termService.getAllDoctorTerms(id);
+    }
 
-    //@PreAuthorize("hasRole('ROLE_PATIENT')")
+
+    @PreAuthorize("hasRole('ROLE_PATIENT')")
     @GetMapping("/upcoming/{id}")
     public ResponseEntity<List<TermDTO>> getPatientsUpcomingTerms(@PathVariable UUID id){
         List<TermDTO> terms;
@@ -53,9 +59,10 @@ public class TermController {
         return new ResponseEntity<>(terms,HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ROLE_PHADMIN') || hasRole('ROLE_DERMATOLOGIST') || hasRole('ROLE_PHARMACIST')")
     @GetMapping("nowTerm/{patientId}/{doctorId}")
-    public ResponseEntity<Term> getNowTerm(@PathVariable UUID patientId,@PathVariable UUID doctorId){
-        Term term=termService.hasPatientHasTermNowWithDoctor(doctorId,patientId);
+    public ResponseEntity<DoctorTermDTO> getNowTerm(@PathVariable UUID patientId,@PathVariable UUID doctorId){
+        DoctorTermDTO term=termService.hasPatientHasTermNowWithDoctor(doctorId,patientId);
         if(term!=null){
             return new ResponseEntity<>(term,HttpStatus.OK);
         }

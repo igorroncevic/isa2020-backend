@@ -4,6 +4,7 @@ package team18.pharmacyapp.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import team18.pharmacyapp.model.Report;
 import team18.pharmacyapp.model.dtos.ReportCreateDTO;
@@ -24,11 +25,13 @@ public class ReportController {
         this.reportMedicinesService = reportMedicinesService;
     }
 
+    @PreAuthorize("hasRole('ROLE_DERMATOLOGIST') || hasRole('ROLE_PHARMACIST')")
     @PostMapping
     public ResponseEntity<Report> save(@RequestBody ReportCreateDTO report){
         return  new ResponseEntity<>(reportService.createNew(report), HttpStatus.CREATED);
     }
 
+    @PreAuthorize("hasRole('ROLE_DERMATOLOGIST') || hasRole('ROLE_PHARMACIST')")
     @PostMapping("reportMedicine")
     public ResponseEntity<ReportMedicines> saveReportMedicine(@RequestBody ReportMedicines reportMedicines){
         ReportMedicines rm=reportMedicinesService.save(reportMedicines);

@@ -1,5 +1,6 @@
 package team18.pharmacyapp.service.interfaces;
 
+import team18.pharmacyapp.model.Pharmacy;
 import team18.pharmacyapp.model.dtos.*;
 import team18.pharmacyapp.model.enums.UserRole;
 import team18.pharmacyapp.model.users.Doctor;
@@ -15,6 +16,8 @@ public interface DoctorService {
 
     Doctor getById(UUID id);
 
+    DoctorDTO getDTOyId(UUID id);
+
     Doctor update(Doctor doctor);
 
    List<DoctorsPatientDTO> findDoctorsPatients(UUID doctorId);
@@ -24,4 +27,8 @@ public interface DoctorService {
     Doctor registerDermatologist(RegisterUserDTO dermatologist);
 
     List<PharmacyDTO> getDoctorPharmacyList(UUID doctorId);
+
+    PharmacyDTO getCurrentPharmacy(UUID doctorId);
+
+    PharmacyDTO getPharmacistPharmacy(UUID id);
 }

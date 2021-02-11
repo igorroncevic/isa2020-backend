@@ -16,8 +16,8 @@ public interface TermService {
     boolean isPatientFree(UUID patientId, Date startTime, Date endTime);
     Term scheduleTerm(DoctorScheduleTermDTO termDTO);
     List<Term> getAllPatientTerms(UUID patientId);
-    List<Term> getAllDoctorTerms(UUID doctorId);
-    Term hasPatientHasTermNowWithDoctor(UUID doctorId,UUID patientId);
+    List<DoctorTermDTO> getAllDoctorTerms(UUID doctorId);
+    DoctorTermDTO hasPatientHasTermNowWithDoctor(UUID doctorId, UUID patientId);
 
     TermPaginationDTO findAllPatientsPastTermsPaginated(UUID id, String sort, String termType, int page);
     TermPaginationDTO findPatientsUpcomingTermsByTypePaginated(UUID id, String sort, String termType, int page);

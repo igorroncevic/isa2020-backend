@@ -209,6 +209,7 @@ public class MedicineController {
         }
     }
 
+    @PreAuthorize("hasRole('ROLE_DERMATOLOGIST') || hasRole('ROLE_PHARMACIST')")
     @GetMapping("reserved/{id}/{pharmacy}")
     public ResponseEntity<ReservedMedicineResponseDTO> getReservedMedicineById(@PathVariable UUID id, @PathVariable UUID pharmacy) {
         ReservedMedicineResponseDTO medicines= reservedMedicinesService.checkReservation(id,pharmacy);
@@ -219,6 +220,7 @@ public class MedicineController {
     }
 
 
+    @PreAuthorize("hasRole('ROLE_DERMATOLOGIST') || hasRole('ROLE_PHARMACIST')")
     @PutMapping(value = "handleReservation",consumes = "application/json")
     public boolean handleReservation(@RequestBody HandleReservationDTO dto){
         return reservedMedicinesService.handleMedicine(dto);
@@ -231,8 +233,8 @@ public class MedicineController {
     }
 
     @GetMapping("specification/{id}")
-    public ResponseEntity<MedicineSpecification> getSpecificatin(@PathVariable UUID id){
-        MedicineSpecification specification=medicineService.getMedicineSpecification(id);
+    public ResponseEntity<MedicineSpecificationDTO> getSpecificatin(@PathVariable UUID id){
+        MedicineSpecificationDTO specification=medicineService.getMedicineSpecification(id);
         if(specification!=null){
             return new ResponseEntity<>(specification,HttpStatus.OK);
         }

@@ -39,7 +39,7 @@ public interface MedicineService {
     List<MedicineFilterDTO> filterMedicines(MedicineFilterRequestDTO mfr);
 
 
-    MedicineSpecification getMedicineSpecification(UUID medicineId);
+    MedicineSpecificationDTO getMedicineSpecification(UUID medicineId);
 
     String getReplacmentMedicine(UUID medicineId);
 
