@@ -189,4 +189,8 @@ public class DoctorServiceImpl implements DoctorService {
 
         return doctorMarkDTOS;
     }
+
+    public List<Doctor> findAll(){
+        return doctorRepository.findAll();
+    }
 }

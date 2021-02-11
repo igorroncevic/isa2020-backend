@@ -1,6 +1,7 @@
 package team18.pharmacyapp.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -28,6 +29,12 @@ public class Pharmacy {
     private UUID id;
 
     private String name;
+
+    public Pharmacy(UUID id,String name,Address address){
+        this.id=id;
+        this.name=name;
+        this.address=address;
+    }
 
     @ManyToOne()
     @JoinColumn(nullable = false)
