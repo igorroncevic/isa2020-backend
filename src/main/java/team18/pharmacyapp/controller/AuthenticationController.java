@@ -24,6 +24,7 @@ import team18.pharmacyapp.service.interfaces.RegisteredUserService;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+@CrossOrigin(origins = {"http://localhost:8080","http://localhost:8081"})
 @RestController
 @RequestMapping(value = "/auth", produces = MediaType.APPLICATION_JSON_VALUE)
 public class AuthenticationController {
@@ -62,7 +63,7 @@ public class AuthenticationController {
         if(user.getRole() == UserRole.patient){
             if(!patientService.isActivated(user.getId()))
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        }else if(user.isFirstLogin()) {
+        }else if(user.getFirstLogin()) {
             return new ResponseEntity<>(HttpStatus.LOCKED);
         }
         String jwt = tokenUtils.generateToken(user.getUsername());

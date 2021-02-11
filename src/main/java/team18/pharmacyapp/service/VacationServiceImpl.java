@@ -3,14 +3,20 @@ package team18.pharmacyapp.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import team18.pharmacyapp.model.Vacation;
+import team18.pharmacyapp.model.dtos.DoctorDTO;
+import team18.pharmacyapp.model.dtos.VacationDTO;
+import team18.pharmacyapp.model.dtos.VacationRequestDTO;
 import team18.pharmacyapp.model.enums.VacationStatus;
 import team18.pharmacyapp.model.exceptions.ActionNotAllowedException;
 import team18.pharmacyapp.model.exceptions.EntityNotFoundException;
+import team18.pharmacyapp.model.users.Doctor;
 import team18.pharmacyapp.repository.VacationRepository;
+import team18.pharmacyapp.service.interfaces.DoctorService;
 import team18.pharmacyapp.service.interfaces.EmailService;
 import team18.pharmacyapp.service.interfaces.VacationService;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -19,16 +25,28 @@ public class VacationServiceImpl implements VacationService {
 
     private final VacationRepository vacationRepository;
     private final EmailService emailService;
+    private final DoctorService doctorService;
 
     @Autowired
-    public VacationServiceImpl(VacationRepository vacationRepository, EmailService emailService) {
+    public VacationServiceImpl(VacationRepository vacationRepository, EmailService emailService, DoctorService doctorService) {
         this.vacationRepository = vacationRepository;
         this.emailService = emailService;
+        this.doctorService = doctorService;
     }
 
     @Override
-    public List<Vacation> getAll(VacationStatus vacationStatus) {
-        return vacationRepository.getAll(vacationStatus);
+    public List<VacationDTO> getAll(VacationStatus vacationStatus) {
+        List<Vacation> vacations = vacationRepository.getAll(vacationStatus);
+        List<VacationDTO> vacationDTOs = new ArrayList<>();
+        for(Vacation vacation : vacations) {
+            DoctorDTO doctorDTO = new DoctorDTO(vacation.getDoctor().getId(), vacation.getDoctor().getName(),
+                    vacation.getDoctor().getSurname(), vacation.getDoctor().getEmail(), vacation.getDoctor().getPhoneNumber(),
+                    vacation.getDoctor().getRole(), vacation.getDoctor().getAddress());
+            VacationDTO vacationDTO = new VacationDTO(vacation.getId(), vacation.getStartDate(), vacation.getEndDate(),
+                    doctorDTO, vacation.getStatus(), vacation.getRejectionReason());
+            vacationDTOs.add(vacationDTO);
+        }
+        return vacationDTOs;
     }
 
     @Override
@@ -70,4 +88,21 @@ public class VacationServiceImpl implements VacationService {
                 " - " + sdf.format(vacation.getEndDate()) + "has been refused.\nReason:\n" + reason;
         new Thread(() -> emailService.sendMail(vacation.getDoctor().getEmail(), subject, body)).start();
     }
+
+    @Override
+    public Vacation create(VacationRequestDTO vacation) {
+        Vacation v=new Vacation();
+        v.setEndDate(vacation.getEndDate());
+        v.setStartDate(vacation.getStartDate());
+        Doctor d=doctorService.getById(vacation.getDoctorId());
+        System.out.println(d.getName());
+        v.setDoctor(d);
+        if(d==null){
+            return null;
+        }
+        v.setStatus(VacationStatus.pending);
+
+        return  vacationRepository.save(v);
+    }
+
 }

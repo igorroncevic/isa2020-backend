@@ -9,6 +9,7 @@ import team18.pharmacyapp.model.dtos.*;
 import team18.pharmacyapp.model.exceptions.ActionNotAllowedException;
 import team18.pharmacyapp.model.medicine.Medicine;
 import team18.pharmacyapp.model.exceptions.ReserveMedicineException;
+import team18.pharmacyapp.model.medicine.MedicineSpecification;
 import team18.pharmacyapp.model.medicine.ReservedMedicines;
 import team18.pharmacyapp.model.medicine.SupplierMedicine;
 import team18.pharmacyapp.service.interfaces.MedicineService;
@@ -30,6 +31,13 @@ public class MedicineController {
         this.reservedMedicinesService = reservedMedicinesService;
     }
 
+    @GetMapping("/all")
+    public ResponseEntity<List<MedicineIdNameDTO>> getAllMedicines() {
+        List<MedicineIdNameDTO> medicines = medicineService.findAll();
+
+        return new ResponseEntity<>(medicines, HttpStatus.OK);
+    }
+
     @PreAuthorize("hasRole('ROLE_PATIENT')")
     @GetMapping
     public ResponseEntity<List<PharmacyMedicinesDTO>> getAllAvailableMedicines() {
@@ -49,6 +57,18 @@ public class MedicineController {
         List<MedicineFilterDTO> medicines;
         try{
             medicines = medicineService.filterMedicines(mfr);
+        }catch(RuntimeException e){
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return new ResponseEntity<>(medicines, HttpStatus.OK);
+    }
+
+    @PostMapping("/noauth/filter")
+    public ResponseEntity<List<MedicineFilterDTO>> filterNoAuthMedicines(@RequestBody MedicineFilterRequestDTO mfr) {
+        List<MedicineFilterDTO> medicines;
+        try{
+            medicines = medicineService.filterNoAuthMedicines(mfr);
         }catch(RuntimeException e){
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -230,13 +250,21 @@ public class MedicineController {
     }
 
     @PostMapping(consumes = "application/json", value = "/add")
-    public ResponseEntity<SupplierMedicine> add(@RequestBody SupplierMedicinesDTO medicineDTO){
+    public ResponseEntity<SupplierMedicine> add(@RequestBody SupplierMedicinesDTO medicineDTO) {
         SupplierMedicine med = medicineService.addNewSupplierMedicine(medicineDTO);
 
-        if(med != null) {
+        if (med != null) {
             return new ResponseEntity<>(med, HttpStatus.CREATED);
         }
         return  new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
+    @GetMapping("specification/{id}")
+    public ResponseEntity<MedicineSpecification> getSpecificatin(@PathVariable UUID id){
+        MedicineSpecification specification=medicineService.getMedicineSpecification(id);
+        if(specification!=null){
+            return new ResponseEntity<>(specification,HttpStatus.OK);
+        }
+        return  new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
 }

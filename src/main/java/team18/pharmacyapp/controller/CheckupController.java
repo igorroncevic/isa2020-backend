@@ -44,6 +44,13 @@ public class CheckupController {
         return new ResponseEntity<>(checkups, HttpStatus.OK);
     }
 
+    @GetMapping("/freeCheckups/{doctorId}/{pharmacyId}")
+    public ResponseEntity<List<Term>> getDoctorPharmacyFreeTerms(@PathVariable UUID doctorId,@PathVariable UUID pharmacyId) {
+        List<Term> checkups = checkupService.doctorPharmacyFree(doctorId,pharmacyId);
+
+        return new ResponseEntity<>(checkups, HttpStatus.OK);
+    }
+
     @PreAuthorize("hasRole('ROLE_PATIENT')")
     @GetMapping("/patient/{id}")
     public ResponseEntity<List<TermDTO>> getAllPatientsCheckups(@PathVariable UUID id) {
@@ -96,8 +103,8 @@ public class CheckupController {
     }
 
     @GetMapping(value = "/patientCheckup/{id}")
-    public ResponseEntity<Term> getCheckupFetchPatient(@PathVariable UUID id) {
-        Term checkup = checkupService.findByIdFetchDoctor(id);
+    public ResponseEntity<DoctorTermDTO> getCheckupFetchPatient(@PathVariable UUID id) {
+        DoctorTermDTO checkup = checkupService.findByIdFetchPatint(id);
 
         if (checkup == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

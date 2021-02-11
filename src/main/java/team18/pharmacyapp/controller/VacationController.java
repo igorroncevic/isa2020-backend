@@ -6,6 +6,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import team18.pharmacyapp.model.Vacation;
 import team18.pharmacyapp.model.dtos.RefuseVacationDTO;
+import team18.pharmacyapp.model.dtos.VacationDTO;
+import team18.pharmacyapp.model.dtos.VacationRequestDTO;
 import team18.pharmacyapp.model.enums.VacationStatus;
 import team18.pharmacyapp.model.exceptions.ActionNotAllowedException;
 import team18.pharmacyapp.model.exceptions.EntityNotFoundException;
@@ -26,21 +28,30 @@ public class VacationController {
         this.vacationService = vacationService;
     }
 
+    @PostMapping
+    public ResponseEntity<Vacation> createVacationRequest(@RequestBody VacationRequestDTO dto){
+        Vacation v=vacationService.create(dto);
+        if(v!=null){
+            return new ResponseEntity<>(v,HttpStatus.CREATED);
+        }
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
     @GetMapping("/pending")
-    public ResponseEntity<List<Vacation>> getAllPending() {
-        List<Vacation> pendingVacations = vacationService.getAll(VacationStatus.pending);
+    public ResponseEntity<List<VacationDTO>> getAllPending() {
+        List<VacationDTO> pendingVacations = vacationService.getAll(VacationStatus.pending);
         return new ResponseEntity<>(pendingVacations, HttpStatus.OK);
     }
 
     @GetMapping("/approved")
-    public ResponseEntity<List<Vacation>> getAllApproved() {
-        List<Vacation> pendingVacations = vacationService.getAll(VacationStatus.approved);
+    public ResponseEntity<List<VacationDTO>> getAllApproved() {
+        List<VacationDTO> pendingVacations = vacationService.getAll(VacationStatus.approved);
         return new ResponseEntity<>(pendingVacations, HttpStatus.OK);
     }
 
     @GetMapping("/refused")
-    public ResponseEntity<List<Vacation>> getAllRefused() {
-        List<Vacation> pendingVacations = vacationService.getAll(VacationStatus.refused);
+    public ResponseEntity<List<VacationDTO>> getAllRefused() {
+        List<VacationDTO> pendingVacations = vacationService.getAll(VacationStatus.refused);
         return new ResponseEntity<>(pendingVacations, HttpStatus.OK);
     }
 

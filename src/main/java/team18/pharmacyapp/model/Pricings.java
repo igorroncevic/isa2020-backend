@@ -1,5 +1,6 @@
 package team18.pharmacyapp.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -7,10 +8,11 @@ import org.hibernate.annotations.GenericGenerator;
 import team18.pharmacyapp.model.medicine.PharmacyMedicines;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.UUID;
 
-@Entity
+@Entity(name = "pricings")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -30,10 +32,10 @@ public class Pricings {
     private PharmacyMedicines pharmacyMedicine;
 
     @Column(nullable = false)
-    private Date startDate;
+    private LocalDate startDate;
 
     @Column(nullable = false)
-    private Date endDate;
+    private LocalDate endDate;
 
     @Column(nullable = false)
     private double price;

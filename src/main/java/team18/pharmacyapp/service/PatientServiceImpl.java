@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import team18.pharmacyapp.model.Loyalty;
 import team18.pharmacyapp.model.dtos.LoyaltyDTO;
+import team18.pharmacyapp.model.dtos.MedicineIdNameDTO;
 import team18.pharmacyapp.model.dtos.PatientDTO;
 import team18.pharmacyapp.model.dtos.security.LoginDTO;
 import team18.pharmacyapp.model.dtos.UpdateProfileDataDTO;
@@ -24,6 +25,7 @@ import team18.pharmacyapp.service.interfaces.EmailService;
 import team18.pharmacyapp.service.interfaces.LoyaltyService;
 import team18.pharmacyapp.service.interfaces.PatientService;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -36,15 +38,15 @@ public class PatientServiceImpl implements PatientService {
     private final EmailService emailService;
     private final UserRepository userRepository;
 
-    private final PasswordEncoder passwordEncoder;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
-    public PatientServiceImpl(PatientRepository patientRepository, MedicineRepository medicineRepository, AddressRepository addressRepository, LoyaltyRepository loyaltyRepository, EmailService emailService, UserRepository userRepository, PasswordEncoder passwordEncoder){
+    public PatientServiceImpl(PatientRepository patientRepository, MedicineRepository medicineRepository, AddressRepository addressRepository, LoyaltyRepository loyaltyRepository, EmailService emailService, UserRepository userRepository){
         this.patientRepository = patientRepository;
         this.medicineRepository = medicineRepository;
         this.addressRepository = addressRepository;
         this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
         this.loyaltyService = new LoyaltyServiceImpl(loyaltyRepository, patientRepository);
         this.emailService = emailService;
     }
@@ -60,8 +62,12 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
-    public List<Medicine> getAlergicTo(UUID patientId) {
-        return  patientRepository.getAlergicMedicines(patientId);
+    public List<MedicineIdNameDTO> getAlergicTo(UUID patientId) {
+        List<MedicineIdNameDTO> list=new ArrayList<>();
+        for(Medicine m:patientRepository.getAlergicMedicines(patientId)){
+            list.add(new MedicineIdNameDTO(m.getId(),m.getName()));
+        }
+        return list;
     }
 
     @Override

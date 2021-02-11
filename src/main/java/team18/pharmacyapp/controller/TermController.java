@@ -7,6 +7,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import team18.pharmacyapp.model.Term;
 import team18.pharmacyapp.model.dtos.DoctorScheduleTermDTO;
+import team18.pharmacyapp.model.dtos.DoctorTermDTO;
 import team18.pharmacyapp.model.dtos.TermDTO;
 import team18.pharmacyapp.service.interfaces.TermService;
 
@@ -25,16 +26,16 @@ public class TermController {
     }
 
     @PostMapping(consumes = "application/json")
-    public ResponseEntity<Term> saveNewPatient(@RequestBody DoctorScheduleTermDTO dto){
+    public ResponseEntity<Term> saveTerm(@RequestBody DoctorScheduleTermDTO dto){
         Term term=termService.scheduleTerm(dto);
         if(term!=null){
-            return new ResponseEntity<>(term,HttpStatus.CREATED);
+            return new ResponseEntity<>(HttpStatus.CREATED);
         }
-        return new ResponseEntity<>(null,HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
     @GetMapping("doctor/{id}/{pharmacyId}")
-    public List<Term> getAllDoctorTerms(@PathVariable UUID id,@PathVariable UUID pharmacyId) {
+    public List<DoctorTermDTO> getAllDoctorTerms(@PathVariable UUID id, @PathVariable UUID pharmacyId) {
         return termService.getAllDoctorTermsInPharmacy(id, pharmacyId);
     }
 
@@ -51,4 +52,15 @@ public class TermController {
 
         return new ResponseEntity<>(terms,HttpStatus.OK);
     }
+
+    @GetMapping("nowTerm/{patientId}/{doctorId}")
+    public ResponseEntity<Term> getNowTerm(@PathVariable UUID patientId,@PathVariable UUID doctorId){
+        Term term=termService.hasPatientHasTermNowWithDoctor(doctorId,patientId);
+        if(term!=null){
+            return new ResponseEntity<>(term,HttpStatus.OK);
+        }
+        return new  ResponseEntity<>(null,HttpStatus.BAD_REQUEST);
+    }
+
+
 }

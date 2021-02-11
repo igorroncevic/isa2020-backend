@@ -5,12 +5,13 @@ import team18.pharmacyapp.model.exceptions.ActionNotAllowedException;
 import team18.pharmacyapp.model.medicine.Medicine;
 import team18.pharmacyapp.model.exceptions.ReserveMedicineException;
 import team18.pharmacyapp.model.medicine.SupplierMedicine;
+import team18.pharmacyapp.model.medicine.MedicineSpecification;
 
 import java.util.List;
 import java.util.UUID;
 
 public interface MedicineService {
-    List<Medicine> findAll();
+    List<MedicineIdNameDTO> findAll();
 
     Medicine save(Medicine medicine);
 
@@ -41,4 +42,11 @@ public interface MedicineService {
     List<SupplierMedicinesDTO> findSupplierMedicines(UUID supplierId);
 
     SupplierMedicine addNewSupplierMedicine(SupplierMedicinesDTO supplierMedicinesDTO);
+
+    MedicineSpecification getMedicineSpecification(UUID medicineId);
+
+    String getReplacmentMedicine(UUID medicineId);
+
+    List<MedicineFilterDTO> filterNoAuthMedicines(MedicineFilterRequestDTO mfr);
+
 }

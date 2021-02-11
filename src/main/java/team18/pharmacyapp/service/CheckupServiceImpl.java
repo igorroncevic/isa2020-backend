@@ -3,15 +3,14 @@ package team18.pharmacyapp.service;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import team18.pharmacyapp.model.Term;
-import team18.pharmacyapp.model.dtos.CancelTermDTO;
-import team18.pharmacyapp.model.dtos.DoctorDTO;
-import team18.pharmacyapp.model.dtos.ScheduleCheckupDTO;
-import team18.pharmacyapp.model.dtos.TermDTO;
+import team18.pharmacyapp.model.dtos.*;
 import team18.pharmacyapp.model.enums.TermType;
 import team18.pharmacyapp.model.exceptions.*;
 import team18.pharmacyapp.model.users.Doctor;
 import team18.pharmacyapp.model.users.Patient;
 import team18.pharmacyapp.repository.CheckupRepository;
+
+import team18.pharmacyapp.repository.TermRepository;
 import team18.pharmacyapp.repository.users.DoctorRepository;
 import team18.pharmacyapp.repository.users.PatientRepository;
 import team18.pharmacyapp.service.interfaces.CheckupService;
@@ -28,12 +27,16 @@ public class CheckupServiceImpl implements CheckupService {
     private final PatientRepository patientRepository;
     private final DoctorRepository doctorRepository;
     private final TermService termService;
+    private final TermRepository termRepository;
 
-    public CheckupServiceImpl(CheckupRepository checkupRepository, PatientRepository patientRepository, DoctorRepository doctorRepository, TermService termService) {
+
+    public CheckupServiceImpl(CheckupRepository checkupRepository, PatientRepository patientRepository, DoctorRepository doctorRepository, TermService termService,TermRepository termRepository) {
+
         this.checkupRepository = checkupRepository;
         this.patientRepository = patientRepository;
         this.doctorRepository = doctorRepository;
         this.termService = termService;
+        this.termRepository = termRepository;
     }
 
     @Override
@@ -45,8 +48,11 @@ public class CheckupServiceImpl implements CheckupService {
     }
 
     @Override
-    public Term findByIdFetchDoctor(UUID id) {
-        return checkupRepository.findByIdCustom(id);
+    public DoctorTermDTO findByIdFetchPatint(UUID id) {
+
+        Term t= checkupRepository.findByIdCustom(id);
+        Patient p=t.getPatient();
+        return new DoctorTermDTO(t.getId(),t.getStartTime(),t.getEndTime(),t.getType(),new DoctorsPatientDTO(p.getId(),p.getName(),p.getSurname(),p.getEmail(),p.getPhoneNumber()));
     }
 
     public List<TermDTO> findAll(TermType termType) {
@@ -142,4 +148,11 @@ public class CheckupServiceImpl implements CheckupService {
 
         return true;
     }
+
+    @Override
+    public List<Term> doctorPharmacyFree(UUID doctorId, UUID pharmacyId) {
+        return termRepository.findAllFreeTermsForDoctorInPharmacy(doctorId,pharmacyId);
+    }
+
+
 }

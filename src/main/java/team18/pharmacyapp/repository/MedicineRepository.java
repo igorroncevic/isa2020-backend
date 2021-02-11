@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 import team18.pharmacyapp.model.dtos.MedicineAllergyDTO;
 import team18.pharmacyapp.model.medicine.Medicine;
+import team18.pharmacyapp.model.medicine.MedicineSpecification;
 import team18.pharmacyapp.model.medicine.PharmacyMedicines;
 import team18.pharmacyapp.model.medicine.ReservedMedicines;
 import team18.pharmacyapp.model.medicine.SupplierMedicine;
@@ -17,9 +18,13 @@ import java.util.UUID;
 
 public interface MedicineRepository extends JpaRepository<Medicine, UUID> {
     @Transactional(readOnly = true)
-    @Query(value = "SELECT p FROM medicine m INNER JOIN pharmacy_medicines p ON p.medicine = m.id JOIN FETCH p.pricings " +
+    @Query(value = "SELECT distinct p FROM medicine m INNER JOIN pharmacy_medicines p ON p.medicine = m.id JOIN FETCH p.pricings " +
             "JOIN FETCH p.pharmacy JOIN FETCH p.medicine WHERE p.quantity > 0 ORDER BY p.quantity DESC")
     List<PharmacyMedicines> findAllAvailableMedicines();
+
+    @Transactional(readOnly = true)
+    @Query(value = "SELECT distinct m FROM medicine m JOIN m.pharmacyMedicines pm WHERE pm.quantity > 0")
+    List<Medicine> findAllAvailableMedicinesNoAuth();
 
     @Transactional(readOnly = true)
     @Query("SELECT r FROM reserved_medicines r JOIN FETCH r.patient")
@@ -118,4 +123,13 @@ public interface MedicineRepository extends JpaRepository<Medicine, UUID> {
 
     @Query("SELECT m FROM medicine m WHERE m.name=:medicineName")
     Medicine findByName(@Param("medicineName") String medicineName);
+
+    @Transactional(readOnly = true)
+    @Query(value = "select s from medicine_specification s where s.medicine.id=:medicineId ")
+    MedicineSpecification getMedicineSpecification (UUID medicineId);
+
+    @Transactional(readOnly = true)
+    @Query(value = "select m.name from medicine_specification s inner join medicine m on s.replacementMedicineCode=m.medicineCode where s.medicine.id=:medicineId ")
+    String getReplacmentMedicine (UUID medicineId);
+
 }

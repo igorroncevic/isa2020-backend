@@ -19,6 +19,7 @@ import team18.pharmacyapp.repository.users.PatientRepository;
 import team18.pharmacyapp.service.interfaces.LoyaltyService;
 import team18.pharmacyapp.service.interfaces.MedicineService;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -49,8 +50,14 @@ public class MedicineServiceImpl implements MedicineService {
     }
 
     @Override
-    public List<Medicine> findAll() {
-        return medicineRepository.findAll();
+    public List<MedicineIdNameDTO> findAll() {
+        List<Medicine> medicines = medicineRepository.findAll();
+        List<MedicineIdNameDTO> medicineIdNameDTOs = new ArrayList<>();
+        for(Medicine medicine : medicines) {
+            MedicineIdNameDTO medicineIdNameDTO = new MedicineIdNameDTO(medicine.getId(), medicine.getName());
+            medicineIdNameDTOs.add(medicineIdNameDTO);
+        }
+        return medicineIdNameDTOs;
     }
 
     @Override
@@ -73,13 +80,13 @@ public class MedicineServiceImpl implements MedicineService {
         List<PharmacyMedicines> pharmacyMedicines = medicineRepository.findAllAvailableMedicines();
         List<PharmacyMedicinesDTO> resultSet = new ArrayList<>();
 
-        Date todaysDate = new Date(System.currentTimeMillis() + 10 * 1000);   //mali offset
+        LocalDate todaysDate = LocalDate.now();   //mali offset
         for (PharmacyMedicines pm : pharmacyMedicines) {
             List<Pricings> pricings = pm.getPricings();
             double finalPrice = -1.0;
 
             for (Pricings pricing : pricings) {
-                if (pricing.getStartDate().before(todaysDate) && pricing.getEndDate().after(todaysDate)) {
+                if (pricing.getStartDate().isBefore(todaysDate) && pricing.getEndDate().isAfter(todaysDate)) {
                     finalPrice = pricing.getPrice();
                     break;
                 }
@@ -277,7 +284,6 @@ public class MedicineServiceImpl implements MedicineService {
 
         return finalMedicines;
     }
-
     @Override
     public List<SupplierMedicinesDTO> findSupplierMedicines(UUID supplierId) {
         List<SupplierMedicine> meds = medicineRepository.findMedicinesBySupplierId(supplierId);
@@ -296,8 +302,8 @@ public class MedicineServiceImpl implements MedicineService {
     public SupplierMedicine addNewSupplierMedicine(SupplierMedicinesDTO supplierMedicinesDTO) {
         SupplierMedicine supplierMedicine = new SupplierMedicine();
         Medicine m = medicineRepository.findByName(supplierMedicinesDTO.getMedicineName());
-        if(m != null){
-            if(supplierMedicinesRepository.findByName(m.getName()) != null){
+        if (m != null) {
+            if (supplierMedicinesRepository.findByName(m.getName()) != null) {
                 int ret = supplierMedicinesRepository.updateMedicineQuantity(m.getId(), supplierMedicinesDTO.getQuantity());
                 return supplierMedicine;
             }
@@ -305,5 +311,31 @@ public class MedicineServiceImpl implements MedicineService {
             return supplierMedicine;
         }
         return null;
+    }
+
+    @Override
+    public MedicineSpecification getMedicineSpecification(UUID medicineId) {
+        return medicineRepository.getMedicineSpecification(medicineId);
+    }
+
+    @Override
+    public String getReplacmentMedicine(UUID medicineId) {
+        return medicineRepository.getReplacmentMedicine(medicineId);
+    }
+    @Override
+    public List<MedicineFilterDTO> filterNoAuthMedicines(MedicineFilterRequestDTO mfr) {
+        List<Medicine>medicines = medicineRepository.findAllAvailableMedicinesNoAuth();
+
+        List<MedicineFilterDTO> finalMedicines = new ArrayList<>();
+        for(Medicine m : medicines){
+            if(!m.getName().toLowerCase().contains(mfr.getName().toLowerCase())) continue;
+
+            MedicineFilterDTO med = new MedicineFilterDTO();
+            med.setMedicine(new MedicineDTO(m.getId(), m.getName(), "", "", "", "", "", m.getLoyaltyPoints(), "", 0, "", "", ""));
+            med.setPharmacies(new ArrayList<>());
+            finalMedicines.add(med);
+        }
+
+        return finalMedicines;
     }
 }

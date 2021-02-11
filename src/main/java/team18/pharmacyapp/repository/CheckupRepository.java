@@ -44,4 +44,10 @@ public interface CheckupRepository extends JpaRepository<Term, UUID> {
     @Transactional(readOnly = true)
     @Query("SELECT t FROM term t JOIN FETCH t.patient WHERE t.id = :checkupId")
     Term findByIdCustom(@Param("checkupId") UUID checkupId);
+
+    @Transactional(readOnly = true)
+    @Query("SELECT t FROM term t JOIN FETCH t.patient WHERE t.doctor.id = :doctorId")
+    List<Term> findTermByDoctorId(UUID doctorId);
+
+
 }

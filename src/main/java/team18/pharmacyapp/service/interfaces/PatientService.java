@@ -1,10 +1,10 @@
 package team18.pharmacyapp.service.interfaces;
 
+import team18.pharmacyapp.model.dtos.MedicineIdNameDTO;
 import team18.pharmacyapp.model.dtos.PatientDTO;
 import team18.pharmacyapp.model.dtos.UpdateProfileDataDTO;
 import team18.pharmacyapp.model.exceptions.ActionNotAllowedException;
 import team18.pharmacyapp.model.exceptions.EntityNotFoundException;
-import team18.pharmacyapp.model.medicine.Medicine;
 import team18.pharmacyapp.model.users.Patient;
 import team18.pharmacyapp.model.users.RegisteredUser;
 
@@ -16,7 +16,7 @@ public interface PatientService {
 
     int addPenalty(UUID patientId);
 
-    List<Medicine> getAlergicTo(UUID patientId);
+    List<MedicineIdNameDTO> getAlergicTo(UUID patientId);
 
     PatientDTO getPatientProfileInfo(UUID id);
 

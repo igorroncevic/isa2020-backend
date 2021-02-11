@@ -6,10 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import team18.pharmacyapp.model.Pharmacy;
-import team18.pharmacyapp.model.dtos.DoctorMarkPharmaciesDTO;
-import team18.pharmacyapp.model.dtos.RegisterUserDTO;
-import team18.pharmacyapp.model.dtos.DoctorsPatientDTO;
-import team18.pharmacyapp.model.dtos.PatientDoctorRoleDTO;
+import team18.pharmacyapp.model.dtos.*;
 import team18.pharmacyapp.model.enums.UserRole;
 import team18.pharmacyapp.model.users.Doctor;
 import team18.pharmacyapp.service.interfaces.DoctorService;
@@ -20,7 +17,7 @@ import java.util.UUID;
 @CrossOrigin(origins = {"http://localhost:8080","http://localhost:8081"})
 @RestController
 @RequestMapping(value = "api/doctors")
-@PreAuthorize("hasRole('ROLE_PATIENT')") // dodati npr  || hasRole('ROLE_DOCTOR') ako treba još neki role
+//@PreAuthorize("hasRole('ROLE_PATIENT')") // dodati npr  || hasRole('ROLE_DOCTOR') ako treba još neki role
 public class DoctorController {
     private final DoctorService doctorService;
 
@@ -85,7 +82,7 @@ public class DoctorController {
     }
 
     @GetMapping("/pharmacyList/{id}")
-    public List<Pharmacy> getDoctorPharmacyList(@PathVariable UUID id){
+    public List<PharmacyDTO> getDoctorPharmacyList(@PathVariable UUID id){
         return doctorService.getDoctorPharmacyList(id);
     }
 }

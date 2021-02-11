@@ -3,6 +3,7 @@ package team18.pharmacyapp.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import team18.pharmacyapp.model.Pharmacy;
+import team18.pharmacyapp.model.dtos.PharmacyAdminInfoDTO;
 import team18.pharmacyapp.model.enums.UserRole;
 import team18.pharmacyapp.model.users.PharmacyAdmin;
 import team18.pharmacyapp.model.users.RegisteredUser;
@@ -23,15 +24,24 @@ public class PharmacyAdminServiceIml implements PharmacyAdminService {
         this.pharmacyRepository = pharmacyRepository;
     }
 
-
-    @Override
     public PharmacyAdmin getById(UUID id) {
         return pharmacyAdminRepository.findById(id).orElse(null);
     }
 
     @Override
-    public PharmacyAdmin update(PharmacyAdmin pharmacyAdmin) {
-        return pharmacyAdminRepository.save(pharmacyAdmin);
+    public PharmacyAdminInfoDTO getInfoById(UUID id) {
+        PharmacyAdmin pharmacyAdmin = pharmacyAdminRepository.findById(id).orElse(null);
+        PharmacyAdminInfoDTO pharmacyAdminInfoDTO = new PharmacyAdminInfoDTO(pharmacyAdmin.getId(), pharmacyAdmin.getName(),
+                pharmacyAdmin.getSurname(), pharmacyAdmin.getEmail(), pharmacyAdmin.getPhoneNumber());
+        return pharmacyAdminInfoDTO;
+    }
+
+    @Override
+    public PharmacyAdminInfoDTO update(PharmacyAdmin pharmacyAdmin) {
+        pharmacyAdmin = pharmacyAdminRepository.save(pharmacyAdmin);
+        PharmacyAdminInfoDTO pharmacyAdminInfoDTO = new PharmacyAdminInfoDTO(pharmacyAdmin.getId(), pharmacyAdmin.getName(),
+                pharmacyAdmin.getSurname(), pharmacyAdmin.getEmail(), pharmacyAdmin.getPhoneNumber());
+        return pharmacyAdminInfoDTO;
     }
 
     @Override
