@@ -413,8 +413,6 @@ values('ebd0e0f2-7e6c-4c3d-9062-3751cde8a116', '592e558c-b3f9-4088-b468-28764908
 insert into purchase_order_medicine(purchase_order_id, medicine_id, quantity)
 values('ebd0e0f2-7e6c-4c3d-9062-3751cde8a116', '3163f62a-5b88-4295-854c-c9400e19089f', 15);
 insert into purchase_order_medicine(purchase_order_id, medicine_id, quantity)
-values('ebd0e0f2-7e6c-4c3d-9062-3751cde8a116', '32636111-4bc6-424c-a200-067e7f8a9386', 15);
-insert into purchase_order_medicine(purchase_order_id, medicine_id, quantity)
 values('ebd0e0f2-7e6c-4c3d-9062-3751cde8a116', '659d0931-63d9-4ef6-bbc4-abdeb4a99539', 15);
 
 --Supplier medicine

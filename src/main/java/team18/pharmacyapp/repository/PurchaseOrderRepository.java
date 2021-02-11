@@ -9,6 +9,7 @@ import team18.pharmacyapp.model.PurchaseOrder;
 import team18.pharmacyapp.model.SupplierPurchaseOrder;
 import team18.pharmacyapp.model.Term;
 import team18.pharmacyapp.model.medicine.PurchaseOrderMedicine;
+import team18.pharmacyapp.model.users.Supplier;
 
 import java.util.Date;
 import java.util.List;
@@ -59,6 +60,12 @@ public interface PurchaseOrderRepository extends JpaRepository<PurchaseOrder, UU
     @Query(nativeQuery = true, value = "SELECT CAST(medicine_id as VARCHAR )medicine_id FROM pharmacy_medicines WHERE pharmacy_id = :pharmacyId")
     List<String> getPharmacyMedicineUUIDs(UUID pharmacyId);
 
+    @Query(nativeQuery = true, value = "SELECT email FROM supplier_purchase_order spo JOIN supplier s on s.id = spo.supplier_id " +
+            "WHERE spo.purchase_order_id = :orderId AND spo.accepted = false")
+    List<String> getAllDeclinedSuppliers(UUID orderId);
 
+    @Query(nativeQuery = true, value = "SELECT email FROM supplier_purchase_order spo JOIN supplier s on s.id = spo.supplier_id " +
+            "WHERE spo.purchase_order_id = :orderId AND spo.accepted = true")
+    String getAcceptedSupplier(UUID orderId);
 
 }

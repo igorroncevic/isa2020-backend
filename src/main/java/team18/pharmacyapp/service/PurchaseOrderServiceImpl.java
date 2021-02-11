@@ -10,10 +10,13 @@ import team18.pharmacyapp.model.dtos.*;
 import team18.pharmacyapp.model.exceptions.ActionNotAllowedException;
 import team18.pharmacyapp.model.exceptions.FailedToSaveException;
 import team18.pharmacyapp.model.medicine.PurchaseOrderMedicine;
+import team18.pharmacyapp.model.users.Supplier;
 import team18.pharmacyapp.repository.PharmacyMedicinesRepository;
 import team18.pharmacyapp.repository.PurchaseOrderRepository;
+import team18.pharmacyapp.service.interfaces.EmailService;
 import team18.pharmacyapp.service.interfaces.PurchaseOrderService;
 
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,11 +27,13 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 
     private final PurchaseOrderRepository purchaseOrderRepository;
     private final PharmacyMedicinesRepository pharmacyMedicinesRepository;
+    private final EmailService emailService;
 
     @Autowired
-    public PurchaseOrderServiceImpl(PurchaseOrderRepository purchaseOrderRepository, PharmacyMedicinesRepository pharmacyMedicinesRepository) {
+    public PurchaseOrderServiceImpl(PurchaseOrderRepository purchaseOrderRepository, PharmacyMedicinesRepository pharmacyMedicinesRepository, EmailService emailService) {
         this.purchaseOrderRepository = purchaseOrderRepository;
         this.pharmacyMedicinesRepository = pharmacyMedicinesRepository;
+        this.emailService = emailService;
     }
 
     @Override
@@ -131,6 +136,25 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
                 throw new FailedToSaveException("Failed to decrease quantity of supplier medicine");
         }
 
+        List<String> declinedSuppliersEmails = purchaseOrderRepository.getAllDeclinedSuppliers(orderId);
+        String acceptedSupplierEmail = purchaseOrderRepository.getAcceptedSupplier(orderId);
+        sendEmailsToSuppliers(acceptedSupplierEmail, declinedSuppliersEmails, purchaseOrder.getPharmacyAdmin().getPharmacy().getName());
+
+    }
+
+    private void sendEmailsToSuppliers(String acceptedSupplierEmail, List<String> declinedSuppliersEmails, String pharmacyName) {
+        String subjectAccepted = "[ISA Pharmacy] Your offer has been accepted!";
+        String bodyAccepted = "Your offer for " + pharmacyName + " has been accepted!";
+        new Thread(() -> emailService.sendMail(acceptedSupplierEmail, subjectAccepted, bodyAccepted)).start();
+
+        String subjectDeclined = "[ISA Pharmacy] Your offer has been declined.";
+        String bodyDeclined = "Your offer for " + pharmacyName + " has been declined!";
+        new Thread(() -> sendEmails(declinedSuppliersEmails, subjectDeclined, bodyDeclined)).start();
+    }
+
+    private void sendEmails(List<String> suppliersEmails, String subject, String body) {
+        for(String supplierEmail : suppliersEmails)
+            emailService.sendMail(supplierEmail, subject, body);
     }
 
 }
