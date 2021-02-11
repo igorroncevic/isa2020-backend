@@ -24,16 +24,16 @@ public class ReservedMedicineResponseDTO {
     private String patientSurname;
     private boolean handled;
 
-    public ReservedMedicineResponseDTO(UUID id, UUID patientId, UUID medicineId, UUID pharmacyId, Date pickupDate, String email,String medicineName,String patientName,String patientSurname,boolean handled) {
+    public ReservedMedicineResponseDTO(UUID id, UUID patientId, UUID medicineId, UUID pharmacyId, Date pickupDate, String email, String medicineName, String patientName, String patientSurname, boolean handled) {
         this.id = id;
         this.patientId = patientId;
         this.medicineId = medicineId;
         this.pharmacyId = pharmacyId;
         this.pickupDate = pickupDate;
         this.email = email;
-        this.medicineName=medicineName;
-        this.patientName=patientName;
-        this.patientSurname=patientSurname;
-        this.handled=handled;
+        this.medicineName = medicineName;
+        this.patientName = patientName;
+        this.patientSurname = patientSurname;
+        this.handled = handled;
     }
 }

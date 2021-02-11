@@ -29,8 +29,8 @@ public class SystemAdminServiceImpl implements SystemAdminService {
     @Override
     public SystemAdmin registerNewSysAdmin(RegisterUserDTO sysAdmin) {
         SystemAdmin sysAdm = new SystemAdmin();
-        Address address  =addressRepository.findByCountryAndCityAndStreet(sysAdmin.getCountry(), sysAdmin.getCity(), sysAdmin.getStreet());
-        if(address == null){
+        Address address = addressRepository.findByCountryAndCityAndStreet(sysAdmin.getCountry(), sysAdmin.getCity(), sysAdmin.getStreet());
+        if (address == null) {
             address = new Address();
             address.setStreet(sysAdmin.getStreet());
             address.setCity(sysAdmin.getCity());

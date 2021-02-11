@@ -10,7 +10,7 @@ import team18.pharmacyapp.service.interfaces.PharmacyAdminService;
 
 import java.util.UUID;
 
-@CrossOrigin(origins = {"http://localhost:8080","http://localhost:8081"})
+@CrossOrigin(origins = {"http://localhost:8080", "http://localhost:8081"})
 @RestController
 @RequestMapping(value = "api/phadmin")
 public class PharmacyAdminController {
@@ -43,7 +43,7 @@ public class PharmacyAdminController {
     }
 
     @PostMapping(consumes = "application/json", value = "/register")
-    public ResponseEntity<PharmacyAdmin> saveNewPharmacyAdmin(@RequestBody PharmacyAdminDTO newPharmacyAdmin){
+    public ResponseEntity<PharmacyAdmin> saveNewPharmacyAdmin(@RequestBody PharmacyAdminDTO newPharmacyAdmin) {
         PharmacyAdmin phAdmin = pharmacyAdminService.registerNewPharmacyAdmin(newPharmacyAdmin);
         return new ResponseEntity<>(phAdmin, HttpStatus.CREATED);
     }

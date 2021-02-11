@@ -8,7 +8,7 @@ import team18.pharmacyapp.model.dtos.RegisterUserDTO;
 import team18.pharmacyapp.model.users.Supplier;
 import team18.pharmacyapp.service.interfaces.SupplierService;
 
-@CrossOrigin(origins = {"http://localhost:8080","http://localhost:8081"})
+@CrossOrigin(origins = {"http://localhost:8080", "http://localhost:8081"})
 @RestController
 @RequestMapping(value = "api/suppliers")
 public class SupplierController {
@@ -20,7 +20,7 @@ public class SupplierController {
     }
 
     @PostMapping(consumes = "application/json", value = "/register")
-    public ResponseEntity<Supplier> registerNewSupplier(@RequestBody RegisterUserDTO newSupplier){
+    public ResponseEntity<Supplier> registerNewSupplier(@RequestBody RegisterUserDTO newSupplier) {
         Supplier supp = supplierService.registerNewSupplier(newSupplier);
         return new ResponseEntity<>(supp, HttpStatus.CREATED);
 

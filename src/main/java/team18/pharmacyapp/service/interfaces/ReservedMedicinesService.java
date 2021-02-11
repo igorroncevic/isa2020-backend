@@ -7,8 +7,11 @@ import java.util.List;
 import java.util.UUID;
 
 public interface ReservedMedicinesService {
-    public ReservedMedicineResponseDTO findByIdAndPharmacy(UUID id,UUID pharmacy);
-    public ReservedMedicineResponseDTO checkReservation(UUID id,UUID pharmacy);
-    public List<ReservedMedicineResponseDTO> getAll();
-    public boolean handleMedicine(HandleReservationDTO dto);
+    ReservedMedicineResponseDTO findByIdAndPharmacy(UUID id, UUID pharmacy);
+
+    ReservedMedicineResponseDTO checkReservation(UUID id, UUID pharmacy);
+
+    List<ReservedMedicineResponseDTO> getAll();
+
+    boolean handleMedicine(HandleReservationDTO dto);
 }
