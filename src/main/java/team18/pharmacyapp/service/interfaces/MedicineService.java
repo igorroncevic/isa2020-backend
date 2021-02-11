@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.UUID;
 
 public interface MedicineService {
-    List<Medicine> findAll();
+    List<MedicineIdNameDTO> findAll();
 
     Medicine save(Medicine medicine);
 

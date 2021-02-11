@@ -53,8 +53,14 @@ public class MedicineServiceImpl implements MedicineService {
     }
 
     @Override
-    public List<Medicine> findAll() {
-        return medicineRepository.findAll();
+    public List<MedicineIdNameDTO> findAll() {
+        List<Medicine> medicines = medicineRepository.findAll();
+        List<MedicineIdNameDTO> medicineIdNameDTOs = new ArrayList<>();
+        for(Medicine medicine : medicines) {
+            MedicineIdNameDTO medicineIdNameDTO = new MedicineIdNameDTO(medicine.getId(), medicine.getName());
+            medicineIdNameDTOs.add(medicineIdNameDTO);
+        }
+        return medicineIdNameDTOs;
     }
 
     @Override

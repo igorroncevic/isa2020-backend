@@ -31,7 +31,7 @@ public class PricingsServiceImpl implements PricingsService {
 
     @Override
     public List<PricingsDTO> getAllCurrentPricingsForPhramcy(UUID id) {
-        List<Pricings> pricings = pricingsRepository.getAllCurrentPricingsForPharmacy(id, new Date());
+        List<Pricings> pricings = pricingsRepository.getAllCurrentPricingsForPharmacy(id, LocalDate.now());
         List<PricingsDTO> pricingsDTOs = new ArrayList<>();
         for(Pricings pricing : pricings) {
             PricingsDTO pricingsDTO = new PricingsDTO();

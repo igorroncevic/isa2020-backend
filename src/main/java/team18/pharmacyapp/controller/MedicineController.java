@@ -31,8 +31,8 @@ public class MedicineController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<Medicine>> getAllMedicines() {
-        List<Medicine> medicines = medicineService.findAll();
+    public ResponseEntity<List<MedicineIdNameDTO>> getAllMedicines() {
+        List<MedicineIdNameDTO> medicines = medicineService.findAll();
 
         return new ResponseEntity<>(medicines, HttpStatus.OK);
     }

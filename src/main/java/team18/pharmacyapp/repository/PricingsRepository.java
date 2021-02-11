@@ -21,7 +21,7 @@ public interface PricingsRepository extends JpaRepository<Pricings, UUID> {
             "JOIN FETCH pm.medicine m " +
             "JOIN FETCH pm.pharmacy ph " +
             "WHERE ph.id = :pharmacyId AND p.startDate < :currentDate AND p.endDate > :currentDate")
-    List<Pricings> getAllCurrentPricingsForPharmacy(@Param("pharmacyId") UUID pharmacyId, @Param("currentDate") Date currentDate);
+    List<Pricings> getAllCurrentPricingsForPharmacy(@Param("pharmacyId") UUID pharmacyId, @Param("currentDate") LocalDate currentDate);
 
     @Query("SELECT p FROM pricings p " +
             "JOIN FETCH p.pharmacyMedicine pm " +

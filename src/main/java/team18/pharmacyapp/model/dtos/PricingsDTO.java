@@ -19,7 +19,9 @@ public class PricingsDTO {
     UUID id;
     String medicine;
     UUID medicineId;
+    @JsonFormat(pattern="yyyy-MM-dd")
     LocalDate startDate;
+    @JsonFormat(pattern="yyyy-MM-dd")
     LocalDate endDate;
     double price;
 
