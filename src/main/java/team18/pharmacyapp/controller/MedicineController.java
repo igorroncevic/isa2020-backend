@@ -30,6 +30,13 @@ public class MedicineController {
         this.reservedMedicinesService = reservedMedicinesService;
     }
 
+    @GetMapping("/all")
+    public ResponseEntity<List<MedicineIdNameDTO>> getAllMedicines() {
+        List<MedicineIdNameDTO> medicines = medicineService.findAll();
+
+        return new ResponseEntity<>(medicines, HttpStatus.OK);
+    }
+
     @PreAuthorize("hasRole('ROLE_PATIENT')")
     @GetMapping
     public ResponseEntity<List<PharmacyMedicinesDTO>> getAllAvailableMedicines() {

@@ -38,7 +38,8 @@ public class PatientServiceImpl implements PatientService {
     private final EmailService emailService;
     private final RegisteredUserRepository userRepository;
 
-    private final PasswordEncoder passwordEncoder;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
     public PatientServiceImpl(PatientRepository patientRepository, MedicineRepository medicineRepository, AddressRepository addressRepository, LoyaltyRepository loyaltyRepository, EmailService emailService, RegisteredUserRepository userRepository, PasswordEncoder passwordEncoder){
@@ -46,7 +47,6 @@ public class PatientServiceImpl implements PatientService {
         this.medicineRepository = medicineRepository;
         this.addressRepository = addressRepository;
         this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
         this.loyaltyService = new LoyaltyServiceImpl(loyaltyRepository, patientRepository);
         this.emailService = emailService;
     }
@@ -158,12 +158,10 @@ public class PatientServiceImpl implements PatientService {
         if(!surname.equals("")) forUpdate.setSurname(surname);
         if(!phone.equals("")) forUpdate.setPhoneNumber(phone);
         if(!password.equals("")) {
-            System.out.println("usao setujem");
             forUpdate.setPassword(password);
         }
 
         userRepository.saveAndFlush(forUpdate);
-        System.out.println("zavrsio");
         return forUpdate;
     }
 

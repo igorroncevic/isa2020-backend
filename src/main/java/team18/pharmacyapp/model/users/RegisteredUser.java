@@ -53,7 +53,7 @@ public  class RegisteredUser implements UserDetails {
     protected Address address;
 
     @Column(name = "first_login")
-    protected boolean firstLogin=true;
+    protected Boolean firstLogin=true;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_authority",

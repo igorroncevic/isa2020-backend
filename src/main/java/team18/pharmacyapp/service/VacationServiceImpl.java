@@ -3,6 +3,8 @@ package team18.pharmacyapp.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import team18.pharmacyapp.model.Vacation;
+import team18.pharmacyapp.model.dtos.DoctorDTO;
+import team18.pharmacyapp.model.dtos.VacationDTO;
 import team18.pharmacyapp.model.dtos.VacationRequestDTO;
 import team18.pharmacyapp.model.enums.VacationStatus;
 import team18.pharmacyapp.model.exceptions.ActionNotAllowedException;
@@ -14,6 +16,7 @@ import team18.pharmacyapp.service.interfaces.EmailService;
 import team18.pharmacyapp.service.interfaces.VacationService;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -32,8 +35,18 @@ public class VacationServiceImpl implements VacationService {
     }
 
     @Override
-    public List<Vacation> getAll(VacationStatus vacationStatus) {
-        return vacationRepository.getAll(vacationStatus);
+    public List<VacationDTO> getAll(VacationStatus vacationStatus) {
+        List<Vacation> vacations = vacationRepository.getAll(vacationStatus);
+        List<VacationDTO> vacationDTOs = new ArrayList<>();
+        for(Vacation vacation : vacations) {
+            DoctorDTO doctorDTO = new DoctorDTO(vacation.getDoctor().getId(), vacation.getDoctor().getName(),
+                    vacation.getDoctor().getSurname(), vacation.getDoctor().getEmail(), vacation.getDoctor().getPhoneNumber(),
+                    vacation.getDoctor().getRole(), vacation.getDoctor().getAddress());
+            VacationDTO vacationDTO = new VacationDTO(vacation.getId(), vacation.getStartDate(), vacation.getEndDate(),
+                    doctorDTO, vacation.getStatus(), vacation.getRejectionReason());
+            vacationDTOs.add(vacationDTO);
+        }
+        return vacationDTOs;
     }
 
     @Override

@@ -24,6 +24,7 @@ import team18.pharmacyapp.repository.users.PatientRepository;
 import team18.pharmacyapp.service.interfaces.LoyaltyService;
 import team18.pharmacyapp.service.interfaces.MedicineService;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -52,8 +53,14 @@ public class MedicineServiceImpl implements MedicineService {
     }
 
     @Override
-    public List<Medicine> findAll() {
-        return medicineRepository.findAll();
+    public List<MedicineIdNameDTO> findAll() {
+        List<Medicine> medicines = medicineRepository.findAll();
+        List<MedicineIdNameDTO> medicineIdNameDTOs = new ArrayList<>();
+        for(Medicine medicine : medicines) {
+            MedicineIdNameDTO medicineIdNameDTO = new MedicineIdNameDTO(medicine.getId(), medicine.getName());
+            medicineIdNameDTOs.add(medicineIdNameDTO);
+        }
+        return medicineIdNameDTOs;
     }
 
     @Override
@@ -76,13 +83,13 @@ public class MedicineServiceImpl implements MedicineService {
         List<PharmacyMedicines> pharmacyMedicines = medicineRepository.findAllAvailableMedicines();
         List<PharmacyMedicinesDTO> resultSet = new ArrayList<>();
 
-        Date todaysDate = new Date(System.currentTimeMillis() + 10 * 1000);   //mali offset
+        LocalDate todaysDate = LocalDate.now();   //mali offset
         for (PharmacyMedicines pm : pharmacyMedicines) {
             List<Pricings> pricings = pm.getPricings();
             double finalPrice = -1.0;
 
             for (Pricings pricing : pricings) {
-                if (pricing.getStartDate().before(todaysDate) && pricing.getEndDate().after(todaysDate)) {
+                if (pricing.getStartDate().isBefore(todaysDate) && pricing.getEndDate().isAfter(todaysDate)) {
                     finalPrice = pricing.getPrice();
                     break;
                 }

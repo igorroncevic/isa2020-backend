@@ -2,9 +2,11 @@ package team18.pharmacyapp.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import team18.pharmacyapp.model.dtos.MedicineIdNameDTO;
+import team18.pharmacyapp.model.dtos.MedicineQuantityDTO;
 import team18.pharmacyapp.model.dtos.ReportMedicineDTO;
-import team18.pharmacyapp.model.medicine.Medicine;
+import team18.pharmacyapp.model.exceptions.ActionNotAllowedException;
+import team18.pharmacyapp.model.keys.PharmacyMedicinesId;
+import team18.pharmacyapp.model.medicine.PharmacyMedicines;
 import team18.pharmacyapp.repository.PharmacyMedicinesRepository;
 import team18.pharmacyapp.service.interfaces.MedicineRequestsService;
 import team18.pharmacyapp.service.interfaces.MedicineService;
@@ -47,12 +49,30 @@ public class PharmacyMedicinesServiceImpl implements PharmacyMedicinesService {
     }
 
     @Override
-    public List<MedicineIdNameDTO> getMedicnesByPharmacy(UUID pharmacy) {
-        List<MedicineIdNameDTO> list=new ArrayList<>();
-        for(Medicine m:repository.getMedicineByPharmacy(pharmacy)){
-            list.add(new MedicineIdNameDTO(m.getId(),m.getName()));
+    public List<MedicineQuantityDTO> getMedicnesByPharmacy(UUID pharmacy) {
+        List<PharmacyMedicines> pharmacyMedicines = repository.getMedicineByPharmacy(pharmacy);
+        List<MedicineQuantityDTO> medicineQuantityDTOs = new ArrayList<>();
+        for(PharmacyMedicines pharmacyMedicine : pharmacyMedicines) {
+            MedicineQuantityDTO medicineQuantityDTO = new MedicineQuantityDTO();
+            medicineQuantityDTO.setId(pharmacyMedicine.getMedicine().getId());
+            medicineQuantityDTO.setName(pharmacyMedicine.getMedicine().getName());
+            medicineQuantityDTO.setLoyaltyPoints(pharmacyMedicine.getMedicine().getLoyaltyPoints());
+            medicineQuantityDTO.setQuantity(pharmacyMedicine.getQuantity());
+            medicineQuantityDTOs.add(medicineQuantityDTO);
         }
-        return list;
+        return medicineQuantityDTOs;
     }
 
+    @Override
+    public void insert(UUID pharmacyId, UUID medicineId) {
+        repository.insert(pharmacyId, medicineId);
+    }
+
+    @Override
+    public void deletePharmacyMedicine(PharmacyMedicinesId pharmacyMedicinesId) throws ActionNotAllowedException {
+        int numberOfUnhandledRegistrations = repository.getNumberOfUnhandledReservations(pharmacyMedicinesId.getPharmacy(), pharmacyMedicinesId.getMedicine());
+        if(numberOfUnhandledRegistrations != 0)
+            throw new ActionNotAllowedException("You can't delete this pharmacy medicine because it has unhandled reservations.");
+        repository.deleteById(pharmacyMedicinesId);
+    }
 }
