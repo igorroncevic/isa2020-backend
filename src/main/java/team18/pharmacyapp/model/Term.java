@@ -53,6 +53,9 @@ public class Term {
     @OneToOne(cascade = CascadeType.ALL)
     private Report report;
 
+    @Column(nullable = false)
+    private boolean completed = false;
+
     @Version
     private Long version = 0L;
 }

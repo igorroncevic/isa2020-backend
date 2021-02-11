@@ -139,7 +139,7 @@ public class CounselingServiceImpl implements CounselingService {
         UUID id = UUID.randomUUID();
         Doctor doctor = new Doctor();
         doctor.setId(term.getDoctorId());
-        Term counseling = new Term(id, patient, doctor, term.getFromTime(), term.getToTime(), 10, TermType.counseling, null, 0L);
+        Term counseling = new Term(id, patient, doctor, term.getFromTime(), term.getToTime(), 10, TermType.counseling, null, false, 0L);
         counseling = counselingRepository.save(counseling);
         //int retVal = counselingRepository.patientScheduleCounseling(id, term.getPatientId(),
                 //term.getDoctorId(), term.getFromTime(), term.getToTime());

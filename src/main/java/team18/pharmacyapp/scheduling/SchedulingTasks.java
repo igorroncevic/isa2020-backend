@@ -8,11 +8,11 @@ import org.springframework.transaction.annotation.Transactional;
 import team18.pharmacyapp.model.Term;
 import team18.pharmacyapp.model.medicine.ReservedMedicines;
 import team18.pharmacyapp.model.users.Patient;
-import team18.pharmacyapp.repository.CheckupRepository;
 import team18.pharmacyapp.repository.MedicineRepository;
+import team18.pharmacyapp.repository.ReservedMedicinesRepository;
+import team18.pharmacyapp.repository.TermRepository;
 import team18.pharmacyapp.repository.users.PatientRepository;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -21,31 +21,33 @@ import java.util.List;
 public class SchedulingTasks {
     private final MedicineRepository medicineRepository;
     private final PatientRepository patientRepository;
-    private final CheckupRepository checkupRepository;
+    private final TermRepository termRepository;
+    private final ReservedMedicinesRepository reservedMedicinesRepository;
 
     @Autowired
-    public SchedulingTasks(MedicineRepository medicineRepository, PatientRepository patientRepository, CheckupRepository checkupRepository) {
+    public SchedulingTasks(MedicineRepository medicineRepository, PatientRepository patientRepository, TermRepository termRepository, ReservedMedicinesRepository reservedMedicinesRepository) {
         this.medicineRepository = medicineRepository;
         this.patientRepository = patientRepository;
-        this.checkupRepository = checkupRepository;
+        this.termRepository = termRepository;
+        this.reservedMedicinesRepository = reservedMedicinesRepository;
     }
 
-    // U ponoc svakog dana
     @Transactional
     @Scheduled(cron = "@daily")
-    // @Scheduled(cron="*/10 * * * * ?") // Test with this one
     public void addPenaltyForNotPickingUpReservedMedicines() {
         log.info("Starting Cron Task - Checking if Patient's need to get penalties for not picking up reserved medicines.");
-        List<ReservedMedicines> reservations = medicineRepository.findAllReservedMedicines();
+        List<ReservedMedicines> reservations = medicineRepository.findAllNonHandledReservedMedicines(new Date());
 
         int addedPenalties = 0;
 
         Date todaysDate = new Date();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
         for (ReservedMedicines reservation : reservations) {
-            if (sdf.format(todaysDate).equals(sdf.format(reservation.getPickupDate()))) {
+            if (todaysDate.after(reservation.getPickupDate())) {
                 int addedPenalty = patientRepository.addPenalty(reservation.getPatient().getId());
                 addedPenalties++;
+
+                reservation.setHandled(true);
+                reservedMedicinesRepository.save(reservation);
             }
         }
 
@@ -53,10 +55,10 @@ public class SchedulingTasks {
     }
 
     @Transactional
-    @Scheduled(cron = "@hourly")
+    @Scheduled(cron = "@daily")
     public void addPenaltyForNotComingToTerm() {
         log.info("Starting Cron Task - Checking if Patient's need to get penalties for not showing up to a term.");
-        List<Term> terms = checkupRepository.findAllWithPatients();
+        List<Term> terms = termRepository.findAllWithPatients(new Date());
 
         int addedPenalties = 0;
 
@@ -66,13 +68,15 @@ public class SchedulingTasks {
             if (term.getEndTime().before(currentTime)) {
                 int addedPenalty = patientRepository.addPenalty(term.getPatient().getId());
                 addedPenalties++;
+
+                term.setCompleted(true);
+                termRepository.save(term);
             }
         }
 
         log.info("Finishing Cron Task - " + addedPenalties + " total patients received penalties.");
     }
 
-    // U ponoc svakog prvog u mjesecu
     @Scheduled(cron = "@monthly")
     public void resetPatientPenalties() {
         log.info("Starting Cron Task - Checking if Patient's need to get penalties.");
