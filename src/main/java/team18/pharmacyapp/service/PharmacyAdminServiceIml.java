@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import team18.pharmacyapp.model.Address;
 import team18.pharmacyapp.model.Pharmacy;
 import team18.pharmacyapp.model.dtos.PharmacyAdminDTO;
-import team18.pharmacyapp.model.dtos.PharmacyAdminInfoDTO;
+import team18.pharmacyapp.model.dtos.UserInfoDTO;
 import team18.pharmacyapp.model.enums.UserRole;
 import team18.pharmacyapp.model.users.PharmacyAdmin;
 import team18.pharmacyapp.repository.AddressRepository;
@@ -33,17 +33,17 @@ public class PharmacyAdminServiceIml implements PharmacyAdminService {
     }
 
     @Override
-    public PharmacyAdminInfoDTO getInfoById(UUID id) {
+    public UserInfoDTO getInfoById(UUID id) {
         PharmacyAdmin pharmacyAdmin = pharmacyAdminRepository.findById(id).orElse(null);
-        PharmacyAdminInfoDTO pharmacyAdminInfoDTO = new PharmacyAdminInfoDTO(pharmacyAdmin.getId(), pharmacyAdmin.getName(),
+        UserInfoDTO pharmacyAdminInfoDTO = new UserInfoDTO(pharmacyAdmin.getId(), pharmacyAdmin.getName(),
                 pharmacyAdmin.getSurname(), pharmacyAdmin.getEmail(), pharmacyAdmin.getPhoneNumber());
         return pharmacyAdminInfoDTO;
     }
 
     @Override
-    public PharmacyAdminInfoDTO update(PharmacyAdmin pharmacyAdmin) {
+    public UserInfoDTO update(PharmacyAdmin pharmacyAdmin) {
         pharmacyAdmin = pharmacyAdminRepository.save(pharmacyAdmin);
-        PharmacyAdminInfoDTO pharmacyAdminInfoDTO = new PharmacyAdminInfoDTO(pharmacyAdmin.getId(), pharmacyAdmin.getName(),
+        UserInfoDTO pharmacyAdminInfoDTO = new UserInfoDTO(pharmacyAdmin.getId(), pharmacyAdmin.getName(),
                 pharmacyAdmin.getSurname(), pharmacyAdmin.getEmail(), pharmacyAdmin.getPhoneNumber());
         return pharmacyAdminInfoDTO;
     }

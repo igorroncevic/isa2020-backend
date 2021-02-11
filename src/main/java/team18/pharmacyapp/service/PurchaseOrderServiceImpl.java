@@ -1,15 +1,10 @@
 package team18.pharmacyapp.service;
 
-import com.sun.jdi.InternalException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import team18.pharmacyapp.model.PurchaseOrder;
-import team18.pharmacyapp.model.dtos.NewPurchaseOrderDTO;
-import team18.pharmacyapp.model.dtos.PharmacyAdminInfoDTO;
-import team18.pharmacyapp.model.dtos.PurchaseOrderDTO;
-import team18.pharmacyapp.model.dtos.PurchaseOrderMedicineDTO;
-import team18.pharmacyapp.model.exceptions.BadTimeRangeException;
-import team18.pharmacyapp.model.exceptions.EntityNotFoundException;
+import team18.pharmacyapp.model.SupplierPurchaseOrder;
+import team18.pharmacyapp.model.dtos.*;
 import team18.pharmacyapp.model.exceptions.FailedToSaveException;
 import team18.pharmacyapp.model.medicine.PurchaseOrderMedicine;
 import team18.pharmacyapp.repository.PurchaseOrderRepository;
@@ -34,7 +29,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         List<PurchaseOrder> purchaseOrders = purchaseOrderRepository.getPharmacyPurchaseOrders(pharmacyId);
         List<PurchaseOrderDTO> purchaseOrderDTOs = new ArrayList<>();
         for(PurchaseOrder purchaseOrder : purchaseOrders) {
-            PharmacyAdminInfoDTO pharmacyAdminInfoDTO = new PharmacyAdminInfoDTO(purchaseOrder.getPharmacyAdmin().getId(),
+            UserInfoDTO pharmacyAdminInfoDTO = new UserInfoDTO(purchaseOrder.getPharmacyAdmin().getId(),
                     purchaseOrder.getPharmacyAdmin().getName(), purchaseOrder.getPharmacyAdmin().getSurname(),
                     purchaseOrder.getPharmacyAdmin().getEmail(), purchaseOrder.getPharmacyAdmin().getPhoneNumber());
             List<PurchaseOrderMedicine> purchaseOrderMedicines = purchaseOrderRepository.getPurchaseOrderMedicines(purchaseOrder.getId());
@@ -68,7 +63,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 
         PurchaseOrder purchaseOrder = purchaseOrderRepository.getPurchaseOrderById(orderId);
 
-        PharmacyAdminInfoDTO pharmacyAdminInfoDTO = new PharmacyAdminInfoDTO(purchaseOrder.getPharmacyAdmin().getId(),
+        UserInfoDTO pharmacyAdminInfoDTO = new UserInfoDTO(purchaseOrder.getPharmacyAdmin().getId(),
                 purchaseOrder.getPharmacyAdmin().getName(), purchaseOrder.getPharmacyAdmin().getSurname(),
                 purchaseOrder.getPharmacyAdmin().getEmail(), purchaseOrder.getPharmacyAdmin().getPhoneNumber());
         List<PurchaseOrderMedicine> purchaseOrderMedicines = purchaseOrder.getPurchaseOrderMedicines();
@@ -82,6 +77,19 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
                 purchaseOrder.getEndDate(), purchaseOrderMedicineDTOs);
 
         return purchaseOrderDTO;
+    }
+
+    @Override
+    public List<PurchaseOrderOfferDTO> getAllOffersForOrder(UUID id) {
+        List<SupplierPurchaseOrder> supplierPurchaseOrders = purchaseOrderRepository.getAllOffersForOrder(id);
+        List<PurchaseOrderOfferDTO> purchaseOrderOfferDTOs = new ArrayList<>();
+        for(SupplierPurchaseOrder supplierPurchaseOrder : supplierPurchaseOrders) {
+            UserInfoDTO userInfoDTO = new UserInfoDTO(supplierPurchaseOrder.getSupplier().getId(), supplierPurchaseOrder.getSupplier().getName(),
+                    supplierPurchaseOrder.getSupplier().getSurname(), supplierPurchaseOrder.getSupplier().getEmail(), supplierPurchaseOrder.getSupplier().getPhoneNumber());
+            PurchaseOrderOfferDTO purchaseOrderOfferDTO = new PurchaseOrderOfferDTO(userInfoDTO, supplierPurchaseOrder.getDeliveryDate(), supplierPurchaseOrder.getPrice());
+            purchaseOrderOfferDTOs.add(purchaseOrderOfferDTO);
+        }
+        return purchaseOrderOfferDTOs;
     }
 
 }

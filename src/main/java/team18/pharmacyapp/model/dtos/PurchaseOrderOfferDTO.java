@@ -7,20 +7,16 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class PurchaseOrderDTO {
+public class PurchaseOrderOfferDTO {
 
-    UUID id;
-    UserInfoDTO pharmacyAdmin;
+    UserInfoDTO supplier;
     @JsonFormat(pattern="yyyy-MM-dd")
-    LocalDate endDate;
-    List<PurchaseOrderMedicineDTO> medicines;
+    LocalDate deliveryDate;
+    double price;
 
 }

@@ -6,8 +6,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import team18.pharmacyapp.model.dtos.NewPurchaseOrderDTO;
 import team18.pharmacyapp.model.dtos.PurchaseOrderDTO;
+import team18.pharmacyapp.model.dtos.PurchaseOrderOfferDTO;
 import team18.pharmacyapp.model.exceptions.FailedToSaveException;
 import team18.pharmacyapp.service.interfaces.PurchaseOrderService;
+
+import java.util.List;
+import java.util.UUID;
 
 @CrossOrigin(origins = {"http://localhost:8080", "http://localhost:8081"})
 @RestController
@@ -30,5 +34,11 @@ public class PurchaseOrderController {
             return new ResponseEntity(null, HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity(purchaseOrderDTO, HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}/offers")
+    public ResponseEntity<List<PurchaseOrderOfferDTO>> getAllOffersForOrder(@PathVariable UUID id) {
+        List<PurchaseOrderOfferDTO> purchaseOrderOfferDTOS = purchaseOrderService.getAllOffersForOrder(id);
+        return new ResponseEntity<>(purchaseOrderOfferDTOS, HttpStatus.OK);
     }
 }

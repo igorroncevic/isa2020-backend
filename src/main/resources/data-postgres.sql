@@ -407,7 +407,7 @@ values('25fff0b2-ad45-4310-ac7f-96bcc5e517c1', '11cc4eb4-6113-4a7b-b466-758aa35d
 
 -- Purchase orders
 insert into purchase_order(id, end_date, pharmacy_admin_id)
-values('ebd0e0f2-7e6c-4c3d-9062-3751cde8a116', '2021-03-01 12:00:00', '40c88a70-d8cd-4d8f-b56f-eb158f7c27fa');
+values('ebd0e0f2-7e6c-4c3d-9062-3751cde8a116', '2021-01-10', '40c88a70-d8cd-4d8f-b56f-eb158f7c27fa');
 
 -- Purchase order medicine
 insert into purchase_order_medicine(purchase_order_id, medicine_id, quantity)
@@ -420,3 +420,34 @@ insert into purchase_order_medicine(purchase_order_id, medicine_id, quantity)
 values('ebd0e0f2-7e6c-4c3d-9062-3751cde8a116', '32636111-4bc6-424c-a200-067e7f8a9386', 15);
 insert into purchase_order_medicine(purchase_order_id, medicine_id, quantity)
 values('ebd0e0f2-7e6c-4c3d-9062-3751cde8a116', '659d0931-63d9-4ef6-bbc4-abdeb4a99539', 15);
+
+--Supplier medicine
+insert into supplier_medicine(supplier_id, medicine_id, quantity)
+values('b861fa5d-e543-4c61-adac-0c3f27bc32a0', '7571786b-2fc5-4756-ab5c-1f4af756e6f2', 99);
+insert into supplier_medicine(supplier_id, medicine_id, quantity)
+values('b861fa5d-e543-4c61-adac-0c3f27bc32a0', '592e558c-b3f9-4088-b468-28764908bd92', 99);
+insert into supplier_medicine(supplier_id, medicine_id, quantity)
+values('b861fa5d-e543-4c61-adac-0c3f27bc32a0', '3163f62a-5b88-4295-854c-c9400e19089f', 99);
+insert into supplier_medicine(supplier_id, medicine_id, quantity)
+values('b861fa5d-e543-4c61-adac-0c3f27bc32a0', '32636111-4bc6-424c-a200-067e7f8a9386', 99);
+insert into supplier_medicine(supplier_id, medicine_id, quantity)
+values('b861fa5d-e543-4c61-adac-0c3f27bc32a0', '659d0931-63d9-4ef6-bbc4-abdeb4a99539', 99);
+
+insert into supplier_medicine(supplier_id, medicine_id, quantity)
+values('6dbd78ec-c0c7-403a-b1d0-bea63b5a1981', '7571786b-2fc5-4756-ab5c-1f4af756e6f2', 99);
+insert into supplier_medicine(supplier_id, medicine_id, quantity)
+values('6dbd78ec-c0c7-403a-b1d0-bea63b5a1981', '592e558c-b3f9-4088-b468-28764908bd92', 99);
+insert into supplier_medicine(supplier_id, medicine_id, quantity)
+values('6dbd78ec-c0c7-403a-b1d0-bea63b5a1981', '3163f62a-5b88-4295-854c-c9400e19089f', 99);
+insert into supplier_medicine(supplier_id, medicine_id, quantity)
+values('6dbd78ec-c0c7-403a-b1d0-bea63b5a1981', '32636111-4bc6-424c-a200-067e7f8a9386', 99);
+insert into supplier_medicine(supplier_id, medicine_id, quantity)
+values('6dbd78ec-c0c7-403a-b1d0-bea63b5a1981', '659d0931-63d9-4ef6-bbc4-abdeb4a99539', 99);
+
+-- Supplier offers
+insert into supplier_purchase_order(supplier_id, purchase_order_id, price, delivery_date)
+values('b861fa5d-e543-4c61-adac-0c3f27bc32a0', 'ebd0e0f2-7e6c-4c3d-9062-3751cde8a116', 120, '2021-03-07');
+insert into supplier_purchase_order(supplier_id, purchase_order_id, price, delivery_date)
+values('6dbd78ec-c0c7-403a-b1d0-bea63b5a1981', 'ebd0e0f2-7e6c-4c3d-9062-3751cde8a116', 160, '2021-03-15');
+
+

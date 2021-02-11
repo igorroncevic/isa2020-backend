@@ -8,6 +8,7 @@ import team18.pharmacyapp.model.medicine.PurchaseOrderMedicine;
 import team18.pharmacyapp.model.users.PharmacyAdmin;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -29,7 +30,7 @@ public class PurchaseOrder {
     private PharmacyAdmin pharmacyAdmin;
 
     @Column(nullable = false)
-    private Date endDate;
+    private LocalDate endDate;
 
     @OneToMany(mappedBy = "purchaseOrder", cascade = CascadeType.ALL)
     private List<PurchaseOrderMedicine> purchaseOrderMedicines;

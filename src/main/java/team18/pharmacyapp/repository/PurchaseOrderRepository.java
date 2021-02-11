@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 import team18.pharmacyapp.model.PurchaseOrder;
+import team18.pharmacyapp.model.SupplierPurchaseOrder;
 import team18.pharmacyapp.model.Term;
 import team18.pharmacyapp.model.medicine.PurchaseOrderMedicine;
 
@@ -36,5 +37,8 @@ public interface PurchaseOrderRepository extends JpaRepository<PurchaseOrder, UU
     @Query(nativeQuery = true, value = "INSERT INTO purchase_order_medicine(purchase_order_id, medicine_id, quantity)" +
             "VALUES(:orderId, :medicineId, :quantity)")
     int insertPurchaseOrderMedicine(UUID orderId, UUID medicineId, int quantity);
+
+    @Query("SELECT spo FROM supplier_purchase_order spo JOIN FETCH spo.purchaseOrder JOIN FETCH spo.supplier WHERE spo.purchaseOrder.id = :id ")
+    List<SupplierPurchaseOrder> getAllOffersForOrder(UUID id);
 
 }
