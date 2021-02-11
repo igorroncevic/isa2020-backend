@@ -1,15 +1,19 @@
 package team18.pharmacyapp.service;
 
+import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import team18.pharmacyapp.model.PurchaseOrder;
 import team18.pharmacyapp.model.SupplierPurchaseOrder;
 import team18.pharmacyapp.model.dtos.*;
+import team18.pharmacyapp.model.exceptions.ActionNotAllowedException;
 import team18.pharmacyapp.model.exceptions.FailedToSaveException;
 import team18.pharmacyapp.model.medicine.PurchaseOrderMedicine;
 import team18.pharmacyapp.repository.PurchaseOrderRepository;
 import team18.pharmacyapp.service.interfaces.PurchaseOrderService;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -90,6 +94,33 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
             purchaseOrderOfferDTOs.add(purchaseOrderOfferDTO);
         }
         return purchaseOrderOfferDTOs;
+    }
+
+    @Override
+    public void acceptOffer(UUID orderId, UUID supplierId, UUID phadminId) throws ActionNotAllowedException, FailedToSaveException {
+        PurchaseOrder purchaseOrder = purchaseOrderRepository.getPurchaseOrderById(orderId);
+        if(LocalDate.now().isBefore(purchaseOrder.getEndDate())) {
+            throw new ActionNotAllowedException("You can't accept offers for order that is still open.");
+        } else if(!purchaseOrder.getPharmacyAdmin().getId().equals(phadminId)) {
+            throw new ActionNotAllowedException("You can't accept offers created by other pharmacy admins.");
+        }
+
+        int rowsChanged = purchaseOrderRepository.acceptOffer(orderId, supplierId);
+        if(rowsChanged != 1)
+            throw new FailedToSaveException("Failed to accept offer");
+
+        List<PurchaseOrderMedicine> purchaseOrderMedicines = purchaseOrderRepository.getPurchaseOrderMedicines(orderId);
+        UUID pharmacyId = purchaseOrder.getPharmacyAdmin().getPharmacy().getId();
+
+        for(PurchaseOrderMedicine purchaseOrderMedicine : purchaseOrderMedicines) {
+            rowsChanged = purchaseOrderRepository.addQuantityToPharmacyMedicine(pharmacyId, purchaseOrderMedicine.getMedicine().getId(), purchaseOrderMedicine.getQuantity());
+            if(rowsChanged != 1)
+                throw new FailedToSaveException("Failed to increase pharmacy medicine quantity");
+            rowsChanged = purchaseOrderRepository.subtractQuantityFromSupplierMedicine(supplierId, purchaseOrderMedicine.getMedicine().getId(), purchaseOrderMedicine.getQuantity());
+            if(rowsChanged != 1)
+                throw new FailedToSaveException("Failed to decrease quantity of supplier medicine");
+        }
+
     }
 
 }

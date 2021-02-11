@@ -445,9 +445,9 @@ insert into supplier_medicine(supplier_id, medicine_id, quantity)
 values('6dbd78ec-c0c7-403a-b1d0-bea63b5a1981', '659d0931-63d9-4ef6-bbc4-abdeb4a99539', 99);
 
 -- Supplier offers
-insert into supplier_purchase_order(supplier_id, purchase_order_id, price, delivery_date)
-values('b861fa5d-e543-4c61-adac-0c3f27bc32a0', 'ebd0e0f2-7e6c-4c3d-9062-3751cde8a116', 120, '2021-03-07');
-insert into supplier_purchase_order(supplier_id, purchase_order_id, price, delivery_date)
-values('6dbd78ec-c0c7-403a-b1d0-bea63b5a1981', 'ebd0e0f2-7e6c-4c3d-9062-3751cde8a116', 160, '2021-03-15');
+insert into supplier_purchase_order(supplier_id, purchase_order_id, price, delivery_date, accepted)
+values('b861fa5d-e543-4c61-adac-0c3f27bc32a0', 'ebd0e0f2-7e6c-4c3d-9062-3751cde8a116', 120, '2021-03-07', false);
+insert into supplier_purchase_order(supplier_id, purchase_order_id, price, delivery_date, accepted)
+values('6dbd78ec-c0c7-403a-b1d0-bea63b5a1981', 'ebd0e0f2-7e6c-4c3d-9062-3751cde8a116', 160, '2021-03-15', false);
 
 

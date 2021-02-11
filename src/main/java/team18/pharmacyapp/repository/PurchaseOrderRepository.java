@@ -41,4 +41,19 @@ public interface PurchaseOrderRepository extends JpaRepository<PurchaseOrder, UU
     @Query("SELECT spo FROM supplier_purchase_order spo JOIN FETCH spo.purchaseOrder JOIN FETCH spo.supplier WHERE spo.purchaseOrder.id = :id ")
     List<SupplierPurchaseOrder> getAllOffersForOrder(UUID id);
 
+    @Transactional
+    @Modifying
+    @Query(nativeQuery = true, value = "UPDATE supplier_purchase_order SET accepted = true WHERE purchase_order_id=:orderId and supplier_id=:supplierId")
+    int acceptOffer(UUID orderId, UUID supplierId);
+
+    @Transactional
+    @Modifying
+    @Query(nativeQuery = true, value = "UPDATE pharmacy_medicines SET quantity = quantity + :quantity WHERE pharmacy_id=:pharmacyId AND medicine_id=:medicineId")
+    int addQuantityToPharmacyMedicine(UUID pharmacyId, UUID medicineId, int quantity);
+
+    @Transactional
+    @Modifying
+    @Query(nativeQuery = true, value = "UPDATE supplier_medicine SET quantity = quantity - :quantity WHERE supplier_id=:supplierId AND medicine_id=:medicineId")
+    int subtractQuantityFromSupplierMedicine(UUID supplierId, UUID medicineId, int quantity);
+
 }

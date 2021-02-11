@@ -23,5 +23,4 @@ public class PurchaseOrderMedicine {
 
     @Column(nullable = false)
     private int quantity;
-
 }

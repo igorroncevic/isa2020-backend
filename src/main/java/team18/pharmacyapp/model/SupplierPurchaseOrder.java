@@ -26,5 +26,7 @@ public class SupplierPurchaseOrder {
     private double price;
     @Column(nullable = false)
     private LocalDate deliveryDate;
+    @Column(nullable = false)
+    private boolean accepted;
 
 }
