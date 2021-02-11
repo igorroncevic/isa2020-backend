@@ -10,6 +10,7 @@ import team18.pharmacyapp.model.dtos.*;
 import team18.pharmacyapp.model.exceptions.ActionNotAllowedException;
 import team18.pharmacyapp.model.exceptions.FailedToSaveException;
 import team18.pharmacyapp.model.medicine.PurchaseOrderMedicine;
+import team18.pharmacyapp.repository.PharmacyMedicinesRepository;
 import team18.pharmacyapp.repository.PurchaseOrderRepository;
 import team18.pharmacyapp.service.interfaces.PurchaseOrderService;
 
@@ -22,10 +23,12 @@ import java.util.UUID;
 public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 
     private final PurchaseOrderRepository purchaseOrderRepository;
+    private final PharmacyMedicinesRepository pharmacyMedicinesRepository;
 
     @Autowired
-    public PurchaseOrderServiceImpl(PurchaseOrderRepository purchaseOrderRepository) {
+    public PurchaseOrderServiceImpl(PurchaseOrderRepository purchaseOrderRepository, PharmacyMedicinesRepository pharmacyMedicinesRepository) {
         this.purchaseOrderRepository = purchaseOrderRepository;
+        this.pharmacyMedicinesRepository = pharmacyMedicinesRepository;
     }
 
     @Override
@@ -67,15 +70,22 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 
         PurchaseOrder purchaseOrder = purchaseOrderRepository.getPurchaseOrderById(orderId);
 
+        UUID pharmacyId = purchaseOrder.getPharmacyAdmin().getPharmacy().getId();
+        List<String> pharmacyMedicineIds = purchaseOrderRepository.getPharmacyMedicineUUIDs(pharmacyId);
+
         UserInfoDTO pharmacyAdminInfoDTO = new UserInfoDTO(purchaseOrder.getPharmacyAdmin().getId(),
                 purchaseOrder.getPharmacyAdmin().getName(), purchaseOrder.getPharmacyAdmin().getSurname(),
                 purchaseOrder.getPharmacyAdmin().getEmail(), purchaseOrder.getPharmacyAdmin().getPhoneNumber());
         List<PurchaseOrderMedicine> purchaseOrderMedicines = purchaseOrder.getPurchaseOrderMedicines();
         List<PurchaseOrderMedicineDTO> purchaseOrderMedicineDTOs = new ArrayList<>();
         for(PurchaseOrderMedicine purchaseOrderMedicine : purchaseOrderMedicines) {
+
             PurchaseOrderMedicineDTO purchaseOrderMedicineDTO = new PurchaseOrderMedicineDTO(purchaseOrderMedicine.getMedicine().getId(),
                     purchaseOrderMedicine.getMedicine().getName(), purchaseOrderMedicine.getQuantity());
             purchaseOrderMedicineDTOs.add(purchaseOrderMedicineDTO);
+            if(!pharmacyMedicineIds.contains(purchaseOrderMedicine.getMedicine().getId().toString())) {
+                pharmacyMedicinesRepository.insert(pharmacyId, purchaseOrderMedicine.getMedicine().getId());
+            }
         }
         PurchaseOrderDTO purchaseOrderDTO = new PurchaseOrderDTO(purchaseOrder.getId(), pharmacyAdminInfoDTO,
                 purchaseOrder.getEndDate(), purchaseOrderMedicineDTOs);

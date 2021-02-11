@@ -292,8 +292,6 @@ values ('e93cab4a-f007-412c-b631-7a9a5ee2c6ed', '592e558c-b3f9-4088-b468-2876490
 insert into pharmacy_medicines (pharmacy_id, medicine_id, quantity, version)
 values ('e93cab4a-f007-412c-b631-7a9a5ee2c6ed', '3163f62a-5b88-4295-854c-c9400e19089f', 15, 1);
 insert into pharmacy_medicines (pharmacy_id, medicine_id, quantity, version)
-values ('e93cab4a-f007-412c-b631-7a9a5ee2c6ed', '32636111-4bc6-424c-a200-067e7f8a9386', 23, 1);
-insert into pharmacy_medicines (pharmacy_id, medicine_id, quantity, version)
 values ('e93cab4a-f007-412c-b631-7a9a5ee2c6ed', '659d0931-63d9-4ef6-bbc4-abdeb4a99539', 44, 1);
 
 -- Cijenovnici
@@ -310,8 +308,6 @@ insert into pricings (id, start_date, end_date, price, pharmacy_medicine_pharmac
 values ('9524e1dd-a31d-4365-abd6-cf7b8b6dcdb3', '2021-01-01', '2022-01-01', 19, 'e93cab4a-f007-412c-b631-7a9a5ee2c6ed', '7571786b-2fc5-4756-ab5c-1f4af756e6f2');
 insert into pricings (id, start_date, end_date, price, pharmacy_medicine_pharmacy_id, pharmacy_medicine_medicine_id)
 values ('7fb749b2-ca20-429e-be68-1cd7381ce7a7', '2021-01-01', '2022-01-01', 10, 'e93cab4a-f007-412c-b631-7a9a5ee2c6ed', '592e558c-b3f9-4088-b468-28764908bd92');
-insert into pricings (id, start_date, end_date, price, pharmacy_medicine_pharmacy_id, pharmacy_medicine_medicine_id)
-values ('3aac2730-6537-41a8-b7b3-548d42fdeb7f', '2021-01-01', '2022-01-01', 15, 'e93cab4a-f007-412c-b631-7a9a5ee2c6ed', '32636111-4bc6-424c-a200-067e7f8a9386');
 insert into pricings (id, start_date, end_date, price, pharmacy_medicine_pharmacy_id, pharmacy_medicine_medicine_id)
 values ('7d980093-7952-46d6-b1e8-c44451ae571d', '2019-01-01', '2019-12-31', 25, 'e93cab4a-f007-412c-b631-7a9a5ee2c6ed', '659d0931-63d9-4ef6-bbc4-abdeb4a99539');
 insert into pricings (id, start_date, end_date, price, pharmacy_medicine_pharmacy_id, pharmacy_medicine_medicine_id)

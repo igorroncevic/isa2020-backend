@@ -56,4 +56,9 @@ public interface PurchaseOrderRepository extends JpaRepository<PurchaseOrder, UU
     @Query(nativeQuery = true, value = "UPDATE supplier_medicine SET quantity = quantity - :quantity WHERE supplier_id=:supplierId AND medicine_id=:medicineId")
     int subtractQuantityFromSupplierMedicine(UUID supplierId, UUID medicineId, int quantity);
 
+    @Query(nativeQuery = true, value = "SELECT CAST(medicine_id as VARCHAR )medicine_id FROM pharmacy_medicines WHERE pharmacy_id = :pharmacyId")
+    List<String> getPharmacyMedicineUUIDs(UUID pharmacyId);
+
+
+
 }
