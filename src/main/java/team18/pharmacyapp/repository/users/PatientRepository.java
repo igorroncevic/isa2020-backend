@@ -51,4 +51,5 @@ public interface PatientRepository extends JpaRepository<Patient, UUID> {
     @Transactional(readOnly = true)
     @Query("SELECT p.penalties FROM patient p WHERE p.id = :patientId")
     int getPatientPenalties(@Param("patientId") UUID patientId);
+
 }

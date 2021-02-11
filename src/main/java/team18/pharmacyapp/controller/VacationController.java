@@ -3,6 +3,7 @@ package team18.pharmacyapp.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import team18.pharmacyapp.model.Vacation;
 import team18.pharmacyapp.model.dtos.RefuseVacationDTO;
@@ -28,11 +29,12 @@ public class VacationController {
         this.vacationService = vacationService;
     }
 
+    @PreAuthorize("hasRole('ROLE_DERMATOLOGIST') || hasRole('ROLE_PHARMACIST')")
     @PostMapping
     public ResponseEntity<Vacation> createVacationRequest(@RequestBody VacationRequestDTO dto){
         Vacation v=vacationService.create(dto);
         if(v!=null){
-            return new ResponseEntity<>(v,HttpStatus.CREATED);
+            return new ResponseEntity<>(HttpStatus.CREATED);
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }

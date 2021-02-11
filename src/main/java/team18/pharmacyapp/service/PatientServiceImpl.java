@@ -19,8 +19,8 @@ import team18.pharmacyapp.model.users.RegisteredUser;
 import team18.pharmacyapp.repository.AddressRepository;
 import team18.pharmacyapp.repository.LoyaltyRepository;
 import team18.pharmacyapp.repository.MedicineRepository;
-import team18.pharmacyapp.repository.UserRepository;
 import team18.pharmacyapp.repository.users.PatientRepository;
+import team18.pharmacyapp.repository.users.RegisteredUserRepository;
 import team18.pharmacyapp.service.interfaces.EmailService;
 import team18.pharmacyapp.service.interfaces.LoyaltyService;
 import team18.pharmacyapp.service.interfaces.PatientService;
@@ -36,13 +36,13 @@ public class PatientServiceImpl implements PatientService {
     private final AddressRepository addressRepository;
     private final LoyaltyService loyaltyService;
     private final EmailService emailService;
-    private final UserRepository userRepository;
+    private final RegisteredUserRepository userRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
 
     @Autowired
-    public PatientServiceImpl(PatientRepository patientRepository, MedicineRepository medicineRepository, AddressRepository addressRepository, LoyaltyRepository loyaltyRepository, EmailService emailService, UserRepository userRepository){
+    public PatientServiceImpl(PatientRepository patientRepository, MedicineRepository medicineRepository, AddressRepository addressRepository, LoyaltyRepository loyaltyRepository, EmailService emailService, RegisteredUserRepository userRepository, PasswordEncoder passwordEncoder){
         this.patientRepository = patientRepository;
         this.medicineRepository = medicineRepository;
         this.addressRepository = addressRepository;
@@ -97,7 +97,7 @@ public class PatientServiceImpl implements PatientService {
         if(!patient.getPhoneNumber().equals("")) pat.setPhoneNumber(patient.getPhoneNumber());
         if(!patient.getNewPassword().equals("")) pat.setPassword(passwordEncoder.encode(patient.getNewPassword()));
 
-        patientRepository.save(pat);
+        pat=patientRepository.save(pat);
         RegisteredUser user = updateUser(pat.getName(), pat.getSurname(), pat.getPhoneNumber(), pat.getPassword(), pat.getId());
 
         return true;
@@ -149,17 +149,19 @@ public class PatientServiceImpl implements PatientService {
         return newPatient;
     }
 
-    @Transactional
     @Override
     public RegisteredUser updateUser(String name, String surname, String phone, String password, UUID id) {
-        RegisteredUser forUpdate = userRepository.getOne(id);
-        if(name != "") forUpdate.setName(name);
-        if(surname != "") forUpdate.setSurname(surname);
-        if(phone != "") forUpdate.setPhoneNumber(phone);
-        if(password != "") forUpdate.setPassword(password);
+        RegisteredUser forUpdate = userRepository.findById(id).orElse(null);
+        System.out.println(forUpdate.getEmail());
+        System.out.println(password);
+        if(!name.equals("")) forUpdate.setName(name);
+        if(!surname.equals("")) forUpdate.setSurname(surname);
+        if(!phone.equals("")) forUpdate.setPhoneNumber(phone);
+        if(!password.equals("")) {
+            forUpdate.setPassword(password);
+        }
 
-        forUpdate = userRepository.save(forUpdate);
-
+        userRepository.saveAndFlush(forUpdate);
         return forUpdate;
     }
 

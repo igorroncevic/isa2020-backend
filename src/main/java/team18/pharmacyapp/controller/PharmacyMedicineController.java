@@ -1,21 +1,15 @@
 package team18.pharmacyapp.controller;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import team18.pharmacyapp.model.Pharmacy;
-import team18.pharmacyapp.model.Term;
 import team18.pharmacyapp.model.dtos.AddPharmacyMedicineDTO;
 import team18.pharmacyapp.model.dtos.MedicineQuantityDTO;
-import team18.pharmacyapp.model.dtos.MedicineIdNameDTO;
 import team18.pharmacyapp.model.dtos.ReportMedicineDTO;
-import team18.pharmacyapp.model.dtos.ScheduleCheckupDTO;
 import team18.pharmacyapp.model.exceptions.ActionNotAllowedException;
 import team18.pharmacyapp.model.keys.PharmacyMedicinesId;
-import team18.pharmacyapp.model.medicine.Medicine;
-import team18.pharmacyapp.model.medicine.PharmacyMedicines;
 import team18.pharmacyapp.service.interfaces.PharmacyMedicinesService;
-
 import java.util.List;
 import java.util.UUID;
 
@@ -34,6 +28,7 @@ public class PharmacyMedicineController {
         return medicinesService.medicineQuantity(pharmacyId,medicineId);
     }
 
+    @PreAuthorize("hasRole('ROLE_DERMATOLOGIST') || hasRole('ROLE_PHARMACIST')")
     @PostMapping("availability")
     public String checkavAilability(@RequestBody ReportMedicineDTO dto){
         return medicinesService.checkAvailability(dto);

@@ -48,10 +48,17 @@ public class TermServiceImpl implements TermService {
     }
 
     @Override
-    public List<Term> getAllDoctorTerms(UUID doctorId){
-        List<Term> list=new ArrayList<>();
-        list.addAll(termRepository.findAllFreeTermsForDoctor(doctorId));
-        list.addAll(termRepository.findAllTermsForDoctor(doctorId));
+    public List<DoctorTermDTO> getAllDoctorTerms(UUID doctorId){
+        List<DoctorTermDTO> list=new ArrayList<>();
+        for(Term term:termRepository.findAllFreeTermsForDoctor(doctorId)){
+            list.add(new DoctorTermDTO(term.getId(),term.getStartTime(),term.getEndTime(),term.getType(),null));
+        }
+        for(Term term:termRepository.findAllTermsForDoctor(doctorId)){
+            Patient p=term.getPatient();
+            DoctorsPatientDTO patientDTO=new DoctorsPatientDTO(p.getId(),p.getName(),p.getSurname(),p.getEmail(),p.getPhoneNumber());
+            list.add(new DoctorTermDTO(term.getId(),term.getStartTime(),term.getEndTime(),term.getType(),patientDTO));
+        }
+
         return list;
     }
 
@@ -71,9 +78,14 @@ public class TermServiceImpl implements TermService {
     }
 
     @Override
-    public Term hasPatientHasTermNowWithDoctor(UUID doctorId, UUID patientId) {
+    public DoctorTermDTO hasPatientHasTermNowWithDoctor(UUID doctorId, UUID patientId) {
         Date now =new Date();
-        return termRepository.findTermByDoctorAndPatientAndTime(patientId,doctorId,now);
+        Term t= termRepository.findTermByDoctorAndPatientAndTime(patientId,doctorId,now);
+        if(t!=null){
+            Patient p=t.getPatient();
+            return new DoctorTermDTO(t.getId(),t.getStartTime(),t.getEndTime(),t.getType(),new DoctorsPatientDTO(p.getId(),p.getName(),p.getSurname(),p.getEmail(),p.getPhoneNumber()));
+        }
+        return null;
     }
 
     @Override
@@ -102,7 +114,7 @@ public class TermServiceImpl implements TermService {
 
     @Override
     public boolean isDoctorFree(UUID doctorId,Date startTime,Date endTime){
-        for (Term term : getAllDoctorTerms(doctorId)) {
+        for (DoctorTermDTO term : getAllDoctorTerms(doctorId)) {
             if(DateTimeHelpers.checkIfTimesIntersect(startTime,endTime,term.getStartTime(),term.getEndTime())){
                 return  false;
             }

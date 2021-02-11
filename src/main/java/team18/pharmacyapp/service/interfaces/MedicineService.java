@@ -4,7 +4,7 @@ import team18.pharmacyapp.model.dtos.*;
 import team18.pharmacyapp.model.exceptions.ActionNotAllowedException;
 import team18.pharmacyapp.model.medicine.Medicine;
 import team18.pharmacyapp.model.exceptions.ReserveMedicineException;
-import team18.pharmacyapp.model.medicine.MedicineSpecification;
+
 
 import java.util.List;
 import java.util.UUID;
@@ -39,7 +39,7 @@ public interface MedicineService {
     List<MedicineFilterDTO> filterMedicines(MedicineFilterRequestDTO mfr);
 
 
-    MedicineSpecification getMedicineSpecification(UUID medicineId);
+    MedicineSpecificationDTO getMedicineSpecification(UUID medicineId);
 
     String getReplacmentMedicine(UUID medicineId);
 

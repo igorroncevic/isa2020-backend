@@ -56,4 +56,9 @@ public interface DoctorRepository extends JpaRepository<Doctor, UUID> {
 
     @Query("SELECT p from work_schedule w inner join pharmacy p on w.pharmacy.id=p.id where w.doctor.id=:doctorId")
     List<Pharmacy> getDoctorPharmacyList(UUID doctorId);
+
+    @Query("SELECT p from work_schedule w inner join pharmacy p on w.pharmacy.id=p.id where w.doctor.id=:doctorId")
+    Pharmacy getPharmPharmacy(UUID doctorId);
+
+
 }

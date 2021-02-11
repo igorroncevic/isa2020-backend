@@ -150,8 +150,12 @@ public class CheckupServiceImpl implements CheckupService {
     }
 
     @Override
-    public List<Term> doctorPharmacyFree(UUID doctorId, UUID pharmacyId) {
-        return termRepository.findAllFreeTermsForDoctorInPharmacy(doctorId,pharmacyId);
+    public List<DoctorTermDTO> doctorPharmacyFree(UUID doctorId, UUID pharmacyId) {
+        List<DoctorTermDTO> list=new ArrayList<>();
+        for(Term term:termRepository.findAllFreeTermsForDoctorInPharmacy(doctorId,pharmacyId)){
+            list.add(new DoctorTermDTO(term.getId(),term.getStartTime(),term.getEndTime(),term.getType(),null));
+         }
+        return list;
     }
 
 

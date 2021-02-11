@@ -2,16 +2,21 @@ package team18.pharmacyapp.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import team18.pharmacyapp.helpers.DateTimeHelpers;
 import team18.pharmacyapp.model.Address;
 import team18.pharmacyapp.model.Pharmacy;
+import team18.pharmacyapp.model.WorkSchedule;
 import team18.pharmacyapp.model.dtos.*;
 import team18.pharmacyapp.model.enums.UserRole;
 import team18.pharmacyapp.model.users.Doctor;
 import team18.pharmacyapp.repository.AddressRepository;
+import team18.pharmacyapp.repository.PharmacyRepository;
+import team18.pharmacyapp.repository.WorkScheduleRepository;
 import team18.pharmacyapp.repository.users.DoctorRepository;
 import team18.pharmacyapp.repository.MarkRepository;
 import team18.pharmacyapp.service.interfaces.DoctorService;
 
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -22,13 +27,17 @@ public class DoctorServiceImpl implements DoctorService {
     private final DoctorRepository doctorRepository;
     private final AddressRepository addressRepository;
     private final MarkRepository markRepository;
+    private final WorkScheduleRepository workScheduleRepository;
+    private final PharmacyRepository pharmacyRepository;
 
 
     @Autowired
-    public DoctorServiceImpl(DoctorRepository doctorRepository, AddressRepository addressRepository, MarkRepository markRepository) {
+    public DoctorServiceImpl(DoctorRepository doctorRepository, AddressRepository addressRepository, MarkRepository markRepository, WorkScheduleRepository workScheduleRepository, PharmacyRepository pharmacyRepository) {
         this.doctorRepository = doctorRepository;
         this.addressRepository = addressRepository;
         this.markRepository = markRepository;
+        this.workScheduleRepository = workScheduleRepository;
+        this.pharmacyRepository = pharmacyRepository;
     }
 
 
@@ -77,6 +86,15 @@ public class DoctorServiceImpl implements DoctorService {
     }
 
     @Override
+    public DoctorDTO getDTOyId(UUID id) {
+        Doctor d=getById(id);
+        if(d!=null){
+            return new DoctorDTO(d.getId(),d.getName(),d.getSurname(),d.getEmail(),d.getPhoneNumber(),d.getRole(),null);
+        }
+        return null;
+    }
+
+    @Override
     public Doctor update(Doctor doctor) {
         Doctor doc=getById(doctor.getId());
         if(doc!=null) {
@@ -118,6 +136,35 @@ public class DoctorServiceImpl implements DoctorService {
             ret.add(new PharmacyDTO(pharmacy.getId(),pharmacy.getName(),pharmacy.getAddress().getCountry(),pharmacy.getAddress().getCity(),pharmacy.getAddress().getStreet()));
         }
         return ret;
+    }
+
+    @Override
+    public PharmacyDTO getCurrentPharmacy(UUID doctorId) {
+        List<WorkSchedule> schedules=workScheduleRepository.getDoctorWorkSchedules(doctorId);
+        WorkSchedule workSchedule=null;
+        for(WorkSchedule ws :schedules){
+            Date now =new Date();
+            LocalTime startWorking = DateTimeHelpers.getTimeWithoutDate(ws.getFromHour());
+            LocalTime endWorking =DateTimeHelpers.getTimeWithoutDate(ws.getToHour());
+            LocalTime start =DateTimeHelpers.getTimeWithoutDate(now);
+            if(start.isAfter(startWorking) && start.isBefore(endWorking) && now.after(ws.getFromHour()) && now.before(ws.getToHour())){
+                System.out.println(start);
+                System.out.println(startWorking);
+                System.out.println(endWorking);
+               workSchedule=ws;
+            }
+        }
+        if(workSchedule!=null) {
+            Pharmacy p=workSchedule.getPharmacy();
+            return new PharmacyDTO(p.getId(), p.getName(), p.getAddress().getStreet(), p.getAddress().getCity(), p.getAddress().getCountry());
+        }
+        return null;
+    }
+
+    @Override
+    public PharmacyDTO getPharmacistPharmacy(UUID id) {
+        Pharmacy p=doctorRepository.getPharmPharmacy(id);
+        return new PharmacyDTO(p.getId(), p.getName(), p.getAddress().getStreet(), p.getAddress().getCity(), p.getAddress().getCountry());
     }
 
     public List<DoctorsPatientDTO> findDoctorsPatients(UUID doctorId) {

@@ -44,14 +44,15 @@ public class CheckupController {
         return new ResponseEntity<>(checkups, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ROLE_PHADMIN') || hasRole('ROLE_DERMATOLOGIST') || hasRole('ROLE_PHARMACIST')")
     @GetMapping("/freeCheckups/{doctorId}/{pharmacyId}")
-    public ResponseEntity<List<Term>> getDoctorPharmacyFreeTerms(@PathVariable UUID doctorId,@PathVariable UUID pharmacyId) {
-        List<Term> checkups = checkupService.doctorPharmacyFree(doctorId,pharmacyId);
+    public ResponseEntity<List<DoctorTermDTO>> getDoctorPharmacyFreeTerms(@PathVariable UUID doctorId,@PathVariable UUID pharmacyId) {
+        List<DoctorTermDTO> checkups = checkupService.doctorPharmacyFree(doctorId,pharmacyId);
 
         return new ResponseEntity<>(checkups, HttpStatus.OK);
     }
 
-    @PreAuthorize("hasRole('ROLE_PATIENT')")
+    @PreAuthorize("hasRole('ROLE_PATIENT') || hasRole('ROLE_DERMATOLOGIST') || hasRole('ROLE_PHARMACIST')")
     @GetMapping("/patient/{id}")
     public ResponseEntity<List<TermDTO>> getAllPatientsCheckups(@PathVariable UUID id) {
         List<TermDTO> checkups;
@@ -91,6 +92,7 @@ public class CheckupController {
         return new ResponseEntity<>(checkups, HttpStatus.OK);
     }
 
+    @PreAuthorize(" hasRole('ROLE_DERMATOLOGIST') || hasRole('ROLE_PHARMACIST')")
     @GetMapping(value = "/{id}")
     public ResponseEntity<TermDTO> getCheckup(@PathVariable UUID id) {
         TermDTO checkup = checkupService.findOne(id);
@@ -102,6 +104,7 @@ public class CheckupController {
         return new ResponseEntity<>(checkup, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ROLE_PATIENT') || hasRole('ROLE_DERMATOLOGIST') || hasRole('ROLE_PHARMACIST')")
     @GetMapping(value = "/patientCheckup/{id}")
     public ResponseEntity<DoctorTermDTO> getCheckupFetchPatient(@PathVariable UUID id) {
         DoctorTermDTO checkup = checkupService.findByIdFetchPatint(id);
@@ -113,6 +116,7 @@ public class CheckupController {
         return new ResponseEntity<>(checkup, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ROLE_PATIENT') || hasRole('ROLE_DERMATOLOGIST') || hasRole('ROLE_PHARMACIST')")
     @PostMapping(consumes = "application/json")
     public ResponseEntity<Term> saveCheckup(@RequestBody Term checkup) {
         Term savedCheckup = checkupService.save(checkup);
@@ -136,7 +140,7 @@ public class CheckupController {
         }
     }
 
-    @PreAuthorize("hasRole('ROLE_PATIENT')")
+    @PreAuthorize("hasRole('ROLE_PATIENT') || hasRole('ROLE_DERMATOLOGIST') || hasRole('ROLE_PHARMACIST')")
     @PutMapping(consumes = "application/json", value = "/schedule")
     public ResponseEntity<Void> patientScheduleCheckup(@RequestBody ScheduleCheckupDTO term) {
         boolean success;

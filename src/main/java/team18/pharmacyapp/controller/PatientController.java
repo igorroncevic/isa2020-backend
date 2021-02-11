@@ -85,6 +85,7 @@ public class PatientController {
         return new ResponseEntity<>(res,HttpStatus.BAD_REQUEST);
     }
 
+    @PreAuthorize("hasRole('ROLE_DERMATOLOGIST') || hasRole('ROLE_PHARMACIST') || hasRole('ROLE_PATIENT')")
     @GetMapping("alergicMedicines/{id}")
     public ResponseEntity<List<MedicineIdNameDTO>> getAlergicMedicines(@PathVariable UUID id){
         return new ResponseEntity<>(patientService.getAlergicTo(id),HttpStatus.OK);
