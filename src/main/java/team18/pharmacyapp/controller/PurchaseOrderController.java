@@ -4,8 +4,10 @@ import io.jsonwebtoken.Jwt;
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.OAuth2ResourceServerProperties;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import team18.pharmacyapp.model.dtos.NewPurchaseOrderDTO;
@@ -33,8 +35,11 @@ public class PurchaseOrderController {
         this.tokenUtils = tokenUtils;
     }
 
+    @PreAuthorize("hasRole('ROLE_PHADMIN')")
     @PostMapping
-    public ResponseEntity<PurchaseOrderDTO> addNewPurchaseOrder(@RequestBody NewPurchaseOrderDTO newPurchaseOrderDTO) {
+    public ResponseEntity<PurchaseOrderDTO> addNewPurchaseOrder(@RequestBody NewPurchaseOrderDTO newPurchaseOrderDTO, @RequestHeader("Authorization") String token) {
+        UUID phadminId = tokenUtils.getUserIdFromToken(token.split(" ")[1]);
+        newPurchaseOrderDTO.setPharmacyAdminId(phadminId);
         PurchaseOrderDTO purchaseOrderDTO = null;
         try {
             purchaseOrderDTO = purchaseOrderService.addPurchaseOrder(newPurchaseOrderDTO);
@@ -50,6 +55,7 @@ public class PurchaseOrderController {
         return new ResponseEntity<>(purchaseOrderOfferDTOS, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ROLE_PHADMIN')")
     @PutMapping("/{orderId}/offers/{supplierId}/accept")
     public ResponseEntity<String> acceptOffer(@PathVariable UUID orderId, @PathVariable UUID supplierId, @RequestHeader("Authorization") String token) {
         UUID phadminId = tokenUtils.getUserIdFromToken(token.split(" ")[1]);
@@ -63,21 +69,26 @@ public class PurchaseOrderController {
         return new ResponseEntity<>("", HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ROLE_PHADMIN')")
     @PutMapping("/{orderId}")
-    public ResponseEntity<PurchaseOrderDTO> updatePurchaseOrder(@RequestBody NewPurchaseOrderDTO newPurchaseOrderDTO, @PathVariable UUID orderId) {
+    public ResponseEntity<PurchaseOrderDTO> updatePurchaseOrder(@RequestBody NewPurchaseOrderDTO newPurchaseOrderDTO, @PathVariable UUID orderId, @RequestHeader("Authorization") String token) {
+        UUID phadminId = tokenUtils.getUserIdFromToken(token.split(" ")[1]);
+        newPurchaseOrderDTO.setPharmacyAdminId(phadminId);
         PurchaseOrderDTO purchaseOrderDTO = null;
         try {
             purchaseOrderDTO = purchaseOrderService.updatePurchaseOrder(orderId, newPurchaseOrderDTO);
-        } catch (FailedToSaveException | ActionNotAllowedException e) {
+        } catch (FailedToSaveException | ActionNotAllowedException | ChangeSetPersister.NotFoundException e) {
             return new ResponseEntity(null, HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>(purchaseOrderDTO, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ROLE_PHADMIN')")
     @DeleteMapping("/{orderId}")
-    public ResponseEntity<String> deletePurchaseOrder(@PathVariable UUID orderId) {
+    public ResponseEntity<String> deletePurchaseOrder(@PathVariable UUID orderId, @RequestHeader("Authorization") String token) {
+        UUID phadminId = tokenUtils.getUserIdFromToken(token.split(" ")[1]);
         try {
-            purchaseOrderService.deletePurchaseOrder(orderId);
+            purchaseOrderService.deletePurchaseOrder(orderId, phadminId);
         } catch (NotFoundException | ActionNotAllowedException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.METHOD_NOT_ALLOWED);
         }

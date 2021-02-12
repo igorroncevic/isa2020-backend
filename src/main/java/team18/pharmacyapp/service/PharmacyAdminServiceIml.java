@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import team18.pharmacyapp.model.Address;
 import team18.pharmacyapp.model.Pharmacy;
 import team18.pharmacyapp.model.dtos.PharmacyAdminDTO;
+import team18.pharmacyapp.model.dtos.PharmacyDTO;
 import team18.pharmacyapp.model.dtos.UserInfoDTO;
 import team18.pharmacyapp.model.enums.UserRole;
 import team18.pharmacyapp.model.users.PharmacyAdmin;
@@ -48,6 +49,8 @@ public class PharmacyAdminServiceIml implements PharmacyAdminService {
         return pharmacyAdminInfoDTO;
     }
 
+
+
     @Override
     public PharmacyAdmin registerNewPharmacyAdmin(PharmacyAdminDTO pharmacyAdmin) {
         PharmacyAdmin phAdmin = new PharmacyAdmin();
@@ -71,5 +74,20 @@ public class PharmacyAdminServiceIml implements PharmacyAdminService {
         phAdmin.setPharmacy(pharmacy);
         phAdmin= pharmacyAdminRepository.save(phAdmin);
         return phAdmin;
+    }
+
+    @Override
+    public PharmacyDTO getPharmacyAdminPharmacyId(UUID id) {
+        String pharmacyIdStr = pharmacyRepository.getPharmacyAdminsPharmacyId(id);
+        UUID pharmacyId = UUID.fromString(pharmacyIdStr);
+        Pharmacy pharmacy = pharmacyRepository.findById(pharmacyId).orElse(null);
+
+        PharmacyDTO pharmacyDTO = new PharmacyDTO();
+        pharmacyDTO.setId(pharmacyId);
+        pharmacyDTO.setName(pharmacy.getName());
+        pharmacyDTO.setCity(pharmacy.getAddress().getCity());
+        pharmacyDTO.setCountry(pharmacy.getAddress().getCountry());
+        pharmacyDTO.setStreet(pharmacy.getAddress().getStreet());
+        return pharmacyDTO;
     }
 }

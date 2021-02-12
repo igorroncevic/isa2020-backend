@@ -93,6 +93,8 @@ insert into user_authority(user_id, authority_id) values ('02fb4f65-923c-49fe-b3
 insert into user_authority(user_id, authority_id) values ('a5ac174a-45b3-487f-91cb-3d3f727d6f1c', 'ff2ecb46-200f-4a25-a6c4-0a96f9ab082f');
 insert into user_authority(user_id, authority_id) values ('1accde09-0aa2-4ea1-9a38-17f4635198b9', 'ff2ecb46-200f-4a25-a6c4-0a96f9ab082f');
 insert into user_authority(user_id, authority_id) values ('61e9bf31-afae-4b2f-9197-8e2a328707c5', 'ff2ecb46-200f-4a25-a6c4-0a96f9ab082f');
+-- Admin sistema
+insert into user_authority(user_id, authority_id) values ('40c88a70-d8cd-4d8f-b56f-eb158f7c27fa', '19c1565a-0e28-4930-9b63-fa2851a69d39');
 
 -- Dermatolozi
 insert into doctor (id, "name", "first_login", surname, email, phone_number, "password", "role", fk_address)

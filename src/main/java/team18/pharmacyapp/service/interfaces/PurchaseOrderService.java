@@ -1,6 +1,7 @@
 package team18.pharmacyapp.service.interfaces;
 
 import javassist.NotFoundException;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import team18.pharmacyapp.model.dtos.NewPurchaseOrderDTO;
 import team18.pharmacyapp.model.dtos.PurchaseOrderDTO;
 import team18.pharmacyapp.model.dtos.PurchaseOrderOfferDTO;
@@ -20,7 +21,7 @@ public interface PurchaseOrderService {
 
     void acceptOffer(UUID orderId, UUID supplierId, UUID phadmin) throws ActionNotAllowedException, FailedToSaveException;
 
-    PurchaseOrderDTO updatePurchaseOrder(UUID orderId, NewPurchaseOrderDTO newPurchaseOrderDTO) throws FailedToSaveException, ActionNotAllowedException;
+    PurchaseOrderDTO updatePurchaseOrder(UUID orderId, NewPurchaseOrderDTO newPurchaseOrderDTO) throws FailedToSaveException, ActionNotAllowedException, ChangeSetPersister.NotFoundException;
 
-    void deletePurchaseOrder(UUID orderId) throws NotFoundException, ActionNotAllowedException;
+    void deletePurchaseOrder(UUID orderId, UUID phadminId) throws NotFoundException, ActionNotAllowedException;
 }

@@ -2,6 +2,7 @@ package team18.pharmacyapp.service;
 
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import team18.pharmacyapp.model.PurchaseOrder;
@@ -124,10 +125,17 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     }
 
     @Override
-    public PurchaseOrderDTO updatePurchaseOrder(UUID orderId, NewPurchaseOrderDTO newPurchaseOrderDTO) throws FailedToSaveException, ActionNotAllowedException {
+    public PurchaseOrderDTO updatePurchaseOrder(UUID orderId, NewPurchaseOrderDTO newPurchaseOrderDTO) throws FailedToSaveException, ActionNotAllowedException, ChangeSetPersister.NotFoundException {
         int numberOfOffers = purchaseOrderRepository.getNumberOfOffersForOrder(orderId);
         if(numberOfOffers != 0) {
             throw new ActionNotAllowedException("You can't update purchase orders that have offers.");
+        }
+        PurchaseOrder purchaseOrder = purchaseOrderRepository.getPurchaseOrderById(orderId);
+        if(purchaseOrder == null) {
+            throw new ChangeSetPersister.NotFoundException();
+        }
+        if (!purchaseOrder.getPharmacyAdmin().getId().equals(newPurchaseOrderDTO.getPharmacyAdminId())) {
+            throw new ActionNotAllowedException("You can't update purchase orders that are not yours");
         }
         int rowsChanged = purchaseOrderRepository.updatePurchaseOrder(orderId, newPurchaseOrderDTO.getEndDate());
         if(rowsChanged != 1) {
@@ -140,14 +148,17 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     }
 
     @Override
-    public void deletePurchaseOrder(UUID orderId) throws NotFoundException, ActionNotAllowedException {
+    public void deletePurchaseOrder(UUID orderId, UUID phadminId) throws NotFoundException, ActionNotAllowedException {
         int numberOfOffers = purchaseOrderRepository.getNumberOfOffersForOrder(orderId);
         if(numberOfOffers != 0) {
-            throw new ActionNotAllowedException("You can't update purchase orders that have offers.");
+            throw new ActionNotAllowedException("You can't delete purchase orders that have offers.");
         }
         PurchaseOrder purchaseOrder = purchaseOrderRepository.findById(orderId).orElse(null);
         if(purchaseOrder == null) {
             throw new NotFoundException("This purchase order does not exists!");
+        }
+        if(!purchaseOrder.getPharmacyAdmin().getId().equals(phadminId)) {
+            throw new ActionNotAllowedException("You can't delete purchase orders that are not yours.");
         }
         purchaseOrderRepository.deletePurchaseOrderMedicines(orderId);
         purchaseOrderRepository.deletePurchaseOrder(orderId);
