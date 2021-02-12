@@ -1,6 +1,7 @@
 package team18.pharmacyapp.repository.users;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
@@ -57,8 +58,13 @@ public interface DoctorRepository extends JpaRepository<Doctor, UUID> {
     @Query("SELECT p from work_schedule w inner join pharmacy p on w.pharmacy.id=p.id where w.doctor.id=:doctorId")
     List<Pharmacy> getDoctorPharmacyList(UUID doctorId);
 
+    @Transactional
+    @Modifying
+    @Query(nativeQuery = true, value = "UPDATE doctor SET id=:newId " +
+            "WHERE id = :doctorId")
+    int setId(UUID doctorId,UUID newId);
+
     @Query("SELECT p from work_schedule w inner join pharmacy p on w.pharmacy.id=p.id where w.doctor.id=:doctorId")
     Pharmacy getPharmPharmacy(UUID doctorId);
-
 
 }

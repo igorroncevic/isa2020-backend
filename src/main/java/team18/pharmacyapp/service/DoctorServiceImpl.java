@@ -3,12 +3,12 @@ package team18.pharmacyapp.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import team18.pharmacyapp.helpers.DateTimeHelpers;
-import team18.pharmacyapp.model.Address;
 import team18.pharmacyapp.model.Pharmacy;
 import team18.pharmacyapp.model.WorkSchedule;
 import team18.pharmacyapp.model.dtos.*;
 import team18.pharmacyapp.model.enums.UserRole;
 import team18.pharmacyapp.model.users.Doctor;
+import team18.pharmacyapp.model.users.RegisteredUser;
 import team18.pharmacyapp.repository.AddressRepository;
 import team18.pharmacyapp.repository.MarkRepository;
 import team18.pharmacyapp.repository.PharmacyRepository;
@@ -108,28 +108,6 @@ public class DoctorServiceImpl implements DoctorService {
     }
 
     @Override
-    public Doctor registerDermatologist(RegisterUserDTO dermatologist) {
-        Doctor derm = new Doctor();
-        Address address = addressRepository.findByCountryAndCityAndStreet(dermatologist.getCountry(), dermatologist.getCity(), dermatologist.getStreet());
-        if (address == null) {
-            address = new Address();
-            address.setStreet(dermatologist.getStreet());
-            address.setCity(dermatologist.getCity());
-            address.setCountry(dermatologist.getCountry());
-            address = addressRepository.save(address);
-        }
-        derm.setRole(UserRole.dermatologist);
-        derm.setName(dermatologist.getName());
-        derm.setSurname(dermatologist.getSurname());
-        derm.setPhoneNumber(dermatologist.getPhoneNumber());
-        derm.setEmail(dermatologist.getEmail());
-        derm.setPassword(dermatologist.getPassword());
-        derm.setAddress(address);
-        derm = doctorRepository.save(derm);
-        return derm;
-    }
-
-    @Override
     public List<PharmacyDTO> getDoctorPharmacyList(UUID doctorId) {
         List<PharmacyDTO> ret = new ArrayList<>();
         for (Pharmacy pharmacy : doctorRepository.getDoctorPharmacyList(doctorId)) {
@@ -188,6 +166,21 @@ public class DoctorServiceImpl implements DoctorService {
         }
 
         return doctorMarkDTOS;
+    }
+
+    @Override
+    public Doctor registerDermatologist(RegisteredUser user) {
+        Doctor derm = new Doctor();
+        derm.setRole(UserRole.dermatologist);
+        derm.setName(user.getName());
+        derm.setSurname(user.getSurname());
+        derm.setPhoneNumber(user.getPhoneNumber());
+        derm.setEmail(user.getEmail());
+        derm.setPassword(user.getPassword());
+        derm.setAddress(user.getAddress());
+        derm = doctorRepository.save(derm);
+        doctorRepository.setId(derm.getId(),user.getId());
+        return derm;
     }
 
     public List<Doctor> findAll(){

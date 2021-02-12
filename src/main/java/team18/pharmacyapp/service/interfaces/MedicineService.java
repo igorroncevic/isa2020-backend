@@ -3,6 +3,7 @@ package team18.pharmacyapp.service.interfaces;
 import team18.pharmacyapp.model.dtos.*;
 import team18.pharmacyapp.model.exceptions.ActionNotAllowedException;
 import team18.pharmacyapp.model.exceptions.ReserveMedicineException;
+import team18.pharmacyapp.model.medicine.SupplierMedicine;
 import team18.pharmacyapp.model.medicine.Medicine;
 
 import java.util.List;
@@ -37,6 +38,9 @@ public interface MedicineService {
 
     List<MedicineFilterDTO> filterMedicines(MedicineFilterRequestDTO mfr);
 
+    List<SupplierMedicinesDTO> findSupplierMedicines(UUID supplierId);
+
+    SupplierMedicine addNewSupplierMedicine(SupplierMedicinesDTO supplierMedicinesDTO);
 
     MedicineSpecificationDTO getMedicineSpecification(UUID medicineId);
 

@@ -6,12 +6,11 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 import team18.pharmacyapp.model.dtos.MedicineAllergyDTO;
-import team18.pharmacyapp.model.dtos.ReservedMedicineDTO;
 import team18.pharmacyapp.model.medicine.Medicine;
 import team18.pharmacyapp.model.medicine.MedicineSpecification;
 import team18.pharmacyapp.model.medicine.PharmacyMedicines;
 import team18.pharmacyapp.model.medicine.ReservedMedicines;
-import team18.pharmacyapp.model.users.Patient;
+import team18.pharmacyapp.model.medicine.SupplierMedicine;
 
 import java.util.Date;
 import java.util.List;
@@ -114,6 +113,12 @@ public interface MedicineRepository extends JpaRepository<Medicine, UUID> {
     @Modifying
     @Query(nativeQuery = true, value = "INSERT INTO alergicto(patient_id, medicine_id) VALUES (:patientId, :medicineId)")
     int addNewAllergy(@Param("patientId") UUID patientId, @Param("medicineId") UUID medicineId);
+
+    @Query("SELECT sm FROM SupplierMedicine sm WHERE sm.supplier.id=:supplierId")
+    List<SupplierMedicine> findMedicinesBySupplierId(UUID supplierId);
+
+    @Query("SELECT m FROM medicine m WHERE m.name=:medicineName")
+    Medicine findByName(@Param("medicineName") String medicineName);
 
     @Transactional(readOnly = true)
     @Query(value = "select s from medicine_specification s where s.medicine.id=:medicineId ")

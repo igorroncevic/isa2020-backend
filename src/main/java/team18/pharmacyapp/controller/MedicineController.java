@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import team18.pharmacyapp.model.dtos.*;
 import team18.pharmacyapp.model.exceptions.ActionNotAllowedException;
 import team18.pharmacyapp.model.exceptions.ReserveMedicineException;
+import team18.pharmacyapp.model.medicine.SupplierMedicine;
 import team18.pharmacyapp.model.medicine.Medicine;
 import team18.pharmacyapp.service.interfaces.MedicineService;
 import team18.pharmacyapp.service.interfaces.ReservedMedicinesService;
@@ -232,10 +233,34 @@ public class MedicineController {
         return reservedMedicinesService.handleMedicine(dto);
     }
 
+    @PreAuthorize("hasRole('ROLE_SUPPLIER')")
     @PostMapping(consumes = "application/json", value = "/save")
     public ResponseEntity<Medicine> saveNewMedicine(@RequestBody MedicineDTO newMedicine) {
         Medicine medicine = medicineService.registerNewMedicine(newMedicine);
         return new ResponseEntity<>(medicine, HttpStatus.CREATED);
+    }
+
+    @PreAuthorize("hasRole('ROLE_SUPPLIER')")
+    @GetMapping("suppliermeds/{id}")
+    public ResponseEntity<List<SupplierMedicinesDTO>> getSupplierMedicines(@PathVariable UUID id){
+        List<SupplierMedicinesDTO> medicines = medicineService.findSupplierMedicines(id);
+
+        if(medicines.size() != 0) {
+            return new ResponseEntity<>(medicines, HttpStatus.OK);
+        }else{
+            return new ResponseEntity<>(medicines, HttpStatus.NO_CONTENT);
+        }
+    }
+
+    @PreAuthorize("hasRole('ROLE_SUPPLIER')")
+    @PostMapping(consumes = "application/json", value = "/add")
+    public ResponseEntity<SupplierMedicine> add(@RequestBody SupplierMedicinesDTO medicineDTO) {
+        SupplierMedicine med = medicineService.addNewSupplierMedicine(medicineDTO);
+
+        if (med != null) {
+            return new ResponseEntity<>(med, HttpStatus.CREATED);
+        }
+        return  new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
     @GetMapping("specification/{id}")
@@ -246,6 +271,4 @@ public class MedicineController {
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
-
-
 }

@@ -3,6 +3,7 @@ package team18.pharmacyapp.service.interfaces;
 import team18.pharmacyapp.model.dtos.*;
 import team18.pharmacyapp.model.enums.UserRole;
 import team18.pharmacyapp.model.users.Doctor;
+import team18.pharmacyapp.model.users.RegisteredUser;
 
 import java.util.List;
 import java.util.UUID;
@@ -23,7 +24,7 @@ public interface DoctorService {
 
     List<DoctorMarkPharmaciesDTO> getPatientsDoctors(PatientDoctorRoleDTO id);
 
-    Doctor registerDermatologist(RegisterUserDTO dermatologist);
+    Doctor registerDermatologist(RegisteredUser user);
 
     List<PharmacyDTO> getDoctorPharmacyList(UUID doctorId);
 

@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -82,6 +83,58 @@ public class AuthenticationController {
         UserRole role = UserRole.patient;
         String USER_ROLE = "ROLE_PATIENT";
         RegisteredUser user = this.userService.save(dto, role, USER_ROLE);
+        return new ResponseEntity<>(user, HttpStatus.CREATED);
+    }
+
+    @PreAuthorize("hasRole('ROLE_SYSADMIN')")
+    @PostMapping("/signup/derm")
+    public ResponseEntity<RegisteredUser> addDerm(@RequestBody RegisterUserDTO dto) {
+        RegisteredUser existUser = this.userService.findByEmail(dto.getEmail());
+        if (existUser != null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        UserRole role = UserRole.dermatologist;
+        String USER_ROLE = "ROLE_DERMATOLOGIST";
+        RegisteredUser user = this.userService.save(dto,role,USER_ROLE);
+        return new ResponseEntity<>(user, HttpStatus.CREATED);
+    }
+
+    @PreAuthorize("hasRole('ROLE_SYSADMIN')")
+    @PostMapping("/signup/sysadmin")
+    public ResponseEntity<RegisteredUser> addSysAdmin(@RequestBody RegisterUserDTO dto) {
+        RegisteredUser existUser = this.userService.findByEmail(dto.getEmail());
+        if (existUser != null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        UserRole role = UserRole.sysAdmin;
+        String USER_ROLE = "ROLE_SYSADMIN";
+        RegisteredUser user = this.userService.save(dto,role,USER_ROLE);
+        return new ResponseEntity<>(user, HttpStatus.CREATED);
+    }
+
+    @PreAuthorize("hasRole('ROLE_SYSADMIN')")
+    @PostMapping("/signup/supplier")
+    public ResponseEntity<RegisteredUser> addSupplier(@RequestBody RegisterUserDTO dto) {
+        RegisteredUser existUser = this.userService.findByEmail(dto.getEmail());
+        if (existUser != null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        UserRole role = UserRole.supplier;
+        String USER_ROLE = "ROLE_SUPPLIER";
+        RegisteredUser user = this.userService.save(dto,role,USER_ROLE);
+        return new ResponseEntity<>(user, HttpStatus.CREATED);
+    }
+
+    @PreAuthorize("hasRole('ROLE_SYSADMIN')")
+    @PostMapping("/signup/pharmadmin")
+    public ResponseEntity<RegisteredUser> addPharmAdmin(@RequestBody RegisterUserDTO dto) {
+        RegisteredUser existUser = this.userService.findByEmail(dto.getEmail());
+        if (existUser != null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        UserRole role = UserRole.pharmacyAdmin;
+        String USER_ROLE = "ROLE_PHADMIN";
+        RegisteredUser user = this.userService.save(dto,role,USER_ROLE);
         return new ResponseEntity<>(user, HttpStatus.CREATED);
     }
 

@@ -3,7 +3,6 @@ package team18.pharmacyapp.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import team18.pharmacyapp.model.dtos.PharmacyAdminDTO;
 import team18.pharmacyapp.model.dtos.PharmacyAdminInfoDTO;
 import team18.pharmacyapp.model.users.PharmacyAdmin;
 import team18.pharmacyapp.service.interfaces.PharmacyAdminService;
@@ -42,9 +41,4 @@ public class PharmacyAdminController {
         return new ResponseEntity<>(pharmacyAdmin, HttpStatus.OK);
     }
 
-    @PostMapping(consumes = "application/json", value = "/register")
-    public ResponseEntity<PharmacyAdmin> saveNewPharmacyAdmin(@RequestBody PharmacyAdminDTO newPharmacyAdmin) {
-        PharmacyAdmin phAdmin = pharmacyAdminService.registerNewPharmacyAdmin(newPharmacyAdmin);
-        return new ResponseEntity<>(phAdmin, HttpStatus.CREATED);
-    }
 }
