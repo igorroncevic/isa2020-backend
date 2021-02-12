@@ -1,8 +1,8 @@
 package team18.pharmacyapp.service;
 
-import org.hibernate.annotations.Loader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.Lock;
+import org.springframework.data.jpa.repository.QueryHints;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import team18.pharmacyapp.helpers.DateTimeHelpers;
@@ -22,6 +22,7 @@ import team18.pharmacyapp.service.interfaces.EmailService;
 import team18.pharmacyapp.service.interfaces.TermService;
 
 import javax.persistence.LockModeType;
+import javax.persistence.QueryHint;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Date;
@@ -122,7 +123,8 @@ public class CounselingServiceImpl implements CounselingService {
     }
 
     @Override
-    @Lock(LockModeType.PESSIMISTIC_WRITE)   // Da ne bi slučajno zakazao dva termina u isto vrijeme
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @QueryHints({@QueryHint(name="javax.persistence.lock.timeout", value = "2000")})
     @Transactional(rollbackFor = {AlreadyScheduledException.class, ScheduleTermException.class, RuntimeException.class})
     public boolean patientScheduleCounseling(ScheduleCounselingDTO term) throws AlreadyScheduledException, ScheduleTermException, RuntimeException {
         Patient patient = patientRepository.findById(term.getPatientId()).orElse(null);
@@ -131,6 +133,9 @@ public class CounselingServiceImpl implements CounselingService {
 
         if (!termService.isPatientFree(term.getPatientId(), term.getFromTime(), term.getToTime()))
             throw new AlreadyScheduledException("You are busy at this time");
+
+        if (!termService.isDoctorFree(term.getDoctorId(), term.getFromTime(), term.getToTime()))
+            throw new AlreadyScheduledException("Doctor is busy at this time");
 
         Term checkTerm = counselingRepository.checkIfPatientHasCounselingWithDoctor(term.getPatientId(), term.getDoctorId(), new Date());
         if (checkTerm != null)
@@ -141,11 +146,8 @@ public class CounselingServiceImpl implements CounselingService {
         doctor.setId(term.getDoctorId());
         Term counseling = new Term(id, patient, doctor, term.getFromTime(), term.getToTime(), 10, TermType.counseling, null, false, 0L);
         counseling = counselingRepository.save(counseling);
-        //int retVal = counselingRepository.patientScheduleCounseling(id, term.getPatientId(),
-                //term.getDoctorId(), term.getFromTime(), term.getToTime());
-        //if (retVal != 1) throw new ScheduleTermException("Could not save this counseling");
 
-        String userMail = "savooroz33@gmail.com";   // zakucano za sada
+        String userMail = patient.getEmail();
         String subject = "[ISA Pharmacy] Confirmation - Counseling scheduling";
         String body = "You have successfully scheduled a counseling on our site.\n" +
                 "Your reservation ID: " + counseling.getId().toString();
@@ -171,8 +173,11 @@ public class CounselingServiceImpl implements CounselingService {
         int diffInHours = (int) (termTime.getTime() - now.getTime()) / (1000 * 60 * 60);
         if (diffInHours <= 23) throw new ActionNotAllowedException("Cannot cancel 24hrs before the counseling");
 
-        int rowsUpdated = counselingRepository.patientCancelCounseling(term.getTermId());
-        if (rowsUpdated != 1) throw new RuntimeException("Couldn't cancel this term!");
+        checkTerm.setPatient(null);
+        counselingRepository.save(checkTerm);
+
+        //int rowsUpdated = counselingRepository.patientCancelCounseling(term.getTermId());
+        //if (rowsUpdated != 1) throw new RuntimeException("Couldn't cancel this term!");
 
         return true;
     }

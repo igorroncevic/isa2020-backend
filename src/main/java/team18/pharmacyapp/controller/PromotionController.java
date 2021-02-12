@@ -32,6 +32,7 @@ public class PromotionController {
         return new ResponseEntity<>(promotions, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ROLE_PHADMIN')")
     @PostMapping("/pharmacy/{pharmacyId}")
     public ResponseEntity<Promotion> addNewPromotion(@PathVariable UUID pharmacyId, @RequestBody NewPromotionDTO newPromotionDTO) {
         Promotion promotion = null;

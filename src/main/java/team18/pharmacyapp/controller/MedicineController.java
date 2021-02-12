@@ -193,8 +193,6 @@ public class MedicineController {
             success = medicineService.reserveMedicine(medicine);
         } catch (ActionNotAllowedException ex) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        } catch (ReserveMedicineException ex) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         } catch (RuntimeException ex) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
