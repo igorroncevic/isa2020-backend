@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
 import team18.pharmacyapp.model.users.Doctor;
 import team18.pharmacyapp.model.users.Patient;
 
@@ -22,7 +23,7 @@ public class Complaint {
     )
     private UUID id;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(nullable = false)
     private Patient patient;
 

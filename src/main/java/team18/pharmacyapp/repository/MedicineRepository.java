@@ -23,8 +23,12 @@ public interface MedicineRepository extends JpaRepository<Medicine, UUID> {
     List<PharmacyMedicines> findAllAvailableMedicines();
 
     @Transactional(readOnly = true)
-    @Query(value = "SELECT distinct m FROM medicine m JOIN m.pharmacyMedicines pm WHERE pm.quantity > 0")
-    List<Medicine> findAllAvailableMedicinesNoAuth();
+    @Query(value = "SELECT distinct m FROM medicine m join fetch m.marks JOIN m.pharmacyMedicines pm WHERE pm.quantity > 0 ")
+    List<Medicine> findAllAvailableMedicinesWithMarksNoAuth();
+
+    @Transactional(readOnly = true)
+    @Query(value = "SELECT distinct m FROM medicine m JOIN m.pharmacyMedicines pm WHERE pm.quantity > 0 and m.marks is empty ")
+    List<Medicine> findAllAvailableMedicinesNoMarksNoAuth();
 
     @Transactional(readOnly = true)
     @Query("SELECT r FROM reserved_medicines r JOIN FETCH r.pharmacy JOIN FETCH r.patient WHERE r.pickupDate > :todaysDate AND r.handled = false")

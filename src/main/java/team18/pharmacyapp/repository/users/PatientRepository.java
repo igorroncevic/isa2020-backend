@@ -5,7 +5,9 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
+import team18.pharmacyapp.model.Pharmacy;
 import team18.pharmacyapp.model.medicine.Medicine;
+import team18.pharmacyapp.model.users.Doctor;
 import team18.pharmacyapp.model.users.Patient;
 
 import java.util.List;
@@ -50,5 +52,9 @@ public interface PatientRepository extends JpaRepository<Patient, UUID> {
     @Transactional(readOnly = true)
     @Query("SELECT p.penalties FROM patient p WHERE p.id = :patientId")
     int getPatientPenalties(@Param("patientId") UUID patientId);
+
+    @Transactional
+    @Query("select distinct (t.doctor) from term t where t.patient.id=:patientId")
+    List<Doctor> getAllPatientsDoctors(UUID patientId);
 
 }

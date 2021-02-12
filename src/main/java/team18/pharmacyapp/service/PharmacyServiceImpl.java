@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import team18.pharmacyapp.model.Address;
 import team18.pharmacyapp.model.Pharmacy;
+import team18.pharmacyapp.model.dtos.PharmacyDTO;
 import team18.pharmacyapp.model.dtos.PharmacyFilteringDTO;
 import team18.pharmacyapp.model.dtos.PharmacyMarkPriceDTO;
 import team18.pharmacyapp.repository.AddressRepository;
@@ -30,8 +31,13 @@ public class PharmacyServiceImpl implements PharmacyService {
     }
 
     @Override
-    public List<Pharmacy> getAll() {
-        return pharmacyRepository.findAll();
+    public List<PharmacyDTO> getAll() {
+        List<PharmacyDTO>pharmacyDTOS=new ArrayList<>();
+        for(Pharmacy p: pharmacyRepository.findAll()){
+            PharmacyDTO dto=new PharmacyDTO(p.getId(),p.getName(),p.getAddress().getStreet(),p.getAddress().getCity(),p.getAddress().getCountry());
+            pharmacyDTOS.add(dto);
+        }
+        return pharmacyDTOS;
     }
 
     @Override
