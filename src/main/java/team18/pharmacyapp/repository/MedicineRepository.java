@@ -27,7 +27,7 @@ public interface MedicineRepository extends JpaRepository<Medicine, UUID> {
     List<Medicine> findAllAvailableMedicinesNoAuth();
 
     @Transactional(readOnly = true)
-    @Query("SELECT r FROM reserved_medicines r JOIN FETCH r.patient WHERE r.pickupDate > :todaysDate AND r.handled = false")
+    @Query("SELECT r FROM reserved_medicines r JOIN FETCH r.pharmacy JOIN FETCH r.patient WHERE r.pickupDate > :todaysDate AND r.handled = false")
     List<ReservedMedicines> findAllNonHandledReservedMedicines(@Param("todaysDate") Date todaysDate);
 
     @Transactional(readOnly = true)

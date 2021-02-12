@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
+import team18.pharmacyapp.model.Pharmacy;
 import team18.pharmacyapp.model.dtos.ReservedMedicineDTO;
 import team18.pharmacyapp.model.keys.PharmacyMedicinesId;
 import team18.pharmacyapp.model.medicine.Medicine;
@@ -34,4 +35,6 @@ public interface PharmacyMedicinesRepository extends JpaRepository<PharmacyMedic
     @Query(nativeQuery = true, value = "SELECT COUNT(*) FROM reserved_medicines WHERE pharmacy_id = :pharmacyId and medicine_id = :medicineId and handled = false")
     int getNumberOfUnhandledReservations(UUID pharmacyId, UUID medicineId);
 
+    @Transactional(readOnly = true)
+    PharmacyMedicines findDistinctByPharmacyAndMedicine(Pharmacy pharmacy, Medicine medicine);
 }

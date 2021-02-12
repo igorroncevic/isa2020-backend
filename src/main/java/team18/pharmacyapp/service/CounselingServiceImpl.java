@@ -122,7 +122,7 @@ public class CounselingServiceImpl implements CounselingService {
     }
 
     @Override
-    @Lock(LockModeType.PESSIMISTIC_WRITE)   // Da ne bi slučajno zakazao dva termina u isto vrijeme
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Transactional(rollbackFor = {AlreadyScheduledException.class, ScheduleTermException.class, RuntimeException.class})
     public boolean patientScheduleCounseling(ScheduleCounselingDTO term) throws AlreadyScheduledException, ScheduleTermException, RuntimeException {
         Patient patient = patientRepository.findById(term.getPatientId()).orElse(null);
