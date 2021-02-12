@@ -43,10 +43,11 @@ public class MedicineServiceImpl implements MedicineService {
     private final PharmacyRepository pharmacyRepository;
     private final LoyaltyService loyaltyService;
     private final SupplierMedicinesRepository supplierMedicinesRepository;
-
+    private final ReservedMedicinesRepository reservedMedicinesRepository;
+    private final PharmacyMedicinesRepository pharmacyMedicinesRepository;
 
     @Autowired
-    public MedicineServiceImpl(MedicineRepository medicineRepository, EmailService emailService, PatientRepository patientRepository, PharmacyRepository pharmacyRepository, MedicineSpecificationRepository medicineSpecificationRepository, MarkRepository markRepository, LoyaltyService loyaltyService, SupplierMedicinesRepository supplierMedicinesRepository) {
+    public MedicineServiceImpl(MedicineRepository medicineRepository, EmailService emailService, PatientRepository patientRepository, PharmacyRepository pharmacyRepository, MedicineSpecificationRepository medicineSpecificationRepository, MarkRepository markRepository, LoyaltyService loyaltyService, SupplierMedicinesRepository supplierMedicinesRepository, ReservedMedicinesRepository reservedMedicinesRepository, PharmacyMedicinesRepository pharmacyMedicinesRepository) {
         this.medicineRepository = medicineRepository;
         this.emailService = emailService;
         this.patientRepository = patientRepository;
@@ -55,6 +56,8 @@ public class MedicineServiceImpl implements MedicineService {
         this.pharmacyRepository = pharmacyRepository;
         this.loyaltyService = loyaltyService;
         this.supplierMedicinesRepository = supplierMedicinesRepository;
+        this.reservedMedicinesRepository = reservedMedicinesRepository;
+        this.pharmacyMedicinesRepository = pharmacyMedicinesRepository;
     }
 
     @Override
@@ -139,11 +142,11 @@ public class MedicineServiceImpl implements MedicineService {
     }
 
     @Override
-    //@Lock(LockModeType.WRITE) // Ubaciti optimistic lock kada se predje .save()
-    @Transactional(rollbackFor = {ActionNotAllowedException.class, RuntimeException.class, ReserveMedicineException.class})
-    public boolean reserveMedicine(ReserveMedicineRequestDTO rmrDTO) throws ActionNotAllowedException, ReserveMedicineException, RuntimeException {
+    @Lock(LockModeType.WRITE)
+    @Transactional(rollbackFor = {ActionNotAllowedException.class, RuntimeException.class})
+    public boolean reserveMedicine(ReserveMedicineRequestDTO rmrDTO) throws ActionNotAllowedException, RuntimeException {
         Medicine med = medicineRepository.getOne(rmrDTO.getMedicineId());
-        if (med == null) throw new RuntimeException("");
+        if (med == null) throw new RuntimeException("Medicine does not exist");
 
         Patient patient = patientRepository.findById(rmrDTO.getPatientId()).orElse(null);
         if (patient == null) throw new ActionNotAllowedException("You are not allowed to reserve medicines");
@@ -153,22 +156,38 @@ public class MedicineServiceImpl implements MedicineService {
         if (rmrDTO.getPickupDate().before(new Date()))
             throw new ActionNotAllowedException("You are not allowed to reserve medicines");
 
-        UUID reservationId = UUID.randomUUID();
-        int reserved = medicineRepository.reserveMedicine(reservationId, rmrDTO.getPatientId(), rmrDTO.getPharmacyId(), rmrDTO.getMedicineId(), rmrDTO.getPickupDate());
-        int updateQuantity = medicineRepository.decrementMedicineQuantity(rmrDTO.getMedicineId(), rmrDTO.getPharmacyId());
-        if (reserved != 1) throw new ReserveMedicineException("Medicine wasn't reserved!");
-        if (updateQuantity != 1) throw new ReserveMedicineException("Medicine quantity wasn't decremented!");
+        Pharmacy pharmacy = new Pharmacy();
+        pharmacy.setId(rmrDTO.getPharmacyId());
+
+        if(!isPharmacyMedicineAvailable(med, pharmacy))
+            throw new ActionNotAllowedException("Medicine out of stock");
+
+        //int reserved = medicineRepository.reserveMedicine(reservationId, rmrDTO.getPatientId(), rmrDTO.getPharmacyId(), rmrDTO.getMedicineId(), rmrDTO.getPickupDate());
+        //int updateQuantity = medicineRepository.decrementMedicineQuantity(rmrDTO.getMedicineId(), rmrDTO.getPharmacyId());
+        //if (reserved != 1) throw new ReserveMedicineException("Medicine wasn't reserved!");
+        //if (updateQuantity != 1) throw new ReserveMedicineException("Medicine quantity wasn't decremented!");
+
+        ReservedMedicines reservation = new ReservedMedicines(UUID.randomUUID(), patient, med, pharmacy, rmrDTO.getPickupDate(), false, 0L);
+        reservation = reservedMedicinesRepository.save(reservation);
+
+        PharmacyMedicines pharmacyMedicines = pharmacyMedicinesRepository.findDistinctByPharmacyAndMedicine(pharmacy, med);
+        pharmacyMedicines.setQuantity(pharmacyMedicines.getQuantity() - 1);
+        pharmacyMedicinesRepository.save(pharmacyMedicines);
 
         loyaltyService.addLoyaltyPoints(rmrDTO.getPatientId(), med.getLoyaltyPoints());
         loyaltyService.updatePatientsLoyalty(rmrDTO.getPatientId());
 
-        String userMail = "savooroz33@gmail.com";   // zakucano za sada
+        String userMail = patient.getEmail();
         String subject = "[ISA Pharmacy] Confirmation - Medicine reservation";
         String body = "You have successfuly reserved a medicine on our site.\n" +
-                "Your reservation ID: " + reservationId.toString();
+                "Your reservation ID: " + reservation.getId().toString();
         new Thread(() -> emailService.sendMail(userMail, subject, body)).start();
 
         return true;
+    }
+
+    public boolean isPharmacyMedicineAvailable(Medicine med, Pharmacy pharmacy){
+        return pharmacyMedicinesRepository.getMedicineQuantity(med, pharmacy) > 0;
     }
 
     @Override
