@@ -4,13 +4,17 @@ import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import team18.pharmacyapp.model.Pricings;
 import team18.pharmacyapp.model.dtos.NewPricingDTO;
+import team18.pharmacyapp.model.dtos.PharmacyDTO;
 import team18.pharmacyapp.model.dtos.PricingsDTO;
 import team18.pharmacyapp.model.dtos.UpdatePricingDTO;
 import team18.pharmacyapp.model.exceptions.ActionNotAllowedException;
 import team18.pharmacyapp.model.exceptions.BadTimeRangeException;
+import team18.pharmacyapp.security.TokenUtils;
+import team18.pharmacyapp.service.interfaces.PharmacyAdminService;
 import team18.pharmacyapp.service.interfaces.PricingsService;
 
 import java.util.List;
@@ -22,10 +26,14 @@ import java.util.UUID;
 public class PricingsController {
 
     private final PricingsService pricingsService;
+    private final TokenUtils tokenUtils;
+    private final PharmacyAdminService pharmacyAdminService;
 
     @Autowired
-    public PricingsController(PricingsService pricingsService) {
+    public PricingsController(PricingsService pricingsService, TokenUtils tokenUtils, PharmacyAdminService pharmacyAdminService) {
         this.pricingsService = pricingsService;
+        this.tokenUtils = tokenUtils;
+        this.pharmacyAdminService = pharmacyAdminService;
     }
 
     @GetMapping("/pharmacy/{id}")
@@ -40,10 +48,11 @@ public class PricingsController {
         return new ResponseEntity<>(pricings, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ROLE_PHADMIN')")
     @DeleteMapping("/{id}")
-    public ResponseEntity deletePricing(@PathVariable UUID id) {
+    public ResponseEntity deletePricing(@PathVariable UUID pricingId) {
         try {
-            pricingsService.deletePricing(id);
+            pricingsService.deletePricing(pricingId);
         } catch (NotFoundException e) {
             return new ResponseEntity(HttpStatus.NOT_FOUND);
         } catch (ActionNotAllowedException e) {
@@ -53,9 +62,12 @@ public class PricingsController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ROLE_PHADMIN')")
     @PostMapping
-    public ResponseEntity<Pricings> addNewPricing(@RequestBody NewPricingDTO newPricingDTO) {
-
+    public ResponseEntity<Pricings> addNewPricing(@RequestBody NewPricingDTO newPricingDTO, @RequestHeader("Authorization") String token) {
+        UUID phadminId = tokenUtils.getUserIdFromToken(token.split(" ")[1]);
+        PharmacyDTO pharmacyDTO = pharmacyAdminService.getPharmacyAdminPharmacyId(phadminId);
+        newPricingDTO.setPharmacyId(pharmacyDTO.getId());
         Pricings pricings = null;
         try {
             pricings = pricingsService.addNewPricing(newPricingDTO);
@@ -68,6 +80,7 @@ public class PricingsController {
 
     }
 
+    @PreAuthorize("hasRole('ROLE_PHADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<String> updatePricing(@PathVariable UUID id, @RequestBody UpdatePricingDTO updatePricingDTO) {
         try {

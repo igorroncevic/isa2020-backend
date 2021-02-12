@@ -31,4 +31,6 @@ public interface DoctorService {
     PharmacyDTO getCurrentPharmacy(UUID doctorId);
 
     PharmacyDTO getPharmacistPharmacy(UUID id);
+
+    WorkScheduleDTO getDoctorWorkScheduleInPharmacy(UUID doctorId, UUID pharmacyId);
 }

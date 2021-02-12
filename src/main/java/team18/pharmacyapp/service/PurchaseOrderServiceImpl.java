@@ -107,6 +107,8 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         if(rowsChanged != 1)
             throw new FailedToSaveException("Failed to accept offer");
 
+        purchaseOrderRepository.setStatusAccepted(orderId);
+
         List<PurchaseOrderMedicine> purchaseOrderMedicines = purchaseOrderRepository.getPurchaseOrderMedicines(orderId);
         UUID pharmacyId = purchaseOrder.getPharmacyAdmin().getPharmacy().getId();
 
