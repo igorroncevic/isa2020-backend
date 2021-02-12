@@ -98,6 +98,8 @@ insert into user_authority (user_id, authority_id) values ('6dbd78ec-c0c7-403a-b
 insert into user_authority (user_id, authority_id) values ('84f5d15e-8b52-4e00-ac4f-6b35e030c732', '91541917-0498-4e3a-a8c5-966118f78683');
 --Sys admin
 insert into user_authority (user_id, authority_id) values ('5baee785-9b8b-4287-a0bb-cfbee680b88d', '2fef2655-53d0-4233-bcf9-771d12040383');
+--PhAdmin
+insert into user_authority (user_id, authority_id) values ('40c88a70-d8cd-4d8f-b56f-eb158f7c27fa', '19c1565a-0e28-4930-9b63-fa2851a69d39');
 
 -- Dermatolozi
 insert into doctor (id, "name", "first_login", surname, email, phone_number, "password", "role", fk_address)
@@ -167,23 +169,23 @@ values ('5ffe884f-9cd8-42f5-adc4-2a27cd8d2737', 'Mileta', false, 'Perovic', 'mil
 
 -- Pregledi
 insert into term (id, doctor_id, start_time, end_time, price, "type", report_id, patient_id, version, completed)
-values ('1d96a5d6-f5f6-4a74-9208-109991010f31', 'a5ac174a-45b3-487f-91cb-3d3f727d6f1c', '2021-02-28 12:25:00',
-        '2021-02-28 13:00:00', 12, 'checkup', null, null, 0, false);
+values ('1d96a5d6-f5f6-4a74-9208-109991010f31', 'a5ac174a-45b3-487f-91cb-3d3f727d6f1c', '2021-02-24 12:25:00',
+        '2021-02-24 13:00:00', 12, 'checkup', null, null, 0, false);
 insert into term (id, doctor_id, start_time, end_time, price, "type", report_id, patient_id, version, completed)
-values ('0988b5b2-1d09-47ad-ace7-45282f11e24b', 'a5ac174a-45b3-487f-91cb-3d3f727d6f1c', '2021-02-28 13:05:00',
-        '2021-02-28 13:15:00', 12, 'checkup', null, null, 0, false);
+values ('0988b5b2-1d09-47ad-ace7-45282f11e24b', 'a5ac174a-45b3-487f-91cb-3d3f727d6f1c', '2021-02-24 13:05:00',
+        '2021-02-24 13:15:00', 12, 'checkup', null, null, 0, false);
 insert into term (id, doctor_id, start_time, end_time, price, "type", report_id, patient_id, version, completed)
-values ('f05c035a-ffcc-4810-b34a-bb0c782f59a0', '1accde09-0aa2-4ea1-9a38-17f4635198b9', '2021-02-28 12:25:00',
-        '2021-02-28 13:00:00', 19, 'checkup', null, null, 0, false);
+values ('f05c035a-ffcc-4810-b34a-bb0c782f59a0', '1accde09-0aa2-4ea1-9a38-17f4635198b9', '2021-02-24 12:25:00',
+        '2021-02-24 13:00:00', 19, 'checkup', null, null, 0, false);
 insert into term (id, doctor_id, start_time, end_time, price, "type", report_id, patient_id, version, completed)
-values ('43501e13-caf6-4d98-a69a-db0178c582e9', '1accde09-0aa2-4ea1-9a38-17f4635198b9', '2021-02-20 13:15:00',
-        '2021-02-20 13:35:00', 19, 'checkup', null, null, 0, false);
+values ('43501e13-caf6-4d98-a69a-db0178c582e9', '1accde09-0aa2-4ea1-9a38-17f4635198b9', '2021-02-18 13:15:00',
+        '2021-02-18 13:35:00', 19, 'checkup', null, null, 0, false);
 insert into term (id, doctor_id, start_time, end_time, price, "type", report_id, patient_id, version, completed)
-values ('6af3ebe2-eeb3-4775-ae52-74dcfe8dc949', 'a5ac174a-45b3-487f-91cb-3d3f727d6f1c', '2021-02-20 13:15:00',
-        '2021-02-20 13:35:00', 19, 'checkup', null, null, 0, false);
+values ('6af3ebe2-eeb3-4775-ae52-74dcfe8dc949', 'a5ac174a-45b3-487f-91cb-3d3f727d6f1c', '2021-02-18 13:15:00',
+        '2021-02-18 13:35:00', 19, 'checkup', null, null, 0, false);
 insert into term (id, doctor_id, start_time, end_time, price, "type", report_id, patient_id, version, completed)
-values ('ebec212e-5ff8-45f8-8411-82d6ac3b69a6', '1accde09-0aa2-4ea1-9a38-17f4635198b9', '2021-02-28 13:35:00',
-        '2021-02-28 14:00:00', 19, 'counseling', null, null, 0, false);
+values ('ebec212e-5ff8-45f8-8411-82d6ac3b69a6', '1accde09-0aa2-4ea1-9a38-17f4635198b9', '2021-02-24 13:35:00',
+        '2021-02-24 14:00:00', 19, 'counseling', null, null, 0, false);
 insert into term (id, doctor_id, start_time, end_time, price, "type", report_id, patient_id, version, completed)
 values ('bef34914-aaab-4c7d-8ef5-c2844eb33d6d', '1accde09-0aa2-4ea1-9a38-17f4635198b9', '2021-01-24 13:15:00',
         '2021-01-24 13:35:00', 19, 'checkup', null, 'cc6fd408-0084-420b-8078-687d8a72744b', 0, false);
@@ -191,8 +193,8 @@ insert into term (id, doctor_id, start_time, end_time, price, "type", report_id,
 values ('c3695891-66a8-421f-8759-5602513975f8', 'a5ac174a-45b3-487f-91cb-3d3f727d6f1c', '2021-01-25 12:25:00',
         '2021-01-25 13:00:00', 12, 'checkup', null, 'cc6fd408-0084-420b-8078-687d8a72744b', 0, false);
 insert into term (id, doctor_id, start_time, end_time, price, "type", report_id, patient_id, version, completed)
-values ('f1694aa0-a662-405e-9eb6-60d6a9ffd87c', 'a5ac174a-45b3-487f-91cb-3d3f727d6f1c', '2021-02-28 13:15:00',
-        '2021-02-28 13:45:00', 12, 'checkup', null, 'dd4c7e5f-f2c4-42dc-a809-fd7f588b3acb', 0, false);
+values ('f1694aa0-a662-405e-9eb6-60d6a9ffd87c', 'a5ac174a-45b3-487f-91cb-3d3f727d6f1c', '2021-02-24 13:15:00',
+        '2021-02-24 13:45:00', 12, 'checkup', null, 'dd4c7e5f-f2c4-42dc-a809-fd7f588b3acb', 0, false);
 insert into term (id, doctor_id, start_time, end_time, price, "type", report_id, patient_id, version, completed)
 values ('ddf04525-26f4-4d13-a267-00a30ec2412a', 'a5ac174a-45b3-487f-91cb-3d3f727d6f1c', '2021-01-15 14:15:00',
         '2021-01-15 14:45:00', 12, 'checkup', null, 'dd4c7e5f-f2c4-42dc-a809-fd7f588b3acb', 0, true);
@@ -234,7 +236,13 @@ values ('659d0931-63d9-4ef6-bbc4-abdeb4a99539', 11, 'Fluimucil', 'FL01', 'human_
 insert into medicine_specification (id, medicine_id, replacement_medicine_code, recommended_dose, contraindications, drug_composition, additional_notes)
 values ('004bf154-bd94-4bbb-ae8a-9e18f7103653', '7571786b-2fc5-4756-ab5c-1f4af756e6f2', 'BR01', 3, 'glavobolja, mucnina', 'acetilsalicilna kiselina', 'ne preporucije se deci mladjoj od 6 godina');
 insert into medicine_specification (id, medicine_id, replacement_medicine_code, recommended_dose, contraindications, drug_composition, additional_notes)
-values ('83c48dad-439d-4f59-82ef-c3315ba8e2e3','592e558c-b3f9-4088-b468-28764908bd92', 'CAF01', 4, 'mucnina, malaksalost', 'ibuprofen', null);
+values ('83c48dad-439d-4f59-82ef-c3315ba8e2e4','592e558c-b3f9-4088-b468-28764908bd92', 'CAF01', 4, 'mucnina, malaksalost', 'ibuprofen', null);
+insert into medicine_specification (id, medicine_id, replacement_medicine_code, recommended_dose, contraindications, drug_composition, additional_notes)
+values ('104bf154-bd94-4bbb-ae8a-9e18f7103653', '3163f62a-5b88-4295-854c-c9400e19089f', 'BR01', 3, 'glavobolja, mucnina', 'acetilsalicilna kiselina', 'ne preporucije se deci mladjoj od 6 godina');
+insert into medicine_specification (id, medicine_id, replacement_medicine_code, recommended_dose, contraindications, drug_composition, additional_notes)
+values ('83c48dad-439d-4f59-82ef-c3315ba8e2e3','32636111-4bc6-424c-a200-067e7f8a9386', 'CAF01', 4, 'mucnina, malaksalost', 'ibuprofen', null);
+insert into medicine_specification (id, medicine_id, replacement_medicine_code, recommended_dose, contraindications, drug_composition, additional_notes)
+values ('204bf154-bd94-4bbb-ae8a-9e18f7103653', '659d0931-63d9-4ef6-bbc4-abdeb4a99539', 'BR01', 3, 'glavobolja, mucnina', 'acetilsalicilna kiselina', 'ne preporucije se deci mladjoj od 6 godina');
 -- insert into medicine_specification (id, replacement_medicine_code, recommended_dose, contraindications, drug_composition, additional_notes)
 -- values ('7d3fe4e7-6336-48cc-ac98-1b9d0de36f61', 'BR01', 3, null, null, 'ne preporucije se deci mladjoj od 6 godina');
 -- insert into medicine_specification (id, replacement_medicine_code, recommended_dose, contraindications, drug_composition, additional_notes)
@@ -319,8 +327,6 @@ values ('9524e1dd-a31d-4365-abd6-cf7b8b6dcdb3', '2021-01-01', '2022-01-01', 19, 
 insert into pricings (id, start_date, end_date, price, pharmacy_medicine_pharmacy_id, pharmacy_medicine_medicine_id)
 values ('7fb749b2-ca20-429e-be68-1cd7381ce7a7', '2021-01-01', '2022-01-01', 10, 'e93cab4a-f007-412c-b631-7a9a5ee2c6ed', '592e558c-b3f9-4088-b468-28764908bd92');
 insert into pricings (id, start_date, end_date, price, pharmacy_medicine_pharmacy_id, pharmacy_medicine_medicine_id)
-values ('3aac2730-6537-41a8-b7b3-548d42fdeb7f', '2021-01-01', '2022-01-01', 15, 'e93cab4a-f007-412c-b631-7a9a5ee2c6ed', '32636111-4bc6-424c-a200-067e7f8a9386');
-insert into pricings (id, start_date, end_date, price, pharmacy_medicine_pharmacy_id, pharmacy_medicine_medicine_id)
 values ('7d980093-7952-46d6-b1e8-c44451ae571d', '2019-01-01', '2019-12-31', 25, 'e93cab4a-f007-412c-b631-7a9a5ee2c6ed', '659d0931-63d9-4ef6-bbc4-abdeb4a99539');
 insert into pricings (id, start_date, end_date, price, pharmacy_medicine_pharmacy_id, pharmacy_medicine_medicine_id)
 values ('2a5ea26d-8e0b-4a57-8afe-9e06d9b879b2', '2020-01-01', '2020-12-31', 25, 'e93cab4a-f007-412c-b631-7a9a5ee2c6ed', '659d0931-63d9-4ef6-bbc4-abdeb4a99539');
@@ -363,6 +369,9 @@ insert into vacation(id, status, start_date, end_date, rejection_reason, doctor_
 values ('d430072f-57e3-4434-aa5f-516ac45e5715', 'pending', '2021-05-01', '2021-05-25', null, 'cb317110-4d3e-4a52-8ca6-0c73bc62b4d2');
 insert into vacation(id, status, start_date, end_date, rejection_reason, doctor_id)
 values ('18be1095-8158-4a8f-b9c7-9cf91f4fab4e', 'pending', '2021-08-01', '2021-08-20', null, '02fb4f65-923c-49fe-b32a-c40ffee74b47');
+insert into vacation(id, status, start_date, end_date, rejection_reason, doctor_id)
+values ('9b7c9141-2b98-40d8-a4a8-c496e080eff2', 'pending', '2021-08-01', '2021-08-20', null, 'a5ac174a-45b3-487f-91cb-3d3f727d6f1c');
+
 
 -- EPrescriptions
 insert into eprescription(id, issue_date, patient_id, status)
@@ -415,29 +424,29 @@ values('25fff0b2-ad45-4310-ac7f-96bcc5e517c1', '11cc4eb4-6113-4a7b-b466-758aa35d
 
 -- Purchase orders
 insert into purchase_order (id, end_date, status, pharmacy_admin_id)
-values ('40c88a70-d8cd-4d8f-b56f-eb158f7c27fa', '2021-02-15 18:19:43.000000', 'accepted', '40c88a70-d8cd-4d8f-b56f-eb158f7c27fa');
+values ('dd2e771b-f99f-49d3-ab4c-66a594fda024', '2021-02-15', 'accepted', '40c88a70-d8cd-4d8f-b56f-eb158f7c27fa');
 insert into purchase_order (id, end_date, status, pharmacy_admin_id)
-values ('1e5e53cf-8c57-4425-b07b-0420b1de156b', '2021-02-13 18:31:51.000000', 'waiting_for_response', '40c88a70-d8cd-4d8f-b56f-eb158f7c27fa');
+values ('1e5e53cf-8c57-4425-b07b-0420b1de156b', '2021-02-13', 'waiting_for_response', '40c88a70-d8cd-4d8f-b56f-eb158f7c27fa');
 
 --Purchase order medicines
 insert into purchase_order_medicine (quantity, medicine_id, purchase_order_id)
-values (15, '7571786b-2fc5-4756-ab5c-1f4af756e6f2', '40c88a70-d8cd-4d8f-b56f-eb158f7c27fa');
+values (15, '7571786b-2fc5-4756-ab5c-1f4af756e6f2', 'dd2e771b-f99f-49d3-ab4c-66a594fda024');
 insert into purchase_order_medicine (quantity, medicine_id, purchase_order_id)
-values (10, '592e558c-b3f9-4088-b468-28764908bd92', '40c88a70-d8cd-4d8f-b56f-eb158f7c27fa');
+values (10, '592e558c-b3f9-4088-b468-28764908bd92', 'dd2e771b-f99f-49d3-ab4c-66a594fda024');
 insert into purchase_order_medicine (quantity, medicine_id, purchase_order_id)
-values (5, '3163f62a-5b88-4295-854c-c9400e19089f', '40c88a70-d8cd-4d8f-b56f-eb158f7c27fa');
+values (5, '3163f62a-5b88-4295-854c-c9400e19089f', 'dd2e771b-f99f-49d3-ab4c-66a594fda024');
 insert into purchase_order_medicine (quantity, medicine_id, purchase_order_id)
 values (2, '7571786b-2fc5-4756-ab5c-1f4af756e6f2', '1e5e53cf-8c57-4425-b07b-0420b1de156b');
 insert into purchase_order_medicine (quantity, medicine_id, purchase_order_id)
 values (5, '592e558c-b3f9-4088-b468-28764908bd92', '1e5e53cf-8c57-4425-b07b-0420b1de156b');
 
 --Supplier purchase orders
-insert into supplier_purchase_order (delivery_date, price, purchase_order_id, supplier_id)
-values ('2021-02-11 18:33:53.000000', 15000, '40c88a70-d8cd-4d8f-b56f-eb158f7c27fa', 'b861fa5d-e543-4c61-adac-0c3f27bc32a0');
-insert into supplier_purchase_order (delivery_date, price, purchase_order_id, supplier_id)
-values ('2021-02-10 18:34:19.000000', 10000, '40c88a70-d8cd-4d8f-b56f-eb158f7c27fa', '6dbd78ec-c0c7-403a-b1d0-bea63b5a1981');
-insert into supplier_purchase_order (delivery_date, price, purchase_order_id, supplier_id)
-values ('2021-02-12 18:35:09.000000', 5000, '1e5e53cf-8c57-4425-b07b-0420b1de156b', '84f5d15e-8b52-4e00-ac4f-6b35e030c732');
+insert into supplier_purchase_order (accepted, delivery_date, price, purchase_order_id, supplier_id)
+values (true, '2021-02-11', 15000, 'dd2e771b-f99f-49d3-ab4c-66a594fda024', 'b861fa5d-e543-4c61-adac-0c3f27bc32a0');
+insert into supplier_purchase_order (accepted, delivery_date, price, purchase_order_id, supplier_id)
+values (false, '2021-02-10', 10000, 'dd2e771b-f99f-49d3-ab4c-66a594fda024', '6dbd78ec-c0c7-403a-b1d0-bea63b5a1981');
+insert into supplier_purchase_order (accepted, delivery_date, price, purchase_order_id, supplier_id)
+values (false, '2021-02-12', 5000, '1e5e53cf-8c57-4425-b07b-0420b1de156b', '84f5d15e-8b52-4e00-ac4f-6b35e030c732');
 
 --Supplier medicines
 insert into supplier_medicine (quantity, medicine_id, supplier_id)

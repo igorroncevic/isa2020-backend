@@ -40,6 +40,12 @@ public class DoctorController {
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
+    @GetMapping("/{doctorId}/pharmacy/{pharmacyId}")
+    public ResponseEntity<WorkScheduleDTO> getDoctorWorkScheduleInPharmacy(@PathVariable UUID doctorId, @PathVariable UUID pharmacyId) {
+        WorkScheduleDTO workScheduleDTO = doctorService.getDoctorWorkScheduleInPharmacy(doctorId, pharmacyId);
+        return new ResponseEntity<>(workScheduleDTO, HttpStatus.OK);
+    }
+
     @PreAuthorize("hasRole('ROLE_PATIENT')")
     @PostMapping("/patient")
     public ResponseEntity<List<DoctorMarkPharmaciesDTO>> getPatientsDoctorsByRole(@RequestBody PatientDoctorRoleDTO patientDoctorRoleDTO) {

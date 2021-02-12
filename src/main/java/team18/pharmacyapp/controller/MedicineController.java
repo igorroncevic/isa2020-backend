@@ -62,6 +62,16 @@ public class MedicineController {
         return new ResponseEntity<>(medicines, HttpStatus.OK);
     }
 
+    @GetMapping("/noauth/filter")
+    public ResponseEntity<List<PharmacyMedicinesDTO>> filterForNonAuth(){
+        List<PharmacyMedicinesDTO> meds = medicineService.findAllForNoAuth();
+        if(meds != null){
+            return new ResponseEntity<>(meds, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+    }
+
     @PostMapping("/noauth/filter")
     public ResponseEntity<List<MedicineFilterDTO>> filterNoAuthMedicines(@RequestBody MedicineFilterRequestDTO mfr) {
         List<MedicineFilterDTO> medicines;
@@ -183,8 +193,6 @@ public class MedicineController {
             success = medicineService.reserveMedicine(medicine);
         } catch (ActionNotAllowedException ex) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        } catch (ReserveMedicineException ex) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         } catch (RuntimeException ex) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }

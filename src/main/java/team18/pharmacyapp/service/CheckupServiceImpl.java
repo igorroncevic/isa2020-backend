@@ -1,29 +1,31 @@
 package team18.pharmacyapp.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.Lock;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.HttpServerErrorException;
 import team18.pharmacyapp.model.Term;
+import team18.pharmacyapp.model.WorkSchedule;
 import team18.pharmacyapp.model.dtos.*;
 import team18.pharmacyapp.model.enums.TermType;
-import team18.pharmacyapp.model.exceptions.ActionNotAllowedException;
-import team18.pharmacyapp.model.exceptions.AlreadyScheduledException;
-import team18.pharmacyapp.model.exceptions.EntityNotFoundException;
-import team18.pharmacyapp.model.exceptions.ScheduleTermException;
+import team18.pharmacyapp.model.exceptions.*;
 import team18.pharmacyapp.model.users.Doctor;
 import team18.pharmacyapp.model.users.Patient;
 import team18.pharmacyapp.repository.CheckupRepository;
 import team18.pharmacyapp.repository.TermRepository;
+import team18.pharmacyapp.repository.WorkScheduleRepository;
 import team18.pharmacyapp.repository.users.DoctorRepository;
 import team18.pharmacyapp.repository.users.PatientRepository;
 import team18.pharmacyapp.service.interfaces.CheckupService;
+import team18.pharmacyapp.service.interfaces.EmailService;
 import team18.pharmacyapp.service.interfaces.TermService;
 
 import javax.persistence.LockModeType;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Service
 public class CheckupServiceImpl implements CheckupService {
@@ -32,14 +34,18 @@ public class CheckupServiceImpl implements CheckupService {
     private final DoctorRepository doctorRepository;
     private final TermService termService;
     private final TermRepository termRepository;
-
-
-    public CheckupServiceImpl(CheckupRepository checkupRepository, PatientRepository patientRepository, DoctorRepository doctorRepository, TermService termService, TermRepository termRepository) {
+    private final EmailService emailService;
+    private final WorkScheduleRepository workScheduleRepository;
+  
+    @Autowired
+    public CheckupServiceImpl(CheckupRepository checkupRepository, PatientRepository patientRepository, DoctorRepository doctorRepository, TermService termService, TermRepository termRepository, WorkScheduleRepository workScheduleRepository, EmailService emailService) {
         this.checkupRepository = checkupRepository;
         this.patientRepository = patientRepository;
         this.doctorRepository = doctorRepository;
         this.termService = termService;
         this.termRepository = termRepository;
+        this.emailService = emailService;
+        this.workScheduleRepository = workScheduleRepository;
     }
 
     @Override
@@ -95,6 +101,25 @@ public class CheckupServiceImpl implements CheckupService {
 
     @Override
     @Transactional(readOnly = true)
+    public List<TermDTO> findAllAvailableDermatologistsCheckups(UUID doctorId) {
+        Date todaysDate = new Date(System.currentTimeMillis() + 60 * 60 * 1000);
+
+        List<Term> checkups = checkupRepository.findAllAvailableDermatologistsCheckups(todaysDate, TermType.checkup, doctorId);
+
+        List<TermDTO> finalCheckups = new ArrayList<>();
+        for (Term t : checkups) {
+            Doctor doctor = doctorRepository.findDoctorByTermId(t.getId());
+            DoctorDTO doctorDto = new DoctorDTO(doctor.getId(), doctor.getName(), doctor.getSurname(), doctor.getEmail(), doctor.getPhoneNumber(),
+                    doctor.getRole(), null);
+            TermDTO termDto = new TermDTO(t.getId(), t.getStartTime(), t.getEndTime(), t.getPrice(), t.getType(), doctorDto);
+            finalCheckups.add(termDto);
+        }
+
+        return finalCheckups;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public List<TermDTO> findAllPatientsCheckups(UUID patientId) {
         List<Term> checkups = checkupRepository.findAllPatientsCheckups(patientId, TermType.checkup);
 
@@ -110,12 +135,14 @@ public class CheckupServiceImpl implements CheckupService {
         return finalCheckups;
     }
 
-    public Term save(Term term) {
-        return checkupRepository.save(term);
-    }
 
     public void deleteById(UUID id) {
         checkupRepository.deleteById(id);
+    }
+
+    @Override
+    public void save(Term term) {
+        checkupRepository.save(term);
     }
 
     @Override
@@ -136,8 +163,12 @@ public class CheckupServiceImpl implements CheckupService {
 
         checkTerm.setPatient(patient);
         checkupRepository.save(checkTerm);
-        //int rowsUpdated = checkupRepository.patientScheduleCheckup(term.getPatientId(), term.getCheckupId());
-        //if (rowsUpdated != 1) throw new RuntimeException("Couldn't schedule this term!");
+
+        String userMail = patient.getEmail();   // zakucano za sada
+        String subject = "[ISA Pharmacy] Confirmation - Checkup scheduling";
+        String body = "You have successfully scheduled a checkup on our site.\n" +
+                "Your reservation ID: " + checkTerm.getId().toString();
+        new Thread(() -> emailService.sendMail(userMail, subject, body)).start();
 
         return true;
     }
@@ -159,10 +190,54 @@ public class CheckupServiceImpl implements CheckupService {
         if (checkTerm.getStartTime().before(now))
             throw new ActionNotAllowedException("Cannot cancel any past checkups");
 
+        // Zaključavanje nije potrebno jer samo pacijent može da pristupi tom resursu
         int rowsUpdated = checkupRepository.patientCancelCheckup(term.getTermId());
         if (rowsUpdated != 1) throw new RuntimeException("Couldn't cancel this term!");
 
         return true;
+    }
+
+
+
+    @Override
+    public boolean addNewCheckup(NewCheckupDTO newCheckupDTO, UUID pharmacyId) throws FailedToSaveException, BadTimeRangeException, ParseException {
+        UUID id = UUID.randomUUID();
+        Calendar c1 = Calendar.getInstance();
+        c1.setTime(newCheckupDTO.getStartTime());
+        Calendar c2 = Calendar.getInstance();
+        c2.setTime(newCheckupDTO.getEndTime());
+        if(!c2.after(c1)) {
+            throw new BadTimeRangeException("Start time must be before end time");
+        }
+        if(c1.get(Calendar.YEAR) != c2.get(Calendar.YEAR) || c1.get(Calendar.MONTH) != c2.get(Calendar.MONTH) || c1.get(Calendar.DAY_OF_MONTH) != c2.get(Calendar.DAY_OF_MONTH)) {
+            throw new BadTimeRangeException("Checkup must be within one day!");
+        }
+        if(c1.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY || c1.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) {
+            throw new BadTimeRangeException("You can't make checkups on weekend!");
+        }
+        WorkSchedule workSchedule = workScheduleRepository.getDoctorSchedule(newCheckupDTO.getDoctorId(), pharmacyId);
+        if(timeIsBefore(newCheckupDTO.getStartTime(), workSchedule.getFromHour()) || timeIsAfter(newCheckupDTO.getEndTime(), workSchedule.getToHour())) {
+            throw new BadTimeRangeException("Checkup is not inside work schedule!");
+        }
+        int numberOfOverlapingCheckups = checkupRepository.getNumberOfSchedulesInTimeRange(newCheckupDTO.getDoctorId(), newCheckupDTO.getStartTime(), newCheckupDTO.getEndTime());
+        if(numberOfOverlapingCheckups != 0) {
+            throw new BadTimeRangeException("Checkup is overlapping with other checkups");
+        }
+        int i = checkupRepository.insertCheckup(id, newCheckupDTO.getDoctorId(), newCheckupDTO.getStartTime(), newCheckupDTO.getEndTime(), newCheckupDTO.getPrice());
+        if(i != 1) {
+            throw new FailedToSaveException("Failed to save checkup");
+        }
+        return true;
+    }
+
+    private boolean timeIsBefore(Date d1, Date d2) {
+        DateFormat f = new SimpleDateFormat("HH:mm:ss.SSS");
+        return f.format(d1).compareTo(f.format(d2)) < 0;
+    }
+
+    private boolean timeIsAfter(Date d1, Date d2) {
+        DateFormat f = new SimpleDateFormat("HH:mm:ss.SSS");
+        return f.format(d2).compareTo(f.format(d1)) < 0;
     }
 
     @Override

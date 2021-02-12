@@ -6,6 +6,7 @@ import team18.pharmacyapp.model.Vacation;
 import team18.pharmacyapp.model.dtos.DoctorDTO;
 import team18.pharmacyapp.model.dtos.VacationDTO;
 import team18.pharmacyapp.model.dtos.VacationRequestDTO;
+import team18.pharmacyapp.model.enums.UserRole;
 import team18.pharmacyapp.model.enums.VacationStatus;
 import team18.pharmacyapp.model.exceptions.ActionNotAllowedException;
 import team18.pharmacyapp.model.exceptions.EntityNotFoundException;
@@ -35,8 +36,8 @@ public class VacationServiceImpl implements VacationService {
     }
 
     @Override
-    public List<VacationDTO> getAll(VacationStatus vacationStatus) {
-        List<Vacation> vacations = vacationRepository.getAll(vacationStatus);
+    public List<VacationDTO> getAll(VacationStatus vacationStatus, UserRole userRole) {
+        List<Vacation> vacations = vacationRepository.getAll(vacationStatus, userRole);
         List<VacationDTO> vacationDTOs = new ArrayList<>();
         for (Vacation vacation : vacations) {
             DoctorDTO doctorDTO = new DoctorDTO(vacation.getDoctor().getId(), vacation.getDoctor().getName(),

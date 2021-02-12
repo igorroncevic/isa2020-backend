@@ -145,6 +145,12 @@ public class DoctorServiceImpl implements DoctorService {
         return new PharmacyDTO(p.getId(), p.getName(), p.getAddress().getStreet(), p.getAddress().getCity(), p.getAddress().getCountry());
     }
 
+    @Override
+    public WorkScheduleDTO getDoctorWorkScheduleInPharmacy(UUID doctorId, UUID pharmacyId) {
+        WorkSchedule workSchedule = workScheduleRepository.getDoctorSchedule(doctorId, pharmacyId);
+        return new WorkScheduleDTO(workSchedule.getFromHour(), workSchedule.getToHour());
+    }
+
     public List<DoctorsPatientDTO> findDoctorsPatients(UUID doctorId) {
         return doctorRepository.findDoctorPatients(doctorId);
 

@@ -7,9 +7,14 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import team18.pharmacyapp.helpers.FilteringHelpers;
 import team18.pharmacyapp.model.Pharmacy;
+import team18.pharmacyapp.model.dtos.PharmacyDTO;
 import team18.pharmacyapp.model.dtos.PharmacyFilteringDTO;
 import team18.pharmacyapp.model.dtos.PharmacyMarkPriceDTO;
+import team18.pharmacyapp.model.dtos.PurchaseOrderDTO;
+import team18.pharmacyapp.security.TokenUtils;
+import team18.pharmacyapp.service.interfaces.PharmacyAdminService;
 import team18.pharmacyapp.service.interfaces.PharmacyService;
+import team18.pharmacyapp.service.interfaces.PurchaseOrderService;
 
 import java.util.List;
 import java.util.UUID;
@@ -19,10 +24,16 @@ import java.util.UUID;
 @RequestMapping(value = "api/pharmacies")
 public class PharmacyController {
     private final PharmacyService pharmacyService;
+    private final PurchaseOrderService purchaseOrderService;
+    private final TokenUtils tokenUtils;
+    private final PharmacyAdminService pharmacyAdminService;
 
     @Autowired
-    public PharmacyController(PharmacyService pharmacyService) {
+    public PharmacyController(PharmacyService pharmacyService, PurchaseOrderService purchaseOrderService, TokenUtils tokenUtils, PharmacyAdminService pharmacyAdminService) {
         this.pharmacyService = pharmacyService;
+        this.purchaseOrderService = purchaseOrderService;
+        this.tokenUtils = tokenUtils;
+        this.pharmacyAdminService = pharmacyAdminService;
     }
 
     @GetMapping("/search")
@@ -53,8 +64,8 @@ public class PharmacyController {
     }
 
     @GetMapping("/allpharms")
-    public ResponseEntity<List<Pharmacy>> allPharmacies() {
-        List<Pharmacy> all = pharmacyService.getAll();
+    public ResponseEntity<List<PharmacyDTO>> allPharmacies() {
+        List<PharmacyDTO> all = pharmacyService.getAll();
         return new ResponseEntity<>(all, HttpStatus.OK);
     }
 
@@ -63,5 +74,17 @@ public class PharmacyController {
     public ResponseEntity<Pharmacy> saveNewPharmacy(@RequestBody team18.pharmacyapp.model.dtos.PharmacyDTO newPharmacy) {
         Pharmacy pharmacy = pharmacyService.registerNewPharmacy(newPharmacy);
         return new ResponseEntity<>(pharmacy, HttpStatus.CREATED);
+    }
+
+    @PreAuthorize("hasRole('ROLE_PHADMIN')")
+    @GetMapping("/{id}/orders")
+    public ResponseEntity<List<PurchaseOrderDTO>> getPharmacyPurchaseOrders(@PathVariable UUID id, @RequestHeader("Authorization") String token) {
+        UUID phadminId = tokenUtils.getUserIdFromToken(token.split(" ")[1]);
+        PharmacyDTO pharmacyDTO = pharmacyAdminService.getPharmacyAdminPharmacyId(phadminId);
+        if(!id.equals(pharmacyDTO.getId())) {
+            return new ResponseEntity<>(null, HttpStatus.METHOD_NOT_ALLOWED);
+        }
+        List<PurchaseOrderDTO> purchaseOrderDTOs = purchaseOrderService.getPharmacyPurchaseOrders(id);
+        return new ResponseEntity<>(purchaseOrderDTOs, HttpStatus.OK);
     }
 }

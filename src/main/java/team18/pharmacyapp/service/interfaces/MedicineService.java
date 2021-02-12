@@ -22,7 +22,7 @@ public interface MedicineService {
 
     List<ReservedMedicinesDTO> findAllPatientsReservedMedicines(UUID id);
 
-    boolean reserveMedicine(ReserveMedicineRequestDTO reserveMedicineRequestDTO) throws ReserveMedicineException, RuntimeException, ActionNotAllowedException;
+    boolean reserveMedicine(ReserveMedicineRequestDTO reserveMedicineRequestDTO) throws RuntimeException, ActionNotAllowedException;
 
     boolean cancelMedicine(CancelMedicineRequestDTO cmrDTO) throws ReserveMedicineException, RuntimeException;
 
@@ -48,4 +48,5 @@ public interface MedicineService {
 
     List<MedicineFilterDTO> filterNoAuthMedicines(MedicineFilterRequestDTO mfr);
 
+    List<PharmacyMedicinesDTO> findAllForNoAuth();
 }

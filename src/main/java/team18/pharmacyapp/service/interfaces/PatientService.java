@@ -1,8 +1,10 @@
 package team18.pharmacyapp.service.interfaces;
 
+import team18.pharmacyapp.model.dtos.DoctorDTO;
 import team18.pharmacyapp.model.dtos.MedicineIdNameDTO;
 import team18.pharmacyapp.model.dtos.PatientDTO;
 import team18.pharmacyapp.model.dtos.UpdateProfileDataDTO;
+import team18.pharmacyapp.model.enums.UserRole;
 import team18.pharmacyapp.model.exceptions.ActionNotAllowedException;
 import team18.pharmacyapp.model.exceptions.EntityNotFoundException;
 import team18.pharmacyapp.model.users.Patient;
@@ -33,4 +35,6 @@ public interface PatientService {
     boolean activateAcc(UUID patientId);
 
     Patient save(Patient patientForUpdate);
+
+    List<DoctorDTO> getAllPatientDoctors(UUID patientId, UserRole role);
 }
