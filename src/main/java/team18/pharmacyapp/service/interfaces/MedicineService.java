@@ -48,4 +48,5 @@ public interface MedicineService {
 
     List<MedicineFilterDTO> filterNoAuthMedicines(MedicineFilterRequestDTO mfr);
 
+    List<PharmacyMedicinesDTO> findAllForNoAuth();
 }

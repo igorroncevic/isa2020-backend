@@ -68,7 +68,7 @@ public class EPrescriptionServiceImpl implements EPrescriptionService {
                 Medicine med = medicineRepository.findById(epq.getMedicineId()).orElse(null);
                 Pharmacy pharmacy = pharmacyRepository.findByIdCustom(epq.getPharmacyId());
 
-                MedicineDTO medicineDTO = new MedicineDTO(med.getId(), med.getName(), "", "", "", "", "", med.getLoyaltyPoints(), "", 0, "", "", "");
+                MedicineDTO medicineDTO = new MedicineDTO(med.getId(), med.getName(), "", "", "", "", "", med.getLoyaltyPoints(), "", 0, "", "", "", 0);
                 PharmacyDTO pharmacyDTO = new PharmacyDTO(pharmacy.getId(), pharmacy.getName(), pharmacy.getAddress().getStreet(), pharmacy.getAddress().getCity(), pharmacy.getAddress().getCountry());
 
                 medicines.add(new EPrescriptionMedicinesDTO(pharmacyDTO, medicineDTO, epq.getQuantity()));

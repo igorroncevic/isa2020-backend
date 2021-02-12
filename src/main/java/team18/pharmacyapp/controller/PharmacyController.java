@@ -7,6 +7,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import team18.pharmacyapp.helpers.FilteringHelpers;
 import team18.pharmacyapp.model.Pharmacy;
+import team18.pharmacyapp.model.dtos.PharmacyDTO;
 import team18.pharmacyapp.model.dtos.PharmacyFilteringDTO;
 import team18.pharmacyapp.model.dtos.PharmacyMarkPriceDTO;
 import team18.pharmacyapp.service.interfaces.PharmacyService;
@@ -53,8 +54,8 @@ public class PharmacyController {
     }
 
     @GetMapping("/allpharms")
-    public ResponseEntity<List<Pharmacy>> allPharmacies() {
-        List<Pharmacy> all = pharmacyService.getAll();
+    public ResponseEntity<List<PharmacyDTO>> allPharmacies() {
+        List<PharmacyDTO> all = pharmacyService.getAll();
         return new ResponseEntity<>(all, HttpStatus.OK);
     }
 

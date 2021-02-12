@@ -5,15 +5,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import team18.pharmacyapp.model.Loyalty;
-import team18.pharmacyapp.model.dtos.LoyaltyDTO;
-import team18.pharmacyapp.model.dtos.MedicineIdNameDTO;
-import team18.pharmacyapp.model.dtos.PatientDTO;
-import team18.pharmacyapp.model.dtos.UpdateProfileDataDTO;
+import team18.pharmacyapp.model.dtos.*;
 import team18.pharmacyapp.model.dtos.security.LoginDTO;
 import team18.pharmacyapp.model.enums.UserRole;
 import team18.pharmacyapp.model.exceptions.ActionNotAllowedException;
 import team18.pharmacyapp.model.exceptions.EntityNotFoundException;
 import team18.pharmacyapp.model.medicine.Medicine;
+import team18.pharmacyapp.model.users.Doctor;
 import team18.pharmacyapp.model.users.Patient;
 import team18.pharmacyapp.model.users.RegisteredUser;
 import team18.pharmacyapp.repository.AddressRepository;
@@ -164,5 +162,20 @@ public class PatientServiceImpl implements PatientService {
     @Override
     public boolean isActivated(UUID patientId) {
         return getById(patientId).isActivated();
+    }
+
+    @Override
+    public List<DoctorDTO> getAllPatientDoctors(UUID patientId,UserRole role){
+        List<DoctorDTO> list=new ArrayList<>();
+        for(Doctor d : patientRepository.getAllPatientsDoctors(patientId)){
+            if(d.getRole()==role){
+                DoctorDTO dto=new DoctorDTO();
+                dto.setName(d.getName());
+                dto.setSurname(d.getSurname());
+                dto.setId(d.getId());
+                list.add(dto);
+            }
+        }
+        return list;
     }
 }
