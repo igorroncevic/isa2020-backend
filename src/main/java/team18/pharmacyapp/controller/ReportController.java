@@ -12,6 +12,8 @@ import team18.pharmacyapp.model.medicine.ReportMedicines;
 import team18.pharmacyapp.service.interfaces.ReportMedicinesService;
 import team18.pharmacyapp.service.interfaces.ReportService;
 
+import java.util.UUID;
+
 @CrossOrigin(origins = {"http://localhost:8080", "http://localhost:8081"})
 @RestController
 @RequestMapping(value = "api/reports")
@@ -32,9 +34,9 @@ public class ReportController {
     }
 
     @PreAuthorize("hasRole('ROLE_DERMATOLOGIST') || hasRole('ROLE_PHARMACIST')")
-    @PostMapping("reportMedicine")
-    public ResponseEntity<ReportMedicines> saveReportMedicine(@RequestBody ReportMedicines reportMedicines) {
-        ReportMedicines rm = reportMedicinesService.save(reportMedicines);
+    @PostMapping("reportMedicine/{pharmacy}")
+    public ResponseEntity<ReportMedicines> saveReportMedicine(@RequestBody ReportMedicines reportMedicines,@PathVariable UUID pharmacy) {
+        ReportMedicines rm = reportMedicinesService.save(reportMedicines,pharmacy);
         if (rm != null) {
             return new ResponseEntity<>(HttpStatus.CREATED);
         }

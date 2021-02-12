@@ -5,6 +5,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.repository.Lock;
+import org.springframework.data.jpa.repository.QueryHints;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import team18.pharmacyapp.helpers.DateTimeHelpers;
@@ -22,6 +24,8 @@ import team18.pharmacyapp.service.interfaces.EmailService;
 import team18.pharmacyapp.service.interfaces.PatientService;
 import team18.pharmacyapp.service.interfaces.TermService;
 
+import javax.persistence.LockModeType;
+import javax.persistence.QueryHint;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Date;
@@ -96,6 +100,7 @@ public class TermServiceImpl implements TermService {
         return termRepository.findAllTermsForPatient(patientId);
     }
 
+    @Transactional
     public boolean isDoctorWorking(UUID doctorId, UUID pharmacyId, Date startTime, Date endTime) {
         WorkSchedule workSchedule = workScheduleRepository.getDoctorSchedule(doctorId, pharmacyId);
         if (workSchedule == null) {
@@ -113,6 +118,7 @@ public class TermServiceImpl implements TermService {
 
 
     @Override
+    @Transactional
     public boolean isDoctorFree(UUID doctorId, Date startTime, Date endTime) {
         for (DoctorTermDTO term : getAllDoctorTerms(doctorId)) {
             if (DateTimeHelpers.checkIfTimesIntersect(startTime, endTime, term.getStartTime(), term.getEndTime())) {
@@ -124,6 +130,7 @@ public class TermServiceImpl implements TermService {
     }
 
     @Override
+    @Transactional
     public boolean isPatientFree(UUID patientId, Date startTime, Date endTime) {
         for (Term term : getAllPatientTerms(patientId)) {
             if (DateTimeHelpers.checkIfTimesIntersect(startTime, endTime, term.getStartTime(), term.getEndTime())) {
@@ -134,6 +141,9 @@ public class TermServiceImpl implements TermService {
     }
 
     @Override
+    @Transactional
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @QueryHints({@QueryHint(name = "javax.persistence.lock.timeout", value ="3000")})
     public Term scheduleTerm(DoctorScheduleTermDTO termDTO) {
         if (isDoctorWorking(termDTO.getDoctorId(), termDTO.getPharmacyId(), termDTO.getStartTime(), termDTO.getEndTime()) && isDoctorFree(termDTO.getDoctorId(), termDTO.getStartTime(), termDTO.getEndTime())
                 && isPatientFree(termDTO.getPatientId(), termDTO.getStartTime(), termDTO.getEndTime()) && checkDates(termDTO.getStartTime(), termDTO.getEndTime())) {

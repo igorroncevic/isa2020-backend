@@ -49,6 +49,11 @@ public class PharmacyMedicinesServiceImpl implements PharmacyMedicinesService {
     }
 
     @Override
+    public int updateQuantity(UUID medicineId, UUID pharmacyId, int quantity) {
+        return repository.updateQuantity(medicineId,pharmacyId,quantity);
+    }
+
+    @Override
     public List<MedicineQuantityDTO> getMedicnesByPharmacy(UUID pharmacy) {
         List<PharmacyMedicines> pharmacyMedicines = repository.getMedicineByPharmacy(pharmacy);
         List<MedicineQuantityDTO> medicineQuantityDTOs = new ArrayList<>();
