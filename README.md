@@ -13,3 +13,4 @@ Technologies used:
 - Static code analysis: SonarCloud
 
 Trello board: https://trello.com/b/1SOMal8S/isa2020-projekat
+
