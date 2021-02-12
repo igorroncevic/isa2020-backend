@@ -25,12 +25,10 @@ public class RegisteredUserServiceImpl implements RegisteredUserService {
     private final SupplierService supplierService;
     private final SystemAdminService systemAdminService;
     private final PharmacyAdminService pharmacyAdminService;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    @Autowired
-    public RegisteredUserServiceImpl(RegisteredUserRepository userRepository, AddressRepository addressRepository, AuthorityService authorityService, PatientService patientService, DoctorService doctorService, SupplierService supplierService, SystemAdminService systemAdminService, PharmacyAdminService pharmacyAdminService) {
+    public RegisteredUserServiceImpl(RegisteredUserRepository userRepository, AddressRepository addressRepository, AuthorityService authorityService, PatientService patientService, DoctorService doctorService, SupplierService supplierService, SystemAdminService systemAdminService, PharmacyAdminService pharmacyAdminService, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.addressRepository = addressRepository;
         this.authorityService = authorityService;
@@ -39,6 +37,7 @@ public class RegisteredUserServiceImpl implements RegisteredUserService {
         this.supplierService = supplierService;
         this.systemAdminService = systemAdminService;
         this.pharmacyAdminService = pharmacyAdminService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override

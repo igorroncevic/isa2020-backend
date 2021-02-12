@@ -38,7 +38,7 @@ public class PatientServiceImpl implements PatientService {
     private final RegisteredUserRepository userRepository;
 
     @Autowired
-    public PatientServiceImpl(PatientRepository patientRepository, MedicineRepository medicineRepository, AddressRepository addressRepository, LoyaltyRepository loyaltyRepository, EmailService emailService, RegisteredUserRepository userRepository, PasswordEncoder passwordEncoder, PasswordEncoder passwordEncoder1, RegisteredUserRepository userRepository1) {
+    public PatientServiceImpl(PatientRepository patientRepository, MedicineRepository medicineRepository, AddressRepository addressRepository, LoyaltyRepository loyaltyRepository, EmailService emailService, PasswordEncoder passwordEncoder, RegisteredUserRepository userRepository1) {
         this.patientRepository = patientRepository;
         this.medicineRepository = medicineRepository;
         this.addressRepository = addressRepository;
