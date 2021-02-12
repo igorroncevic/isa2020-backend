@@ -27,8 +27,8 @@ public interface MedicineRepository extends JpaRepository<Medicine, UUID> {
     List<Medicine> findAllAvailableMedicinesNoAuth();
 
     @Transactional(readOnly = true)
-    @Query("SELECT r FROM reserved_medicines r JOIN FETCH r.patient")
-    List<ReservedMedicines> findAllReservedMedicines();
+    @Query("SELECT r FROM reserved_medicines r JOIN FETCH r.patient WHERE r.pickupDate > :todaysDate AND r.handled = false")
+    List<ReservedMedicines> findAllNonHandledReservedMedicines(@Param("todaysDate") Date todaysDate);
 
     @Transactional(readOnly = true)
     @Query("SELECT rm FROM reserved_medicines rm " +
@@ -109,10 +109,6 @@ public interface MedicineRepository extends JpaRepository<Medicine, UUID> {
             "NOT IN (SELECT m2.id FROM medicine m2 INNER JOIN alergicto a on m2.id = a.medicine_id WHERE a.patient_id = :patientId)")
     List<Medicine> getAllMedicinesPatientsNotAlergicTo(@Param("patientId") UUID patientId);
 
-    @Transactional(readOnly = true)
-    @Query(nativeQuery = true, value = "SELECT * FROM alergicto a WHERE a.patient_id = :patientId AND a.medicine_id = :medicineId")
-    MedicineAllergyDTO checkIfAllergyExists(@Param("patientId")UUID patientId, @Param("medicineId")UUID medicineId);
-
     @Transactional
     @Modifying
     @Query(nativeQuery = true, value = "INSERT INTO alergicto(patient_id, medicine_id) VALUES (:patientId, :medicineId)")
@@ -131,5 +127,4 @@ public interface MedicineRepository extends JpaRepository<Medicine, UUID> {
     @Transactional(readOnly = true)
     @Query(value = "select m.name from medicine_specification s inner join medicine m on s.replacementMedicineCode=m.medicineCode where s.medicine.id=:medicineId ")
     String getReplacmentMedicine (UUID medicineId);
-
 }

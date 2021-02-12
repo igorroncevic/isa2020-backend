@@ -75,4 +75,8 @@ public class Medicine implements Serializable {
 
     @Column(nullable = false)
     private int loyaltyPoints;
+
+    public Medicine(String name){
+        this.name = name;
+    }
 }
