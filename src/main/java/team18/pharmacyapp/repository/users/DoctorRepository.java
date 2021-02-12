@@ -63,4 +63,8 @@ public interface DoctorRepository extends JpaRepository<Doctor, UUID> {
     @Query(nativeQuery = true, value = "UPDATE doctor SET id=:newId " +
             "WHERE id = :doctorId")
     int setId(UUID doctorId,UUID newId);
+
+    @Query("SELECT p from work_schedule w inner join pharmacy p on w.pharmacy.id=p.id where w.doctor.id=:doctorId")
+    Pharmacy getPharmPharmacy(UUID doctorId);
+
 }

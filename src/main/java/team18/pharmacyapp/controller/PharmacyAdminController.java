@@ -3,14 +3,13 @@ package team18.pharmacyapp.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import team18.pharmacyapp.model.dtos.PharmacyAdminDTO;
 import team18.pharmacyapp.model.dtos.PharmacyAdminInfoDTO;
 import team18.pharmacyapp.model.users.PharmacyAdmin;
 import team18.pharmacyapp.service.interfaces.PharmacyAdminService;
 
 import java.util.UUID;
 
-@CrossOrigin(origins = {"http://localhost:8080","http://localhost:8081"})
+@CrossOrigin(origins = {"http://localhost:8080", "http://localhost:8081"})
 @RestController
 @RequestMapping(value = "api/phadmin")
 public class PharmacyAdminController {

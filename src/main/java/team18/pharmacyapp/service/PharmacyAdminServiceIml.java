@@ -9,6 +9,7 @@ import team18.pharmacyapp.model.users.PharmacyAdmin;
 import team18.pharmacyapp.model.users.RegisteredUser;
 import team18.pharmacyapp.repository.users.PharmacyAdminRepository;
 import team18.pharmacyapp.repository.PharmacyRepository;
+import team18.pharmacyapp.repository.users.PharmacyAdminRepository;
 import team18.pharmacyapp.service.interfaces.PharmacyAdminService;
 
 import java.util.UUID;
@@ -46,19 +47,19 @@ public class PharmacyAdminServiceIml implements PharmacyAdminService {
 
     @Override
     public PharmacyAdmin registerPharmacyAdmin(RegisteredUser user, String pharmacyName) {
-        PharmacyAdmin phAdmin = new PharmacyAdmin();
-        Pharmacy pharmacy = pharmacyRepository.findByName(pharmacyName);
+            PharmacyAdmin phAdmin = new PharmacyAdmin();
+            Pharmacy pharmacy = pharmacyRepository.findByName(pharmacyName);
 
-        phAdmin.setRole(UserRole.pharmacyAdmin);
-        phAdmin.setName(user.getName());
-        phAdmin.setSurname(user.getSurname());
-        phAdmin.setPhoneNumber(user.getPhoneNumber());
-        phAdmin.setEmail(user.getEmail());
-        phAdmin.setPassword(user.getPassword());
-        phAdmin.setAddress(user.getAddress());
-        phAdmin.setPharmacy(pharmacy);
-        phAdmin= pharmacyAdminRepository.save(phAdmin);
-        pharmacyAdminRepository.setId(phAdmin.getId(), user.getId());
-        return phAdmin;
-    }
+            phAdmin.setRole(UserRole.pharmacyAdmin);
+            phAdmin.setName(user.getName());
+            phAdmin.setSurname(user.getSurname());
+            phAdmin.setPhoneNumber(user.getPhoneNumber());
+            phAdmin.setEmail(user.getEmail());
+            phAdmin.setPassword(user.getPassword());
+            phAdmin.setAddress(user.getAddress());
+            phAdmin.setPharmacy(pharmacy);
+            phAdmin= pharmacyAdminRepository.save(phAdmin);
+            pharmacyAdminRepository.setId(phAdmin.getId(), user.getId());
+            return phAdmin;
+        }
 }

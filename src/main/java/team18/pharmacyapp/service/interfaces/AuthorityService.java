@@ -7,5 +7,6 @@ import java.util.UUID;
 
 public interface AuthorityService {
     List<Authority> findById(UUID id);
+
     List<Authority> findByName(String name);
 }

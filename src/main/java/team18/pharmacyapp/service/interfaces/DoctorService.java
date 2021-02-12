@@ -16,13 +16,19 @@ public interface DoctorService {
 
     Doctor getById(UUID id);
 
+    DoctorDTO getDTOyId(UUID id);
+
     Doctor update(Doctor doctor);
 
-   List<DoctorsPatientDTO> findDoctorsPatients(UUID doctorId);
- 
-   List<DoctorMarkPharmaciesDTO> getPatientsDoctors(PatientDoctorRoleDTO id);
+    List<DoctorsPatientDTO> findDoctorsPatients(UUID doctorId);
+
+    List<DoctorMarkPharmaciesDTO> getPatientsDoctors(PatientDoctorRoleDTO id);
 
     Doctor registerDermatologist(RegisteredUser user);
 
     List<PharmacyDTO> getDoctorPharmacyList(UUID doctorId);
+
+    PharmacyDTO getCurrentPharmacy(UUID doctorId);
+
+    PharmacyDTO getPharmacistPharmacy(UUID id);
 }

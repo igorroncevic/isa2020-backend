@@ -10,5 +10,5 @@ import javax.persistence.Entity;
 @Getter
 @Setter
 @NoArgsConstructor
-public class SystemAdmin extends RegisteredUser{
+public class SystemAdmin extends RegisteredUser {
 }

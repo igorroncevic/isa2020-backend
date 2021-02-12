@@ -25,19 +25,19 @@ import team18.pharmacyapp.service.interfaces.RegisteredUserService;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@CrossOrigin(origins = {"http://localhost:8080","http://localhost:8081"})
+@CrossOrigin(origins = {"http://localhost:8080", "http://localhost:8081"})
 @RestController
 @RequestMapping(value = "/auth", produces = MediaType.APPLICATION_JSON_VALUE)
 public class AuthenticationController {
-    private TokenUtils tokenUtils;
-    private AuthenticationManager authenticationManager;
-    private CustomUserDetailsService userDetailsService;
-    private RegisteredUserService userService;
-    private PatientService patientService;
+    private final TokenUtils tokenUtils;
+    private final AuthenticationManager authenticationManager;
+    private final CustomUserDetailsService userDetailsService;
+    private final RegisteredUserService userService;
+    private final PatientService patientService;
 
     @Autowired
     public AuthenticationController(TokenUtils tokenUtils, AuthenticationManager authenticationManager, CustomUserDetailsService userDetailsService,
-                                    RegisteredUserService userService, PatientService patientService){
+                                    RegisteredUserService userService, PatientService patientService) {
         this.tokenUtils = tokenUtils;
         this.authenticationManager = authenticationManager;
         this.userDetailsService = userDetailsService;
@@ -47,30 +47,30 @@ public class AuthenticationController {
 
     @PostMapping("/login")
     public ResponseEntity<UserTokenDTO> createAuthenticationToken(@RequestBody LoginDTO authenticationRequest,
-                                                                    HttpServletResponse response) {
+                                                                  HttpServletResponse response) {
         Authentication authentication;
 
-        try{
+        try {
             authentication = authenticationManager
                     .authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getEmail(),
                             authenticationRequest.getPassword()));
-        }catch(BadCredentialsException e){
+        } catch (BadCredentialsException e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         RegisteredUser user = (RegisteredUser) authentication.getPrincipal();
-        if(user.getRole() == UserRole.patient){
-            if(!patientService.isActivated(user.getId()))
+        if (user.getRole() == UserRole.patient) {
+            if (!patientService.isActivated(user.getId()))
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        }else if(user.getFirstLogin()) {
+        } else if (user.getFirstLogin()) {
             return new ResponseEntity<>(HttpStatus.LOCKED);
         }
         String jwt = tokenUtils.generateToken(user.getUsername());
         int expiresIn = tokenUtils.getExpiredIn();
 
-        return ResponseEntity.ok(new UserTokenDTO(jwt,expiresIn,user.getId(),user.getRole(),user.getName(),user.getSurname(),user.getEmail()));
+        return ResponseEntity.ok(new UserTokenDTO(jwt, expiresIn, user.getId(), user.getRole(), user.getName(), user.getSurname(), user.getEmail()));
     }
 
 
@@ -80,9 +80,9 @@ public class AuthenticationController {
         if (existUser != null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        UserRole role=UserRole.patient;
-        String USER_ROLE="ROLE_PATIENT";
-        RegisteredUser user = this.userService.save(dto,role,USER_ROLE);
+        UserRole role = UserRole.patient;
+        String USER_ROLE = "ROLE_PATIENT";
+        RegisteredUser user = this.userService.save(dto, role, USER_ROLE);
         return new ResponseEntity<>(user, HttpStatus.CREATED);
     }
 
@@ -145,7 +145,7 @@ public class AuthenticationController {
                         dto.getOldPass()));
         userService.changeFirstPass(dto);
 
-        return new ResponseEntity<>(true,HttpStatus.OK);
+        return new ResponseEntity<>(true, HttpStatus.OK);
     }
 
     @PostMapping(value = "/refresh")
@@ -157,7 +157,7 @@ public class AuthenticationController {
         String refreshedToken = tokenUtils.refreshToken(token);
         int expiresIn = tokenUtils.getExpiredIn();
 
-        return ResponseEntity.ok(new UserTokenDTO(refreshedToken, expiresIn,user.getId(),user.getRole(),user.getName(),user.getSurname(),user.getEmail()));
+        return ResponseEntity.ok(new UserTokenDTO(refreshedToken, expiresIn, user.getId(), user.getRole(), user.getName(), user.getSurname(), user.getEmail()));
     }
 
 }
