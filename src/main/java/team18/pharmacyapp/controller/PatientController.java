@@ -5,9 +5,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import team18.pharmacyapp.model.dtos.MedicineIdNameDTO;
-import team18.pharmacyapp.model.dtos.PatientDTO;
-import team18.pharmacyapp.model.dtos.UpdateProfileDataDTO;
+import team18.pharmacyapp.model.dtos.*;
+import team18.pharmacyapp.model.enums.UserRole;
 import team18.pharmacyapp.model.exceptions.ActionNotAllowedException;
 import team18.pharmacyapp.model.exceptions.EntityNotFoundException;
 import team18.pharmacyapp.model.users.Patient;
@@ -93,4 +92,12 @@ public class PatientController {
     public ResponseEntity<Integer> getPatientPenalties(@PathVariable UUID id) {
         return new ResponseEntity<>(patientService.getPatientPenalties(id), HttpStatus.OK);
     }
+
+    @PreAuthorize("hasRole('ROLE_PATIENT')")
+    @GetMapping("doctors/{id}/{role}")
+    public ResponseEntity<List<DoctorDTO>> getPatientDoctors(@PathVariable UUID id, @PathVariable String role) {
+        UserRole roleE= UserRole.valueOf(role);
+        return new ResponseEntity<>(patientService.getAllPatientDoctors(id,roleE), HttpStatus.OK);
+    }
+
 }

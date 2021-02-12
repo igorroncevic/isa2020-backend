@@ -1,6 +1,7 @@
 package team18.pharmacyapp.service.interfaces;
 
 import team18.pharmacyapp.model.Pharmacy;
+import team18.pharmacyapp.model.dtos.PharmacyDTO;
 import team18.pharmacyapp.model.dtos.PharmacyFilteringDTO;
 import team18.pharmacyapp.model.dtos.PharmacyMarkPriceDTO;
 
@@ -9,7 +10,7 @@ import java.util.UUID;
 
 public interface PharmacyService {
 
-    List<Pharmacy> getAll();
+    List<PharmacyDTO> getAll();
 
     Pharmacy getById(UUID id);
 

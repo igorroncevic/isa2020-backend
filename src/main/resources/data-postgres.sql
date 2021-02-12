@@ -236,7 +236,13 @@ values ('659d0931-63d9-4ef6-bbc4-abdeb4a99539', 11, 'Fluimucil', 'FL01', 'human_
 insert into medicine_specification (id, medicine_id, replacement_medicine_code, recommended_dose, contraindications, drug_composition, additional_notes)
 values ('004bf154-bd94-4bbb-ae8a-9e18f7103653', '7571786b-2fc5-4756-ab5c-1f4af756e6f2', 'BR01', 3, 'glavobolja, mucnina', 'acetilsalicilna kiselina', 'ne preporucije se deci mladjoj od 6 godina');
 insert into medicine_specification (id, medicine_id, replacement_medicine_code, recommended_dose, contraindications, drug_composition, additional_notes)
-values ('83c48dad-439d-4f59-82ef-c3315ba8e2e3','592e558c-b3f9-4088-b468-28764908bd92', 'CAF01', 4, 'mucnina, malaksalost', 'ibuprofen', null);
+values ('83c48dad-439d-4f59-82ef-c3315ba8e2e4','592e558c-b3f9-4088-b468-28764908bd92', 'CAF01', 4, 'mucnina, malaksalost', 'ibuprofen', null);
+insert into medicine_specification (id, medicine_id, replacement_medicine_code, recommended_dose, contraindications, drug_composition, additional_notes)
+values ('104bf154-bd94-4bbb-ae8a-9e18f7103653', '3163f62a-5b88-4295-854c-c9400e19089f', 'BR01', 3, 'glavobolja, mucnina', 'acetilsalicilna kiselina', 'ne preporucije se deci mladjoj od 6 godina');
+insert into medicine_specification (id, medicine_id, replacement_medicine_code, recommended_dose, contraindications, drug_composition, additional_notes)
+values ('83c48dad-439d-4f59-82ef-c3315ba8e2e3','32636111-4bc6-424c-a200-067e7f8a9386', 'CAF01', 4, 'mucnina, malaksalost', 'ibuprofen', null);
+insert into medicine_specification (id, medicine_id, replacement_medicine_code, recommended_dose, contraindications, drug_composition, additional_notes)
+values ('204bf154-bd94-4bbb-ae8a-9e18f7103653', '659d0931-63d9-4ef6-bbc4-abdeb4a99539', 'BR01', 3, 'glavobolja, mucnina', 'acetilsalicilna kiselina', 'ne preporucije se deci mladjoj od 6 godina');
 -- insert into medicine_specification (id, replacement_medicine_code, recommended_dose, contraindications, drug_composition, additional_notes)
 -- values ('7d3fe4e7-6336-48cc-ac98-1b9d0de36f61', 'BR01', 3, null, null, 'ne preporucije se deci mladjoj od 6 godina');
 -- insert into medicine_specification (id, replacement_medicine_code, recommended_dose, contraindications, drug_composition, additional_notes)
