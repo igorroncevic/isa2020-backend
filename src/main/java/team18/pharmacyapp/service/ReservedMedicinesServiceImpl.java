@@ -1,7 +1,9 @@
 package team18.pharmacyapp.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import team18.pharmacyapp.model.dtos.HandleReservationDTO;
 import team18.pharmacyapp.model.dtos.ReservedMedicineResponseDTO;
 import team18.pharmacyapp.model.medicine.ReservedMedicines;
@@ -9,6 +11,7 @@ import team18.pharmacyapp.repository.ReservedMedicinesRepository;
 import team18.pharmacyapp.service.interfaces.EmailService;
 import team18.pharmacyapp.service.interfaces.ReservedMedicinesService;
 
+import javax.persistence.LockModeType;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -56,6 +59,8 @@ public class ReservedMedicinesServiceImpl implements ReservedMedicinesService {
     }
 
     @Override
+    @Transactional
+    @Lock(LockModeType.WRITE)
     public boolean handleMedicine(HandleReservationDTO dto) {
         ReservedMedicines medicines = repository.findById(dto.getId()).orElse(null);
         if (medicines != null) {

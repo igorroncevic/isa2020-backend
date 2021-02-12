@@ -67,7 +67,7 @@ public class AuthenticationController {
         } else if (user.getFirstLogin()) {
             return new ResponseEntity<>(HttpStatus.LOCKED);
         }
-        String jwt = tokenUtils.generateToken(user.getUsername());
+        String jwt = tokenUtils.generateToken(user.getUsername(), user.getId());
         int expiresIn = tokenUtils.getExpiredIn();
 
         return ResponseEntity.ok(new UserTokenDTO(jwt, expiresIn, user.getId(), user.getRole(), user.getName(), user.getSurname(), user.getEmail()));

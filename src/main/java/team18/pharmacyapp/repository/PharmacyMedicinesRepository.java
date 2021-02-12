@@ -42,4 +42,9 @@ public interface PharmacyMedicinesRepository extends JpaRepository<PharmacyMedic
     @Transactional(readOnly = true)
     @Query("SELECT pm.quantity FROM pharmacy_medicines pm WHERE pm.medicine = :medicine AND pm.pharmacy = :pharmacy")
     int getMedicineQuantity(@Param("medicine") Medicine medicine, @Param("pharmacy")Pharmacy pharmacy);
+  
+    @Transactional
+    @Modifying
+    @Query("update pharmacy_medicines pm set pm.quantity=pm.quantity-:quantity where pm.medicine.id=:medicineId and pm.pharmacy.id=:pharmacyId")
+    int updateQuantity(UUID medicineId,UUID pharmacyId,int quantity);
 }

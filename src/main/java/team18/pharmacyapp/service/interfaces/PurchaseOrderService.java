@@ -1,20 +1,27 @@
 package team18.pharmacyapp.service.interfaces;
 
-import team18.pharmacyapp.model.SupplierPurchaseOrder;
-import team18.pharmacyapp.model.dtos.SupplierPurchaseOrderDTO;
+import javassist.NotFoundException;
+import org.springframework.data.crossstore.ChangeSetPersister;
+import team18.pharmacyapp.model.dtos.NewPurchaseOrderDTO;
+import team18.pharmacyapp.model.dtos.PurchaseOrderDTO;
+import team18.pharmacyapp.model.dtos.PurchaseOrderOfferDTO;
+import team18.pharmacyapp.model.exceptions.ActionNotAllowedException;
+import team18.pharmacyapp.model.exceptions.FailedToSaveException;
 
 import java.util.List;
 import java.util.UUID;
 
 public interface PurchaseOrderService {
 
-    List<SupplierPurchaseOrderDTO> getAll();
+    List<PurchaseOrderDTO> getPharmacyPurchaseOrders(UUID pharmacyId);
 
-    List<SupplierPurchaseOrderDTO> getSupplierPurchaseOrders(UUID supplierId);
+    PurchaseOrderDTO addPurchaseOrder(NewPurchaseOrderDTO newPurchaseOrderDTO) throws FailedToSaveException;
 
-    boolean givePurchaseOffer(SupplierPurchaseOrderDTO dto);
+    List<PurchaseOrderOfferDTO> getAllOffersForOrder(UUID id);
 
-    boolean update(SupplierPurchaseOrderDTO dto);
+    void acceptOffer(UUID orderId, UUID supplierId, UUID phadmin) throws ActionNotAllowedException, FailedToSaveException;
 
-    SupplierPurchaseOrder findById(UUID purchaseOrderId, UUID supplierId);
+    PurchaseOrderDTO updatePurchaseOrder(UUID orderId, NewPurchaseOrderDTO newPurchaseOrderDTO) throws FailedToSaveException, ActionNotAllowedException, ChangeSetPersister.NotFoundException;
+
+    void deletePurchaseOrder(UUID orderId, UUID phadminId) throws NotFoundException, ActionNotAllowedException;
 }
