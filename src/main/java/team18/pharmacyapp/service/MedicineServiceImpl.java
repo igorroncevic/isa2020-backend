@@ -162,7 +162,7 @@ public class MedicineServiceImpl implements MedicineService {
         loyaltyService.addLoyaltyPoints(rmrDTO.getPatientId(), med.getLoyaltyPoints());
         loyaltyService.updatePatientsLoyalty(rmrDTO.getPatientId());
 
-        String userMail = "savooroz33@gmail.com";   // zakucano za sada
+        String userMail = patient.getEmail();
         String subject = "[ISA Pharmacy] Confirmation - Medicine reservation";
         String body = "You have successfuly reserved a medicine on our site.\n" +
                 "Your reservation ID: " + reservationId.toString();

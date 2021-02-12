@@ -141,11 +141,8 @@ public class CounselingServiceImpl implements CounselingService {
         doctor.setId(term.getDoctorId());
         Term counseling = new Term(id, patient, doctor, term.getFromTime(), term.getToTime(), 10, TermType.counseling, null, false, 0L);
         counseling = counselingRepository.save(counseling);
-        //int retVal = counselingRepository.patientScheduleCounseling(id, term.getPatientId(),
-                //term.getDoctorId(), term.getFromTime(), term.getToTime());
-        //if (retVal != 1) throw new ScheduleTermException("Could not save this counseling");
 
-        String userMail = "savooroz33@gmail.com";   // zakucano za sada
+        String userMail = patient.getEmail();
         String subject = "[ISA Pharmacy] Confirmation - Counseling scheduling";
         String body = "You have successfully scheduled a counseling on our site.\n" +
                 "Your reservation ID: " + counseling.getId().toString();

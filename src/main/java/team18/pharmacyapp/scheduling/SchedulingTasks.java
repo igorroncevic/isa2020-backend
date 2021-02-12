@@ -2,6 +2,7 @@ package team18.pharmacyapp.scheduling;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,6 +14,7 @@ import team18.pharmacyapp.repository.ReservedMedicinesRepository;
 import team18.pharmacyapp.repository.TermRepository;
 import team18.pharmacyapp.repository.users.PatientRepository;
 
+import javax.persistence.LockModeType;
 import java.util.Date;
 import java.util.List;
 
@@ -33,6 +35,7 @@ public class SchedulingTasks {
     }
 
     @Transactional
+    @Lock(LockModeType.WRITE)
     @Scheduled(cron = "@daily")
     public void addPenaltyForNotPickingUpReservedMedicines() {
         log.info("Starting Cron Task - Checking if Patient's need to get penalties for not picking up reserved medicines.");
@@ -55,6 +58,7 @@ public class SchedulingTasks {
     }
 
     @Transactional
+    @Lock(LockModeType.WRITE)
     @Scheduled(cron = "@daily")
     public void addPenaltyForNotComingToTerm() {
         log.info("Starting Cron Task - Checking if Patient's need to get penalties for not showing up to a term.");
@@ -77,6 +81,8 @@ public class SchedulingTasks {
         log.info("Finishing Cron Task - " + addedPenalties + " total patients received penalties.");
     }
 
+    @Transactional
+    @Lock(LockModeType.WRITE)
     @Scheduled(cron = "@monthly")
     public void resetPatientPenalties() {
         log.info("Starting Cron Task - Checking if Patient's need to get penalties.");

@@ -1,5 +1,6 @@
 package team18.pharmacyapp.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.Lock;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +18,7 @@ import team18.pharmacyapp.repository.TermRepository;
 import team18.pharmacyapp.repository.users.DoctorRepository;
 import team18.pharmacyapp.repository.users.PatientRepository;
 import team18.pharmacyapp.service.interfaces.CheckupService;
+import team18.pharmacyapp.service.interfaces.EmailService;
 import team18.pharmacyapp.service.interfaces.TermService;
 
 import javax.persistence.LockModeType;
@@ -32,14 +34,16 @@ public class CheckupServiceImpl implements CheckupService {
     private final DoctorRepository doctorRepository;
     private final TermService termService;
     private final TermRepository termRepository;
+    private final EmailService emailService;
 
-
-    public CheckupServiceImpl(CheckupRepository checkupRepository, PatientRepository patientRepository, DoctorRepository doctorRepository, TermService termService, TermRepository termRepository) {
+    @Autowired
+    public CheckupServiceImpl(CheckupRepository checkupRepository, PatientRepository patientRepository, DoctorRepository doctorRepository, TermService termService, TermRepository termRepository, EmailService emailService) {
         this.checkupRepository = checkupRepository;
         this.patientRepository = patientRepository;
         this.doctorRepository = doctorRepository;
         this.termService = termService;
         this.termRepository = termRepository;
+        this.emailService = emailService;
     }
 
     @Override
@@ -136,8 +140,12 @@ public class CheckupServiceImpl implements CheckupService {
 
         checkTerm.setPatient(patient);
         checkupRepository.save(checkTerm);
-        //int rowsUpdated = checkupRepository.patientScheduleCheckup(term.getPatientId(), term.getCheckupId());
-        //if (rowsUpdated != 1) throw new RuntimeException("Couldn't schedule this term!");
+
+        String userMail = patient.getEmail();   // zakucano za sada
+        String subject = "[ISA Pharmacy] Confirmation - Checkup scheduling";
+        String body = "You have successfully scheduled a checkup on our site.\n" +
+                "Your reservation ID: " + checkTerm.getId().toString();
+        new Thread(() -> emailService.sendMail(userMail, subject, body)).start();
 
         return true;
     }
@@ -159,6 +167,7 @@ public class CheckupServiceImpl implements CheckupService {
         if (checkTerm.getStartTime().before(now))
             throw new ActionNotAllowedException("Cannot cancel any past checkups");
 
+        // Zaključavanje nije potrebno jer samo pacijent može da pristupi tom resursu
         int rowsUpdated = checkupRepository.patientCancelCheckup(term.getTermId());
         if (rowsUpdated != 1) throw new RuntimeException("Couldn't cancel this term!");
 
