@@ -10,6 +10,9 @@ import team18.pharmacyapp.model.users.RegisteredUser;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 @Component
 public class TokenUtils {
@@ -35,10 +38,11 @@ public class TokenUtils {
     private final SignatureAlgorithm SIGNATURE_ALGORITHM = SignatureAlgorithm.HS512;
 
     // Funkcija za generisanje JWT token
-    public String generateToken(String username) {
+    public String generateToken(String username, UUID id) {
         return Jwts.builder()
                 .setIssuer(APP_NAME)
                 .setSubject(username)
+                .setId(id.toString())
                 .setIssuedAt(new Date())
                 .setExpiration(generateExpirationDate())
                 .signWith(SIGNATURE_ALGORITHM, SECRET).compact();
@@ -122,6 +126,17 @@ public class TokenUtils {
             expiration = null;
         }
         return expiration;
+    }
+
+    public UUID getUserIdFromToken(String token) {
+        String userId;
+        try {
+            final Claims claims = this.getAllClaimsFromToken(token);
+            userId = claims.getId();
+        } catch (Exception e) {
+            userId = null;
+        }
+        return UUID.fromString(userId);
     }
 
     public int getExpiredIn() {

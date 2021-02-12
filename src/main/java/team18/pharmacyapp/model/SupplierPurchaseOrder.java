@@ -7,9 +7,10 @@ import team18.pharmacyapp.model.keys.SupplierPurchaseOrderId;
 import team18.pharmacyapp.model.users.Supplier;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.Date;
 
-@Entity
+@Entity(name = "supplier_purchase_order")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -24,6 +25,8 @@ public class SupplierPurchaseOrder {
     @Column(nullable = false)
     private double price;
     @Column(nullable = false)
-    private Date deliveryDate;
+    private LocalDate deliveryDate;
+    @Column(nullable = false)
+    private boolean accepted;
 
 }

@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import team18.pharmacyapp.model.enums.PurchaseOrderStatus;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -20,7 +21,7 @@ public class SupplierPurchaseOrderDTO {
     private PurchaseOrderStatus purchaseOrderStatus;
     private List<PurchaseOrderMedicineDTO> medicines;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
-    private Date deliveryDate;
+    private LocalDate deliveryDate;
     private double price;
     private UUID supplierId;
 }
