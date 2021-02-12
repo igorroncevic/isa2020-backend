@@ -8,9 +8,14 @@ import org.springframework.web.bind.annotation.*;
 import team18.pharmacyapp.model.Term;
 import team18.pharmacyapp.model.dtos.*;
 import team18.pharmacyapp.model.exceptions.*;
+import team18.pharmacyapp.model.users.RegisteredUser;
+import team18.pharmacyapp.security.TokenUtils;
 import team18.pharmacyapp.service.interfaces.CheckupService;
+import team18.pharmacyapp.service.interfaces.PharmacyAdminService;
+import team18.pharmacyapp.service.interfaces.RegisteredUserService;
 import team18.pharmacyapp.service.interfaces.TermService;
 
+import java.text.ParseException;
 import java.util.List;
 import java.util.UUID;
 
@@ -20,11 +25,15 @@ import java.util.UUID;
 public class CheckupController {
     private final CheckupService checkupService;
     private final TermService termService;
+    private final TokenUtils tokenUtils;
+    private final PharmacyAdminService pharmacyAdminService;
 
     @Autowired
-    public CheckupController(CheckupService checkupService, TermService termService) {
+    public CheckupController(CheckupService checkupService, TermService termService, TokenUtils tokenUtils, PharmacyAdminService pharmacyAdminService) {
         this.checkupService = checkupService;
         this.termService = termService;
+        this.tokenUtils = tokenUtils;
+        this.pharmacyAdminService = pharmacyAdminService;
     }
 
     @PreAuthorize("hasRole('ROLE_PATIENT')")
@@ -42,13 +51,15 @@ public class CheckupController {
     }
 
     @PostMapping
-    public ResponseEntity addNewCheckup(@RequestBody NewCheckupDTO newCheckupDTO) {
+    public ResponseEntity<String> addNewCheckup(@RequestBody NewCheckupDTO newCheckupDTO, @RequestHeader("Authorization") String token) {
+        UUID phadminId = tokenUtils.getUserIdFromToken(token.split(" ")[1]);
+        PharmacyDTO pharmacyDTO = pharmacyAdminService.getPharmacyAdminPharmacyId(phadminId);
         try {
-            checkupService.addNewCheckup(newCheckupDTO);
-        } catch (FailedToSaveException e) {
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+            checkupService.addNewCheckup(newCheckupDTO, pharmacyDTO.getId());
+        } catch (FailedToSaveException | BadTimeRangeException | ParseException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity(HttpStatus.CREATED);
+        return new ResponseEntity<>("", HttpStatus.CREATED);
     }
 
     @GetMapping("/dermatologists/{id}")

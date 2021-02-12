@@ -15,11 +15,9 @@ import java.util.Date;
 @AllArgsConstructor
 public class WorkScheduleDTO {
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
     @Column(nullable = false)
     private Date fromHour;
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
     @Column(nullable = false)
     private Date toHour;
 

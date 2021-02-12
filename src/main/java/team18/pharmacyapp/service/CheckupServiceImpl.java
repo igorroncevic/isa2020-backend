@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpServerErrorException;
 import team18.pharmacyapp.model.Term;
+import team18.pharmacyapp.model.WorkSchedule;
 import team18.pharmacyapp.model.dtos.*;
 import team18.pharmacyapp.model.enums.TermType;
 import team18.pharmacyapp.model.exceptions.*;
@@ -12,16 +13,17 @@ import team18.pharmacyapp.model.users.Doctor;
 import team18.pharmacyapp.model.users.Patient;
 import team18.pharmacyapp.repository.CheckupRepository;
 import team18.pharmacyapp.repository.TermRepository;
+import team18.pharmacyapp.repository.WorkScheduleRepository;
 import team18.pharmacyapp.repository.users.DoctorRepository;
 import team18.pharmacyapp.repository.users.PatientRepository;
 import team18.pharmacyapp.service.interfaces.CheckupService;
 import team18.pharmacyapp.service.interfaces.TermService;
 
 import javax.persistence.LockModeType;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Service
 public class CheckupServiceImpl implements CheckupService {
@@ -30,14 +32,15 @@ public class CheckupServiceImpl implements CheckupService {
     private final DoctorRepository doctorRepository;
     private final TermService termService;
     private final TermRepository termRepository;
+    private final WorkScheduleRepository workScheduleRepository;
 
-
-    public CheckupServiceImpl(CheckupRepository checkupRepository, PatientRepository patientRepository, DoctorRepository doctorRepository, TermService termService, TermRepository termRepository) {
+    public CheckupServiceImpl(CheckupRepository checkupRepository, PatientRepository patientRepository, DoctorRepository doctorRepository, TermService termService, TermRepository termRepository, WorkScheduleRepository workScheduleRepository) {
         this.checkupRepository = checkupRepository;
         this.patientRepository = patientRepository;
         this.doctorRepository = doctorRepository;
         this.termService = termService;
         this.termRepository = termRepository;
+        this.workScheduleRepository = workScheduleRepository;
     }
 
     @Override
@@ -187,13 +190,44 @@ public class CheckupServiceImpl implements CheckupService {
 
 
     @Override
-    public boolean addNewCheckup(NewCheckupDTO newCheckupDTO) throws FailedToSaveException {
+    public boolean addNewCheckup(NewCheckupDTO newCheckupDTO, UUID pharmacyId) throws FailedToSaveException, BadTimeRangeException, ParseException {
         UUID id = UUID.randomUUID();
+        Calendar c1 = Calendar.getInstance();
+        c1.setTime(newCheckupDTO.getStartTime());
+        Calendar c2 = Calendar.getInstance();
+        c2.setTime(newCheckupDTO.getEndTime());
+        if(!c2.after(c1)) {
+            throw new BadTimeRangeException("Start time must be before end time");
+        }
+        if(c1.get(Calendar.YEAR) != c2.get(Calendar.YEAR) || c1.get(Calendar.MONTH) != c2.get(Calendar.MONTH) || c1.get(Calendar.DAY_OF_MONTH) != c2.get(Calendar.DAY_OF_MONTH)) {
+            throw new BadTimeRangeException("Checkup must be within one day!");
+        }
+        if(c1.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY || c1.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) {
+            throw new BadTimeRangeException("You can't make checkups on weekend!");
+        }
+        WorkSchedule workSchedule = workScheduleRepository.getDoctorSchedule(newCheckupDTO.getDoctorId(), pharmacyId);
+        if(timeIsBefore(newCheckupDTO.getStartTime(), workSchedule.getFromHour()) || timeIsAfter(newCheckupDTO.getEndTime(), workSchedule.getToHour())) {
+            throw new BadTimeRangeException("Checkup is not inside work schedule!");
+        }
+        int numberOfOverlapingCheckups = checkupRepository.getNumberOfSchedulesInTimeRange(newCheckupDTO.getDoctorId(), newCheckupDTO.getStartTime(), newCheckupDTO.getEndTime());
+        if(numberOfOverlapingCheckups != 0) {
+            throw new BadTimeRangeException("Checkup is overlapping with other checkups");
+        }
         int i = checkupRepository.insertCheckup(id, newCheckupDTO.getDoctorId(), newCheckupDTO.getStartTime(), newCheckupDTO.getEndTime(), newCheckupDTO.getPrice());
         if(i != 1) {
             throw new FailedToSaveException("Failed to save checkup");
         }
         return true;
+    }
+
+    private boolean timeIsBefore(Date d1, Date d2) {
+        DateFormat f = new SimpleDateFormat("HH:mm:ss.SSS");
+        return f.format(d1).compareTo(f.format(d2)) < 0;
+    }
+
+    private boolean timeIsAfter(Date d1, Date d2) {
+        DateFormat f = new SimpleDateFormat("HH:mm:ss.SSS");
+        return f.format(d2).compareTo(f.format(d1)) < 0;
     }
 
     @Override

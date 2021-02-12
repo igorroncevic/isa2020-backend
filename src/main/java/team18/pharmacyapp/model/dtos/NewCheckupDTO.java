@@ -16,9 +16,7 @@ import java.util.UUID;
 public class NewCheckupDTO {
 
     UUID doctorId;
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
     Date startTime;
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
     Date endTime;
     double price;
 

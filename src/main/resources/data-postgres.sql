@@ -169,23 +169,23 @@ values ('5ffe884f-9cd8-42f5-adc4-2a27cd8d2737', 'Mileta', false, 'Perovic', 'mil
 
 -- Pregledi
 insert into term (id, doctor_id, start_time, end_time, price, "type", report_id, patient_id, version, completed)
-values ('1d96a5d6-f5f6-4a74-9208-109991010f31', 'a5ac174a-45b3-487f-91cb-3d3f727d6f1c', '2021-02-28 12:25:00',
-        '2021-02-28 13:00:00', 12, 'checkup', null, null, 0, false);
+values ('1d96a5d6-f5f6-4a74-9208-109991010f31', 'a5ac174a-45b3-487f-91cb-3d3f727d6f1c', '2021-02-24 12:25:00',
+        '2021-02-24 13:00:00', 12, 'checkup', null, null, 0, false);
 insert into term (id, doctor_id, start_time, end_time, price, "type", report_id, patient_id, version, completed)
-values ('0988b5b2-1d09-47ad-ace7-45282f11e24b', 'a5ac174a-45b3-487f-91cb-3d3f727d6f1c', '2021-02-28 13:05:00',
-        '2021-02-28 13:15:00', 12, 'checkup', null, null, 0, false);
+values ('0988b5b2-1d09-47ad-ace7-45282f11e24b', 'a5ac174a-45b3-487f-91cb-3d3f727d6f1c', '2021-02-24 13:05:00',
+        '2021-02-24 13:15:00', 12, 'checkup', null, null, 0, false);
 insert into term (id, doctor_id, start_time, end_time, price, "type", report_id, patient_id, version, completed)
-values ('f05c035a-ffcc-4810-b34a-bb0c782f59a0', '1accde09-0aa2-4ea1-9a38-17f4635198b9', '2021-02-28 12:25:00',
-        '2021-02-28 13:00:00', 19, 'checkup', null, null, 0, false);
+values ('f05c035a-ffcc-4810-b34a-bb0c782f59a0', '1accde09-0aa2-4ea1-9a38-17f4635198b9', '2021-02-24 12:25:00',
+        '2021-02-24 13:00:00', 19, 'checkup', null, null, 0, false);
 insert into term (id, doctor_id, start_time, end_time, price, "type", report_id, patient_id, version, completed)
-values ('43501e13-caf6-4d98-a69a-db0178c582e9', '1accde09-0aa2-4ea1-9a38-17f4635198b9', '2021-02-20 13:15:00',
-        '2021-02-20 13:35:00', 19, 'checkup', null, null, 0, false);
+values ('43501e13-caf6-4d98-a69a-db0178c582e9', '1accde09-0aa2-4ea1-9a38-17f4635198b9', '2021-02-18 13:15:00',
+        '2021-02-18 13:35:00', 19, 'checkup', null, null, 0, false);
 insert into term (id, doctor_id, start_time, end_time, price, "type", report_id, patient_id, version, completed)
-values ('6af3ebe2-eeb3-4775-ae52-74dcfe8dc949', 'a5ac174a-45b3-487f-91cb-3d3f727d6f1c', '2021-02-20 13:15:00',
-        '2021-02-20 13:35:00', 19, 'checkup', null, null, 0, false);
+values ('6af3ebe2-eeb3-4775-ae52-74dcfe8dc949', 'a5ac174a-45b3-487f-91cb-3d3f727d6f1c', '2021-02-18 13:15:00',
+        '2021-02-18 13:35:00', 19, 'checkup', null, null, 0, false);
 insert into term (id, doctor_id, start_time, end_time, price, "type", report_id, patient_id, version, completed)
-values ('ebec212e-5ff8-45f8-8411-82d6ac3b69a6', '1accde09-0aa2-4ea1-9a38-17f4635198b9', '2021-02-28 13:35:00',
-        '2021-02-28 14:00:00', 19, 'counseling', null, null, 0, false);
+values ('ebec212e-5ff8-45f8-8411-82d6ac3b69a6', '1accde09-0aa2-4ea1-9a38-17f4635198b9', '2021-02-24 13:35:00',
+        '2021-02-24 14:00:00', 19, 'counseling', null, null, 0, false);
 insert into term (id, doctor_id, start_time, end_time, price, "type", report_id, patient_id, version, completed)
 values ('bef34914-aaab-4c7d-8ef5-c2844eb33d6d', '1accde09-0aa2-4ea1-9a38-17f4635198b9', '2021-01-24 13:15:00',
         '2021-01-24 13:35:00', 19, 'checkup', null, 'cc6fd408-0084-420b-8078-687d8a72744b', 0, false);
@@ -193,8 +193,8 @@ insert into term (id, doctor_id, start_time, end_time, price, "type", report_id,
 values ('c3695891-66a8-421f-8759-5602513975f8', 'a5ac174a-45b3-487f-91cb-3d3f727d6f1c', '2021-01-25 12:25:00',
         '2021-01-25 13:00:00', 12, 'checkup', null, 'cc6fd408-0084-420b-8078-687d8a72744b', 0, false);
 insert into term (id, doctor_id, start_time, end_time, price, "type", report_id, patient_id, version, completed)
-values ('f1694aa0-a662-405e-9eb6-60d6a9ffd87c', 'a5ac174a-45b3-487f-91cb-3d3f727d6f1c', '2021-02-28 13:15:00',
-        '2021-02-28 13:45:00', 12, 'checkup', null, 'dd4c7e5f-f2c4-42dc-a809-fd7f588b3acb', 0, false);
+values ('f1694aa0-a662-405e-9eb6-60d6a9ffd87c', 'a5ac174a-45b3-487f-91cb-3d3f727d6f1c', '2021-02-24 13:15:00',
+        '2021-02-24 13:45:00', 12, 'checkup', null, 'dd4c7e5f-f2c4-42dc-a809-fd7f588b3acb', 0, false);
 insert into term (id, doctor_id, start_time, end_time, price, "type", report_id, patient_id, version, completed)
 values ('ddf04525-26f4-4d13-a267-00a30ec2412a', 'a5ac174a-45b3-487f-91cb-3d3f727d6f1c', '2021-01-15 14:15:00',
         '2021-01-15 14:45:00', 12, 'checkup', null, 'dd4c7e5f-f2c4-42dc-a809-fd7f588b3acb', 0, true);

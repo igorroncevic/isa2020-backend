@@ -5,6 +5,7 @@ import team18.pharmacyapp.model.dtos.*;
 import team18.pharmacyapp.model.enums.TermType;
 import team18.pharmacyapp.model.exceptions.*;
 
+import java.text.ParseException;
 import java.util.List;
 import java.util.UUID;
 
@@ -31,5 +32,6 @@ public interface CheckupService {
 
     boolean patientCancelCheckup(CancelTermDTO term) throws EntityNotFoundException, ActionNotAllowedException, RuntimeException;
 
-    boolean addNewCheckup(NewCheckupDTO newCheckupDTO) throws FailedToSaveException;
+    boolean addNewCheckup(NewCheckupDTO newCheckupDTO, UUID pharmacyId) throws FailedToSaveException, BadTimeRangeException, ParseException;
+
 }

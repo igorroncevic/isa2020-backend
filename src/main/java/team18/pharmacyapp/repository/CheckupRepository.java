@@ -25,6 +25,12 @@ public interface CheckupRepository extends JpaRepository<Term, UUID> {
     @Query(value = "SELECT t FROM term t JOIN FETCH t.doctor d WHERE t.patient IS NULL AND t.startTime > :todaysDate AND t.type = :termType AND t.doctor.id = :doctorId")
     List<Term> findAllAvailableDermatologistsCheckups(@Param("todaysDate") Date todaysDate, @Param("termType") TermType termType, @Param("doctorId") UUID doctorId);
 
+    @Transactional(readOnly = true)
+    @Query(nativeQuery = true, value = "select count(*) from term where doctor_id = :doctorId and " +
+            "((start_time >= :startTime and start_time <= :endTime) or " +
+            "(end_time >= :startTime and end_time <= :endTime))")
+    int getNumberOfSchedulesInTimeRange(UUID doctorId, Date startTime, Date endTime);
+
     @Transactional
     @Modifying
     @Query(nativeQuery = true, value = "UPDATE term SET patient_id = :patientId WHERE id = :checkupId AND patient_id IS NULL")
