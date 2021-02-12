@@ -3,13 +3,11 @@ package team18.pharmacyapp.service;
 import org.springframework.data.jpa.repository.Lock;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.HttpServerErrorException;
 import team18.pharmacyapp.model.Term;
 import team18.pharmacyapp.model.dtos.*;
 import team18.pharmacyapp.model.enums.TermType;
-import team18.pharmacyapp.model.exceptions.ActionNotAllowedException;
-import team18.pharmacyapp.model.exceptions.AlreadyScheduledException;
-import team18.pharmacyapp.model.exceptions.EntityNotFoundException;
-import team18.pharmacyapp.model.exceptions.ScheduleTermException;
+import team18.pharmacyapp.model.exceptions.*;
 import team18.pharmacyapp.model.users.Doctor;
 import team18.pharmacyapp.model.users.Patient;
 import team18.pharmacyapp.repository.CheckupRepository;
@@ -95,6 +93,25 @@ public class CheckupServiceImpl implements CheckupService {
 
     @Override
     @Transactional(readOnly = true)
+    public List<TermDTO> findAllAvailableDermatologistsCheckups(UUID doctorId) {
+        Date todaysDate = new Date(System.currentTimeMillis() + 60 * 60 * 1000);
+
+        List<Term> checkups = checkupRepository.findAllAvailableDermatologistsCheckups(todaysDate, TermType.checkup, doctorId);
+
+        List<TermDTO> finalCheckups = new ArrayList<>();
+        for (Term t : checkups) {
+            Doctor doctor = doctorRepository.findDoctorByTermId(t.getId());
+            DoctorDTO doctorDto = new DoctorDTO(doctor.getId(), doctor.getName(), doctor.getSurname(), doctor.getEmail(), doctor.getPhoneNumber(),
+                    doctor.getRole(), null);
+            TermDTO termDto = new TermDTO(t.getId(), t.getStartTime(), t.getEndTime(), t.getPrice(), t.getType(), doctorDto);
+            finalCheckups.add(termDto);
+        }
+
+        return finalCheckups;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public List<TermDTO> findAllPatientsCheckups(UUID patientId) {
         List<Term> checkups = checkupRepository.findAllPatientsCheckups(patientId, TermType.checkup);
 
@@ -110,12 +127,14 @@ public class CheckupServiceImpl implements CheckupService {
         return finalCheckups;
     }
 
-    public Term save(Term term) {
-        return checkupRepository.save(term);
-    }
 
     public void deleteById(UUID id) {
         checkupRepository.deleteById(id);
+    }
+
+    @Override
+    public void save(Term term) {
+        checkupRepository.save(term);
     }
 
     @Override
@@ -162,6 +181,18 @@ public class CheckupServiceImpl implements CheckupService {
         int rowsUpdated = checkupRepository.patientCancelCheckup(term.getTermId());
         if (rowsUpdated != 1) throw new RuntimeException("Couldn't cancel this term!");
 
+        return true;
+    }
+
+
+
+    @Override
+    public boolean addNewCheckup(NewCheckupDTO newCheckupDTO) throws FailedToSaveException {
+        UUID id = UUID.randomUUID();
+        int i = checkupRepository.insertCheckup(id, newCheckupDTO.getDoctorId(), newCheckupDTO.getStartTime(), newCheckupDTO.getEndTime(), newCheckupDTO.getPrice());
+        if(i != 1) {
+            throw new FailedToSaveException("Failed to save checkup");
+        }
         return true;
     }
 

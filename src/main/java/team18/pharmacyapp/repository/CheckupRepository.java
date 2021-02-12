@@ -21,6 +21,10 @@ public interface CheckupRepository extends JpaRepository<Term, UUID> {
     @Query(value = "SELECT t FROM term t JOIN FETCH t.doctor d WHERE t.patient IS NULL AND t.startTime > :todaysDate AND t.type = :termType")
     List<Term> findAllAvailableCheckups(@Param("todaysDate") Date todaysDate, @Param("termType") TermType termType);
 
+    @Transactional(readOnly = true)
+    @Query(value = "SELECT t FROM term t JOIN FETCH t.doctor d WHERE t.patient IS NULL AND t.startTime > :todaysDate AND t.type = :termType AND t.doctor.id = :doctorId")
+    List<Term> findAllAvailableDermatologistsCheckups(@Param("todaysDate") Date todaysDate, @Param("termType") TermType termType, @Param("doctorId") UUID doctorId);
+
     @Transactional
     @Modifying
     @Query(nativeQuery = true, value = "UPDATE term SET patient_id = :patientId WHERE id = :checkupId AND patient_id IS NULL")
@@ -30,6 +34,12 @@ public interface CheckupRepository extends JpaRepository<Term, UUID> {
     @Modifying
     @Query(nativeQuery = true, value = "UPDATE term SET patient_id = NULL WHERE id = :checkupId")
     int patientCancelCheckup(@Param("checkupId") UUID checkupId);
+
+    @Transactional
+    @Modifying
+    @Query(nativeQuery = true, value = "insert into term (id, doctor_id, start_time, end_time, price, \"type\", report_id, patient_id, version, completed) " +
+            "values (:id, :doctorId, :startTime, :endTime, :price, 'checkup', null, null, 0, false)")
+    int insertCheckup(UUID id, UUID doctorId, Date startTime, Date endTime, double price);
 
     @Transactional(readOnly = true)
     @Query(value = "SELECT t FROM term t JOIN FETCH t.doctor d WHERE t.type = :termType")

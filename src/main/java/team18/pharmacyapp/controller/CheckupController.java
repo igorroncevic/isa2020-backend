@@ -7,10 +7,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import team18.pharmacyapp.model.Term;
 import team18.pharmacyapp.model.dtos.*;
-import team18.pharmacyapp.model.exceptions.ActionNotAllowedException;
-import team18.pharmacyapp.model.exceptions.AlreadyScheduledException;
-import team18.pharmacyapp.model.exceptions.EntityNotFoundException;
-import team18.pharmacyapp.model.exceptions.ScheduleTermException;
+import team18.pharmacyapp.model.exceptions.*;
 import team18.pharmacyapp.service.interfaces.CheckupService;
 import team18.pharmacyapp.service.interfaces.TermService;
 
@@ -37,6 +34,29 @@ public class CheckupController {
 
         try {
             checkups = checkupService.findAllAvailableCheckups();
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return new ResponseEntity<>(checkups, HttpStatus.OK);
+    }
+
+    @PostMapping
+    public ResponseEntity addNewCheckup(@RequestBody NewCheckupDTO newCheckupDTO) {
+        try {
+            checkupService.addNewCheckup(newCheckupDTO);
+        } catch (FailedToSaveException e) {
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity(HttpStatus.CREATED);
+    }
+
+    @GetMapping("/dermatologists/{id}")
+    public ResponseEntity<List<TermDTO>> findAllAvailableDermatologistsCheckups(@PathVariable UUID id) {
+        List<TermDTO> checkups;
+
+        try {
+            checkups = checkupService.findAllAvailableDermatologistsCheckups(id);
         } catch (RuntimeException e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -114,13 +134,6 @@ public class CheckupController {
         }
 
         return new ResponseEntity<>(checkup, HttpStatus.OK);
-    }
-
-    @PreAuthorize("hasRole('ROLE_DERMATOLOGIST') || hasRole('ROLE_PHARMACIST')")
-    @PostMapping(consumes = "application/json")
-    public ResponseEntity<Term> saveCheckup(@RequestBody Term checkup) {
-        Term savedCheckup = checkupService.save(checkup);
-        return new ResponseEntity<>(savedCheckup, HttpStatus.CREATED);
     }
 
     @PutMapping(consumes = "application/json")
