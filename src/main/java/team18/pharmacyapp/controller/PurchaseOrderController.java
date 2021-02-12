@@ -34,14 +34,14 @@ public class PurchaseOrderController {
     }
 
     @PostMapping
-    public ResponseEntity addNewPurchaseOrder(@RequestBody NewPurchaseOrderDTO newPurchaseOrderDTO) {
+    public ResponseEntity<PurchaseOrderDTO> addNewPurchaseOrder(@RequestBody NewPurchaseOrderDTO newPurchaseOrderDTO) {
         PurchaseOrderDTO purchaseOrderDTO = null;
         try {
             purchaseOrderDTO = purchaseOrderService.addPurchaseOrder(newPurchaseOrderDTO);
         } catch (FailedToSaveException e) {
             return new ResponseEntity(null, HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity(purchaseOrderDTO, HttpStatus.OK);
+        return new ResponseEntity<>(purchaseOrderDTO, HttpStatus.OK);
     }
 
     @GetMapping("/{id}/offers")
@@ -61,5 +61,16 @@ public class PurchaseOrderController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>("", HttpStatus.OK);
+    }
+
+    @PutMapping("/{orderId}")
+    public ResponseEntity<PurchaseOrderDTO> updatePurchaseOrder(@RequestBody NewPurchaseOrderDTO newPurchaseOrderDTO, @PathVariable UUID orderId) {
+        PurchaseOrderDTO purchaseOrderDTO = null;
+        try {
+            purchaseOrderDTO = purchaseOrderService.updatePurchaseOrder(orderId, newPurchaseOrderDTO);
+        } catch (FailedToSaveException | ActionNotAllowedException e) {
+            return new ResponseEntity(null, HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(purchaseOrderDTO, HttpStatus.OK);
     }
 }

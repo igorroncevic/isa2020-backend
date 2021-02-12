@@ -19,4 +19,6 @@ public interface PurchaseOrderService {
     List<PurchaseOrderOfferDTO> getAllOffersForOrder(UUID id);
 
     void acceptOffer(UUID orderId, UUID supplierId, UUID phadmin) throws ActionNotAllowedException, FailedToSaveException;
+
+    PurchaseOrderDTO updatePurchaseOrder(UUID orderId, NewPurchaseOrderDTO newPurchaseOrderDTO) throws FailedToSaveException, ActionNotAllowedException;
 }

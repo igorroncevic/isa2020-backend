@@ -11,8 +11,10 @@ import team18.pharmacyapp.model.Term;
 import team18.pharmacyapp.model.medicine.PurchaseOrderMedicine;
 import team18.pharmacyapp.model.users.Supplier;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface PurchaseOrderRepository extends JpaRepository<PurchaseOrder, UUID> {
@@ -31,7 +33,12 @@ public interface PurchaseOrderRepository extends JpaRepository<PurchaseOrder, UU
     @Modifying
     @Query(nativeQuery = true, value = "INSERT INTO purchase_order(id, end_date, pharmacy_admin_id)" +
             "VALUES(:id, :endDate, :phadminId)")
-    int insertPurchaseOrder(UUID id, Date endDate, UUID phadminId);
+    int insertPurchaseOrder(UUID id, LocalDate endDate, UUID phadminId);
+
+    @Transactional
+    @Modifying
+    @Query(nativeQuery = true, value = "UPDATE purchase_order SET end_date = :endDate  WHERE id=:orderId")
+    int updatePurchaseOrder(UUID orderId, LocalDate endDate);
 
     @Transactional
     @Modifying
@@ -39,8 +46,20 @@ public interface PurchaseOrderRepository extends JpaRepository<PurchaseOrder, UU
             "VALUES(:orderId, :medicineId, :quantity)")
     int insertPurchaseOrderMedicine(UUID orderId, UUID medicineId, int quantity);
 
+    @Transactional
+    @Modifying
+    @Query(nativeQuery = true, value = "DELETE FROM purchase_order_medicine WHERE purchase_order_id=:orderId")
+    int deletePurchaseOrderMedicines(UUID orderId);
+
     @Query("SELECT spo FROM supplier_purchase_order spo JOIN FETCH spo.purchaseOrder JOIN FETCH spo.supplier WHERE spo.purchaseOrder.id = :id ")
     List<SupplierPurchaseOrder> getAllOffersForOrder(UUID id);
+
+    @Query("SELECT spo FROM supplier_purchase_order spo JOIN FETCH spo.purchaseOrder JOIN FETCH spo.supplier WHERE spo.purchaseOrder.id = :id AND spo.accepted = true")
+    Optional<SupplierPurchaseOrder> getAcceptedOffer(UUID id);
+
+
+    @Query(nativeQuery = true, value = "SELECT count(*) FROM supplier_purchase_order WHERE purchase_order_id = :orderId")
+    int getNumberOfOffersForOrder(UUID orderId);
 
     @Transactional
     @Modifying

@@ -51,8 +51,19 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
                         purchaseOrderMedicine.getMedicine().getName(), purchaseOrderMedicine.getQuantity());
                 purchaseOrderMedicineDTOs.add(purchaseOrderMedicineDTO);
             }
+
+            int numberOfOffers = purchaseOrderRepository.getNumberOfOffersForOrder(purchaseOrder.getId());
+            PurchaseOrderOfferDTO acceptedOffer = null;
+            if(numberOfOffers > 0) {
+                SupplierPurchaseOrder supplierPurchaseOrder = purchaseOrderRepository.getAcceptedOffer(purchaseOrder.getId()).orElse(null);
+                if(supplierPurchaseOrder != null)
+                    acceptedOffer = new PurchaseOrderOfferDTO(new UserInfoDTO(supplierPurchaseOrder.getSupplier().getId(), supplierPurchaseOrder.getSupplier().getName(),
+                            supplierPurchaseOrder.getSupplier().getSurname(), supplierPurchaseOrder.getSupplier().getEmail(), supplierPurchaseOrder.getSupplier().getPhoneNumber()),
+                            supplierPurchaseOrder.getDeliveryDate(), supplierPurchaseOrder.getPrice());
+            }
+
             PurchaseOrderDTO purchaseOrderDTO = new PurchaseOrderDTO(purchaseOrder.getId(), pharmacyAdminInfoDTO,
-                    purchaseOrder.getEndDate(), purchaseOrderMedicineDTOs);
+                    purchaseOrder.getEndDate(), purchaseOrderMedicineDTOs, acceptedOffer, numberOfOffers);
             purchaseOrderDTOs.add(purchaseOrderDTO);
         }
         return purchaseOrderDTOs;
@@ -65,37 +76,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         if(rowsChanged != 1) {
             throw new FailedToSaveException("Could not save new purchase order.");
         }
-        for(PurchaseOrderMedicineDTO purchaseOrderMedicineDTO : newPurchaseOrderDTO.getMedicines()) {
-            rowsChanged = purchaseOrderRepository.insertPurchaseOrderMedicine(orderId,
-                    purchaseOrderMedicineDTO.getMedicineId(), purchaseOrderMedicineDTO.getOrderQuantity());
-            if(rowsChanged != 1) {
-                throw new FailedToSaveException("Could not save new purchase order medicine.");
-            }
-        }
-
-        PurchaseOrder purchaseOrder = purchaseOrderRepository.getPurchaseOrderById(orderId);
-
-        UUID pharmacyId = purchaseOrder.getPharmacyAdmin().getPharmacy().getId();
-        List<String> pharmacyMedicineIds = purchaseOrderRepository.getPharmacyMedicineUUIDs(pharmacyId);
-
-        UserInfoDTO pharmacyAdminInfoDTO = new UserInfoDTO(purchaseOrder.getPharmacyAdmin().getId(),
-                purchaseOrder.getPharmacyAdmin().getName(), purchaseOrder.getPharmacyAdmin().getSurname(),
-                purchaseOrder.getPharmacyAdmin().getEmail(), purchaseOrder.getPharmacyAdmin().getPhoneNumber());
-        List<PurchaseOrderMedicine> purchaseOrderMedicines = purchaseOrder.getPurchaseOrderMedicines();
-        List<PurchaseOrderMedicineDTO> purchaseOrderMedicineDTOs = new ArrayList<>();
-        for(PurchaseOrderMedicine purchaseOrderMedicine : purchaseOrderMedicines) {
-
-            PurchaseOrderMedicineDTO purchaseOrderMedicineDTO = new PurchaseOrderMedicineDTO(purchaseOrderMedicine.getMedicine().getId(),
-                    purchaseOrderMedicine.getMedicine().getName(), purchaseOrderMedicine.getQuantity());
-            purchaseOrderMedicineDTOs.add(purchaseOrderMedicineDTO);
-            if(!pharmacyMedicineIds.contains(purchaseOrderMedicine.getMedicine().getId().toString())) {
-                pharmacyMedicinesRepository.insert(pharmacyId, purchaseOrderMedicine.getMedicine().getId());
-            }
-        }
-        PurchaseOrderDTO purchaseOrderDTO = new PurchaseOrderDTO(purchaseOrder.getId(), pharmacyAdminInfoDTO,
-                purchaseOrder.getEndDate(), purchaseOrderMedicineDTOs);
-
-        return purchaseOrderDTO;
+        return getPurchaseOrderDTO(orderId, newPurchaseOrderDTO);
     }
 
     @Override
@@ -140,6 +121,58 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         String acceptedSupplierEmail = purchaseOrderRepository.getAcceptedSupplier(orderId);
         sendEmailsToSuppliers(acceptedSupplierEmail, declinedSuppliersEmails, purchaseOrder.getPharmacyAdmin().getPharmacy().getName());
 
+    }
+
+    @Override
+    public PurchaseOrderDTO updatePurchaseOrder(UUID orderId, NewPurchaseOrderDTO newPurchaseOrderDTO) throws FailedToSaveException, ActionNotAllowedException {
+        int numberOfOffers = purchaseOrderRepository.getNumberOfOffersForOrder(orderId);
+        if(numberOfOffers != 1) {
+            throw new ActionNotAllowedException("You can't update purchase orders that have offers.");
+        }
+        int rowsChanged = purchaseOrderRepository.updatePurchaseOrder(orderId, newPurchaseOrderDTO.getEndDate());
+        if(rowsChanged != 1) {
+            throw new FailedToSaveException("Could not update purchase order.");
+        }
+
+        purchaseOrderRepository.deletePurchaseOrderMedicines(orderId);
+
+        return getPurchaseOrderDTO(orderId, newPurchaseOrderDTO);
+    }
+
+    private PurchaseOrderDTO getPurchaseOrderDTO(UUID orderId, NewPurchaseOrderDTO newPurchaseOrderDTO) throws FailedToSaveException {
+        int rowsChanged;
+        for(PurchaseOrderMedicineDTO purchaseOrderMedicineDTO : newPurchaseOrderDTO.getMedicines()) {
+            rowsChanged = purchaseOrderRepository.insertPurchaseOrderMedicine(orderId,
+                    purchaseOrderMedicineDTO.getMedicineId(), purchaseOrderMedicineDTO.getOrderQuantity());
+            if(rowsChanged != 1) {
+                throw new FailedToSaveException("Could not save new purchase order medicine.");
+            }
+        }
+
+        PurchaseOrder purchaseOrder = purchaseOrderRepository.getPurchaseOrderById(orderId);
+
+        UUID pharmacyId = purchaseOrder.getPharmacyAdmin().getPharmacy().getId();
+        List<String> pharmacyMedicineIds = purchaseOrderRepository.getPharmacyMedicineUUIDs(pharmacyId);
+
+        UserInfoDTO pharmacyAdminInfoDTO = new UserInfoDTO(purchaseOrder.getPharmacyAdmin().getId(),
+                purchaseOrder.getPharmacyAdmin().getName(), purchaseOrder.getPharmacyAdmin().getSurname(),
+                purchaseOrder.getPharmacyAdmin().getEmail(), purchaseOrder.getPharmacyAdmin().getPhoneNumber());
+        List<PurchaseOrderMedicine> purchaseOrderMedicines = purchaseOrder.getPurchaseOrderMedicines();
+        List<PurchaseOrderMedicineDTO> purchaseOrderMedicineDTOs = new ArrayList<>();
+        for(PurchaseOrderMedicine purchaseOrderMedicine : purchaseOrderMedicines) {
+
+            PurchaseOrderMedicineDTO purchaseOrderMedicineDTO = new PurchaseOrderMedicineDTO(purchaseOrderMedicine.getMedicine().getId(),
+                    purchaseOrderMedicine.getMedicine().getName(), purchaseOrderMedicine.getQuantity());
+            purchaseOrderMedicineDTOs.add(purchaseOrderMedicineDTO);
+            if(!pharmacyMedicineIds.contains(purchaseOrderMedicine.getMedicine().getId().toString())) {
+                pharmacyMedicinesRepository.insert(pharmacyId, purchaseOrderMedicine.getMedicine().getId());
+            }
+        }
+
+        PurchaseOrderDTO purchaseOrderDTO = new PurchaseOrderDTO(purchaseOrder.getId(), pharmacyAdminInfoDTO,
+                purchaseOrder.getEndDate(), purchaseOrderMedicineDTOs, null, 0);
+
+        return purchaseOrderDTO;
     }
 
     private void sendEmailsToSuppliers(String acceptedSupplierEmail, List<String> declinedSuppliersEmails, String pharmacyName) {

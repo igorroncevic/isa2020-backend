@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import team18.pharmacyapp.model.SupplierPurchaseOrder;
 
 import java.time.LocalDate;
 import java.util.Date;
@@ -22,5 +23,7 @@ public class PurchaseOrderDTO {
     @JsonFormat(pattern="yyyy-MM-dd")
     LocalDate endDate;
     List<PurchaseOrderMedicineDTO> medicines;
+    PurchaseOrderOfferDTO acceptedOffer;
+    int numberOfOffers;
 
 }
