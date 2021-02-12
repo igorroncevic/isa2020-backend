@@ -14,6 +14,7 @@ import team18.pharmacyapp.model.medicine.ReservedMedicines;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.UUID;
 
 @Entity(name = "patient")
 @Getter
@@ -21,6 +22,12 @@ import java.util.List;
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class Patient extends RegisteredUser {
+    public Patient(UUID id, String name, String surname) {
+        this.id = id;
+        this.name = name;
+        this.surname = surname;
+    }
+
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinTable(name = "alergicto", joinColumns = @JoinColumn(name = "patientId", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "medicineId", referencedColumnName = "id"))
     private List<Medicine> alergicMedicines;

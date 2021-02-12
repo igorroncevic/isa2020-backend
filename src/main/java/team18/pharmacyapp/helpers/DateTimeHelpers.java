@@ -7,7 +7,7 @@ import java.util.GregorianCalendar;
 
 public class DateTimeHelpers {
 
-    private final static Calendar calendar = GregorianCalendar.getInstance();
+    public final static Calendar calendar = GregorianCalendar.getInstance();
 
     public static LocalTime getTimeWithoutDate(Date date) {
         calendar.setTime(date);

@@ -146,6 +146,7 @@ public class TermServiceImpl implements TermService {
             term.setEndTime(termDTO.getEndTime());
             term.setPrice(50);//const
             term.setType(termDTO.getType());
+            term.setCompleted(false);
             String subject = "[ISA Pharmacy] Confirmation aftercare ";
             String body = "Doctor" + doctor.getName() + " " + doctor.getSurname() + " scheduled you new term.\n" +
                     "Term time: " + termDTO.getStartTime();

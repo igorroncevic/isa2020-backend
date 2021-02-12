@@ -67,6 +67,12 @@ public class Pharmacy {
     @Override
     public boolean equals(Object obj) {
         Pharmacy pharmacy = (Pharmacy) obj;
-        return this.id.equals(pharmacy.id);
+        boolean retval;
+        try{
+            retval = this.id.equals(pharmacy.id);
+        }catch(Exception e){
+            return false;
+        }
+        return retval;
     }
 }

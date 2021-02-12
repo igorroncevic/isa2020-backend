@@ -135,6 +135,11 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
+    public Patient save(Patient patientForUpdate) {
+        return patientRepository.save(patientForUpdate);
+    }
+
+    @Override
     public Patient register(RegisteredUser user) {
         Patient pat = new Patient();
         pat.setRole(UserRole.patient);

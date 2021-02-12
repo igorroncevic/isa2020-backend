@@ -70,7 +70,7 @@ public class LoyaltyServiceImpl implements LoyaltyService {
     @Override
     @Transactional
     public void subtractLoyaltyPoints(UUID patientId, int amount) {
-        Patient pat = patientRepository.getOne(patientId);
+        Patient pat = patientRepository.findById(patientId).orElseGet(null);
         if (pat == null) return;
 
         if (pat.getLoyaltyPoints() - amount >= 0) {
@@ -85,7 +85,7 @@ public class LoyaltyServiceImpl implements LoyaltyService {
     @Override
     @Transactional
     public void addLoyaltyPoints(UUID patientId, int amount) {
-        Patient pat = patientRepository.getOne(patientId);
+        Patient pat = patientRepository.findById(patientId).orElseGet(null);
         if (pat == null) return;
 
         pat.setLoyaltyPoints(pat.getLoyaltyPoints() + amount);
@@ -96,7 +96,7 @@ public class LoyaltyServiceImpl implements LoyaltyService {
     @Override
     @Transactional
     public void updatePatientsLoyalty(UUID patientId) {
-        Patient pat = patientRepository.getOne(patientId);
+        Patient pat = patientRepository.findById(patientId).orElseGet(null);
         if (pat == null) return;
 
         List<Loyalty> loyalties = loyaltyRepository.findAll();
