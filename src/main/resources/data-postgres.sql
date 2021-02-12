@@ -50,13 +50,13 @@ values ('02fb4f65-923c-49fe-b32a-c40ffee74b47', 'Milija', false, 'Raicevic', 'mi
         'pharmacist', 'eb797275-30de-460e-8f9b-f5034ccefc7d');
 
 insert into registered_user (id, "name", "first_login", surname, email, phone_number, "password", "role", fk_address)
-values ('b861fa5d-e543-4c61-adac-0c3f27bc32a0', 'Jagoš', false, 'Marić', 'jagosmaric@gmail.com', '064/123-456', '$2a$10$ezrRpEVuAn9W9dwGBYkB.uUv8kf52xf9E0LEFrnHjQI7fVWncwi7a',
+values ('b861fa5d-e543-4c61-adac-0c3f27bc32a0', 'Jagoš', false, 'Marić', 'jagosmaric@gmail.com', '064123456', '$2a$10$ezrRpEVuAn9W9dwGBYkB.uUv8kf52xf9E0LEFrnHjQI7fVWncwi7a',
         'supplier', '3b00204e-1897-4b6e-a175-5d0595833ced');
 insert into registered_user (id, "name", "first_login", surname, email, phone_number, "password", "role", fk_address)
-values ('6dbd78ec-c0c7-403a-b1d0-bea63b5a1981', 'Janko', false, 'Jovanovic', 'jankojovanovic@gmail.com', '064/598-127', '$2a$10$eSKR4LWxm.AYYMufmhr4YOBeUoClxJWGR2hMovgjmHxcQOitRFTs.',
+values ('6dbd78ec-c0c7-403a-b1d0-bea63b5a1981', 'Janko', false, 'Jovanovic', 'jankojovanovic@gmail.com', '064598127', '$2a$10$eSKR4LWxm.AYYMufmhr4YOBeUoClxJWGR2hMovgjmHxcQOitRFTs.',
         'supplier', '9241601b-a20a-4f26-9523-d4a670a881dc');
 insert into registered_user (id, "name", "first_login", surname, email, phone_number, "password", "role", fk_address)
-values ('84f5d15e-8b52-4e00-ac4f-6b35e030c732', 'Marina', false, 'Marković', 'marinamarkovic@gmail.com', '065/917-427', '$2a$10$HsD/nwSnitpUfTSCVbIZ5e/ZyA1WNbs0CjzU3j76/1IuLdzWq.aza',
+values ('84f5d15e-8b52-4e00-ac4f-6b35e030c732', 'Marina', false, 'Marković', 'marinamarkovic@gmail.com', '065917427', '$2a$10$HsD/nwSnitpUfTSCVbIZ5e/ZyA1WNbs0CjzU3j76/1IuLdzWq.aza',
         'supplier', '34c4d86e-8781-4163-b61a-4720c39b7ad6');
 
 insert into registered_user (id, "name", "first_login", surname, email, phone_number, "password", "role", fk_address)
@@ -93,8 +93,13 @@ insert into user_authority(user_id, authority_id) values ('02fb4f65-923c-49fe-b3
 insert into user_authority(user_id, authority_id) values ('a5ac174a-45b3-487f-91cb-3d3f727d6f1c', 'ff2ecb46-200f-4a25-a6c4-0a96f9ab082f');
 insert into user_authority(user_id, authority_id) values ('1accde09-0aa2-4ea1-9a38-17f4635198b9', 'ff2ecb46-200f-4a25-a6c4-0a96f9ab082f');
 insert into user_authority(user_id, authority_id) values ('61e9bf31-afae-4b2f-9197-8e2a328707c5', 'ff2ecb46-200f-4a25-a6c4-0a96f9ab082f');
--- Admin sistema
-insert into user_authority(user_id, authority_id) values ('40c88a70-d8cd-4d8f-b56f-eb158f7c27fa', '19c1565a-0e28-4930-9b63-fa2851a69d39');
+insert into user_authority (user_id, authority_id) values ('b861fa5d-e543-4c61-adac-0c3f27bc32a0', '91541917-0498-4e3a-a8c5-966118f78683');
+insert into user_authority (user_id, authority_id) values ('6dbd78ec-c0c7-403a-b1d0-bea63b5a1981', '91541917-0498-4e3a-a8c5-966118f78683');
+insert into user_authority (user_id, authority_id) values ('84f5d15e-8b52-4e00-ac4f-6b35e030c732', '91541917-0498-4e3a-a8c5-966118f78683');
+--Sys admin
+insert into user_authority (user_id, authority_id) values ('5baee785-9b8b-4287-a0bb-cfbee680b88d', '2fef2655-53d0-4233-bcf9-771d12040383');
+--PhAdmin
+insert into user_authority (user_id, authority_id) values ('40c88a70-d8cd-4d8f-b56f-eb158f7c27fa', '19c1565a-0e28-4930-9b63-fa2851a69d39');
 
 -- Dermatolozi
 insert into doctor (id, "name", "first_login", surname, email, phone_number, "password", "role", fk_address)
@@ -126,13 +131,13 @@ values ('02fb4f65-923c-49fe-b32a-c40ffee74b47', 'Milija', false,'Raicevic', 'mil
 
 -- Dobavljaci
 insert into supplier (id, "name", surname, email, phone_number, "password", "role", fk_address)
-values ('b861fa5d-e543-4c61-adac-0c3f27bc32a0', 'Jagoš', 'Marić', 'jagosmaric@gmail.com', '064/123-456', '$2a$10$ezrRpEVuAn9W9dwGBYkB.uUv8kf52xf9E0LEFrnHjQI7fVWncwi7a',
+values ('b861fa5d-e543-4c61-adac-0c3f27bc32a0', 'Jagoš', 'Marić', 'jagosmaric@gmail.com', '064123456', '$2a$10$ezrRpEVuAn9W9dwGBYkB.uUv8kf52xf9E0LEFrnHjQI7fVWncwi7a',
         'supplier', '3b00204e-1897-4b6e-a175-5d0595833ced');
 insert into supplier (id, "name", surname, email, phone_number, "password", "role", fk_address)
-values ('6dbd78ec-c0c7-403a-b1d0-bea63b5a1981', 'Janko', 'Jovanovic', 'jankojovanovic@gmail.com', '064/598-127', '$2a$10$eSKR4LWxm.AYYMufmhr4YOBeUoClxJWGR2hMovgjmHxcQOitRFTs.',
+values ('6dbd78ec-c0c7-403a-b1d0-bea63b5a1981', 'Janko', 'Jovanovic', 'jankojovanovic@gmail.com', '064598127', '$2a$10$eSKR4LWxm.AYYMufmhr4YOBeUoClxJWGR2hMovgjmHxcQOitRFTs.',
         'supplier', '9241601b-a20a-4f26-9523-d4a670a881dc');
 insert into supplier (id, "name", surname, email, phone_number, "password", "role", fk_address)
-values ('84f5d15e-8b52-4e00-ac4f-6b35e030c732', 'Marina', 'Marković', 'marinamarkovic@gmail.com', '065/917-427', '$2a$10$HsD/nwSnitpUfTSCVbIZ5e/ZyA1WNbs0CjzU3j76/1IuLdzWq.aza',
+values ('84f5d15e-8b52-4e00-ac4f-6b35e030c732', 'Marina', 'Marković', 'marinamarkovic@gmail.com', '065917427', '$2a$10$HsD/nwSnitpUfTSCVbIZ5e/ZyA1WNbs0CjzU3j76/1IuLdzWq.aza',
         'supplier', '34c4d86e-8781-4163-b61a-4720c39b7ad6');
 
 -- Sistem administrator
@@ -163,54 +168,57 @@ values ('5ffe884f-9cd8-42f5-adc4-2a27cd8d2737', 'Mileta', false, 'Perovic', 'mil
         '34c4d86e-8781-4163-b61a-4720c39b7ad6', 0, 'c976e4d9-0bd0-470d-9a10-bdc1ff1ba91c', 0, true);
 
 -- Pregledi
-insert into term (id, doctor_id, start_time, end_time, price, "type", report_id, patient_id)
+insert into term (id, doctor_id, start_time, end_time, price, "type", report_id, patient_id, version, completed)
 values ('1d96a5d6-f5f6-4a74-9208-109991010f31', 'a5ac174a-45b3-487f-91cb-3d3f727d6f1c', '2021-02-28 12:25:00',
-        '2021-02-28 13:00:00', 12, 'checkup', null, null);
-insert into term (id, doctor_id, start_time, end_time, price, "type", report_id, patient_id)
+        '2021-02-28 13:00:00', 12, 'checkup', null, null, 0, false);
+insert into term (id, doctor_id, start_time, end_time, price, "type", report_id, patient_id, version, completed)
 values ('0988b5b2-1d09-47ad-ace7-45282f11e24b', 'a5ac174a-45b3-487f-91cb-3d3f727d6f1c', '2021-02-28 13:05:00',
-        '2021-02-28 13:15:00', 12, 'checkup', null, null);
-insert into term (id, doctor_id, start_time, end_time, price, "type", report_id, patient_id)
+        '2021-02-28 13:15:00', 12, 'checkup', null, null, 0, false);
+insert into term (id, doctor_id, start_time, end_time, price, "type", report_id, patient_id, version, completed)
 values ('f05c035a-ffcc-4810-b34a-bb0c782f59a0', '1accde09-0aa2-4ea1-9a38-17f4635198b9', '2021-02-28 12:25:00',
-        '2021-02-28 13:00:00', 19, 'checkup', null, null);
-insert into term (id, doctor_id, start_time, end_time, price, "type", report_id, patient_id)
-values ('43501e13-caf6-4d98-a69a-db0178c582e9', '1accde09-0aa2-4ea1-9a38-17f4635198b9', '2021-01-18 13:15:00',
-        '2021-01-18 13:35:00', 19, 'checkup', null, null);
-insert into term (id, doctor_id, start_time, end_time, price, "type", report_id, patient_id)
+        '2021-02-28 13:00:00', 19, 'checkup', null, null, 0, false);
+insert into term (id, doctor_id, start_time, end_time, price, "type", report_id, patient_id, version, completed)
+values ('43501e13-caf6-4d98-a69a-db0178c582e9', '1accde09-0aa2-4ea1-9a38-17f4635198b9', '2021-02-20 13:15:00',
+        '2021-02-20 13:35:00', 19, 'checkup', null, null, 0, false);
+insert into term (id, doctor_id, start_time, end_time, price, "type", report_id, patient_id, version, completed)
+values ('6af3ebe2-eeb3-4775-ae52-74dcfe8dc949', 'a5ac174a-45b3-487f-91cb-3d3f727d6f1c', '2021-02-20 13:15:00',
+        '2021-02-20 13:35:00', 19, 'checkup', null, null, 0, false);
+insert into term (id, doctor_id, start_time, end_time, price, "type", report_id, patient_id, version, completed)
 values ('ebec212e-5ff8-45f8-8411-82d6ac3b69a6', '1accde09-0aa2-4ea1-9a38-17f4635198b9', '2021-02-28 13:35:00',
-        '2021-02-28 14:00:00', 19, 'counseling', null, null);
-insert into term (id, doctor_id, start_time, end_time, price, "type", report_id, patient_id)
-values ('bef34914-aaab-4c7d-8ef5-c2844eb33d6d', '1accde09-0aa2-4ea1-9a38-17f4635198b9', '2021-01-15 13:15:00',
-        '2021-01-15 13:35:00', 19, 'checkup', null, 'cc6fd408-0084-420b-8078-687d8a72744b');
-insert into term (id, doctor_id, start_time, end_time, price, "type", report_id, patient_id)
-values ('c3695891-66a8-421f-8759-5602513975f8', 'a5ac174a-45b3-487f-91cb-3d3f727d6f1c', '2021-01-15 12:25:00',
-        '2021-01-15 13:00:00', 12, 'checkup', null, 'cc6fd408-0084-420b-8078-687d8a72744b');
-insert into term (id, doctor_id, start_time, end_time, price, "type", report_id, patient_id)
+        '2021-02-28 14:00:00', 19, 'counseling', null, null, 0, false);
+insert into term (id, doctor_id, start_time, end_time, price, "type", report_id, patient_id, version, completed)
+values ('bef34914-aaab-4c7d-8ef5-c2844eb33d6d', '1accde09-0aa2-4ea1-9a38-17f4635198b9', '2021-01-24 13:15:00',
+        '2021-01-24 13:35:00', 19, 'checkup', null, 'cc6fd408-0084-420b-8078-687d8a72744b', 0, false);
+insert into term (id, doctor_id, start_time, end_time, price, "type", report_id, patient_id, version, completed)
+values ('c3695891-66a8-421f-8759-5602513975f8', 'a5ac174a-45b3-487f-91cb-3d3f727d6f1c', '2021-01-25 12:25:00',
+        '2021-01-25 13:00:00', 12, 'checkup', null, 'cc6fd408-0084-420b-8078-687d8a72744b', 0, false);
+insert into term (id, doctor_id, start_time, end_time, price, "type", report_id, patient_id, version, completed)
 values ('f1694aa0-a662-405e-9eb6-60d6a9ffd87c', 'a5ac174a-45b3-487f-91cb-3d3f727d6f1c', '2021-02-28 13:15:00',
-        '2021-02-28 13:45:00', 12, 'checkup', null, 'dd4c7e5f-f2c4-42dc-a809-fd7f588b3acb');
-insert into term (id, doctor_id, start_time, end_time, price, "type", report_id, patient_id)
+        '2021-02-28 13:45:00', 12, 'checkup', null, 'dd4c7e5f-f2c4-42dc-a809-fd7f588b3acb', 0, false);
+insert into term (id, doctor_id, start_time, end_time, price, "type", report_id, patient_id, version, completed)
 values ('ddf04525-26f4-4d13-a267-00a30ec2412a', 'a5ac174a-45b3-487f-91cb-3d3f727d6f1c', '2021-01-15 14:15:00',
-        '2021-01-15 14:45:00', 12, 'checkup', null, 'dd4c7e5f-f2c4-42dc-a809-fd7f588b3acb');
+        '2021-01-15 14:45:00', 12, 'checkup', null, 'dd4c7e5f-f2c4-42dc-a809-fd7f588b3acb', 0, true);
 
-insert into term (id, doctor_id, start_time, end_time, price, "type", report_id, patient_id)
+insert into term (id, doctor_id, start_time, end_time, price, "type", report_id, patient_id, version, completed)
 values ('a045baba-1d99-44e9-a6c9-693c6717a336', 'a5ac174a-45b3-487f-91cb-3d3f727d6f1c', '2021-02-21 12:25:00',
-        '2021-02-21 13:00:00', 12, 'checkup', null, 'cc6fd408-0084-420b-8078-687d8a72744b');
-insert into term (id, doctor_id, start_time, end_time, price, "type", report_id, patient_id)
+        '2021-02-21 13:00:00', 12, 'checkup', null, 'cc6fd408-0084-420b-8078-687d8a72744b', 0, false);
+insert into term (id, doctor_id, start_time, end_time, price, "type", report_id, patient_id, version, completed)
 values ('a6d049b5-8fe0-471d-8b33-d83bdb0c4602', 'a5ac174a-45b3-487f-91cb-3d3f727d6f1c', '2021-02-23 10:00:00',
-        '2021-02-23 10:15:00', 9, 'checkup', null, 'cc6fd408-0084-420b-8078-687d8a72744b');
+        '2021-02-23 10:15:00', 9, 'checkup', null, 'cc6fd408-0084-420b-8078-687d8a72744b', 0, false);
 
 -- Savjetovanja
-insert into term (id, doctor_id, start_time, end_time, price, "type", report_id, patient_id)
+insert into term (id, doctor_id, start_time, end_time, price, "type", report_id, patient_id, version, completed)
 values ('fa417459-da91-4812-9d74-3a8ebaa25288', 'b0a591d4-f627-45ba-8aa9-926e85c93e08', '2021-01-15 13:15:00',
-        '2021-01-15 13:35:00', 14, 'counseling', null, null);
-insert into term (id, doctor_id, start_time, end_time, price, "type", report_id, patient_id)
+        '2021-01-15 13:35:00', 14, 'counseling', null, null, 0, true);
+insert into term (id, doctor_id, start_time, end_time, price, "type", report_id, patient_id, version, completed)
 values ('d3e0f32b-f933-445a-b743-1930da41aa00', 'b7d924b5-c488-47bc-be78-2bdad330f468', '2021-01-15 13:15:00',
-        '2021-01-15 13:35:00', 15, 'counseling', null, 'cc6fd408-0084-420b-8078-687d8a72744b');
-insert into term (id, doctor_id, start_time, end_time, price, "type", report_id, patient_id)
+        '2021-01-15 13:35:00', 15, 'counseling', null, 'cc6fd408-0084-420b-8078-687d8a72744b', 0, true);
+insert into term (id, doctor_id, start_time, end_time, price, "type", report_id, patient_id, version, completed)
 values ('8f31bed6-1816-48dc-93f4-f7c5fc3cffe2', 'b7d924b5-c488-47bc-be78-2bdad330f468', '2021-03-01 13:15:00',
-        '2021-03-01 13:35:00', 15, 'counseling', null, 'cc6fd408-0084-420b-8078-687d8a72744b');
-insert into term (id, doctor_id, start_time, end_time, price, "type", report_id, patient_id)
+        '2021-03-01 13:35:00', 15, 'counseling', null, 'cc6fd408-0084-420b-8078-687d8a72744b', 0, false);
+insert into term (id, doctor_id, start_time, end_time, price, "type", report_id, patient_id, version, completed)
 values ('3c16d087-fcc9-4c31-9431-71a92bc781fd', 'b0a591d4-f627-45ba-8aa9-926e85c93e08', '2021-01-15 13:45:00',
-        '2021-01-15 14:00:00', 19, 'counseling', null, null);
+        '2021-01-15 14:00:00', 19, 'counseling', null, null, 0, true);
 
 -- Lijekovi
 insert into medicine (id, loyalty_points, "name", medicine_code, medicine_type, medicine_form, manufacturer, issuing_regime)
@@ -277,24 +285,26 @@ values ('2021-01-01 09:00:00', '2021-01-01 17:00:00', '02fb4f65-923c-49fe-b32a-c
 
 -- Lijekovi koji posjeduju apoteke
 insert into pharmacy_medicines (pharmacy_id, medicine_id, quantity, version)
-values ('25fff0b2-ad45-4310-ac7f-96bcc5e517c1', '7571786b-2fc5-4756-ab5c-1f4af756e6f2', 49, 1);
+values ('25fff0b2-ad45-4310-ac7f-96bcc5e517c1', '7571786b-2fc5-4756-ab5c-1f4af756e6f2', 49, 0);
 insert into pharmacy_medicines (pharmacy_id, medicine_id, quantity, version)
-values ('25fff0b2-ad45-4310-ac7f-96bcc5e517c1', '592e558c-b3f9-4088-b468-28764908bd92', 129, 1);
+values ('25fff0b2-ad45-4310-ac7f-96bcc5e517c1', '592e558c-b3f9-4088-b468-28764908bd92', 129, 0);
 insert into pharmacy_medicines (pharmacy_id, medicine_id, quantity, version)
-values ('25fff0b2-ad45-4310-ac7f-96bcc5e517c1', '3163f62a-5b88-4295-854c-c9400e19089f', 14, 1);
+values ('25fff0b2-ad45-4310-ac7f-96bcc5e517c1', '3163f62a-5b88-4295-854c-c9400e19089f', 14, 0);
 insert into pharmacy_medicines (pharmacy_id, medicine_id, quantity, version)
-values ('25fff0b2-ad45-4310-ac7f-96bcc5e517c1', '32636111-4bc6-424c-a200-067e7f8a9386', 23, 1);
+values ('25fff0b2-ad45-4310-ac7f-96bcc5e517c1', '32636111-4bc6-424c-a200-067e7f8a9386', 23, 0);
 insert into pharmacy_medicines (pharmacy_id, medicine_id, quantity, version)
-values ('25fff0b2-ad45-4310-ac7f-96bcc5e517c1', '659d0931-63d9-4ef6-bbc4-abdeb4a99539', 5, 1);
+values ('25fff0b2-ad45-4310-ac7f-96bcc5e517c1', '659d0931-63d9-4ef6-bbc4-abdeb4a99539', 5, 0);
 
 insert into pharmacy_medicines (pharmacy_id, medicine_id, quantity, version)
-values ('e93cab4a-f007-412c-b631-7a9a5ee2c6ed', '7571786b-2fc5-4756-ab5c-1f4af756e6f2', 49, 1);
+values ('e93cab4a-f007-412c-b631-7a9a5ee2c6ed', '7571786b-2fc5-4756-ab5c-1f4af756e6f2', 49, 0);
 insert into pharmacy_medicines (pharmacy_id, medicine_id, quantity, version)
-values ('e93cab4a-f007-412c-b631-7a9a5ee2c6ed', '592e558c-b3f9-4088-b468-28764908bd92', 5, 1);
+values ('e93cab4a-f007-412c-b631-7a9a5ee2c6ed', '592e558c-b3f9-4088-b468-28764908bd92', 5, 0);
 insert into pharmacy_medicines (pharmacy_id, medicine_id, quantity, version)
-values ('e93cab4a-f007-412c-b631-7a9a5ee2c6ed', '3163f62a-5b88-4295-854c-c9400e19089f', 15, 1);
+values ('e93cab4a-f007-412c-b631-7a9a5ee2c6ed', '3163f62a-5b88-4295-854c-c9400e19089f', 15, 0);
 insert into pharmacy_medicines (pharmacy_id, medicine_id, quantity, version)
-values ('e93cab4a-f007-412c-b631-7a9a5ee2c6ed', '659d0931-63d9-4ef6-bbc4-abdeb4a99539', 44, 1);
+values ('e93cab4a-f007-412c-b631-7a9a5ee2c6ed', '32636111-4bc6-424c-a200-067e7f8a9386', 23, 0);
+insert into pharmacy_medicines (pharmacy_id, medicine_id, quantity, version)
+values ('e93cab4a-f007-412c-b631-7a9a5ee2c6ed', '659d0931-63d9-4ef6-bbc4-abdeb4a99539', 44, 0);
 
 -- Cijenovnici
 insert into pricings (id, start_date, end_date, price, pharmacy_medicine_pharmacy_id, pharmacy_medicine_medicine_id)
@@ -320,10 +330,10 @@ insert into pricings (id, start_date, end_date, price, pharmacy_medicine_pharmac
 values ('cc98dae0-012b-4d4d-b281-6219ad66af75', '2022-01-01', '2022-12-31', 25, 'e93cab4a-f007-412c-b631-7a9a5ee2c6ed', '659d0931-63d9-4ef6-bbc4-abdeb4a99539');
 
 -- Rezervisani lijekovi
-insert into reserved_medicines(id, pickup_date, medicine_id, patient_id, pharmacy_id, handled)
-values ('ff1cc92f-30d2-4cad-b3d7-f4a65eaa2d07', '2021-02-25', '7571786b-2fc5-4756-ab5c-1f4af756e6f2', 'cc6fd408-0084-420b-8078-687d8a72744b', 'e93cab4a-f007-412c-b631-7a9a5ee2c6ed', false);
-insert into reserved_medicines(id, pickup_date, medicine_id, patient_id, pharmacy_id, handled)
-values ('3a67b4a6-d043-46ad-a4c3-8629cadca585', '2021-01-25', '7571786b-2fc5-4756-ab5c-1f4af756e6f2', 'dd4c7e5f-f2c4-42dc-a809-fd7f588b3acb', 'e93cab4a-f007-412c-b631-7a9a5ee2c6ed', true);
+insert into reserved_medicines(id, pickup_date, medicine_id, patient_id, pharmacy_id, handled, version)
+values ('ff1cc92f-30d2-4cad-b3d7-f4a65eaa2d07', '2021-02-25', '7571786b-2fc5-4756-ab5c-1f4af756e6f2', 'cc6fd408-0084-420b-8078-687d8a72744b', 'e93cab4a-f007-412c-b631-7a9a5ee2c6ed', false, 0);
+insert into reserved_medicines(id, pickup_date, medicine_id, patient_id, pharmacy_id, handled, version)
+values ('3a67b4a6-d043-46ad-a4c3-8629cadca585', '2021-01-25', '7571786b-2fc5-4756-ab5c-1f4af756e6f2', 'dd4c7e5f-f2c4-42dc-a809-fd7f588b3acb', 'e93cab4a-f007-412c-b631-7a9a5ee2c6ed', true, 0);
 
 -- Mark
 insert into mark(id, mark, doctor_id, medicine_id, patient_id, pharmacy_id)
@@ -404,46 +414,35 @@ insert into pharmacy_promotions(pharmacy_id, promotions_id)
 values('25fff0b2-ad45-4310-ac7f-96bcc5e517c1', '11cc4eb4-6113-4a7b-b466-758aa35da89f');
 
 -- Purchase orders
-insert into purchase_order(id, end_date, pharmacy_admin_id)
-values('ebd0e0f2-7e6c-4c3d-9062-3751cde8a116', '2021-01-10', '40c88a70-d8cd-4d8f-b56f-eb158f7c27fa');
+insert into purchase_order (id, end_date, status, pharmacy_admin_id)
+values ('dd2e771b-f99f-49d3-ab4c-66a594fda024', '2021-02-15', 'accepted', '40c88a70-d8cd-4d8f-b56f-eb158f7c27fa');
+insert into purchase_order (id, end_date, status, pharmacy_admin_id)
+values ('1e5e53cf-8c57-4425-b07b-0420b1de156b', '2021-02-13', 'waiting_for_response', '40c88a70-d8cd-4d8f-b56f-eb158f7c27fa');
 
--- Purchase order medicine
-insert into purchase_order_medicine(purchase_order_id, medicine_id, quantity)
-values('ebd0e0f2-7e6c-4c3d-9062-3751cde8a116', '7571786b-2fc5-4756-ab5c-1f4af756e6f2', 20);
-insert into purchase_order_medicine(purchase_order_id, medicine_id, quantity)
-values('ebd0e0f2-7e6c-4c3d-9062-3751cde8a116', '592e558c-b3f9-4088-b468-28764908bd92', 10);
-insert into purchase_order_medicine(purchase_order_id, medicine_id, quantity)
-values('ebd0e0f2-7e6c-4c3d-9062-3751cde8a116', '3163f62a-5b88-4295-854c-c9400e19089f', 15);
-insert into purchase_order_medicine(purchase_order_id, medicine_id, quantity)
-values('ebd0e0f2-7e6c-4c3d-9062-3751cde8a116', '659d0931-63d9-4ef6-bbc4-abdeb4a99539', 15);
+--Purchase order medicines
+insert into purchase_order_medicine (quantity, medicine_id, purchase_order_id)
+values (15, '7571786b-2fc5-4756-ab5c-1f4af756e6f2', 'dd2e771b-f99f-49d3-ab4c-66a594fda024');
+insert into purchase_order_medicine (quantity, medicine_id, purchase_order_id)
+values (10, '592e558c-b3f9-4088-b468-28764908bd92', 'dd2e771b-f99f-49d3-ab4c-66a594fda024');
+insert into purchase_order_medicine (quantity, medicine_id, purchase_order_id)
+values (5, '3163f62a-5b88-4295-854c-c9400e19089f', 'dd2e771b-f99f-49d3-ab4c-66a594fda024');
+insert into purchase_order_medicine (quantity, medicine_id, purchase_order_id)
+values (2, '7571786b-2fc5-4756-ab5c-1f4af756e6f2', '1e5e53cf-8c57-4425-b07b-0420b1de156b');
+insert into purchase_order_medicine (quantity, medicine_id, purchase_order_id)
+values (5, '592e558c-b3f9-4088-b468-28764908bd92', '1e5e53cf-8c57-4425-b07b-0420b1de156b');
 
---Supplier medicine
-insert into supplier_medicine(supplier_id, medicine_id, quantity)
-values('b861fa5d-e543-4c61-adac-0c3f27bc32a0', '7571786b-2fc5-4756-ab5c-1f4af756e6f2', 99);
-insert into supplier_medicine(supplier_id, medicine_id, quantity)
-values('b861fa5d-e543-4c61-adac-0c3f27bc32a0', '592e558c-b3f9-4088-b468-28764908bd92', 99);
-insert into supplier_medicine(supplier_id, medicine_id, quantity)
-values('b861fa5d-e543-4c61-adac-0c3f27bc32a0', '3163f62a-5b88-4295-854c-c9400e19089f', 99);
-insert into supplier_medicine(supplier_id, medicine_id, quantity)
-values('b861fa5d-e543-4c61-adac-0c3f27bc32a0', '32636111-4bc6-424c-a200-067e7f8a9386', 99);
-insert into supplier_medicine(supplier_id, medicine_id, quantity)
-values('b861fa5d-e543-4c61-adac-0c3f27bc32a0', '659d0931-63d9-4ef6-bbc4-abdeb4a99539', 99);
+--Supplier purchase orders
+insert into supplier_purchase_order (accepted, delivery_date, price, purchase_order_id, supplier_id)
+values (true, '2021-02-11', 15000, 'dd2e771b-f99f-49d3-ab4c-66a594fda024', 'b861fa5d-e543-4c61-adac-0c3f27bc32a0');
+insert into supplier_purchase_order (accepted, delivery_date, price, purchase_order_id, supplier_id)
+values (false, '2021-02-10', 10000, 'dd2e771b-f99f-49d3-ab4c-66a594fda024', '6dbd78ec-c0c7-403a-b1d0-bea63b5a1981');
+insert into supplier_purchase_order (accepted, delivery_date, price, purchase_order_id, supplier_id)
+values (false, '2021-02-12', 5000, '1e5e53cf-8c57-4425-b07b-0420b1de156b', '84f5d15e-8b52-4e00-ac4f-6b35e030c732');
 
-insert into supplier_medicine(supplier_id, medicine_id, quantity)
-values('6dbd78ec-c0c7-403a-b1d0-bea63b5a1981', '7571786b-2fc5-4756-ab5c-1f4af756e6f2', 99);
-insert into supplier_medicine(supplier_id, medicine_id, quantity)
-values('6dbd78ec-c0c7-403a-b1d0-bea63b5a1981', '592e558c-b3f9-4088-b468-28764908bd92', 99);
-insert into supplier_medicine(supplier_id, medicine_id, quantity)
-values('6dbd78ec-c0c7-403a-b1d0-bea63b5a1981', '3163f62a-5b88-4295-854c-c9400e19089f', 99);
-insert into supplier_medicine(supplier_id, medicine_id, quantity)
-values('6dbd78ec-c0c7-403a-b1d0-bea63b5a1981', '32636111-4bc6-424c-a200-067e7f8a9386', 99);
-insert into supplier_medicine(supplier_id, medicine_id, quantity)
-values('6dbd78ec-c0c7-403a-b1d0-bea63b5a1981', '659d0931-63d9-4ef6-bbc4-abdeb4a99539', 99);
-
--- Supplier offers
-insert into supplier_purchase_order(supplier_id, purchase_order_id, price, delivery_date, accepted)
-values('b861fa5d-e543-4c61-adac-0c3f27bc32a0', 'ebd0e0f2-7e6c-4c3d-9062-3751cde8a116', 120, '2021-03-07', false);
-insert into supplier_purchase_order(supplier_id, purchase_order_id, price, delivery_date, accepted)
-values('6dbd78ec-c0c7-403a-b1d0-bea63b5a1981', 'ebd0e0f2-7e6c-4c3d-9062-3751cde8a116', 160, '2021-03-15', false);
-
-
+--Supplier medicines
+insert into supplier_medicine (quantity, medicine_id, supplier_id)
+values (20, '7571786b-2fc5-4756-ab5c-1f4af756e6f2', '6dbd78ec-c0c7-403a-b1d0-bea63b5a1981');
+insert into supplier_medicine (quantity, medicine_id, supplier_id)
+values (11, '592e558c-b3f9-4088-b468-28764908bd92', '6dbd78ec-c0c7-403a-b1d0-bea63b5a1981');
+insert into supplier_medicine (quantity, medicine_id, supplier_id)
+values (6, '3163f62a-5b88-4295-854c-c9400e19089f', '6dbd78ec-c0c7-403a-b1d0-bea63b5a1981');

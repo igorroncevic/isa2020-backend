@@ -31,8 +31,8 @@ public interface PurchaseOrderRepository extends JpaRepository<PurchaseOrder, UU
 
     @Transactional
     @Modifying
-    @Query(nativeQuery = true, value = "INSERT INTO purchase_order(id, end_date, pharmacy_admin_id)" +
-            "VALUES(:id, :endDate, :phadminId)")
+    @Query(nativeQuery = true, value = "INSERT INTO purchase_order(id, end_date, pharmacy_admin_id, status)" +
+            "VALUES(:id, :endDate, :phadminId, 'waiting_for_response')")
     int insertPurchaseOrder(UUID id, LocalDate endDate, UUID phadminId);
 
     @Transactional

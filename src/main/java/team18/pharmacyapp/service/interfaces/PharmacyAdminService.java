@@ -5,6 +5,7 @@ import team18.pharmacyapp.model.dtos.PharmacyAdminDTO;
 import team18.pharmacyapp.model.dtos.PharmacyDTO;
 import team18.pharmacyapp.model.dtos.UserInfoDTO;
 import team18.pharmacyapp.model.users.PharmacyAdmin;
+import team18.pharmacyapp.model.users.RegisteredUser;
 
 import java.util.UUID;
 
@@ -16,7 +17,8 @@ public interface PharmacyAdminService {
 
     UserInfoDTO update(PharmacyAdmin pharmacyAdmin);
 
-    PharmacyAdmin registerNewPharmacyAdmin(PharmacyAdminDTO pharmacyAdmin);
-
     PharmacyDTO getPharmacyAdminPharmacyId(UUID id);
+
+    PharmacyAdmin registerPharmacyAdmin(RegisteredUser user, String pharmacyName);
+
 }

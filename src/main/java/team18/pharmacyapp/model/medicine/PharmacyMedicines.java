@@ -33,10 +33,9 @@ public class PharmacyMedicines {
     @OneToMany(mappedBy = "pharmacyMedicine", cascade = CascadeType.ALL)
     private List<Pricings> pricings;
 
-    @OneToMany(mappedBy = "pharmacyMedicines", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "pharmacyMedicines")
     private List<EPrescriptionMedicines> ePrescriptionMedicines;
 
-    // Verzija torke, koristi se u svrhu optimistickog zakljucavanja
     @Version
-    private Long version;
+    private Long version = 0L;
 }

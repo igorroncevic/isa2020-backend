@@ -3,6 +3,7 @@ package team18.pharmacyapp.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import team18.pharmacyapp.model.Vacation;
 import team18.pharmacyapp.model.dtos.RefuseVacationDTO;
@@ -16,7 +17,7 @@ import team18.pharmacyapp.service.interfaces.VacationService;
 import java.util.List;
 import java.util.UUID;
 
-@CrossOrigin(origins = {"http://localhost:8080","http://localhost:8081"})
+@CrossOrigin(origins = {"http://localhost:8080", "http://localhost:8081"})
 @RestController
 @RequestMapping(value = "api/vacation")
 public class VacationController {
@@ -28,11 +29,12 @@ public class VacationController {
         this.vacationService = vacationService;
     }
 
+    @PreAuthorize("hasRole('ROLE_DERMATOLOGIST') || hasRole('ROLE_PHARMACIST')")
     @PostMapping
-    public ResponseEntity<Vacation> createVacationRequest(@RequestBody VacationRequestDTO dto){
-        Vacation v=vacationService.create(dto);
-        if(v!=null){
-            return new ResponseEntity<>(v,HttpStatus.CREATED);
+    public ResponseEntity<Vacation> createVacationRequest(@RequestBody VacationRequestDTO dto) {
+        Vacation v = vacationService.create(dto);
+        if (v != null) {
+            return new ResponseEntity<>(HttpStatus.CREATED);
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
@@ -59,9 +61,9 @@ public class VacationController {
     public ResponseEntity approveVacation(@PathVariable UUID id) {
         try {
             vacationService.approve(id);
-        }catch (EntityNotFoundException ex) {
+        } catch (EntityNotFoundException ex) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }catch (ActionNotAllowedException ex) {
+        } catch (ActionNotAllowedException ex) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         } catch (RuntimeException ex) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -74,9 +76,9 @@ public class VacationController {
     public ResponseEntity refuseVacation(@PathVariable UUID id, @RequestBody RefuseVacationDTO refuseVacationDTO) {
         try {
             vacationService.refuse(id, refuseVacationDTO.getRejectionReason());
-        }catch (EntityNotFoundException ex) {
+        } catch (EntityNotFoundException ex) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }catch (ActionNotAllowedException ex) {
+        } catch (ActionNotAllowedException ex) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         } catch (IllegalArgumentException ex) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

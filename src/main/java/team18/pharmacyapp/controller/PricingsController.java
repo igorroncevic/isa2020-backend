@@ -6,11 +6,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import team18.pharmacyapp.model.Pricings;
-import team18.pharmacyapp.model.Vacation;
 import team18.pharmacyapp.model.dtos.NewPricingDTO;
 import team18.pharmacyapp.model.dtos.PricingsDTO;
 import team18.pharmacyapp.model.dtos.UpdatePricingDTO;
-import team18.pharmacyapp.model.enums.VacationStatus;
 import team18.pharmacyapp.model.exceptions.ActionNotAllowedException;
 import team18.pharmacyapp.model.exceptions.BadTimeRangeException;
 import team18.pharmacyapp.service.interfaces.PricingsService;
@@ -18,7 +16,7 @@ import team18.pharmacyapp.service.interfaces.PricingsService;
 import java.util.List;
 import java.util.UUID;
 
-@CrossOrigin(origins = {"http://localhost:8080","http://localhost:8081"})
+@CrossOrigin(origins = {"http://localhost:8080", "http://localhost:8081"})
 @RestController
 @RequestMapping(value = "api/pricings")
 public class PricingsController {

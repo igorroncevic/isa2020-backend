@@ -19,6 +19,7 @@ import team18.pharmacyapp.service.interfaces.PurchaseOrderService;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import team18.pharmacyapp.model.dtos.PurchaseOrderMedicineDTO;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -214,5 +215,4 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         for(String supplierEmail : suppliersEmails)
             emailService.sendMail(supplierEmail, subject, body);
     }
-
 }

@@ -2,6 +2,7 @@ package team18.pharmacyapp.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -18,6 +19,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class Term {
     @Id
@@ -50,4 +52,10 @@ public class Term {
 
     @OneToOne(cascade = CascadeType.ALL)
     private Report report;
+
+    @Column(nullable = false)
+    private boolean completed = false;
+
+    @Version
+    private Long version = 0L;
 }

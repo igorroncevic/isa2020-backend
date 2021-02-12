@@ -13,9 +13,10 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+
 @Service
 public class ReservedMedicinesServiceImpl implements ReservedMedicinesService {
-    private  final ReservedMedicinesRepository repository;
+    private final ReservedMedicinesRepository repository;
     private final EmailService emailService;
 
     @Autowired
@@ -26,26 +27,23 @@ public class ReservedMedicinesServiceImpl implements ReservedMedicinesService {
 
 
     @Override
-    public ReservedMedicineResponseDTO findByIdAndPharmacy(UUID id,UUID pharmacy) {
-        return repository.findByReservationId(id,pharmacy);
+    public ReservedMedicineResponseDTO findByIdAndPharmacy(UUID id, UUID pharmacy) {
+        return repository.findByReservationId(id, pharmacy);
     }
 
-    public boolean checkPickupDate(Date pickupDate){
+    public boolean checkPickupDate(Date pickupDate) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(new Date());
         cal.add(Calendar.HOUR_OF_DAY, 24);
-        if(cal.getTime().compareTo(pickupDate)>0){
-            return  false;
-        }
-        return true;
+        return cal.getTime().compareTo(pickupDate) <= 0;
     }
 
 
     @Override
-    public ReservedMedicineResponseDTO checkReservation(UUID id,UUID pharmacy){
-        ReservedMedicineResponseDTO medicines=findByIdAndPharmacy(id,pharmacy);
-        if(medicines!=null){
-            if(!checkPickupDate(medicines.getPickupDate()) || medicines.isHandled()){
+    public ReservedMedicineResponseDTO checkReservation(UUID id, UUID pharmacy) {
+        ReservedMedicineResponseDTO medicines = findByIdAndPharmacy(id, pharmacy);
+        if (medicines != null) {
+            if (!checkPickupDate(medicines.getPickupDate()) || medicines.isHandled()) {
                 return null;
             }
         }
@@ -54,17 +52,17 @@ public class ReservedMedicinesServiceImpl implements ReservedMedicinesService {
 
     @Override
     public List<ReservedMedicineResponseDTO> getAll() {
-        return  null;
+        return null;
     }
 
     @Override
     public boolean handleMedicine(HandleReservationDTO dto) {
-        ReservedMedicines medicines=repository.findById(dto.getId()).orElse(null);
-        if(medicines!=null){
+        ReservedMedicines medicines = repository.findById(dto.getId()).orElse(null);
+        if (medicines != null) {
             medicines.setHandled(true);
             repository.save(medicines);
             String subject = "[ISA Pharmacy] Confirmation - Medicine reservation";
-            String body = "You successfully take reserved medicine "+dto.getMedicine() +".\n" +
+            String body = "You successfully take reserved medicine " + dto.getMedicine() + ".\n" +
                     "Your reservation ID: " + dto.getId().toString();
             new Thread(() -> emailService.sendMail(dto.getEmail(), subject, body)).start();
             return true;

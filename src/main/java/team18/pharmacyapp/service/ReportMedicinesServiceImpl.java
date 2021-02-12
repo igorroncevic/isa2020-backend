@@ -18,7 +18,7 @@ public class ReportMedicinesServiceImpl implements ReportMedicinesService {
 
     @Override
     public ReportMedicines save(ReportMedicines reportMedicines) {
-        if(!reportMedicines.getStartDate().before(reportMedicines.getEndDate())){
+        if (!reportMedicines.getStartDate().before(reportMedicines.getEndDate())) {
             return null;
         }
         return repository.save(reportMedicines);

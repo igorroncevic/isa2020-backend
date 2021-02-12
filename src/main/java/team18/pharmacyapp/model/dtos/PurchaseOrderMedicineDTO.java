@@ -17,4 +17,8 @@ public class PurchaseOrderMedicineDTO {
     String medicineName;
     int orderQuantity;
 
+    public PurchaseOrderMedicineDTO(String medicineName, int orderQuantity) {
+        this.medicineName = medicineName;
+        this.orderQuantity = orderQuantity;
+    }
 }
