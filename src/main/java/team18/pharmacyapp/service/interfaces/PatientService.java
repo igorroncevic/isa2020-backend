@@ -32,5 +32,5 @@ public interface PatientService {
 
     boolean activateAcc(UUID patientId);
 
-    RegisteredUser updateUser(String name, String surname, String phone, String password, UUID id);
+    Patient save(Patient patientForUpdate);
 }

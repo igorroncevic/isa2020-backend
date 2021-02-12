@@ -7,7 +7,7 @@ import java.util.GregorianCalendar;
 
 public class DateTimeHelpers {
 
-    private final static Calendar calendar = GregorianCalendar.getInstance();
+    public final static Calendar calendar = GregorianCalendar.getInstance();
 
     public static LocalTime getTimeWithoutDate(Date date) {
         calendar.setTime(date);
@@ -43,9 +43,6 @@ public class DateTimeHelpers {
 
         // Complete intersection
         if (date1Start.before(date2Start) && date1End.after(date2End)) return true; // 3
-        if (date2Start.before(date1Start) && date2End.after(date1End)) return true; // 4
-
-
-        return false;
+        return date2Start.before(date1Start) && date2End.after(date1End); // 4
     }
 }

@@ -15,7 +15,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name="AUTHORITY")
+@Table(name = "AUTHORITY")
 public class Authority implements GrantedAuthority {
 
     @Id
@@ -25,7 +25,7 @@ public class Authority implements GrantedAuthority {
     )
     UUID id;
 
-    @Column(name="name")
+    @Column(name = "name")
     String name;
 
     @Override

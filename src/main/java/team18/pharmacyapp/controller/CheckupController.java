@@ -17,7 +17,7 @@ import team18.pharmacyapp.service.interfaces.TermService;
 import java.util.List;
 import java.util.UUID;
 
-@CrossOrigin(origins = {"http://localhost:8080","http://localhost:8081"})
+@CrossOrigin(origins = {"http://localhost:8080", "http://localhost:8081"})
 @RestController
 @RequestMapping(value = "api/checkups")
 public class CheckupController {
@@ -37,28 +37,29 @@ public class CheckupController {
 
         try {
             checkups = checkupService.findAllAvailableCheckups();
-        }catch(RuntimeException e){
+        } catch (RuntimeException e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
         return new ResponseEntity<>(checkups, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ROLE_PHADMIN') || hasRole('ROLE_DERMATOLOGIST') || hasRole('ROLE_PHARMACIST')")
     @GetMapping("/freeCheckups/{doctorId}/{pharmacyId}")
-    public ResponseEntity<List<Term>> getDoctorPharmacyFreeTerms(@PathVariable UUID doctorId,@PathVariable UUID pharmacyId) {
-        List<Term> checkups = checkupService.doctorPharmacyFree(doctorId,pharmacyId);
+    public ResponseEntity<List<DoctorTermDTO>> getDoctorPharmacyFreeTerms(@PathVariable UUID doctorId, @PathVariable UUID pharmacyId) {
+        List<DoctorTermDTO> checkups = checkupService.doctorPharmacyFree(doctorId, pharmacyId);
 
         return new ResponseEntity<>(checkups, HttpStatus.OK);
     }
 
-    @PreAuthorize("hasRole('ROLE_PATIENT')")
+    @PreAuthorize("hasRole('ROLE_PATIENT') || hasRole('ROLE_DERMATOLOGIST') || hasRole('ROLE_PHARMACIST')")
     @GetMapping("/patient/{id}")
     public ResponseEntity<List<TermDTO>> getAllPatientsCheckups(@PathVariable UUID id) {
         List<TermDTO> checkups;
 
-        try{
+        try {
             checkups = checkupService.findAllPatientsCheckups(id);
-        }catch(RuntimeException e){
+        } catch (RuntimeException e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
@@ -69,9 +70,9 @@ public class CheckupController {
     @PostMapping("/past")
     public ResponseEntity<TermPaginationDTO> getAllPatientsPastCheckupsPaginated(@RequestBody TermPaginationSortingDTO psDTO) {
         TermPaginationDTO checkups;
-        try{
+        try {
             checkups = termService.findAllPatientsPastTermsPaginated(psDTO.getId(), psDTO.getSort(), psDTO.getTermType(), psDTO.getPage());
-        }catch(RuntimeException e){
+        } catch (RuntimeException e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
@@ -82,15 +83,16 @@ public class CheckupController {
     @PostMapping("/upcoming")
     public ResponseEntity<TermPaginationDTO> getAllPatientsUpcomingCheckupsPaginated(@RequestBody TermPaginationSortingDTO psDTO) {
         TermPaginationDTO checkups;
-        try{
+        try {
             checkups = termService.findPatientsUpcomingTermsByTypePaginated(psDTO.getId(), psDTO.getSort(), psDTO.getTermType(), psDTO.getPage());
-        }catch(RuntimeException e){
+        } catch (RuntimeException e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
         return new ResponseEntity<>(checkups, HttpStatus.OK);
     }
 
+    @PreAuthorize(" hasRole('ROLE_DERMATOLOGIST') || hasRole('ROLE_PHARMACIST')")
     @GetMapping(value = "/{id}")
     public ResponseEntity<TermDTO> getCheckup(@PathVariable UUID id) {
         TermDTO checkup = checkupService.findOne(id);
@@ -102,6 +104,7 @@ public class CheckupController {
         return new ResponseEntity<>(checkup, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ROLE_PATIENT') || hasRole('ROLE_DERMATOLOGIST') || hasRole('ROLE_PHARMACIST')")
     @GetMapping(value = "/patientCheckup/{id}")
     public ResponseEntity<DoctorTermDTO> getCheckupFetchPatient(@PathVariable UUID id) {
         DoctorTermDTO checkup = checkupService.findByIdFetchPatint(id);
@@ -113,6 +116,7 @@ public class CheckupController {
         return new ResponseEntity<>(checkup, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ROLE_DERMATOLOGIST') || hasRole('ROLE_PHARMACIST')")
     @PostMapping(consumes = "application/json")
     public ResponseEntity<Term> saveCheckup(@RequestBody Term checkup) {
         Term savedCheckup = checkupService.save(checkup);
@@ -136,7 +140,7 @@ public class CheckupController {
         }
     }
 
-    @PreAuthorize("hasRole('ROLE_PATIENT')")
+    @PreAuthorize("hasRole('ROLE_PATIENT') || hasRole('ROLE_DERMATOLOGIST') || hasRole('ROLE_PHARMACIST')")
     @PutMapping(consumes = "application/json", value = "/schedule")
     public ResponseEntity<Void> patientScheduleCheckup(@RequestBody ScheduleCheckupDTO term) {
         boolean success;
@@ -165,9 +169,9 @@ public class CheckupController {
         boolean success;
         try {
             success = checkupService.patientCancelCheckup(term);
-        }catch (EntityNotFoundException ex) {
+        } catch (EntityNotFoundException ex) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }catch (ActionNotAllowedException ex) {
+        } catch (ActionNotAllowedException ex) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         } catch (RuntimeException ex) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);

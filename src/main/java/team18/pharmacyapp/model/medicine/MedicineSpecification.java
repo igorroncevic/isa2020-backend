@@ -5,12 +5,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
-import team18.pharmacyapp.model.enums.MedicineIssuingRegime;
 
 import javax.persistence.*;
 import java.util.UUID;
 
-@Table(uniqueConstraints={@UniqueConstraint(columnNames = {"medicine_id"})})
+@Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"medicine_id"})})
 @Entity(name = "medicine_specification")
 @Getter
 @Setter

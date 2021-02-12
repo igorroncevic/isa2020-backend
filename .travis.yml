@@ -12,14 +12,17 @@ notifications:
 before_install:
   - chmod +x mvnw
 
-install:
-  - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
+addons:
+  sonarcloud:
+  organization: igorroncevic-1
+  token: $SONAR_TOKEN
 
 before_script:
   - psql -c 'create database pharmacydb;' -U postgres
 
 script:
-  - mvn package
+  - mvn clean install -DskipTests=false -B -V
+  - mvn sonar:sonar -Dsonar.projectKey=$PROJECT_KEY -Dsonar.organization=igorroncevic-1 -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=$SONAR_TOKEN
 
 deploy:
   provider: heroku

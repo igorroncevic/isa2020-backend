@@ -27,7 +27,7 @@ public class PharmacyController {
 
     @GetMapping("/search")
     public ResponseEntity<List<PharmacyFilteringDTO>> getAllForFiltered(@RequestParam(name = "name", required = false) String name, @RequestParam(name = "mark", required = false, defaultValue = "0.0") float mark, @RequestParam(name = "city", required = false) String city) {
-        if(!FilteringHelpers.isAlpha(name) || !FilteringHelpers.isAlpha(city))
+        if (!FilteringHelpers.isAlpha(name) || !FilteringHelpers.isAlpha(city))
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
         List<PharmacyFilteringDTO> pharmacies = pharmacyService.getAllFiltered(name, mark, city);
@@ -38,9 +38,9 @@ public class PharmacyController {
     @GetMapping("/patient/{id}")
     public ResponseEntity<List<PharmacyMarkPriceDTO>> getAllPatientsPharmacies(@PathVariable UUID id) {
         List<PharmacyMarkPriceDTO> pharmacies = pharmacyService.getAllPatientsPharmaciesOptimized(id);
-        if(pharmacies.size() != 0) {
+        if (pharmacies.size() != 0) {
             return new ResponseEntity<>(pharmacies, HttpStatus.OK);
-        }else{
+        } else {
             return new ResponseEntity<>(pharmacies, HttpStatus.NOT_FOUND);
         }
     }
@@ -53,13 +53,14 @@ public class PharmacyController {
     }
 
     @GetMapping("/allpharms")
-    public ResponseEntity<List<Pharmacy>> allPharmacies(){
+    public ResponseEntity<List<Pharmacy>> allPharmacies() {
         List<Pharmacy> all = pharmacyService.getAll();
         return new ResponseEntity<>(all, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ROLE_SYSADMIN')")
     @PostMapping(consumes = "application/json", value = "/register")
-    public ResponseEntity<Pharmacy> saveNewPharmacy(@RequestBody team18.pharmacyapp.model.dtos.PharmacyDTO newPharmacy){
+    public ResponseEntity<Pharmacy> saveNewPharmacy(@RequestBody team18.pharmacyapp.model.dtos.PharmacyDTO newPharmacy) {
         Pharmacy pharmacy = pharmacyService.registerNewPharmacy(newPharmacy);
         return new ResponseEntity<>(pharmacy, HttpStatus.CREATED);
     }

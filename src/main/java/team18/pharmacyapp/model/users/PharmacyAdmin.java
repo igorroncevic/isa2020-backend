@@ -10,7 +10,7 @@ import team18.pharmacyapp.model.PurchaseOrder;
 import javax.persistence.*;
 import java.util.List;
 
-@Entity
+@Entity(name = "pharmacy_admin")
 @Getter
 @Setter
 @NoArgsConstructor

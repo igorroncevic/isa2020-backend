@@ -67,12 +67,16 @@ public class Medicine implements Serializable {
     @JsonIgnore
     private List<PurchaseOrderMedicine> purchaseOrderMedicines;
 
-    @OneToMany(mappedBy = "medicine")
+    @OneToMany(mappedBy = "medicine", cascade = CascadeType.ALL)
     private List<Mark> marks;
 
-    @OneToMany(mappedBy = "medicine")
+    @OneToMany(mappedBy = "medicine", cascade = CascadeType.ALL)
     private List<PharmacyMedicines> pharmacyMedicines;
 
     @Column(nullable = false)
     private int loyaltyPoints;
+
+    public Medicine(String name){
+        this.name = name;
+    }
 }

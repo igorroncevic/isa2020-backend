@@ -3,13 +3,13 @@ package team18.pharmacyapp.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import team18.pharmacyapp.model.dtos.PharmacyAdminDTO;
+import team18.pharmacyapp.model.dtos.PharmacyAdminInfoDTO;
 import team18.pharmacyapp.model.users.PharmacyAdmin;
 import team18.pharmacyapp.service.interfaces.PharmacyAdminService;
 
 import java.util.UUID;
 
-@CrossOrigin(origins = {"http://localhost:8080","http://localhost:8081"})
+@CrossOrigin(origins = {"http://localhost:8080", "http://localhost:8081"})
 @RestController
 @RequestMapping(value = "api/phadmin")
 public class PharmacyAdminController {
@@ -20,13 +20,13 @@ public class PharmacyAdminController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<PharmacyAdmin> getById(@PathVariable UUID id) {
-        PharmacyAdmin pharmacyAdmin = pharmacyAdminService.getById(id);
+    public ResponseEntity<PharmacyAdminInfoDTO> getById(@PathVariable UUID id) {
+        PharmacyAdminInfoDTO pharmacyAdmin = pharmacyAdminService.getInfoById(id);
         return new ResponseEntity<>(pharmacyAdmin, HttpStatus.OK);
     }
 
     @PutMapping(consumes = "application/json")
-    public ResponseEntity<PharmacyAdmin> update(@RequestBody PharmacyAdmin pharmacyAdmin) {
+    public ResponseEntity<PharmacyAdminInfoDTO> update(@RequestBody PharmacyAdminInfoDTO pharmacyAdmin) {
         PharmacyAdmin pharmacyAdminForUpdate = pharmacyAdminService.getById(pharmacyAdmin.getId());
 
         if (pharmacyAdmin == null) {
@@ -41,9 +41,4 @@ public class PharmacyAdminController {
         return new ResponseEntity<>(pharmacyAdmin, HttpStatus.OK);
     }
 
-    @PostMapping(consumes = "application/json", value = "/register")
-    public ResponseEntity<PharmacyAdmin> saveNewPharmacyAdmin(@RequestBody PharmacyAdminDTO newPharmacyAdmin){
-        PharmacyAdmin phAdmin = pharmacyAdminService.registerNewPharmacyAdmin(newPharmacyAdmin);
-        return new ResponseEntity<>(phAdmin, HttpStatus.CREATED);
-    }
 }

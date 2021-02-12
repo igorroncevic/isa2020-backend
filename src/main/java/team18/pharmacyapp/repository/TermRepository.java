@@ -54,4 +54,8 @@ public interface TermRepository extends JpaRepository<Term, UUID> {
 
     @Transactional(readOnly = true)
     Page<Term> findAllByPatient_IdAndStartTimeAfter(@Param("patientId") UUID id, @Param("today") Date today, Pageable pageable);
+
+    @Transactional
+    @Query("SELECT t FROM term t WHERE t.endTime >= :todaysDate AND t.completed = false")
+    List<Term> findAllWithPatients(@Param("todaysDate")Date todaysDate);
 }
