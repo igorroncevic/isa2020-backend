@@ -46,12 +46,13 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     @Override
     public List<SupplierPurchaseOrderDTO> getSupplierPurchaseOrders(UUID supplierId) {
         List<SupplierPurchaseOrderDTO> ret=new ArrayList();
-        SupplierPurchaseOrderDTO dto=new SupplierPurchaseOrderDTO();
         for(SupplierPurchaseOrder spo:purchaseOrderRepository.findByPurchaseOrderIdAndSupplier(supplierId)){
+            SupplierPurchaseOrderDTO dto=new SupplierPurchaseOrderDTO();
             List<PurchaseOrderMedicineDTO> list=new ArrayList<>();
             dto.setPurchaseOrderStatus(spo.getPurchaseOrder().getStatus());
             dto.setPrice(spo.getPrice());
             dto.setDeliveryDate(spo.getDeliveryDate());
+            dto.setPurchaseOrderId(spo.getPurchaseOrder().getId());
             for(PurchaseOrderMedicine pom:purchaseOrderRepository.findByPurchaseOrderId(spo.getPurchaseOrder().getId())){
                 list.add(new PurchaseOrderMedicineDTO(pom.getMedicine().getName(),pom.getQuantity()));
             }
@@ -68,6 +69,29 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public boolean update(SupplierPurchaseOrderDTO dto) {
+        PurchaseOrder po=purchaseOrderRepository.findById(dto.getPurchaseOrderId()).orElse(null);
+        if(po==null){
+            return false;
+        }
+        if(dto.getDeliveryDate().after(po.getEndDate())){
+            return false;
+        }
+        SupplierPurchaseOrder spo = findById(dto.getPurchaseOrderId(), dto.getSupplierId());
+        if(spo != null){
+            supplierPurchaseOrderRepository.updatePurchaseOffer(dto.getDeliveryDate(), dto.getPrice(), spo.getPurchaseOrder().getId(), spo.getSupplier().getId());
+            return true;
+        }
+
+        return false;
+    }
+
+    @Override
+    public SupplierPurchaseOrder findById(UUID purchaseOrderId, UUID supplierId) {
+        return supplierPurchaseOrderRepository.findSupplierPurchaseOrder(purchaseOrderId, supplierId);
     }
 
     private boolean supplierHasMedicine(PurchaseOrderMedicineDTO dto, UUID supplierId){

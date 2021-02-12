@@ -1,6 +1,5 @@
 package team18.pharmacyapp.service.interfaces;
 
-import team18.pharmacyapp.model.dtos.RegisterUserDTO;
 import team18.pharmacyapp.model.dtos.UpdateMyDataDTO;
 import team18.pharmacyapp.model.users.RegisteredUser;
 import team18.pharmacyapp.model.users.Supplier;
@@ -16,5 +15,7 @@ public interface SupplierService {
 
     Supplier getById(UUID id);
 
-    Supplier update(UpdateMyDataDTO supplier);
+    UpdateMyDataDTO getSupplierById(UUID id);
+
+    boolean update(UpdateMyDataDTO supplier);
 }

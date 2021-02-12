@@ -232,12 +232,14 @@ public class MedicineController {
         return reservedMedicinesService.handleMedicine(dto);
     }
 
+    @PreAuthorize("hasRole('ROLE_SUPPLIER')")
     @PostMapping(consumes = "application/json", value = "/save")
     public ResponseEntity<Medicine> saveNewMedicine(@RequestBody MedicineDTO newMedicine){
         Medicine medicine = medicineService.registerNewMedicine(newMedicine);
         return new ResponseEntity<>(medicine, HttpStatus.CREATED);
     }
 
+    @PreAuthorize("hasRole('ROLE_SUPPLIER')")
     @GetMapping("suppliermeds/{id}")
     public ResponseEntity<List<SupplierMedicinesDTO>> getSupplierMedicines(@PathVariable UUID id){
         List<SupplierMedicinesDTO> medicines = medicineService.findSupplierMedicines(id);
@@ -249,6 +251,7 @@ public class MedicineController {
         }
     }
 
+    @PreAuthorize("hasRole('ROLE_SUPPLIER')")
     @PostMapping(consumes = "application/json", value = "/add")
     public ResponseEntity<SupplierMedicine> add(@RequestBody SupplierMedicinesDTO medicineDTO) {
         SupplierMedicine med = medicineService.addNewSupplierMedicine(medicineDTO);

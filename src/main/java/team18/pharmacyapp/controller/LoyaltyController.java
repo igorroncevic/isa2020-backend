@@ -24,11 +24,12 @@ public class LoyaltyController {
         this.loyaltyService = loyaltyService;
     }
 
+    @PreAuthorize("hasRole('ROLE_SYSADMIN')")
     @GetMapping("/all")
     public ResponseEntity<List<Loyalty>> getAll(){
         return new ResponseEntity<>(loyaltyService.findAll(), HttpStatus.OK);
     }
-
+    @PreAuthorize("hasRole('ROLE_SYSADMIN')")
     @PostMapping(consumes = "application/json", value = "/add")
     public ResponseEntity<Loyalty> saveNewLoyalty(@RequestBody LoyaltyDTO newLoyalty){
         Loyalty loyalty = loyaltyService.saveNewLoyalty(newLoyalty);
@@ -40,7 +41,7 @@ public class LoyaltyController {
         Loyalty loyalty = loyaltyService.getById(id);
         return new ResponseEntity<>(loyalty, HttpStatus.OK);
     }
-
+    @PreAuthorize("hasRole('ROLE_SYSADMIN')")
     @PutMapping(consumes = "application/json")
     public ResponseEntity<Loyalty> update(@RequestBody Loyalty loyalty) {
         Loyalty loy = loyaltyService.updateLoyalty(loyalty);
@@ -49,7 +50,7 @@ public class LoyaltyController {
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
-
+    @PreAuthorize("hasRole('ROLE_SYSADMIN')")
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<Void> deleteLoyalty(@PathVariable UUID id) {
         Loyalty loyalty = loyaltyService.getById(id);

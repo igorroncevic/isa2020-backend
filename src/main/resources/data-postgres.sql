@@ -50,13 +50,13 @@ values ('02fb4f65-923c-49fe-b32a-c40ffee74b47', 'Milija', false, 'Raicevic', 'mi
         'pharmacist', 'eb797275-30de-460e-8f9b-f5034ccefc7d');
 
 insert into registered_user (id, "name", "first_login", surname, email, phone_number, "password", "role", fk_address)
-values ('b861fa5d-e543-4c61-adac-0c3f27bc32a0', 'Jagoš', false, 'Marić', 'jagosmaric@gmail.com', '064/123-456', '$2a$10$ezrRpEVuAn9W9dwGBYkB.uUv8kf52xf9E0LEFrnHjQI7fVWncwi7a',
+values ('b861fa5d-e543-4c61-adac-0c3f27bc32a0', 'Jagoš', false, 'Marić', 'jagosmaric@gmail.com', '064123456', '$2a$10$ezrRpEVuAn9W9dwGBYkB.uUv8kf52xf9E0LEFrnHjQI7fVWncwi7a',
         'supplier', '3b00204e-1897-4b6e-a175-5d0595833ced');
 insert into registered_user (id, "name", "first_login", surname, email, phone_number, "password", "role", fk_address)
-values ('6dbd78ec-c0c7-403a-b1d0-bea63b5a1981', 'Janko', false, 'Jovanovic', 'jankojovanovic@gmail.com', '064/598-127', '$2a$10$eSKR4LWxm.AYYMufmhr4YOBeUoClxJWGR2hMovgjmHxcQOitRFTs.',
+values ('6dbd78ec-c0c7-403a-b1d0-bea63b5a1981', 'Janko', false, 'Jovanovic', 'jankojovanovic@gmail.com', '064598127', '$2a$10$eSKR4LWxm.AYYMufmhr4YOBeUoClxJWGR2hMovgjmHxcQOitRFTs.',
         'supplier', '9241601b-a20a-4f26-9523-d4a670a881dc');
 insert into registered_user (id, "name", "first_login", surname, email, phone_number, "password", "role", fk_address)
-values ('84f5d15e-8b52-4e00-ac4f-6b35e030c732', 'Marina', false, 'Marković', 'marinamarkovic@gmail.com', '065/917-427', '$2a$10$HsD/nwSnitpUfTSCVbIZ5e/ZyA1WNbs0CjzU3j76/1IuLdzWq.aza',
+values ('84f5d15e-8b52-4e00-ac4f-6b35e030c732', 'Marina', false, 'Marković', 'marinamarkovic@gmail.com', '065917427', '$2a$10$HsD/nwSnitpUfTSCVbIZ5e/ZyA1WNbs0CjzU3j76/1IuLdzWq.aza',
         'supplier', '34c4d86e-8781-4163-b61a-4720c39b7ad6');
 
 insert into registered_user (id, "name", "first_login", surname, email, phone_number, "password", "role", fk_address)
@@ -129,13 +129,13 @@ values ('02fb4f65-923c-49fe-b32a-c40ffee74b47', 'Milija', false,'Raicevic', 'mil
 
 -- Dobavljaci
 insert into supplier (id, "name", surname, email, phone_number, "password", "role", fk_address)
-values ('b861fa5d-e543-4c61-adac-0c3f27bc32a0', 'Jagoš', 'Marić', 'jagosmaric@gmail.com', '064/123-456', '$2a$10$ezrRpEVuAn9W9dwGBYkB.uUv8kf52xf9E0LEFrnHjQI7fVWncwi7a',
+values ('b861fa5d-e543-4c61-adac-0c3f27bc32a0', 'Jagoš', 'Marić', 'jagosmaric@gmail.com', '064123456', '$2a$10$ezrRpEVuAn9W9dwGBYkB.uUv8kf52xf9E0LEFrnHjQI7fVWncwi7a',
         'supplier', '3b00204e-1897-4b6e-a175-5d0595833ced');
 insert into supplier (id, "name", surname, email, phone_number, "password", "role", fk_address)
-values ('6dbd78ec-c0c7-403a-b1d0-bea63b5a1981', 'Janko', 'Jovanovic', 'jankojovanovic@gmail.com', '064/598-127', '$2a$10$eSKR4LWxm.AYYMufmhr4YOBeUoClxJWGR2hMovgjmHxcQOitRFTs.',
+values ('6dbd78ec-c0c7-403a-b1d0-bea63b5a1981', 'Janko', 'Jovanovic', 'jankojovanovic@gmail.com', '064598127', '$2a$10$eSKR4LWxm.AYYMufmhr4YOBeUoClxJWGR2hMovgjmHxcQOitRFTs.',
         'supplier', '9241601b-a20a-4f26-9523-d4a670a881dc');
 insert into supplier (id, "name", surname, email, phone_number, "password", "role", fk_address)
-values ('84f5d15e-8b52-4e00-ac4f-6b35e030c732', 'Marina', 'Marković', 'marinamarkovic@gmail.com', '065/917-427', '$2a$10$HsD/nwSnitpUfTSCVbIZ5e/ZyA1WNbs0CjzU3j76/1IuLdzWq.aza',
+values ('84f5d15e-8b52-4e00-ac4f-6b35e030c732', 'Marina', 'Marković', 'marinamarkovic@gmail.com', '065917427', '$2a$10$HsD/nwSnitpUfTSCVbIZ5e/ZyA1WNbs0CjzU3j76/1IuLdzWq.aza',
         'supplier', '34c4d86e-8781-4163-b61a-4720c39b7ad6');
 
 -- Sistem administrator

@@ -2,6 +2,7 @@ package team18.pharmacyapp.service;
 
 import org.springframework.stereotype.Service;
 import team18.pharmacyapp.model.Address;
+import team18.pharmacyapp.model.dtos.RegisterUserDTO;
 import team18.pharmacyapp.model.dtos.UpdateMyDataDTO;
 import team18.pharmacyapp.model.enums.UserRole;
 import team18.pharmacyapp.model.users.RegisteredUser;
@@ -18,9 +19,9 @@ public class SupplierServiceImpl implements SupplierService {
     private final SupplierRepository supplierRepository;
     private final AddressRepository addressRepository;
 
-    public SupplierServiceImpl(SupplierRepository supplierRepository, AddressRepository addressRepository) {
+    public SupplierServiceImpl(SupplierRepository supplierRepository, AddressRepository addressRepository1) {
         this.supplierRepository = supplierRepository;
-        this.addressRepository = addressRepository;
+        this.addressRepository = addressRepository1;
     }
 
     @Override
@@ -49,7 +50,14 @@ public class SupplierServiceImpl implements SupplierService {
     }
 
     @Override
-    public Supplier update(UpdateMyDataDTO supplier) {
+    public UpdateMyDataDTO getSupplierById(UUID id) {
+        Supplier s = supplierRepository.findById(id).orElse(null);
+        return new UpdateMyDataDTO(s.getId(), s.getName(), s.getSurname(), s.getPhoneNumber(), s.getAddress().getCountry(), s.getAddress().getCity(), s.getAddress().getStreet());
+
+    }
+
+    @Override
+    public boolean update(UpdateMyDataDTO supplier) {
         Supplier supp = getById(supplier.getId());
         if(supp != null) {
             Address address = addressRepository.findByCountryAndCityAndStreet(supplier.getCountry(), supplier.getCity(), supplier.getStreet());
@@ -64,9 +72,12 @@ public class SupplierServiceImpl implements SupplierService {
             supp.setSurname(supplier.getSurname());
             supp.setPhoneNumber(supplier.getPhoneNumber());
             supp.setAddress(address);
-            return supplierRepository.save(supp);
+            supplierRepository.save(supp);
+            return true;
         }
 
-        return null;
+        return false;
     }
+
+
 }
