@@ -4,6 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.security.core.parameters.P;
 import org.springframework.transaction.annotation.Transactional;
 import team18.pharmacyapp.model.Pharmacy;
 import team18.pharmacyapp.model.dtos.ReservedMedicineDTO;
@@ -37,4 +38,8 @@ public interface PharmacyMedicinesRepository extends JpaRepository<PharmacyMedic
 
     @Transactional(readOnly = true)
     PharmacyMedicines findDistinctByPharmacyAndMedicine(Pharmacy pharmacy, Medicine medicine);
+
+    @Transactional(readOnly = true)
+    @Query("SELECT pm.quantity FROM pharmacy_medicines pm WHERE pm.medicine = :medicine AND pm.pharmacy = :pharmacy")
+    int getMedicineQuantity(@Param("medicine") Medicine medicine, @Param("pharmacy")Pharmacy pharmacy);
 }

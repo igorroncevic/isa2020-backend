@@ -1,8 +1,8 @@
 package team18.pharmacyapp.service;
 
-import org.hibernate.annotations.Loader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.Lock;
+import org.springframework.data.jpa.repository.QueryHints;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import team18.pharmacyapp.helpers.DateTimeHelpers;
@@ -22,6 +22,7 @@ import team18.pharmacyapp.service.interfaces.EmailService;
 import team18.pharmacyapp.service.interfaces.TermService;
 
 import javax.persistence.LockModeType;
+import javax.persistence.QueryHint;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Date;
@@ -123,6 +124,7 @@ public class CounselingServiceImpl implements CounselingService {
 
     @Override
     @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @QueryHints({@QueryHint(name="javax.persistence.lock.timeout", value = "2000")})
     @Transactional(rollbackFor = {AlreadyScheduledException.class, ScheduleTermException.class, RuntimeException.class})
     public boolean patientScheduleCounseling(ScheduleCounselingDTO term) throws AlreadyScheduledException, ScheduleTermException, RuntimeException {
         Patient patient = patientRepository.findById(term.getPatientId()).orElse(null);
@@ -131,6 +133,9 @@ public class CounselingServiceImpl implements CounselingService {
 
         if (!termService.isPatientFree(term.getPatientId(), term.getFromTime(), term.getToTime()))
             throw new AlreadyScheduledException("You are busy at this time");
+
+        if (!termService.isDoctorFree(term.getDoctorId(), term.getFromTime(), term.getToTime()))
+            throw new AlreadyScheduledException("Doctor is busy at this time");
 
         Term checkTerm = counselingRepository.checkIfPatientHasCounselingWithDoctor(term.getPatientId(), term.getDoctorId(), new Date());
         if (checkTerm != null)
@@ -168,8 +173,11 @@ public class CounselingServiceImpl implements CounselingService {
         int diffInHours = (int) (termTime.getTime() - now.getTime()) / (1000 * 60 * 60);
         if (diffInHours <= 23) throw new ActionNotAllowedException("Cannot cancel 24hrs before the counseling");
 
-        int rowsUpdated = counselingRepository.patientCancelCounseling(term.getTermId());
-        if (rowsUpdated != 1) throw new RuntimeException("Couldn't cancel this term!");
+        checkTerm.setPatient(null);
+        counselingRepository.save(checkTerm);
+
+        //int rowsUpdated = counselingRepository.patientCancelCounseling(term.getTermId());
+        //if (rowsUpdated != 1) throw new RuntimeException("Couldn't cancel this term!");
 
         return true;
     }

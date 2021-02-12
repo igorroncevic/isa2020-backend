@@ -123,7 +123,7 @@ public class CheckupServiceImpl implements CheckupService {
     }
 
     @Override
-    @Lock(LockModeType.WRITE) // Optimistično, jer pregled postoji u bazi i ima svoju verziju
+    @Lock(LockModeType.WRITE)
     @Transactional(rollbackFor = {ActionNotAllowedException.class, AlreadyScheduledException.class, RuntimeException.class, ScheduleTermException.class})
     public boolean patientScheduleCheckup(ScheduleCheckupDTO term) throws ActionNotAllowedException, ScheduleTermException, RuntimeException, AlreadyScheduledException {
         Patient patient = patientRepository.getOne(term.getPatientId());
