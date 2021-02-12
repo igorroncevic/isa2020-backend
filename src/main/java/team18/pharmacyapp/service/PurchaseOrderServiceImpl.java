@@ -126,7 +126,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     @Override
     public PurchaseOrderDTO updatePurchaseOrder(UUID orderId, NewPurchaseOrderDTO newPurchaseOrderDTO) throws FailedToSaveException, ActionNotAllowedException {
         int numberOfOffers = purchaseOrderRepository.getNumberOfOffersForOrder(orderId);
-        if(numberOfOffers != 1) {
+        if(numberOfOffers != 0) {
             throw new ActionNotAllowedException("You can't update purchase orders that have offers.");
         }
         int rowsChanged = purchaseOrderRepository.updatePurchaseOrder(orderId, newPurchaseOrderDTO.getEndDate());
@@ -137,6 +137,20 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         purchaseOrderRepository.deletePurchaseOrderMedicines(orderId);
 
         return getPurchaseOrderDTO(orderId, newPurchaseOrderDTO);
+    }
+
+    @Override
+    public void deletePurchaseOrder(UUID orderId) throws NotFoundException, ActionNotAllowedException {
+        int numberOfOffers = purchaseOrderRepository.getNumberOfOffersForOrder(orderId);
+        if(numberOfOffers != 0) {
+            throw new ActionNotAllowedException("You can't update purchase orders that have offers.");
+        }
+        PurchaseOrder purchaseOrder = purchaseOrderRepository.findById(orderId).orElse(null);
+        if(purchaseOrder == null) {
+            throw new NotFoundException("This purchase order does not exists!");
+        }
+        purchaseOrderRepository.deletePurchaseOrderMedicines(orderId);
+        purchaseOrderRepository.deletePurchaseOrder(orderId);
     }
 
     private PurchaseOrderDTO getPurchaseOrderDTO(UUID orderId, NewPurchaseOrderDTO newPurchaseOrderDTO) throws FailedToSaveException {

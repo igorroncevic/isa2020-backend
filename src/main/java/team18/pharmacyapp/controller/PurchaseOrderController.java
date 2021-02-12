@@ -73,4 +73,14 @@ public class PurchaseOrderController {
         }
         return new ResponseEntity<>(purchaseOrderDTO, HttpStatus.OK);
     }
+
+    @DeleteMapping("/{orderId}")
+    public ResponseEntity<String> deletePurchaseOrder(@PathVariable UUID orderId) {
+        try {
+            purchaseOrderService.deletePurchaseOrder(orderId);
+        } catch (NotFoundException | ActionNotAllowedException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.METHOD_NOT_ALLOWED);
+        }
+        return new ResponseEntity<>("", HttpStatus.OK);
+    }
 }

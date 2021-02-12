@@ -49,7 +49,12 @@ public interface PurchaseOrderRepository extends JpaRepository<PurchaseOrder, UU
     @Transactional
     @Modifying
     @Query(nativeQuery = true, value = "DELETE FROM purchase_order_medicine WHERE purchase_order_id=:orderId")
-    int deletePurchaseOrderMedicines(UUID orderId);
+    void deletePurchaseOrderMedicines(UUID orderId);
+
+    @Transactional
+    @Modifying
+    @Query(nativeQuery = true, value = "DELETE FROM purchase_order WHERE id=:orderId")
+    void deletePurchaseOrder(UUID orderId);
 
     @Query("SELECT spo FROM supplier_purchase_order spo JOIN FETCH spo.purchaseOrder JOIN FETCH spo.supplier WHERE spo.purchaseOrder.id = :id ")
     List<SupplierPurchaseOrder> getAllOffersForOrder(UUID id);
