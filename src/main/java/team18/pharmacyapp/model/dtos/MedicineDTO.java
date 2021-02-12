@@ -25,4 +25,5 @@ public class MedicineDTO {
     private String contraindications;
     private String drugComposition;
     private String additionalNotes;
+    private double mark;
 }

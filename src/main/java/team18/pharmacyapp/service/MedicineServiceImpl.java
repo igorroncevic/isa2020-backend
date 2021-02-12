@@ -1,29 +1,34 @@
 package team18.pharmacyapp.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import team18.pharmacyapp.helpers.DateTimeHelpers;
+import team18.pharmacyapp.model.Mark;
 import team18.pharmacyapp.model.Pharmacy;
 import team18.pharmacyapp.model.Pricings;
 import team18.pharmacyapp.model.dtos.*;
-import team18.pharmacyapp.model.enums.*;
+import team18.pharmacyapp.model.enums.MedicineForm;
+import team18.pharmacyapp.model.enums.MedicineIssuingRegime;
+import team18.pharmacyapp.model.enums.MedicineManufacturer;
+import team18.pharmacyapp.model.enums.MedicineType;
 import team18.pharmacyapp.model.exceptions.ActionNotAllowedException;
 import team18.pharmacyapp.model.exceptions.ReserveMedicineException;
-import team18.pharmacyapp.model.medicine.Medicine;
-import team18.pharmacyapp.model.medicine.MedicineSpecification;
-import team18.pharmacyapp.model.medicine.PharmacyMedicines;
-import team18.pharmacyapp.model.medicine.ReservedMedicines;
+import team18.pharmacyapp.model.medicine.*;
 import team18.pharmacyapp.model.users.Patient;
+import team18.pharmacyapp.repository.*;
+import team18.pharmacyapp.service.interfaces.EmailService;
 import team18.pharmacyapp.repository.MarkRepository;
 import team18.pharmacyapp.repository.MedicineRepository;
-import team18.pharmacyapp.repository.PharmacyRepository;
 import team18.pharmacyapp.repository.MedicineSpecificationRepository;
-import team18.pharmacyapp.service.interfaces.EmailService;
+import team18.pharmacyapp.repository.PharmacyRepository;
 import team18.pharmacyapp.repository.users.PatientRepository;
 import team18.pharmacyapp.service.interfaces.LoyaltyService;
 import team18.pharmacyapp.service.interfaces.MedicineService;
 
+import javax.persistence.LockModeType;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -38,10 +43,12 @@ public class MedicineServiceImpl implements MedicineService {
     private final MarkRepository markRepository;
     private final PharmacyRepository pharmacyRepository;
     private final LoyaltyService loyaltyService;
-
+    private final SupplierMedicinesRepository supplierMedicinesRepository;
+    private final ReservedMedicinesRepository reservedMedicinesRepository;
+    private final PharmacyMedicinesRepository pharmacyMedicinesRepository;
 
     @Autowired
-    public MedicineServiceImpl(MedicineRepository medicineRepository, EmailService emailService, PatientRepository patientRepository, PharmacyRepository pharmacyRepository, MedicineSpecificationRepository medicineSpecificationRepository, MarkRepository markRepository, LoyaltyService loyaltyService) {
+    public MedicineServiceImpl(MedicineRepository medicineRepository, EmailService emailService, PatientRepository patientRepository, PharmacyRepository pharmacyRepository, MedicineSpecificationRepository medicineSpecificationRepository, MarkRepository markRepository, LoyaltyService loyaltyService, SupplierMedicinesRepository supplierMedicinesRepository, ReservedMedicinesRepository reservedMedicinesRepository, PharmacyMedicinesRepository pharmacyMedicinesRepository) {
         this.medicineRepository = medicineRepository;
         this.emailService = emailService;
         this.patientRepository = patientRepository;
@@ -49,11 +56,20 @@ public class MedicineServiceImpl implements MedicineService {
         this.markRepository = markRepository;
         this.pharmacyRepository = pharmacyRepository;
         this.loyaltyService = loyaltyService;
+        this.supplierMedicinesRepository = supplierMedicinesRepository;
+        this.reservedMedicinesRepository = reservedMedicinesRepository;
+        this.pharmacyMedicinesRepository = pharmacyMedicinesRepository;
     }
 
     @Override
-    public List<Medicine> findAll() {
-        return medicineRepository.findAll();
+    public List<MedicineIdNameDTO> findAll() {
+        List<Medicine> medicines = medicineRepository.findAll();
+        List<MedicineIdNameDTO> medicineIdNameDTOs = new ArrayList<>();
+        for (Medicine medicine : medicines) {
+            MedicineIdNameDTO medicineIdNameDTO = new MedicineIdNameDTO(medicine.getId(), medicine.getName());
+            medicineIdNameDTOs.add(medicineIdNameDTO);
+        }
+        return medicineIdNameDTOs;
     }
 
     @Override
@@ -72,17 +88,18 @@ public class MedicineServiceImpl implements MedicineService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<PharmacyMedicinesDTO> findAllAvailableMedicines() {
         List<PharmacyMedicines> pharmacyMedicines = medicineRepository.findAllAvailableMedicines();
         List<PharmacyMedicinesDTO> resultSet = new ArrayList<>();
 
-        Date todaysDate = new Date(System.currentTimeMillis() + 10 * 1000);   //mali offset
+        LocalDate todaysDate = LocalDate.now();   //mali offset
         for (PharmacyMedicines pm : pharmacyMedicines) {
             List<Pricings> pricings = pm.getPricings();
             double finalPrice = -1.0;
 
             for (Pricings pricing : pricings) {
-                if (pricing.getStartDate().before(todaysDate) && pricing.getEndDate().after(todaysDate)) {
+                if (pricing.getStartDate().isBefore(todaysDate) && pricing.getEndDate().isAfter(todaysDate)) {
                     finalPrice = pricing.getPrice();
                     break;
                 }
@@ -92,7 +109,8 @@ public class MedicineServiceImpl implements MedicineService {
 
             PharmacyMedicinesDTO pmDTO = new PharmacyMedicinesDTO();
             Medicine med = pm.getMedicine();
-            pmDTO.setMedicine(new MedicineDTO(med.getId(), med.getName(), "", "", "", "", "", med.getLoyaltyPoints(), "", 0, "", "", ""));
+
+            pmDTO.setMedicine(new MedicineDTO(med.getId(), med.getName(), "", "", "", "", "", med.getLoyaltyPoints(), "", 0, "", "", "", 0));
             Pharmacy pharmacy = pm.getPharmacy();
             pmDTO.setPharmacy(new PharmacyDTO(pharmacy.getId(), pharmacy.getName(), pharmacy.getAddress().getStreet(), pharmacy.getAddress().getCity(), pharmacy.getAddress().getCountry()));
             pmDTO.setPrice(finalPrice);
@@ -105,16 +123,17 @@ public class MedicineServiceImpl implements MedicineService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<ReservedMedicinesDTO> findAllPatientsReservedMedicines(UUID id) {
         Patient pat = patientRepository.getOne(id);
-        if(pat == null) throw new RuntimeException("Invalid patient id");
+        if (pat == null) throw new RuntimeException("Invalid patient id");
 
         List<ReservedMedicines> reservedMedicines = medicineRepository.findAllPatientsReservedMedicinesNotPickedUp(id);
 
         List<ReservedMedicinesDTO> finalReservedMedicines = new ArrayList<>();
-        for(ReservedMedicines r : reservedMedicines){
+        for (ReservedMedicines r : reservedMedicines) {
             Medicine med = r.getMedicine();
-            MedicineDTO medicineDTO = new MedicineDTO(med.getId(), med.getName(), "", "", "", "", "", med.getLoyaltyPoints(), "", 0, "", "", "");
+            MedicineDTO medicineDTO = new MedicineDTO(med.getId(), med.getName(), "", "", "", "", "", med.getLoyaltyPoints(), "", 0, "", "", "", 0);
             Pharmacy pharmacy = r.getPharmacy();
             PharmacyDTO pharmacyDTO = new PharmacyDTO(pharmacy.getId(), pharmacy.getName(), pharmacy.getAddress().getStreet(), pharmacy.getAddress().getCity(), pharmacy.getAddress().getCountry());
 
@@ -124,43 +143,60 @@ public class MedicineServiceImpl implements MedicineService {
         return finalReservedMedicines;
     }
 
-    @Transactional(rollbackFor = {ActionNotAllowedException.class, RuntimeException.class, ReserveMedicineException.class})
     @Override
-    public boolean reserveMedicine(ReserveMedicineRequestDTO rmrDTO) throws ActionNotAllowedException, ReserveMedicineException, RuntimeException {
+    @Lock(LockModeType.WRITE)
+    @Transactional(rollbackFor = {ActionNotAllowedException.class, RuntimeException.class})
+    public boolean reserveMedicine(ReserveMedicineRequestDTO rmrDTO) throws ActionNotAllowedException, RuntimeException {
         Medicine med = medicineRepository.getOne(rmrDTO.getMedicineId());
-        if(med == null) throw new RuntimeException("");
+        if (med == null) throw new RuntimeException("Medicine does not exist");
 
         Patient patient = patientRepository.findById(rmrDTO.getPatientId()).orElse(null);
-        if(patient == null) throw new ActionNotAllowedException("You are not allowed to reserve medicines");
+        if (patient == null) throw new ActionNotAllowedException("You are not allowed to reserve medicines");
         if (patient.getPenalties() >= 3)
             throw new ActionNotAllowedException("You are not allowed to reserve medicines");
 
-        if(rmrDTO.getPickupDate().before(new Date())) throw new ActionNotAllowedException("You are not allowed to reserve medicines");
+        if (rmrDTO.getPickupDate().before(new Date()))
+            throw new ActionNotAllowedException("You are not allowed to reserve medicines");
 
-        UUID reservationId = UUID.randomUUID();
-        int reserved = medicineRepository.reserveMedicine(reservationId, rmrDTO.getPatientId(), rmrDTO.getPharmacyId(), rmrDTO.getMedicineId(), rmrDTO.getPickupDate());
-        int updateQuantity = medicineRepository.decrementMedicineQuantity(rmrDTO.getMedicineId(), rmrDTO.getPharmacyId());
+        Pharmacy pharmacy = new Pharmacy();
+        pharmacy.setId(rmrDTO.getPharmacyId());
 
-        if (reserved != 1) throw new ReserveMedicineException("Medicine wasn't reserved!");
-        if (updateQuantity != 1) throw new ReserveMedicineException("Medicine quantity wasn't decremented!");
+        if(!isPharmacyMedicineAvailable(med, pharmacy))
+            throw new ActionNotAllowedException("Medicine out of stock");
+
+        //int reserved = medicineRepository.reserveMedicine(reservationId, rmrDTO.getPatientId(), rmrDTO.getPharmacyId(), rmrDTO.getMedicineId(), rmrDTO.getPickupDate());
+        //int updateQuantity = medicineRepository.decrementMedicineQuantity(rmrDTO.getMedicineId(), rmrDTO.getPharmacyId());
+        //if (reserved != 1) throw new ReserveMedicineException("Medicine wasn't reserved!");
+        //if (updateQuantity != 1) throw new ReserveMedicineException("Medicine quantity wasn't decremented!");
+
+        ReservedMedicines reservation = new ReservedMedicines(UUID.randomUUID(), patient, med, pharmacy, rmrDTO.getPickupDate(), false, 0L);
+        reservation = reservedMedicinesRepository.save(reservation);
+
+        PharmacyMedicines pharmacyMedicines = pharmacyMedicinesRepository.findDistinctByPharmacyAndMedicine(pharmacy, med);
+        pharmacyMedicines.setQuantity(pharmacyMedicines.getQuantity() - 1);
+        pharmacyMedicinesRepository.save(pharmacyMedicines);
 
         loyaltyService.addLoyaltyPoints(rmrDTO.getPatientId(), med.getLoyaltyPoints());
         loyaltyService.updatePatientsLoyalty(rmrDTO.getPatientId());
 
-        String userMail = "savooroz33@gmail.com";   // zakucano za sada
+        String userMail = patient.getEmail();
         String subject = "[ISA Pharmacy] Confirmation - Medicine reservation";
         String body = "You have successfuly reserved a medicine on our site.\n" +
-                "Your reservation ID: " + reservationId.toString();
+                "Your reservation ID: " + reservation.getId().toString();
         new Thread(() -> emailService.sendMail(userMail, subject, body)).start();
 
         return true;
     }
 
-    @Transactional(rollbackFor = {RuntimeException.class, ReserveMedicineException.class})
+    public boolean isPharmacyMedicineAvailable(Medicine med, Pharmacy pharmacy){
+        return pharmacyMedicinesRepository.getMedicineQuantity(med, pharmacy) > 0;
+    }
+
     @Override
+    @Transactional(rollbackFor = {RuntimeException.class, ReserveMedicineException.class})
     public boolean cancelMedicine(CancelMedicineRequestDTO cmrDTO) throws ReserveMedicineException, RuntimeException {
         Medicine med = medicineRepository.getOne(cmrDTO.getMedicineId());
-        if(med == null) throw new RuntimeException("");
+        if (med == null) throw new RuntimeException("");
 
         Date reservationDate = medicineRepository.findPickupDateByReservationId(cmrDTO.getReservationId());
         Date tomorrow = new Date(System.currentTimeMillis() + 24 * 60 * 60 * 1000);
@@ -168,11 +204,10 @@ public class MedicineServiceImpl implements MedicineService {
         tomorrow = DateTimeHelpers.getDateWithoutTime(tomorrow);
         reservationDate = DateTimeHelpers.getDateWithoutTime(reservationDate);
 
-        if (tomorrow.after(reservationDate)) return false;
+        if (tomorrow.compareTo(reservationDate) >= 0) return false;
 
         int cancelled = medicineRepository.cancelMedicine(cmrDTO.getReservationId());
         int updateQuantity = medicineRepository.incrementMedicineQuantity(cmrDTO.getMedicineId(), cmrDTO.getPharmacyId());
-
         if (cancelled != 1) throw new ReserveMedicineException("Medicine wasn't cancelled!");
         if (updateQuantity != 1) throw new ReserveMedicineException("Medicine quantity wasn't incremented!");
 
@@ -207,14 +242,15 @@ public class MedicineServiceImpl implements MedicineService {
 
         medSpec = medicineSpecificationRepository.save(medSpec);
         return med;
-
     }
 
+    @Override
+    @Transactional(readOnly = true)
     public List<MedicineMarkDTO> getAllMedicinesForMarkingOptimized(UUID patientId) {
         List<Medicine> allMedicines = medicineRepository.getPatientsMedicines(patientId);
 
-        List<MedicineMarkDTO>mFinal = new ArrayList<>();
-        for(Medicine m : allMedicines){
+        List<MedicineMarkDTO> mFinal = new ArrayList<>();
+        for (Medicine m : allMedicines) {
             MedicineMarkDTO mmDTO = new MedicineMarkDTO();
             mmDTO.setId(m.getId());
             mmDTO.setName(m.getName());
@@ -228,12 +264,13 @@ public class MedicineServiceImpl implements MedicineService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<MedicineDTO> getAllMedicinesPatientsNotAlergicTo(UUID id) {
         List<Medicine> medicines = medicineRepository.getAllMedicinesPatientsNotAlergicTo(id);
         List<MedicineDTO> finalMedicines = new ArrayList<>();
 
-        for(Medicine med : medicines){
-            MedicineDTO medicineDTO = new MedicineDTO(med.getId(), med.getName(), "", "", "", "", "", med.getLoyaltyPoints(), "", 0, "", "", "");
+        for (Medicine med : medicines) {
+            MedicineDTO medicineDTO = new MedicineDTO(med.getId(), med.getName(), "", "", "", "", "", med.getLoyaltyPoints(), "", 0, "", "", "",0);
             finalMedicines.add(medicineDTO);
         }
 
@@ -241,11 +278,12 @@ public class MedicineServiceImpl implements MedicineService {
     }
 
     @Override
-    public List<MedicineDTO> getAllMedicinesPatientsAllergicTo(UUID id){
+    @Transactional(readOnly = true)
+    public List<MedicineDTO> getAllMedicinesPatientsAllergicTo(UUID id) {
         List<Medicine> medicines = medicineRepository.getMedicinesPatientsAllergicTo(id);
         List<MedicineDTO> finalMedicines = new ArrayList<>();
-        for(Medicine med : medicines){
-            MedicineDTO medicineDTO = new MedicineDTO(med.getId(), med.getName(), "", "", "", "", "", med.getLoyaltyPoints(), "", 0, "", "", "");
+        for (Medicine med : medicines) {
+            MedicineDTO medicineDTO = new MedicineDTO(med.getId(), med.getName(), "", "", "", "", "", med.getLoyaltyPoints(), "", 0, "", "", "",0);
             finalMedicines.add(medicineDTO);
         }
 
@@ -256,53 +294,160 @@ public class MedicineServiceImpl implements MedicineService {
     @Transactional(rollbackFor = {ActionNotAllowedException.class, RuntimeException.class})
     public boolean addPatientsAllergy(MedicineAllergyDTO allergy) throws RuntimeException {
         int added = medicineRepository.addNewAllergy(allergy.getPatientId(), allergy.getMedicineId());
-        if(added != 1) throw new RuntimeException("Couldnt add allergy");
+        if (added != 1) throw new RuntimeException("Couldnt add allergy");
 
         return true;
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<MedicineFilterDTO> filterMedicines(MedicineFilterRequestDTO mfr) {
-        List<Medicine>medicines = medicineRepository.getAllMedicinesPatientsNotAlergicTo(mfr.getPatientId());
-        List<MedicineFilterDTO>finalMedicines = new ArrayList<>();
+        List<Medicine> medicines = medicineRepository.getAllMedicinesPatientsNotAlergicTo(mfr.getPatientId());
+        List<MedicineFilterDTO> finalMedicines = new ArrayList<>();
 
-        for(Medicine m : medicines){
-            if(!m.getName().toLowerCase().contains(mfr.getName().toLowerCase())) continue;
+        for (Medicine m : medicines) {
+            if (!m.getName().toLowerCase().contains(mfr.getName().toLowerCase())) continue;
 
-            List<PharmacyFilteringDTO>pharmacies = pharmacyRepository.getAllPharmaciesForMedicine(m.getId());
-            if(pharmacies.size() == 0) continue;
+            List<PharmacyFilteringDTO> pharmacies = pharmacyRepository.getAllPharmaciesForMedicine(m.getId());
+            if (pharmacies.size() == 0) continue;
 
             MedicineFilterDTO med = new MedicineFilterDTO();
-            med.setMedicine(new MedicineDTO(m.getId(), m.getName(), "", "", "", "", "", m.getLoyaltyPoints(), "", 0, "", "", ""));
+            med.setMedicine(new MedicineDTO(m.getId(), m.getName(), "", "", "", "", "", m.getLoyaltyPoints(), "", 0, "", "", "", 0));
             med.setPharmacies(pharmacies);
             finalMedicines.add(med);
         }
 
         return finalMedicines;
     }
+
     @Override
-    public MedicineSpecification getMedicineSpecification(UUID medicineId) {
-        return medicineRepository.getMedicineSpecification(medicineId);
+    public List<SupplierMedicinesDTO> findSupplierMedicines(UUID supplierId) {
+        List<SupplierMedicine> meds = medicineRepository.findMedicinesBySupplierId(supplierId);
+        List<SupplierMedicinesDTO> ret = new ArrayList<>();
+        for (SupplierMedicine sm : meds) {
+            SupplierMedicinesDTO dto = new SupplierMedicinesDTO();
+            dto.setSupplierId(supplierId);
+            dto.setMedicineName(sm.getMedicine().getName());
+            dto.setQuantity(sm.getQuantity());
+            ret.add(dto);
+        }
+        return ret;
+    }
+
+    @Override
+    public SupplierMedicine addNewSupplierMedicine(SupplierMedicinesDTO supplierMedicinesDTO) {
+        SupplierMedicine supplierMedicine = new SupplierMedicine();
+        Medicine m = medicineRepository.findByName(supplierMedicinesDTO.getMedicineName());
+        if (m != null) {
+            if (supplierMedicinesRepository.findByName(m.getName()) != null) {
+                int ret = supplierMedicinesRepository.updateMedicineQuantity(m.getId(), supplierMedicinesDTO.getQuantity());
+                return supplierMedicine;
+            }
+            int ret = supplierMedicinesRepository.addSupplierMedicine(supplierMedicinesDTO.getSupplierId(), m.getId(), supplierMedicinesDTO.getQuantity());
+            return supplierMedicine;
+        }
+        return null;
+    }
+
+    @Override
+    public MedicineSpecificationDTO getMedicineSpecification(UUID medicineId) {
+        MedicineSpecification ms = medicineRepository.getMedicineSpecification(medicineId);
+        return new MedicineSpecificationDTO(ms.getReplacementMedicineCode(), ms.getRecommendedDose(), ms.getContraindications(), ms.getDrugComposition(), ms.getAdditionalNotes());
     }
 
     @Override
     public String getReplacmentMedicine(UUID medicineId) {
         return medicineRepository.getReplacmentMedicine(medicineId);
     }
+
+    public double getMedicineMark(List<Mark> marks){
+        int sum=0;
+        for(Mark m: marks){
+            sum+=m.getMark();
+        }
+        return sum/marks.size();
+    }
+
+    public List<Medicine> findAllAvailableMedicinesNoAuth(){
+        List<Medicine> list=new ArrayList<>();
+        for(Medicine m: medicineRepository.findAllAvailableMedicinesNoMarksNoAuth()){
+            m.setMarks(null);
+            list.add(m);
+        }
+        list.addAll(medicineRepository.findAllAvailableMedicinesWithMarksNoAuth());
+        return list;
+    }
+
     @Override
     public List<MedicineFilterDTO> filterNoAuthMedicines(MedicineFilterRequestDTO mfr) {
-        List<Medicine>medicines = medicineRepository.findAllAvailableMedicinesNoAuth();
-
+        List<Medicine> medicines = findAllAvailableMedicinesNoAuth();
         List<MedicineFilterDTO> finalMedicines = new ArrayList<>();
-        for(Medicine m : medicines){
-            if(!m.getName().toLowerCase().contains(mfr.getName().toLowerCase())) continue;
 
+        for (Medicine m : medicines) {
+            if (!m.getName().toLowerCase().contains(mfr.getName().toLowerCase())) continue;
+            double mark=0;
+            if(m.getMarks()!=null){
+                mark=getMedicineMark(m.getMarks());
+            }
             MedicineFilterDTO med = new MedicineFilterDTO();
-            med.setMedicine(new MedicineDTO(m.getId(), m.getName(), "", "", "", "", "", m.getLoyaltyPoints(), "", 0, "", "", ""));
+            MedicineSpecificationDTO spec = getMedicineSpecification(m.getId());
+            if(spec != null){
+                med.setMedicine(new MedicineDTO(m.getId(), m.getName(), "", m.getMedicineType().name(), "", "", "", m.getLoyaltyPoints(), spec.getReplacementMedicineCode(), spec.getRecommendedDose(), spec.getContraindications(), spec.getDrugComposition(), spec.getAdditionalNotes(), mark));
+
+            } else {
+               med.setMedicine(new MedicineDTO(m.getId(), m.getName(), "", m.getMedicineType().name(), "", "", "", m.getLoyaltyPoints(), "", 0, "", "", "", 0));
+
+            }
             med.setPharmacies(new ArrayList<>());
             finalMedicines.add(med);
         }
 
         return finalMedicines;
     }
+
+    @Override
+    public List<PharmacyMedicinesDTO> findAllForNoAuth(){
+        List<PharmacyMedicinesDTO> ret = new ArrayList<>();
+        List<PharmacyMedicines> pharmacyMedicines = medicineRepository.findAllAvailableMedicines();
+        List<Medicine> medicines =findAllAvailableMedicinesNoAuth();
+
+        LocalDate todaysDate = LocalDate.now();   //mali offset
+        for (PharmacyMedicines pm : pharmacyMedicines) {
+            List<Pricings> pricings = pm.getPricings();
+            double finalPrice = -1.0;
+
+            for (Pricings pricing : pricings) {
+                if (pricing.getStartDate().isBefore(todaysDate) && pricing.getEndDate().isAfter(todaysDate)) {
+                    finalPrice = pricing.getPrice();
+                    break;
+                }
+            }
+
+            if (finalPrice == -1) continue;
+
+            PharmacyMedicinesDTO pmDTO = new PharmacyMedicinesDTO();
+
+            for (Medicine m : medicines) {
+                double mark = 0;
+                if (m.getMarks() != null) {
+                    mark = getMedicineMark(m.getMarks());
+                }
+                MedicineSpecificationDTO spec = getMedicineSpecification(m.getId());
+                if (spec != null) {
+                    pmDTO.setMedicine(new MedicineDTO(m.getId(), m.getName(), "", m.getMedicineType().name(), "", "", "", m.getLoyaltyPoints(), spec.getReplacementMedicineCode(), spec.getRecommendedDose(), spec.getContraindications(), spec.getDrugComposition(), spec.getAdditionalNotes(), mark));
+
+                } else {
+                    pmDTO.setMedicine(new MedicineDTO(m.getId(), m.getName(), "", m.getMedicineType().name(), "", "", "", m.getLoyaltyPoints(), "", 0, "", "", "", 0));
+                }
+            }
+            Pharmacy pharmacy = pm.getPharmacy();
+            pmDTO.setPharmacy(new PharmacyDTO(pharmacy.getId(), pharmacy.getName(), pharmacy.getAddress().getStreet(), pharmacy.getAddress().getCity(), pharmacy.getAddress().getCountry()));
+            pmDTO.setPrice(finalPrice);
+            pmDTO.setQuantity(pm.getQuantity());
+
+            ret.add(pmDTO);
+        }
+        return ret;
+    }
+
 }

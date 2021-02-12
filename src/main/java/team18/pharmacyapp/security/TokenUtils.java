@@ -10,40 +10,39 @@ import team18.pharmacyapp.model.users.RegisteredUser;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 @Component
 public class TokenUtils {
-
-    // Izdavac tokena
-    @Value("spring-security-example")
-    private String APP_NAME;
-
-    // Tajna koju samo backend aplikacija treba da zna kako bi mogla da generise i proveri JWT https://jwt.io/
-    @Value("somesecret")
-    public String SECRET;
-
-    // Period vazenja
-    @Value("9000000") // default je 30000 ali je to za razvoj prekratko
-    private int EXPIRES_IN;
-
-    // Naziv headera kroz koji ce se prosledjivati JWT u komunikaciji server-klijent
-    @Value("Authorization")
-    private String AUTH_HEADER;
 
     // Moguce je generisati JWT za razlicite klijente (npr. web i mobilni klijenti nece imati isto trajanje JWT, JWT za mobilne klijente ce trajati duze jer se mozda aplikacija redje koristi na taj nacin)
     private static final String AUDIENCE_UNKNOWN = "unknown";
     private static final String AUDIENCE_WEB = "web";
     private static final String AUDIENCE_MOBILE = "mobile";
     private static final String AUDIENCE_TABLET = "tablet";
-
+    // Tajna koju samo backend aplikacija treba da zna kako bi mogla da generise i proveri JWT https://jwt.io/
+    @Value("somesecret")
+    public String SECRET;
+    // Izdavac tokena
+    @Value("spring-security-example")
+    private String APP_NAME;
+    // Period vazenja
+    @Value("9000000") // default je 30000 ali je to za razvoj prekratko
+    private int EXPIRES_IN;
+    // Naziv headera kroz koji ce se prosledjivati JWT u komunikaciji server-klijent
+    @Value("Authorization")
+    private String AUTH_HEADER;
     // Algoritam za potpisivanje JWT
-    private SignatureAlgorithm SIGNATURE_ALGORITHM = SignatureAlgorithm.HS512;
+    private final SignatureAlgorithm SIGNATURE_ALGORITHM = SignatureAlgorithm.HS512;
 
     // Funkcija za generisanje JWT token
-    public String generateToken(String username) {
+    public String generateToken(String username, UUID id) {
         return Jwts.builder()
                 .setIssuer(APP_NAME)
                 .setSubject(username)
+                .setId(id.toString())
                 .setIssuedAt(new Date())
                 .setExpiration(generateExpirationDate())
                 .signWith(SIGNATURE_ALGORITHM, SECRET).compact();
@@ -127,6 +126,17 @@ public class TokenUtils {
             expiration = null;
         }
         return expiration;
+    }
+
+    public UUID getUserIdFromToken(String token) {
+        String userId;
+        try {
+            final Claims claims = this.getAllClaimsFromToken(token);
+            userId = claims.getId();
+        } catch (Exception e) {
+            userId = null;
+        }
+        return UUID.fromString(userId);
     }
 
     public int getExpiredIn() {

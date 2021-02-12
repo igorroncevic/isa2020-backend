@@ -55,7 +55,7 @@ public class LoyaltyServiceImpl implements LoyaltyService {
     @Override
     public Loyalty updateLoyalty(Loyalty loyalty) {
         Loyalty loy = getById(loyalty.getId());
-        if(loy != null) {
+        if (loy != null) {
             loy.setCategory(loyalty.getCategory());
             loy.setMinPoints(loyalty.getMinPoints());
             loy.setMaxPoints(loyalty.getMaxPoints());
@@ -70,12 +70,12 @@ public class LoyaltyServiceImpl implements LoyaltyService {
     @Override
     @Transactional
     public void subtractLoyaltyPoints(UUID patientId, int amount) {
-        Patient pat = patientRepository.getOne(patientId);
-        if(pat == null) return;
+        Patient pat = patientRepository.findById(patientId).orElseGet(null);
+        if (pat == null) return;
 
-        if(pat.getLoyaltyPoints() - amount >= 0){
+        if (pat.getLoyaltyPoints() - amount >= 0) {
             pat.setLoyaltyPoints(pat.getLoyaltyPoints() - amount);
-        }else{
+        } else {
             pat.setLoyaltyPoints(0);
         }
 
@@ -85,8 +85,8 @@ public class LoyaltyServiceImpl implements LoyaltyService {
     @Override
     @Transactional
     public void addLoyaltyPoints(UUID patientId, int amount) {
-        Patient pat = patientRepository.getOne(patientId);
-        if(pat == null) return;
+        Patient pat = patientRepository.findById(patientId).orElseGet(null);
+        if (pat == null) return;
 
         pat.setLoyaltyPoints(pat.getLoyaltyPoints() + amount);
 
@@ -96,12 +96,12 @@ public class LoyaltyServiceImpl implements LoyaltyService {
     @Override
     @Transactional
     public void updatePatientsLoyalty(UUID patientId) {
-        Patient pat = patientRepository.getOne(patientId);
-        if(pat == null) return;
+        Patient pat = patientRepository.findById(patientId).orElseGet(null);
+        if (pat == null) return;
 
         List<Loyalty> loyalties = loyaltyRepository.findAll();
-        for(Loyalty l : loyalties){
-            if(pat.getLoyaltyPoints() >= l.getMinPoints() && pat.getLoyaltyPoints() <= l.getMaxPoints()){
+        for (Loyalty l : loyalties) {
+            if (pat.getLoyaltyPoints() >= l.getMinPoints() && pat.getLoyaltyPoints() <= l.getMaxPoints()) {
                 pat.setLoyalty(l);
                 break;
             }

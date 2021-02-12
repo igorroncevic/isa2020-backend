@@ -6,6 +6,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 import team18.pharmacyapp.model.Pharmacy;
 import team18.pharmacyapp.model.dtos.PharmacyFilteringDTO;
+import team18.pharmacyapp.model.users.PharmacyAdmin;
 
 import java.util.List;
 import java.util.UUID;
@@ -36,4 +37,10 @@ public interface PharmacyRepository extends JpaRepository<Pharmacy, UUID> {
     @Transactional(readOnly = true)
     @Query("SELECT p FROM pharmacy p JOIN FETCH p.address WHERE p.id = :id")
     Pharmacy findByIdCustom(@Param("id") UUID id);
+
+    @Query("SELECT ph FROM pharmacy_admin ph JOIN FETCH ph.pharmacy WHERE ph.id=:phadminId")
+    PharmacyAdmin getPharmacyAdminsPharmacy(UUID phadminId);
+
+    @Query(nativeQuery = true, value = "SELECT CAST(pha.pharmacy_id AS varchar ) FROM pharmacy_admin pha WHERE pha.id = '40c88a70-d8cd-4d8f-b56f-eb158f7c27fa'")
+    String getPharmacyAdminsPharmacyId(UUID phadminId);
 }

@@ -2,16 +2,21 @@ package team18.pharmacyapp.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import team18.pharmacyapp.model.Address;
+import team18.pharmacyapp.helpers.DateTimeHelpers;
 import team18.pharmacyapp.model.Pharmacy;
+import team18.pharmacyapp.model.WorkSchedule;
 import team18.pharmacyapp.model.dtos.*;
 import team18.pharmacyapp.model.enums.UserRole;
 import team18.pharmacyapp.model.users.Doctor;
+import team18.pharmacyapp.model.users.RegisteredUser;
 import team18.pharmacyapp.repository.AddressRepository;
-import team18.pharmacyapp.repository.users.DoctorRepository;
 import team18.pharmacyapp.repository.MarkRepository;
+import team18.pharmacyapp.repository.PharmacyRepository;
+import team18.pharmacyapp.repository.WorkScheduleRepository;
+import team18.pharmacyapp.repository.users.DoctorRepository;
 import team18.pharmacyapp.service.interfaces.DoctorService;
 
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -22,13 +27,17 @@ public class DoctorServiceImpl implements DoctorService {
     private final DoctorRepository doctorRepository;
     private final AddressRepository addressRepository;
     private final MarkRepository markRepository;
+    private final WorkScheduleRepository workScheduleRepository;
+    private final PharmacyRepository pharmacyRepository;
 
 
     @Autowired
-    public DoctorServiceImpl(DoctorRepository doctorRepository, AddressRepository addressRepository, MarkRepository markRepository) {
+    public DoctorServiceImpl(DoctorRepository doctorRepository, AddressRepository addressRepository, MarkRepository markRepository, WorkScheduleRepository workScheduleRepository, PharmacyRepository pharmacyRepository) {
         this.doctorRepository = doctorRepository;
         this.addressRepository = addressRepository;
         this.markRepository = markRepository;
+        this.workScheduleRepository = workScheduleRepository;
+        this.pharmacyRepository = pharmacyRepository;
     }
 
 
@@ -36,7 +45,7 @@ public class DoctorServiceImpl implements DoctorService {
     public List<DoctorMarkPharmaciesDTO> findAllDoctors(UserRole role) {
         List<Doctor> dermatologists = doctorRepository.findAllDoctors(role);
         List<DoctorMarkPharmaciesDTO> doctorMarkPharmaciesDTOS = new ArrayList<>();
-        for(Doctor doctor : dermatologists) {
+        for (Doctor doctor : dermatologists) {
             List<String> pharmacies = doctorRepository.findAllDoctorsPharmaciesNames(doctor.getId());
             Float averageMark = markRepository.getAverageMarkForDoctor(doctor.getId());
             DoctorMarkPharmaciesDTO doctorMarkPharmaciesDTO = new DoctorMarkPharmaciesDTO();
@@ -57,7 +66,7 @@ public class DoctorServiceImpl implements DoctorService {
         List<DoctorMarkPharmaciesDTO> dermatologistsForPharmacy = new ArrayList<>();
         for (Doctor doctor : dermatologists) {
             List<Pharmacy> pharmacies = doctorRepository.findAllDoctorsPharmacies(doctor.getId());
-            if(pharmacies.contains(pharmacy)) {
+            if (pharmacies.contains(pharmacy)) {
                 List<String> pharmaciesNames = doctorRepository.findAllDoctorsPharmaciesNames(doctor.getId());
                 Float averageMark = markRepository.getAverageMarkForDoctor(doctor.getId());
                 DoctorMarkPharmaciesDTO doctorMarkPharmaciesDTO = new DoctorMarkPharmaciesDTO();
@@ -77,9 +86,18 @@ public class DoctorServiceImpl implements DoctorService {
     }
 
     @Override
+    public DoctorDTO getDTOyId(UUID id) {
+        Doctor d = getById(id);
+        if (d != null) {
+            return new DoctorDTO(d.getId(), d.getName(), d.getSurname(), d.getEmail(), d.getPhoneNumber(), d.getRole(), null);
+        }
+        return null;
+    }
+
+    @Override
     public Doctor update(Doctor doctor) {
-        Doctor doc=getById(doctor.getId());
-        if(doc!=null) {
+        Doctor doc = getById(doctor.getId());
+        if (doc != null) {
             doc.setName(doctor.getName());
             doc.setSurname(doctor.getSurname());
             doc.setEmail(doctor.getEmail());
@@ -90,34 +108,47 @@ public class DoctorServiceImpl implements DoctorService {
     }
 
     @Override
-    public Doctor registerDermatologist(RegisterUserDTO dermatologist) {
-        Doctor derm = new Doctor();
-        Address address = addressRepository.findByCountryAndCityAndStreet(dermatologist.getCountry(), dermatologist.getCity(), dermatologist.getStreet());
-        if (address == null) {
-            address = new Address();
-            address.setStreet(dermatologist.getStreet());
-            address.setCity(dermatologist.getCity());
-            address.setCountry(dermatologist.getCountry());
-            address = addressRepository.save(address);
+    public List<PharmacyDTO> getDoctorPharmacyList(UUID doctorId) {
+        List<PharmacyDTO> ret = new ArrayList<>();
+        for (Pharmacy pharmacy : doctorRepository.getDoctorPharmacyList(doctorId)) {
+            ret.add(new PharmacyDTO(pharmacy.getId(), pharmacy.getName(), pharmacy.getAddress().getCountry(), pharmacy.getAddress().getCity(), pharmacy.getAddress().getStreet()));
         }
-        derm.setRole(UserRole.dermatologist);
-        derm.setName(dermatologist.getName());
-        derm.setSurname(dermatologist.getSurname());
-        derm.setPhoneNumber(dermatologist.getPhoneNumber());
-        derm.setEmail(dermatologist.getEmail());
-        derm.setPassword(dermatologist.getPassword());
-        derm.setAddress(address);
-        derm = doctorRepository.save(derm);
-        return derm;
+        return ret;
     }
 
     @Override
-    public List<PharmacyDTO> getDoctorPharmacyList(UUID doctorId) {
-        List<PharmacyDTO> ret=new ArrayList<>();
-        for(Pharmacy pharmacy:doctorRepository.getDoctorPharmacyList(doctorId)){
-            ret.add(new PharmacyDTO(pharmacy.getId(),pharmacy.getName(),pharmacy.getAddress().getCountry(),pharmacy.getAddress().getCity(),pharmacy.getAddress().getStreet()));
+    public PharmacyDTO getCurrentPharmacy(UUID doctorId) {
+        List<WorkSchedule> schedules = workScheduleRepository.getDoctorWorkSchedules(doctorId);
+        WorkSchedule workSchedule = null;
+        for (WorkSchedule ws : schedules) {
+            Date now = new Date();
+            LocalTime startWorking = DateTimeHelpers.getTimeWithoutDate(ws.getFromHour());
+            LocalTime endWorking = DateTimeHelpers.getTimeWithoutDate(ws.getToHour());
+            LocalTime start = DateTimeHelpers.getTimeWithoutDate(now);
+            if (start.isAfter(startWorking) && start.isBefore(endWorking) && now.after(ws.getFromHour()) && now.before(ws.getToHour())) {
+                System.out.println(start);
+                System.out.println(startWorking);
+                System.out.println(endWorking);
+                workSchedule = ws;
+            }
         }
-        return ret;
+        if (workSchedule != null) {
+            Pharmacy p = workSchedule.getPharmacy();
+            return new PharmacyDTO(p.getId(), p.getName(), p.getAddress().getStreet(), p.getAddress().getCity(), p.getAddress().getCountry());
+        }
+        return null;
+    }
+
+    @Override
+    public PharmacyDTO getPharmacistPharmacy(UUID id) {
+        Pharmacy p = doctorRepository.getPharmPharmacy(id);
+        return new PharmacyDTO(p.getId(), p.getName(), p.getAddress().getStreet(), p.getAddress().getCity(), p.getAddress().getCountry());
+    }
+
+    @Override
+    public WorkScheduleDTO getDoctorWorkScheduleInPharmacy(UUID doctorId, UUID pharmacyId) {
+        WorkSchedule workSchedule = workScheduleRepository.getDoctorSchedule(doctorId, pharmacyId);
+        return new WorkScheduleDTO(workSchedule.getFromHour(), workSchedule.getToHour());
     }
 
     public List<DoctorsPatientDTO> findDoctorsPatients(UUID doctorId) {
@@ -141,5 +172,24 @@ public class DoctorServiceImpl implements DoctorService {
         }
 
         return doctorMarkDTOS;
+    }
+
+    @Override
+    public Doctor registerDermatologist(RegisteredUser user) {
+        Doctor derm = new Doctor();
+        derm.setRole(UserRole.dermatologist);
+        derm.setName(user.getName());
+        derm.setSurname(user.getSurname());
+        derm.setPhoneNumber(user.getPhoneNumber());
+        derm.setEmail(user.getEmail());
+        derm.setPassword(user.getPassword());
+        derm.setAddress(user.getAddress());
+        derm = doctorRepository.save(derm);
+        doctorRepository.setId(derm.getId(),user.getId());
+        return derm;
+    }
+
+    public List<Doctor> findAll(){
+        return doctorRepository.findAll();
     }
 }

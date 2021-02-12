@@ -1,5 +1,6 @@
 package team18.pharmacyapp.model.medicine;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -15,6 +16,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class ReservedMedicines {
     @Id
     @GeneratedValue(generator = "UUID")
@@ -38,4 +40,7 @@ public class ReservedMedicines {
     private Date pickupDate; // Datum do kog ce pacijent preuzeti lijek
 
     private boolean handled; // ako je pacijent pokupio lijek ili je dobio penal, bice true
+
+    @Version
+    private Long version = 0L;
 }

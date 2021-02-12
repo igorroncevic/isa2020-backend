@@ -2,16 +2,20 @@ package team18.pharmacyapp.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import team18.pharmacyapp.model.Address;
 import team18.pharmacyapp.model.Pharmacy;
+import team18.pharmacyapp.model.dtos.PharmacyDTO;
 import team18.pharmacyapp.model.dtos.PharmacyFilteringDTO;
-import team18.pharmacyapp.repository.AddressRepository;
 import team18.pharmacyapp.model.dtos.PharmacyMarkPriceDTO;
+import team18.pharmacyapp.repository.AddressRepository;
 import team18.pharmacyapp.repository.MarkRepository;
 import team18.pharmacyapp.repository.PharmacyRepository;
 import team18.pharmacyapp.service.interfaces.PharmacyService;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 @Service
 public class PharmacyServiceImpl implements PharmacyService {
@@ -27,8 +31,13 @@ public class PharmacyServiceImpl implements PharmacyService {
     }
 
     @Override
-    public List<Pharmacy> getAll() {
-        return pharmacyRepository.findAll();
+    public List<PharmacyDTO> getAll() {
+        List<PharmacyDTO>pharmacyDTOS=new ArrayList<>();
+        for(Pharmacy p: pharmacyRepository.findAll()){
+            PharmacyDTO dto=new PharmacyDTO(p.getId(),p.getName(),p.getAddress().getStreet(),p.getAddress().getCity(),p.getAddress().getCountry());
+            pharmacyDTOS.add(dto);
+        }
+        return pharmacyDTOS;
     }
 
     @Override
@@ -37,11 +46,12 @@ public class PharmacyServiceImpl implements PharmacyService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<PharmacyMarkPriceDTO> getAllPatientsPharmaciesOptimized(UUID id) {
         List<Pharmacy> pTerms = pharmacyRepository.getPatientsPharmacies(id);
 
-        List<PharmacyMarkPriceDTO>pFinal = new ArrayList<>();
-        for(Pharmacy ph : pTerms){
+        List<PharmacyMarkPriceDTO> pFinal = new ArrayList<>();
+        for (Pharmacy ph : pTerms) {
             PharmacyMarkPriceDTO phDTO = new PharmacyMarkPriceDTO();
             phDTO.setId(ph.getId());
             phDTO.setName(ph.getName());
@@ -49,7 +59,7 @@ public class PharmacyServiceImpl implements PharmacyService {
             phDTO.setCity(ph.getAddress().getCity());
             phDTO.setCountry(ph.getAddress().getCountry());
             Float averageMark = markRepository.getAverageMarkForPharmacy(ph.getId());
-            phDTO.setMark((double)averageMark);
+            phDTO.setMark((double) averageMark);
             pFinal.add(phDTO);
         }
 
@@ -57,25 +67,26 @@ public class PharmacyServiceImpl implements PharmacyService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<PharmacyFilteringDTO> getAllFiltered(String name, Float mark, String city) {
         List<PharmacyFilteringDTO> pharmacies = pharmacyRepository.findAllForFiltering();
         List<PharmacyFilteringDTO> finalPharmacies = new ArrayList<>();
 
-        for(PharmacyFilteringDTO p : pharmacies){
+        for (PharmacyFilteringDTO p : pharmacies) {
             boolean continueFlag = false;
-            if(name != null) {
-                if(!p.getName().toUpperCase().contains(name.toUpperCase())) continueFlag = true;
+            if (name != null) {
+                if (!p.getName().toUpperCase().contains(name.toUpperCase())) continueFlag = true;
             }
 
-            if(city != null){
-                if(!p.getAddress().getCity().toUpperCase().contains(city.toUpperCase())) continueFlag = true;
+            if (city != null) {
+                if (!p.getAddress().getCity().toUpperCase().contains(city.toUpperCase())) continueFlag = true;
             }
 
-            if(mark != null){
-                if(p.getAverageMark() < mark) continueFlag = true;
+            if (mark != null) {
+                if (p.getAverageMark() < mark) continueFlag = true;
             }
 
-            if(continueFlag) continue;
+            if (continueFlag) continue;
 
             finalPharmacies.add(p);
         }
@@ -84,10 +95,10 @@ public class PharmacyServiceImpl implements PharmacyService {
     }
 
     @Override
-    public Pharmacy registerNewPharmacy(team18.pharmacyapp.model.dtos.PharmacyDTO pharmacy){
+    public Pharmacy registerNewPharmacy(team18.pharmacyapp.model.dtos.PharmacyDTO pharmacy) {
         Pharmacy newPharmacy = new Pharmacy();
         Address address = addressRepository.findByCountryAndCityAndStreet(pharmacy.getCountry(), pharmacy.getCity(), pharmacy.getStreet());
-        if(address == null){
+        if (address == null) {
             address = new Address();
             address.setStreet(pharmacy.getStreet());
             address.setCity(pharmacy.getCity());

@@ -2,17 +2,22 @@ package team18.pharmacyapp.scheduling;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import team18.pharmacyapp.model.Pharmacy;
 import team18.pharmacyapp.model.Term;
+import team18.pharmacyapp.model.medicine.PharmacyMedicines;
 import team18.pharmacyapp.model.medicine.ReservedMedicines;
 import team18.pharmacyapp.model.users.Patient;
-import team18.pharmacyapp.repository.CheckupRepository;
 import team18.pharmacyapp.repository.MedicineRepository;
+import team18.pharmacyapp.repository.PharmacyMedicinesRepository;
+import team18.pharmacyapp.repository.ReservedMedicinesRepository;
+import team18.pharmacyapp.repository.TermRepository;
 import team18.pharmacyapp.repository.users.PatientRepository;
 
-import java.text.SimpleDateFormat;
+import javax.persistence.LockModeType;
 import java.util.Date;
 import java.util.List;
 
@@ -21,31 +26,43 @@ import java.util.List;
 public class SchedulingTasks {
     private final MedicineRepository medicineRepository;
     private final PatientRepository patientRepository;
-    private final CheckupRepository checkupRepository;
+    private final TermRepository termRepository;
+    private final ReservedMedicinesRepository reservedMedicinesRepository;
+    private final PharmacyMedicinesRepository pharmacyMedicinesRepository;
 
     @Autowired
-    public SchedulingTasks(MedicineRepository medicineRepository, PatientRepository patientRepository, CheckupRepository checkupRepository) {
+    public SchedulingTasks(MedicineRepository medicineRepository, PatientRepository patientRepository, TermRepository termRepository, ReservedMedicinesRepository reservedMedicinesRepository, PharmacyMedicinesRepository pharmacyMedicinesRepository) {
         this.medicineRepository = medicineRepository;
         this.patientRepository = patientRepository;
-        this.checkupRepository = checkupRepository;
+        this.termRepository = termRepository;
+        this.reservedMedicinesRepository = reservedMedicinesRepository;
+        this.pharmacyMedicinesRepository = pharmacyMedicinesRepository;
     }
 
-    // U ponoc svakog dana
     @Transactional
+    @Lock(LockModeType.WRITE)
     @Scheduled(cron = "@daily")
-    // @Scheduled(cron="*/10 * * * * ?") // Test with this one
     public void addPenaltyForNotPickingUpReservedMedicines() {
         log.info("Starting Cron Task - Checking if Patient's need to get penalties for not picking up reserved medicines.");
-        List<ReservedMedicines> reservations = medicineRepository.findAllReservedMedicines();
+        List<ReservedMedicines> reservations = medicineRepository.findAllNonHandledReservedMedicines(new Date());
 
         int addedPenalties = 0;
 
         Date todaysDate = new Date();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
         for (ReservedMedicines reservation : reservations) {
-            if (sdf.format(todaysDate).equals(sdf.format(reservation.getPickupDate()))) {
+            if (todaysDate.after(reservation.getPickupDate())) {
                 int addedPenalty = patientRepository.addPenalty(reservation.getPatient().getId());
                 addedPenalties++;
+
+                // Rijesena rezervacija
+                reservation.setHandled(true);
+                reservedMedicinesRepository.save(reservation);
+
+                // Vracanje kolicine lijeka na prethodno stanje
+                PharmacyMedicines pharmacyMedicine =
+                        pharmacyMedicinesRepository.findDistinctByPharmacyAndMedicine(reservation.getPharmacy(), reservation.getMedicine());
+                pharmacyMedicine.setQuantity(pharmacyMedicine.getQuantity() + 1);
+                pharmacyMedicinesRepository.save(pharmacyMedicine);
             }
         }
 
@@ -53,10 +70,11 @@ public class SchedulingTasks {
     }
 
     @Transactional
-    @Scheduled(cron = "@hourly")
+    @Lock(LockModeType.WRITE)
+    @Scheduled(cron = "@daily")
     public void addPenaltyForNotComingToTerm() {
         log.info("Starting Cron Task - Checking if Patient's need to get penalties for not showing up to a term.");
-        List<Term> terms = checkupRepository.findAllWithPatients();
+        List<Term> terms = termRepository.findAllWithPatients(new Date());
 
         int addedPenalties = 0;
 
@@ -66,13 +84,17 @@ public class SchedulingTasks {
             if (term.getEndTime().before(currentTime)) {
                 int addedPenalty = patientRepository.addPenalty(term.getPatient().getId());
                 addedPenalties++;
+
+                term.setCompleted(true);
+                termRepository.save(term);
             }
         }
 
         log.info("Finishing Cron Task - " + addedPenalties + " total patients received penalties.");
     }
 
-    // U ponoc svakog prvog u mjesecu
+    @Transactional
+    @Lock(LockModeType.WRITE)
     @Scheduled(cron = "@monthly")
     public void resetPatientPenalties() {
         log.info("Starting Cron Task - Checking if Patient's need to get penalties.");

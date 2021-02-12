@@ -1,16 +1,11 @@
 package team18.pharmacyapp.service.interfaces;
 
 import team18.pharmacyapp.model.Term;
-import team18.pharmacyapp.model.dtos.CancelTermDTO;
-import team18.pharmacyapp.model.dtos.DoctorTermDTO;
-import team18.pharmacyapp.model.dtos.ScheduleCheckupDTO;
-import team18.pharmacyapp.model.dtos.TermDTO;
+import team18.pharmacyapp.model.dtos.*;
 import team18.pharmacyapp.model.enums.TermType;
-import team18.pharmacyapp.model.exceptions.ActionNotAllowedException;
-import team18.pharmacyapp.model.exceptions.AlreadyScheduledException;
-import team18.pharmacyapp.model.exceptions.EntityNotFoundException;
-import team18.pharmacyapp.model.exceptions.ScheduleTermException;
+import team18.pharmacyapp.model.exceptions.*;
 
+import java.text.ParseException;
 import java.util.List;
 import java.util.UUID;
 
@@ -23,16 +18,20 @@ public interface CheckupService {
 
     List<TermDTO> findAllAvailableCheckups();
 
-    List<TermDTO> findAllPatientsCheckups(UUID patientId);
+    List<TermDTO> findAllAvailableDermatologistsCheckups(UUID doctorId);
 
-    Term save(Term term);
+    List<TermDTO> findAllPatientsCheckups(UUID patientId);
 
     void deleteById(UUID id);
 
+    void save(Term term);
+
     boolean patientScheduleCheckup(ScheduleCheckupDTO term) throws ActionNotAllowedException, ScheduleTermException, RuntimeException, AlreadyScheduledException;
 
+    List<DoctorTermDTO> doctorPharmacyFree(UUID doctorId, UUID pharmacyId);
 
-    List<Term> doctorPharmacyFree(UUID doctorId,UUID pharmacyId);
+    boolean patientCancelCheckup(CancelTermDTO term) throws EntityNotFoundException, ActionNotAllowedException, RuntimeException;
 
-    boolean patientCancelCheckup(CancelTermDTO term) throws EntityNotFoundException, ActionNotAllowedException,RuntimeException;
+    boolean addNewCheckup(NewCheckupDTO newCheckupDTO, UUID pharmacyId) throws FailedToSaveException, BadTimeRangeException, ParseException;
+
 }

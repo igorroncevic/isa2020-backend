@@ -5,7 +5,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import team18.pharmacyapp.model.Term;
 import team18.pharmacyapp.model.dtos.*;
 import team18.pharmacyapp.model.exceptions.*;
 import team18.pharmacyapp.service.interfaces.CounselingService;
@@ -14,7 +13,7 @@ import team18.pharmacyapp.service.interfaces.TermService;
 import java.util.List;
 import java.util.UUID;
 
-@CrossOrigin(origins = {"http://localhost:8080","http://localhost:8081"})
+@CrossOrigin(origins = {"http://localhost:8080", "http://localhost:8081"})
 @RestController
 @RequestMapping(value = "api/counseling")
 public class CounselingController {
@@ -32,9 +31,9 @@ public class CounselingController {
     public ResponseEntity<List<TermDTO>> getAllPatientsCounselings(@PathVariable UUID id) {
         List<TermDTO> counselings;
 
-        try{
+        try {
             counselings = counselingService.findAllPatientsCounselings(id);
-        }catch(RuntimeException e){
+        } catch (RuntimeException e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
@@ -45,9 +44,9 @@ public class CounselingController {
     @PostMapping("/past")
     public ResponseEntity<TermPaginationDTO> getAllPatientsPastCounselingsPaginated(@RequestBody TermPaginationSortingDTO psDTO) {
         TermPaginationDTO counselings;
-        try{
+        try {
             counselings = termService.findAllPatientsPastTermsPaginated(psDTO.getId(), psDTO.getSort(), psDTO.getTermType(), psDTO.getPage());
-        }catch(RuntimeException e){
+        } catch (RuntimeException e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
@@ -59,9 +58,9 @@ public class CounselingController {
     public ResponseEntity<TermPaginationDTO> getAllPatientsUpcomingCheckupsPaginated(@RequestBody TermPaginationSortingDTO psDTO) {
         TermPaginationDTO counselings;
 
-        try{
+        try {
             counselings = termService.findPatientsUpcomingTermsByTypePaginated(psDTO.getId(), psDTO.getSort(), psDTO.getTermType(), psDTO.getPage());
-        }catch(RuntimeException e){
+        } catch (RuntimeException e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
@@ -72,9 +71,9 @@ public class CounselingController {
     @PostMapping("/available")
     public ResponseEntity<List<PharmacyMarkPriceDTO>> getPharmaciesWithAvailableCounselings(@RequestBody DateTimeRangeDTO timeRange) {
         List<PharmacyMarkPriceDTO> pharmacies;
-        try{
+        try {
             pharmacies = counselingService.getPharmaciesWithAvailableCounselings(timeRange);
-        }catch(BadTimeRangeException ex){
+        } catch (BadTimeRangeException ex) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>(pharmacies, HttpStatus.OK);
@@ -85,9 +84,9 @@ public class CounselingController {
     public ResponseEntity<List<DoctorMarkPharmaciesDTO>> getFreeDoctorsForPharmacy(@PathVariable UUID id, @RequestBody DateTimeRangeDTO timeRange) {
         List<DoctorMarkPharmaciesDTO> doctors;
 
-        try{
+        try {
             doctors = counselingService.getFreeDoctorsForPharmacy(id, timeRange);
-        }catch(RuntimeException e){
+        } catch (RuntimeException e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
@@ -121,10 +120,10 @@ public class CounselingController {
         boolean success;
         try {
             success = counselingService.patientCancelCounseling(term);
-        }catch (EntityNotFoundException ex) {
+        } catch (EntityNotFoundException ex) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }catch (ActionNotAllowedException ex) {
-                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } catch (ActionNotAllowedException ex) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         } catch (RuntimeException ex) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }

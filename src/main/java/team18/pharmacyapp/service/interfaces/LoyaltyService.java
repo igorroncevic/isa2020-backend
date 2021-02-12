@@ -18,8 +18,11 @@ public interface LoyaltyService {
     Loyalty updateLoyalty(Loyalty loyalty);
 
     void subtractLoyaltyPoints(UUID patientId, int amount);
+
     void addLoyaltyPoints(UUID patientId, int amount);
+
     void updatePatientsLoyalty(UUID patientId);
+
     Loyalty getPatientsLoyalty(UUID patientId);
 
     void deleteById(UUID id);

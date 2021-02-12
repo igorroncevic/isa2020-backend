@@ -6,12 +6,11 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 import team18.pharmacyapp.model.dtos.MedicineAllergyDTO;
-import team18.pharmacyapp.model.dtos.ReservedMedicineDTO;
 import team18.pharmacyapp.model.medicine.Medicine;
 import team18.pharmacyapp.model.medicine.MedicineSpecification;
 import team18.pharmacyapp.model.medicine.PharmacyMedicines;
 import team18.pharmacyapp.model.medicine.ReservedMedicines;
-import team18.pharmacyapp.model.users.Patient;
+import team18.pharmacyapp.model.medicine.SupplierMedicine;
 
 import java.util.Date;
 import java.util.List;
@@ -24,12 +23,16 @@ public interface MedicineRepository extends JpaRepository<Medicine, UUID> {
     List<PharmacyMedicines> findAllAvailableMedicines();
 
     @Transactional(readOnly = true)
-    @Query(value = "SELECT distinct m FROM medicine m JOIN m.pharmacyMedicines pm WHERE pm.quantity > 0")
-    List<Medicine> findAllAvailableMedicinesNoAuth();
+    @Query(value = "SELECT distinct m FROM medicine m join fetch m.marks JOIN m.pharmacyMedicines pm WHERE pm.quantity > 0 ")
+    List<Medicine> findAllAvailableMedicinesWithMarksNoAuth();
 
     @Transactional(readOnly = true)
-    @Query("SELECT r FROM reserved_medicines r JOIN FETCH r.patient")
-    List<ReservedMedicines> findAllReservedMedicines();
+    @Query(value = "SELECT distinct m FROM medicine m JOIN m.pharmacyMedicines pm WHERE pm.quantity > 0 and m.marks is empty ")
+    List<Medicine> findAllAvailableMedicinesNoMarksNoAuth();
+
+    @Transactional(readOnly = true)
+    @Query("SELECT r FROM reserved_medicines r JOIN FETCH r.pharmacy JOIN FETCH r.patient WHERE r.pickupDate > :todaysDate AND r.handled = false")
+    List<ReservedMedicines> findAllNonHandledReservedMedicines(@Param("todaysDate") Date todaysDate);
 
     @Transactional(readOnly = true)
     @Query("SELECT rm FROM reserved_medicines rm " +
@@ -110,14 +113,16 @@ public interface MedicineRepository extends JpaRepository<Medicine, UUID> {
             "NOT IN (SELECT m2.id FROM medicine m2 INNER JOIN alergicto a on m2.id = a.medicine_id WHERE a.patient_id = :patientId)")
     List<Medicine> getAllMedicinesPatientsNotAlergicTo(@Param("patientId") UUID patientId);
 
-    @Transactional(readOnly = true)
-    @Query(nativeQuery = true, value = "SELECT * FROM alergicto a WHERE a.patient_id = :patientId AND a.medicine_id = :medicineId")
-    MedicineAllergyDTO checkIfAllergyExists(@Param("patientId")UUID patientId, @Param("medicineId")UUID medicineId);
-
     @Transactional
     @Modifying
     @Query(nativeQuery = true, value = "INSERT INTO alergicto(patient_id, medicine_id) VALUES (:patientId, :medicineId)")
     int addNewAllergy(@Param("patientId") UUID patientId, @Param("medicineId") UUID medicineId);
+
+    @Query("SELECT sm FROM SupplierMedicine sm WHERE sm.supplier.id=:supplierId")
+    List<SupplierMedicine> findMedicinesBySupplierId(UUID supplierId);
+
+    @Query("SELECT m FROM medicine m WHERE m.name=:medicineName")
+    Medicine findByName(@Param("medicineName") String medicineName);
 
     @Transactional(readOnly = true)
     @Query(value = "select s from medicine_specification s where s.medicine.id=:medicineId ")
@@ -126,5 +131,4 @@ public interface MedicineRepository extends JpaRepository<Medicine, UUID> {
     @Transactional(readOnly = true)
     @Query(value = "select m.name from medicine_specification s inner join medicine m on s.replacementMedicineCode=m.medicineCode where s.medicine.id=:medicineId ")
     String getReplacmentMedicine (UUID medicineId);
-
 }
