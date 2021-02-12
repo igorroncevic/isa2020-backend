@@ -5,11 +5,20 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.UUID;
+
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class PurchaseOrderMedicineDTO {
-    private String name;
-    private int quantity;
+
+    UUID medicineId;
+    String medicineName;
+    int orderQuantity;
+
+    public PurchaseOrderMedicineDTO(String medicineName, int orderQuantity) {
+        this.medicineName = medicineName;
+        this.orderQuantity = orderQuantity;
+    }
 }
