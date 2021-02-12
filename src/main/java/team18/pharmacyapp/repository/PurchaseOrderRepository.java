@@ -37,6 +37,11 @@ public interface PurchaseOrderRepository extends JpaRepository<PurchaseOrder, UU
 
     @Transactional
     @Modifying
+    @Query(nativeQuery = true, value = "UPDATE purchase_order SET status = 'accepted'  WHERE id=:orderId")
+    void setStatusAccepted(UUID orderId);
+
+    @Transactional
+    @Modifying
     @Query(nativeQuery = true, value = "UPDATE purchase_order SET end_date = :endDate  WHERE id=:orderId")
     int updatePurchaseOrder(UUID orderId, LocalDate endDate);
 

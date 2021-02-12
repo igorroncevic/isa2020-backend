@@ -363,6 +363,9 @@ insert into vacation(id, status, start_date, end_date, rejection_reason, doctor_
 values ('d430072f-57e3-4434-aa5f-516ac45e5715', 'pending', '2021-05-01', '2021-05-25', null, 'cb317110-4d3e-4a52-8ca6-0c73bc62b4d2');
 insert into vacation(id, status, start_date, end_date, rejection_reason, doctor_id)
 values ('18be1095-8158-4a8f-b9c7-9cf91f4fab4e', 'pending', '2021-08-01', '2021-08-20', null, '02fb4f65-923c-49fe-b32a-c40ffee74b47');
+insert into vacation(id, status, start_date, end_date, rejection_reason, doctor_id)
+values ('9b7c9141-2b98-40d8-a4a8-c496e080eff2', 'pending', '2021-08-01', '2021-08-20', null, 'a5ac174a-45b3-487f-91cb-3d3f727d6f1c');
+
 
 -- EPrescriptions
 insert into eprescription(id, issue_date, patient_id, status)
