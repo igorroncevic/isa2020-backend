@@ -19,4 +19,6 @@ public interface PharmacyMedicinesService {
 
     String checkAvailability(ReportMedicineDTO dto);
 
+    int updateQuantity(UUID medicineId, UUID pharmacyId, int quantity);
+
 }

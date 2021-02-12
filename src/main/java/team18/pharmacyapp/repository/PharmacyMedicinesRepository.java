@@ -34,4 +34,9 @@ public interface PharmacyMedicinesRepository extends JpaRepository<PharmacyMedic
     @Query(nativeQuery = true, value = "SELECT COUNT(*) FROM reserved_medicines WHERE pharmacy_id = :pharmacyId and medicine_id = :medicineId and handled = false")
     int getNumberOfUnhandledReservations(UUID pharmacyId, UUID medicineId);
 
+    @Transactional
+    @Modifying
+    @Query("update pharmacy_medicines pm set pm.quantity=pm.quantity-:quantity where pm.medicine.id=:medicineId and pm.pharmacy.id=:pharmacyId")
+    int updateQuantity(UUID medicineId,UUID pharmacyId,int quantity);
+
 }
